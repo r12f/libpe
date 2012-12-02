@@ -20,6 +20,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibPETest", "LibPETest.vcpr
 		{28692735-9677-476B-91F3-684977E5823A} = {28692735-9677-476B-91F3-684977E5823A}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{8AD18879-6291-427A-8838-AA21110D2757}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -37,5 +39,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3A32D3CE-03B8-472B-AFF6-9EF916E9E8E8} = {8AD18879-6291-427A-8838-AA21110D2757}
 	EndGlobalSection
 EndGlobal

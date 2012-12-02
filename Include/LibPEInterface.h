@@ -18,7 +18,7 @@ public:
 #define LIBPE_METHOD(f)                 LIBPE_METHOD_(error_t, f)
 
 template <class T> class IPEFileT;
-template <class T> class IPEBodyPartT;
+template <class T> class IPEElementT;
 template <class T> class IPESectionT;
 template <class T> class IPEDataDirectoryT;
 template <class T> class IPEDataDirectoryItemT;
@@ -54,8 +54,8 @@ public:
     virtual PEOptionalHeaderT<T> * LIBPE_CALLTYPE GetOptionalHeader() = 0;
 
     // Section
-    virtual int32_t LIBPE_CALLTYPE GetSectionNum() = 0;
-    virtual error_t LIBPE_CALLTYPE GetSection(int32_t nIndex, IPESectionT<T> **ppSection) = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetSectionNum() = 0;
+    virtual error_t LIBPE_CALLTYPE GetSection(uint32_t nIndex, IPESectionT<T> **ppSection) = 0;
 
     // PEAddress<T> convert tools
     virtual PEAddressT<T> LIBPE_CALLTYPE GetRVAFromFOA(PEAddressT<T> nFOA) = 0;
@@ -84,105 +84,109 @@ public:
 };
 
 template <class T>
-class IPEBodyPartT : ILibPEInterface
+class IPEElementT : public ILibPEInterface
 {
 public:
-    virtual PEAddressT<T> LIBPE_CALLTYPE GetFOA() = 0;
+    // Using raw memory directly may be dangerous. Because some related data may not be loaded.
+    // We can just guarantee only this particular element is loaded.
+    virtual void * LIBPE_CALLTYPE GetRawMemory() = 0;
+
     virtual PEAddressT<T> LIBPE_CALLTYPE GetRVA() = 0;
     virtual PEAddressT<T> LIBPE_CALLTYPE GetVA() = 0;
-    virtual PEAddressT<T> LIBPE_CALLTYPE GetSizeInFile() = 0;
     virtual PEAddressT<T> LIBPE_CALLTYPE GetSizeInMemory() = 0;
-    virtual HRESULT LIBPE_CALLTYPE DumpElement(uint8_t *pData, PEAddressT<T> nMaxDataSize) = 0;
+
+    virtual PEAddressT<T> LIBPE_CALLTYPE GetFOA() = 0;
+    virtual PEAddressT<T> LIBPE_CALLTYPE GetSizeInFile() = 0;
 };
 
 template <class T>
-class IPESectionT : IPEBodyPartT<T>
+class IPESectionT : public IPEElementT<T>
 {
 public:
-    virtual HRESULT LIBPE_CALLTYPE GetName(char *pName, int32_t nMaxSize) = 0;
-    virtual HRESULT LIBPE_CALLTYPE SetName(const char *pName) = 0;
+    virtual error_t LIBPE_CALLTYPE GetName(char *pName, int32_t nMaxSize) = 0;
+    virtual error_t LIBPE_CALLTYPE SetName(const char *pName) = 0;
 };
 
 template <class T>
-class IPEDataDirectoryT : IPEBodyPartT<T>
+class IPEDataDirectoryT : public IPEElementT<T>
 {
 public:
-    virtual HRESULT LIBPE_CALLTYPE AddItem(int32_t nItemId, IPEDataDirectoryItemT<T> *pItem) = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveItem(int32_t nItemId) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetItem(int32_t nItemId, IPEDataDirectoryItemT<T> **ppItem) = 0;
+    virtual error_t LIBPE_CALLTYPE AddItem(int32_t nItemId, IPEDataDirectoryItemT<T> *pItem) = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveItem(int32_t nItemId) = 0;
+    virtual error_t LIBPE_CALLTYPE GetItem(int32_t nItemId, IPEDataDirectoryItemT<T> **ppItem) = 0;
 };
 
 template <class T>
-class IPEExportTableT : IPEBodyPartT<T>
+class IPEExportTableT : public IPEElementT<T>
 {
 public:
-    virtual HRESULT LIBPE_CALLTYPE AddOrUpdateItem() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveItem() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetItem() = 0;
+    virtual error_t LIBPE_CALLTYPE AddOrUpdateItem() = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveItem() = 0;
+    virtual error_t LIBPE_CALLTYPE GetItem() = 0;
 
     virtual uint32_t LIBPE_CALLTYPE GetItemCount() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetItemByIndex(int32_t nIndex) = 0;
+    virtual error_t LIBPE_CALLTYPE GetItemByIndex(int32_t nIndex) = 0;
 };
 
 template <class T>
-class IPEExportTableItemT : IPEBodyPartT<T> {};
+class IPEExportTableItemT : public IPEElementT<T> {};
 
 template <class T>
-class IPEImportTableT : IPEBodyPartT<T>
+class IPEImportTableT : public IPEElementT<T>
 {
 public:
-    virtual HRESULT LIBPE_CALLTYPE AddOrUpdateItem() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveItem() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetItem() = 0;
+    virtual error_t LIBPE_CALLTYPE AddOrUpdateItem() = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveItem() = 0;
+    virtual error_t LIBPE_CALLTYPE GetItem() = 0;
 
     virtual uint32_t LIBPE_CALLTYPE GetItemCount() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetItemByIndex(int32_t nIndex) = 0;
+    virtual error_t LIBPE_CALLTYPE GetItemByIndex(int32_t nIndex) = 0;
 };
 
 template <class T>
-class IPEImportTableItemT : IPEBodyPartT<T> {};
+class IPEImportTableItemT : public IPEElementT<T> {};
 
 template <class T>
-class IPEResourceTableT : IPEBodyPartT<T>
+class IPEResourceTableT : public IPEElementT<T>
 {
 public:
-    virtual HRESULT LIBPE_CALLTYPE AddItem(IPEResourceTableItemT<T> *pItem) = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveItem(int32_t nIndex) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetItem(int32_t nIndex, IPEResourceTableItemT<T> **ppItem) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetItemCount() = 0;
+    virtual error_t LIBPE_CALLTYPE AddItem(IPEResourceTableItemT<T> *pItem) = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveItem(int32_t nIndex) = 0;
+    virtual error_t LIBPE_CALLTYPE GetItem(int32_t nIndex, IPEResourceTableItemT<T> **ppItem) = 0;
+    virtual error_t LIBPE_CALLTYPE GetItemCount() = 0;
 };
 
 template <class T>
-class IPEResourceTableItemT : IPEBodyPartT<T> {};
+class IPEResourceTableItemT : public IPEElementT<T> {};
 
 template <class T>
-class IPEExceptionTableT : IPEBodyPartT<T> {};
+class IPEExceptionTableT : public IPEElementT<T> {};
 
 template <class T>
-class IPECertificateTableT : IPEBodyPartT<T> {};
+class IPECertificateTableT : public IPEElementT<T> {};
 
 template <class T>
-class IPERelocationTableT : IPEBodyPartT<T> {};
+class IPERelocationTableT : public IPEElementT<T> {};
 
 template <class T>
-class IPEDebugInfoTableT : IPEBodyPartT<T> {};
+class IPEDebugInfoTableT : public IPEElementT<T> {};
 
 template <class T>
-class IPEGlobalRegisterT : IPEBodyPartT<T> {};
+class IPEGlobalRegisterT : public IPEElementT<T> {};
 
 template <class T>
-class IPETlsTableT : IPEBodyPartT<T> {};
+class IPETlsTableT : public IPEElementT<T> {};
 
 template <class T>
-class IPEBoundImportTableT : IPEBodyPartT<T> {};
+class IPEBoundImportTableT : public IPEElementT<T> {};
 
 template <class T>
-class IPEImportAddressTableT : IPEBodyPartT<T> {};
+class IPEImportAddressTableT : public IPEElementT<T> {};
 
 template <class T>
-class IPEDelayImportTableT : IPEBodyPartT<T> {};
+class IPEDelayImportTableT : public IPEElementT<T> {};
 
 template <class T>
-class IPECLRHeaderT : IPEBodyPartT<T> {};
+class IPECLRHeaderT : public IPEElementT<T> {};
 
 LIBPE_NAMESPACE_END

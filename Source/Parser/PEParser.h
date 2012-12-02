@@ -20,11 +20,14 @@ public:
 #endif
 
 public:
-    PEParserT() : m_pLoader(NULL) {}
+    PEParserT() : m_pFile(NULL), m_bIsBasicInfoParsed(false), m_bIsSectionParsed(false) {}
     virtual ~PEParserT() {}
 
     virtual PEParserType GetType() = 0;
+    virtual int8_t * GetRawMemory(uint64_t nOffset, uint64_t nSize);
+
     virtual error_t ParsePEBasicInfo() = 0;
+    virtual error_t ParsePESection() = 0;
     virtual error_t ParseDataDirectory(int32_t nIndex, IPEDataDirectoryT<T> **ppDataDirectory) { return ERR_NOT_IMPL; }
     virtual error_t ParseExportTable(IPEExportTableT<T> **ppExportTable) { return ERR_NOT_IMPL; }
     virtual error_t ParseImportTable(IPEImportTableT<T> **ppImportTable) { return ERR_NOT_IMPL; }
@@ -49,19 +52,11 @@ protected:
     void SetPEFile(PEFileT<T> *pFile) { m_pFile = pFile; }
     void SetDataLoader(DataLoader *pLoader) { m_pLoader = pLoader; }
 
-    error_t SetPEDosHeader(PEDosHeaderT<T> *pDosHeader) { LIBPE_ASSERT_RET(NULL != m_pFile, ERR_FAIL); m_pFile->m_pDosHeader = pDosHeader; return ERR_OK; }
-    error_t SetPEFileHeader(PEFileHeaderT<T> *pFileHeader) { LIBPE_ASSERT_RET(NULL != m_pFile, ERR_FAIL); m_pFile->m_pFileHeader = pFileHeader; return ERR_OK; }
-    error_t SetPENtHeaders(PENtHeadersT<T> *pNtHeaders) { LIBPE_ASSERT_RET(NULL != m_pFile, ERR_FAIL); m_pFile->m_pNtHeader = pNtHeaders; return ERR_OK; }
-    error_t SetPEOptionalHeader(PEOptionalHeaderT<T> *pOptionalHeader) { LIBPE_ASSERT_RET(NULL != m_pFile, ERR_FAIL); m_pFile->m_pOptionalHeader = pOptionalHeader; return ERR_OK; }
-
-    PEDosHeaderT<T> * GetPEDosHeader() { LIBPE_ASSERT_RET(NULL != m_pFile, NULL); return m_pFile->m_pDosHeader; }
-    PEFileHeaderT<T> * GetPEFileHeader() { LIBPE_ASSERT_RET(NULL != m_pFile, NULL); return m_pFile->m_pFileHeader; }
-    PENtHeadersT<T> * GetPENtHeaders() { LIBPE_ASSERT_RET(NULL != m_pFile, NULL); return m_pFile->m_pNtHeader; }
-    PEOptionalHeaderT<T> * GetPEOptionalHeader() { LIBPE_ASSERT_RET(NULL != m_pFile, NULL); return m_pFile->m_pOptionalHeader; }
-
 protected:
-    ScopedPtr<DataLoader> m_pLoader;
-    PEFileT<T> *m_pFile;
+    ScopedPtr<DataLoader>   m_pLoader;
+    PEFileT<T>              *m_pFile;
+    bool_t                  m_bIsBasicInfoParsed;
+    bool_t                  m_bIsSectionParsed;
 };
 
 typedef PEParserT<PE32> PEParser32;

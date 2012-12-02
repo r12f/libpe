@@ -8,6 +8,7 @@ DataLoaderDiskFile::DataLoaderDiskFile()
     , m_pFileBuffer(NULL)
     , m_nFileSize(0)
     , m_pBlockStatus(NULL)
+    , m_nBlockStatusCount(0)
 {
 
 }
@@ -27,10 +28,15 @@ DataLoaderDiskFile::LoadFile(const file_t &strPath)
 
     LONG nFileSizeHigh = 0;
     DWORD nFileSizeLow = ::SetFilePointer(m_hFile, 0, &nFileSizeHigh, FILE_END);
-    m_nFileSize = ((uint64_t)nFileSizeHigh) << 32 & nFileSizeLow;
+    m_nFileSize = ((uint64_t)nFileSizeHigh) << 32 | nFileSizeLow;
+    m_pFileBuffer = new int8_t[(int32_t)m_nFileSize];
+    
+    nFileSizeHigh = 0;
+    ::SetFilePointer(m_hFile, 0, &nFileSizeHigh, FILE_BEGIN);
 
-    m_pFileBuffer = new int8_t[(int)m_nFileSize];
-    m_pBlockStatus = new bool_t[(int)(m_nFileSize / FILE_IO_BLOCK_SIZE + ((m_nFileSize & (FILE_IO_BLOCK_SIZE - 1)) > 0 ? 1 : 0))];
+    m_nBlockStatusCount = (int32_t)(m_nFileSize / FILE_IO_BLOCK_SIZE + ((m_nFileSize & (FILE_IO_BLOCK_SIZE - 1)) > 0 ? 1 : 0));
+    m_pBlockStatus = new bool_t[m_nBlockStatusCount];
+    memset(m_pBlockStatus, 0, m_nBlockStatusCount * sizeof(bool_t));
 
     if(NULL == m_pFileBuffer || NULL == m_pBlockStatus) {
         Reset();
@@ -52,7 +58,7 @@ DataLoaderDiskFile::GetBuffer(uint64_t nOffset, uint64_t nSize)
         return NULL;
     }
 
-    for(int nBlockId = nStartBlockId; nBlockId < nEndBlockId; ++nBlockId) {
+    for(int nBlockId = nStartBlockId; nBlockId <= nEndBlockId; ++nBlockId) {
         if(!ReadBlock(nBlockId)) {
             return NULL;
         }
@@ -80,6 +86,7 @@ DataLoaderDiskFile::Reset()
     }
 
     m_nFileSize = 0;
+    m_nBlockStatusCount = 0;
 }
 
 int32_t
@@ -95,12 +102,22 @@ DataLoaderDiskFile::GetBlockId(uint64_t nOffset)
 bool_t
 DataLoaderDiskFile::ReadBlock(int32_t nBlockId)
 {
+    if(nBlockId >= m_nBlockStatusCount) {
+        return false;
+    }
+
     if(m_pBlockStatus[nBlockId] != 0) {
         return true;
     }
 
+    DWORD nNeedSize = FILE_IO_BLOCK_SIZE;
+    if(nBlockId * FILE_IO_BLOCK_SIZE + nNeedSize > m_nFileSize) {
+        nNeedSize = (DWORD)(m_nFileSize - nBlockId * FILE_IO_BLOCK_SIZE);
+    }
+
     DWORD nReadSize = 0;
-    if(!::ReadFile(m_hFile, &(m_pFileBuffer[nBlockId * FILE_IO_BLOCK_SIZE]), FILE_IO_BLOCK_SIZE, &nReadSize, NULL)) {
+    LPVOID pBuffer = &(m_pFileBuffer[nBlockId * FILE_IO_BLOCK_SIZE]);
+    if(!::ReadFile(m_hFile, pBuffer, nNeedSize, &nReadSize, NULL)) {
         return false;
     }
 

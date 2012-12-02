@@ -1,16 +1,14 @@
 #pragma once
 
-#include "PEBase.h"
 #include "Parser/PEParser.h"
 
 LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 class PEFileT :
-    public IPEFileT<T>,
-    public PEBase
+    public IPEFileT<T>
 {
-    friend class PEParserT<T>;
+    typedef std::vector<LibPEPtr<IPESectionT<T>>> SectionList;
 
 public:
     static error_t ParsePEFromDiskFile(const file_char_t *pFilePath, IPEFileT<T> **ppFile);
@@ -27,21 +25,28 @@ public:
     LIBPE_SINGLE_THREAD_OBJECT();
 
     void SetParser(PEParserT<T> *pParser) { m_pParser = pParser; }
+    void SetPEDosHeader(PEDosHeaderT<T> *pDosHeader) { m_pDosHeader = pDosHeader; }
+    void SetPENtHeaders(PENtHeadersT<T> *pNtHeaders) { m_pNtHeaders = pNtHeaders; }
+    void SetPEFileHeader(PEFileHeaderT<T> *pFileHeader) { m_pFileHeader = pFileHeader; }
+    void SetPEOptionalHeader(PEOptionalHeaderT<T> *pOptionalHeader) { m_pOptionalHeader = pOptionalHeader; }
+    void AddPESection(IPESectionT<T> *pSection) { LIBPE_ASSERT_RET_VOID(NULL != pSection); m_vSections.push_back(pSection); }
+
+    int8_t * GetRawMemory(uint64_t nOffset, uint64_t nSize);
 
     // Override IPEFileT<T>
     // Rebuild
     virtual error_t LIBPE_CALLTYPE Rebuild(const file_char_t *pFilePath) { return ERR_OK; }
 
     // Basic info
-    virtual bool_t LIBPE_CALLTYPE Is32BitFile() { return true; }
-    virtual PEDosHeaderT<T> * LIBPE_CALLTYPE GetDosHeader() { return NULL; }
-    virtual PENtHeadersT<T> * LIBPE_CALLTYPE GetNtHeaders() { return NULL; }
-    virtual PEFileHeaderT<T> * LIBPE_CALLTYPE GetFileHeader() { return NULL; }
-    virtual PEOptionalHeaderT<T> * LIBPE_CALLTYPE GetOptionalHeader() { return NULL; }
+    virtual bool_t LIBPE_CALLTYPE Is32BitFile() { return PETrait<T>::Is32Bit; }
+    virtual PEDosHeaderT<T> * LIBPE_CALLTYPE GetDosHeader();
+    virtual PENtHeadersT<T> * LIBPE_CALLTYPE GetNtHeaders();
+    virtual PEFileHeaderT<T> * LIBPE_CALLTYPE GetFileHeader();
+    virtual PEOptionalHeaderT<T> * LIBPE_CALLTYPE GetOptionalHeader();
 
     // Section
-    virtual int32_t LIBPE_CALLTYPE GetSectionNum() { return 0; }
-    virtual error_t LIBPE_CALLTYPE GetSection(int32_t nIndex, IPESectionT<T> **ppSection) { return ERR_OK; }
+    virtual uint32_t LIBPE_CALLTYPE GetSectionNum();
+    virtual error_t LIBPE_CALLTYPE GetSection(uint32_t nIndex, IPESectionT<T> **ppSection);
 
     // PEAddressT<T> convert tools
     virtual PEAddressT<T> LIBPE_CALLTYPE GetRVAFromFOA(PEAddressT<T> nFOA) { return 0; }
@@ -71,9 +76,10 @@ public:
 private:
     ScopedPtr<PEParserT<T>>     m_pParser;
     PEDosHeaderT<T>             *m_pDosHeader;
-    PENtHeadersT<T>             *m_pNtHeader;
+    PENtHeadersT<T>             *m_pNtHeaders;
     PEFileHeaderT<T>            *m_pFileHeader;
     PEOptionalHeaderT<T>        *m_pOptionalHeader;
+    SectionList                 m_vSections;
 };
 
 typedef PEFileT<PE32> PEFile32;

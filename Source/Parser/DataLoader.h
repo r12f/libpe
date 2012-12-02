@@ -43,6 +43,7 @@ private:
     int8_t      *m_pFileBuffer;
     uint64_t    m_nFileSize;
     bool_t      *m_pBlockStatus;
+    int32_t     m_nBlockStatusCount;
 };
 
 LIBPE_NAMESPACE_END

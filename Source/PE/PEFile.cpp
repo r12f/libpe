@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "PEFile.h"
+#include "PE/PEFile.h"
 
 LIBPE_NAMESPACE_BEGIN
 
@@ -22,7 +22,7 @@ PEFileT<T>::ParsePEFromDiskFile(const file_char_t *pFilePath, IPEFileT<T> **ppFi
         return ERR_NO_MEM;
     }
 
-    pRawFile->SetParser(pParser);
+    pRawFile->SetParser(pParser.Detach());
 
     return pFile.CopyTo(ppFile);
 }
@@ -60,10 +60,9 @@ PEFileT<T>::ParsePEFromLoadedModule(HMODULE hModule, IPEFileT<T> **ppFile)
 
 template <class T>
 PEFileT<T>::PEFileT()
-    : PEBase()
-    , m_pDosHeader(NULL)
+    : m_pDosHeader(NULL)
     , m_pFileHeader(NULL)
-    , m_pNtHeader(NULL)
+    , m_pNtHeaders(NULL)
     , m_pOptionalHeader(NULL)
 {
 
@@ -75,18 +74,90 @@ PEFileT<T>::~PEFileT()
 
 }
 
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile32, ParsePEFromDiskFile);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile32, ParsePEFromMappedFile);
-#ifdef LIBPE_WINOS
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile32, ParsePEFromMappedResource);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile32, ParsePEFromLoadedModule);
-#endif
+template <class T>
+int8_t *
+PEFileT<T>::GetRawMemory(uint64_t nOffset, uint64_t nSize)
+{
+    LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
+    return m_pParser->GetRawMemory(nOffset, nSize);
+}
 
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile64, ParsePEFromDiskFile);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile64, ParsePEFromMappedFile);
+template <class T>
+PEDosHeaderT<T> *
+PEFileT<T>::GetDosHeader()
+{
+    if(NULL == m_pDosHeader) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
+        m_pParser->ParsePEBasicInfo();
+    }
+    LIBPE_ASSERT_RET(NULL != m_pDosHeader, NULL);
+    return m_pDosHeader;
+}
+
+template <class T>
+PENtHeadersT<T> *
+PEFileT<T>::GetNtHeaders()
+{
+    if(NULL == m_pNtHeaders) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
+        m_pParser->ParsePEBasicInfo();
+    }
+    LIBPE_ASSERT_RET(NULL != m_pNtHeaders, NULL);
+    return m_pNtHeaders;
+}
+
+template <class T>
+PEFileHeaderT<T> *
+PEFileT<T>::GetFileHeader()
+{
+    if(NULL == m_pFileHeader) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
+        m_pParser->ParsePEBasicInfo();
+    }
+    LIBPE_ASSERT_RET(NULL != m_pFileHeader, NULL);
+    return m_pFileHeader;
+}
+
+template <class T>
+PEOptionalHeaderT<T> *
+PEFileT<T>::GetOptionalHeader()
+{
+    if(NULL == m_pOptionalHeader) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
+        m_pParser->ParsePEBasicInfo();
+    }
+    LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
+    return m_pOptionalHeader;
+}
+
+template <class T>
+uint32_t
+PEFileT<T>::GetSectionNum()
+{
+    uint32_t nSectionNum = (uint32_t)m_vSections.size();
+    if(0 == nSectionNum) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, 0);
+        m_pParser->ParsePESection();
+    }
+
+    return (uint32_t)m_vSections.size();
+}
+
+template <class T>
+error_t
+PEFileT<T>::GetSection(uint32_t nIndex, IPESectionT<T> **ppSection)
+{
+    LIBPE_ASSERT_RET(NULL != ppSection, ERR_POINTER);
+    LIBPE_ASSERT_RET(nIndex < GetSectionNum(), ERR_INVALID_ARG);
+    return m_vSections[nIndex].CopyTo(ppSection);
+}
+
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEFile);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromDiskFile);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromMappedFile);
 #ifdef LIBPE_WINOS
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile64, ParsePEFromMappedResource);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile64, ParsePEFromLoadedModule);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromMappedResource);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromLoadedModule);
 #endif
 
 LIBPE_NAMESPACE_END

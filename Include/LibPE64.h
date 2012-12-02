@@ -14,7 +14,7 @@ typedef PENtHeadersT<PE64> PENtHeaders64;
 typedef PEOptionalHeaderT<PE64> PEOptionalHeader64;
 
 typedef IPEFileT<PE64>                  IPEFile64;
-typedef IPEBodyPartT<PE64>              IPEBodyPart64;
+typedef IPEElementT<PE64>               IPEElement64;
 typedef IPESectionT<PE64>               IPESection64;
 typedef IPEDataDirectoryT<PE64>         IPEDataDirectory64;
 typedef IPEDataDirectoryItemT<PE64>     IPEDataDirectoryItem64;

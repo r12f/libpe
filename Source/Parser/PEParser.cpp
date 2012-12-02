@@ -15,7 +15,7 @@ PEParserT<T>::CreateForDiskFile(const file_char_t *pFilePath, PEFileT<T> *pFile)
     LIBPE_ASSERT_RET(NULL != pDataLoader, NULL);
 
     DataLoaderDiskFile *pRawDataLoader = (DataLoaderDiskFile *)pDataLoader.m_ptr;
-    LIBPE_ASSERT_RET(ERR_OK == pRawDataLoader->LoadFile(pFilePath), NULL);
+    LIBPE_ASSERT_RET(pRawDataLoader->LoadFile(pFilePath), NULL);
 
     ScopedPtr<PEParserT<T > > pDiskFile = PEParserT::Create(PE_PARSER_TYPE_DISK_FILE);
     LIBPE_ASSERT_RET(NULL != pDiskFile, NULL);
@@ -27,6 +27,7 @@ PEParserT<T>::CreateForDiskFile(const file_char_t *pFilePath, PEFileT<T> *pFile)
 
     return pDiskFile.Detach();
 }
+
 
 template <class T>
 PEParserT<T> *
@@ -53,18 +54,20 @@ PEParserT<T>::CreateForLoadedModule(HMODULE hModule, PEFileT<T> *pFile)
 
 #endif
 
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser32, CreateForDiskFile);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser32, CreateForMappedFile);
-#ifdef LIBPE_WINOS
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser32, CreateForMappedResource);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser32, CreateForLoadedModule);
-#endif
+template <class T>
+int8_t *
+PEParserT<T>::GetRawMemory(uint64_t nOffset, uint64_t nSize)
+{
+    LIBPE_ASSERT_RET(NULL != m_pLoader, NULL);
+    return m_pLoader->GetBuffer(nOffset, nSize);
+}
 
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser64, CreateForDiskFile);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser64, CreateForMappedFile);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEParser);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser, CreateForDiskFile);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser, CreateForMappedFile);
 #ifdef LIBPE_WINOS
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser64, CreateForMappedResource);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser64, CreateForLoadedModule);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser, CreateForMappedResource);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser, CreateForLoadedModule);
 #endif
 
 LIBPE_NAMESPACE_END

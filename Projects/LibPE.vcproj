@@ -185,7 +185,7 @@
 			Name="PE"
 			>
 			<File
-				RelativePath="..\Source\PE\PEBase.h"
+				RelativePath="..\Source\PE\PEElement.h"
 				>
 			</File>
 			<File
@@ -194,6 +194,10 @@
 			</File>
 			<File
 				RelativePath="..\Source\PE\PEFile.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Source\PE\PESection.h"
 				>
 			</File>
 		</Filter>

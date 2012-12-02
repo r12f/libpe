@@ -90,7 +90,7 @@ public:
 
     T * operator =(const LibPEPtr<T> &ptr)
     {
-        if(*this != ptr) {
+        if(p != ptr.p) {
             *this = ptr.p;
         }
         return p;

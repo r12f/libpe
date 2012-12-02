@@ -14,7 +14,7 @@ typedef PENtHeadersT<PE32> PENtHeaders32;
 typedef PEOptionalHeaderT<PE32> PEOptionalHeader32;
 
 typedef IPEFileT<PE32>                  IPEFile32;
-typedef IPEBodyPartT<PE32>              IPEBodyPart32;
+typedef IPEElementT<PE32>               IPEElement32;
 typedef IPESectionT<PE32>               IPESection32;
 typedef IPEDataDirectoryT<PE32>         IPEDataDirectory32;
 typedef IPEDataDirectoryItemT<PE32>     IPEDataDirectoryItem32;

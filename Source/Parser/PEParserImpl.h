@@ -14,6 +14,7 @@ public:
 
     virtual PEParserType GetType() { return PE_PARSER_TYPE_DISK_FILE; }
     virtual error_t ParsePEBasicInfo();
+    virtual error_t ParsePESection();
 
 protected:
     virtual PEAddressT<T> GetAddressFromRVA(PEAddressT<T> nRVA);
