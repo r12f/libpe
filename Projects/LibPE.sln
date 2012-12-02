@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{9E9032C9-65B3-488A-8CC7-1E4B93E381C3}"
+	ProjectSection(SolutionItems) = preProject
+		..\Include\LibPE.h = ..\Include\LibPE.h
+		..\Include\LibPE32.h = ..\Include\LibPE32.h
+		..\Include\LibPE64.h = ..\Include\LibPE64.h
+		..\Include\LibPEBase.h = ..\Include\LibPEBase.h
+		..\Include\LibPEError.h = ..\Include\LibPEError.h
+		..\Include\LibPEInterface.h = ..\Include\LibPEInterface.h
+		..\Include\LibPEPtr.h = ..\Include\LibPEPtr.h
+		..\Include\LibPETrait.h = ..\Include\LibPETrait.h
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibPE", "LibPE.vcproj", "{28692735-9677-476B-91F3-684977E5823A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibPETest", "LibPETest.vcproj", "{3A32D3CE-03B8-472B-AFF6-9EF916E9E8E8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{28692735-9677-476B-91F3-684977E5823A} = {28692735-9677-476B-91F3-684977E5823A}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{28692735-9677-476B-91F3-684977E5823A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{28692735-9677-476B-91F3-684977E5823A}.Debug|Win32.Build.0 = Debug|Win32
+		{28692735-9677-476B-91F3-684977E5823A}.Release|Win32.ActiveCfg = Release|Win32
+		{28692735-9677-476B-91F3-684977E5823A}.Release|Win32.Build.0 = Release|Win32
+		{3A32D3CE-03B8-472B-AFF6-9EF916E9E8E8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3A32D3CE-03B8-472B-AFF6-9EF916E9E8E8}.Debug|Win32.Build.0 = Debug|Win32
+		{3A32D3CE-03B8-472B-AFF6-9EF916E9E8E8}.Release|Win32.ActiveCfg = Release|Win32
+		{3A32D3CE-03B8-472B-AFF6-9EF916E9E8E8}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
