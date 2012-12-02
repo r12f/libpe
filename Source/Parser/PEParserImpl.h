@@ -16,10 +16,12 @@ public:
     virtual error_t ParsePEBasicInfo();
 
 protected:
-    virtual PEAddressT<T> GetRVAFromRawAddress(PEAddressT<T> nRawAddress);
-    virtual PEAddressT<T> GetVAFromRawAddress(PEAddressT<T> nRawAddress);
-    virtual PEAddressT<T> GetFOAFromRawAddress(PEAddressT<T> nRawAddress);
+    virtual PEAddressT<T> GetAddressFromRVA(PEAddressT<T> nRVA);
+    virtual PEAddressT<T> GetAddressFromVA(PEAddressT<T> nVA);
+    virtual PEAddressT<T> GetAddressFromFOA(PEAddressT<T> nFOA);
 };
+typedef PEParserDiskFileT<PE32> PEParserDiskFile32;
+typedef PEParserDiskFileT<PE64> PEParserDiskFile64;
 
 template <class T>
 class PEParserMappedFileT :
@@ -29,6 +31,7 @@ public:
 };
 
 #ifdef LIBPE_WINOS
+
 template <class T>
 class PEParserMappedResourceT :
     public PEParserT<T>
@@ -42,6 +45,7 @@ class PEParserLoadedModuleT :
 {
 public:
 };
+
 #endif
 
 LIBPE_NAMESPACE_END

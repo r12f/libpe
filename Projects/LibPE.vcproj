@@ -173,14 +173,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Source\Parser\PEParserFactory.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\Parser\PEParserFactory.h"
-				>
-			</File>
-			<File
 				RelativePath="..\Source\Parser\PEParserImpl.cpp"
 				>
 			</File>

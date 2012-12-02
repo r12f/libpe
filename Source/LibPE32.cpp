@@ -1,13 +1,12 @@
 #include "stdafx.h"
+#include "PE/PEFile.h"
 
 LIBPE_NAMESPACE_BEGIN
 
 error_t
 ParsePE32FromDiskFile(const file_char_t *pFilePath, IPEFile32 **ppFile)
 {
-    LIBPE_UNUSED_PARAM(pFilePath);
-    LIBPE_UNUSED_PARAM(ppFile);
-    return ERR_NOT_IMPL;
+    return PEFile32::ParsePEFromDiskFile(pFilePath, ppFile);
 }
 
 error_t

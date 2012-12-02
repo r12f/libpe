@@ -2,6 +2,8 @@
 
 #pragma warning(disable: 6387)
 #pragma warning(disable: 6386)
+#pragma warning(disable: 4100)
+#pragma warning(disable: 4127)      // conditional expression is constant
 
 #ifndef WINVER
 #define WINVER 0x0601

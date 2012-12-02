@@ -12,5 +12,4 @@ enum PEParserType {
 #endif
 };
 
-
 LIBPE_NAMESPACE_END

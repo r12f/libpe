@@ -1,7 +1,20 @@
 #include "stdafx.h"
 #include "Parser/PEParserImpl.h"
+#include "PE/PEFile.h"
 
 LIBPE_NAMESPACE_BEGIN
+
+template <class T>
+PEParserT<T> *
+PEParserT<T>::Create(PEParserType nType)
+{
+    switch(nType) {
+    case PE_PARSER_TYPE_DISK_FILE:
+        return new PEParserDiskFileT<T>;
+    }
+
+    return NULL;
+}
 
 template <class T>
 error_t
@@ -28,23 +41,26 @@ PEParserDiskFileT<T>::ParsePEBasicInfo()
 
 template <class T>
 PEAddressT<T>
-PEParserDiskFileT<T>::GetRVAFromRawAddress(PEAddressT<T> nRawAddress)
+PEParserDiskFileT<T>::GetAddressFromRVA(PEAddressT<T> nRVA)
 {
-    return nRawAddress;
+    return nRVA;
 }
 
 template <class T>
 PEAddressT<T>
-PEParserDiskFileT<T>::GetVAFromRawAddress(PEAddressT<T> nRawAddress)
+PEParserDiskFileT<T>::GetAddressFromVA(PEAddressT<T> nVA)
 {
-    return nRawAddress;
+    return nVA;
 }
 
 template <class T>
 PEAddressT<T>
-PEParserDiskFileT<T>::GetFOAFromRawAddress(PEAddressT<T> nRawAddress)
+PEParserDiskFileT<T>::GetAddressFromFOA(PEAddressT<T> nFOA)
 {
-    return nRawAddress;
+    return nFOA;
 }
+
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser32, Create);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser64, Create);
 
 LIBPE_NAMESPACE_END

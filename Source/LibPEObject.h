@@ -45,7 +45,6 @@ public:
         return m_ptr;
     }
 
-private:
     T *m_ptr;
 };
 
