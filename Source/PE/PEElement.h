@@ -10,9 +10,12 @@ class PEElementT :
     public IPEElementT<T>
 {
 public:
-    PEElementT(PEFileT *pFile) : m_pFile(pFile) { LIBPE_ASSERT(NULL != m_pFile); }
-    virtual ~PEElementT() {}
+    PEElementT(PEFileT<T> *pFilee);
+    virtual ~PEElementT();
 
+    void SetBasicElementInfo(PEAddressT<T> nRVA, PEAddressT<T> nSizeInMemory, PEAddressT<T> nSizeInFile);
+
+    // Override IPEElementT<T>
     virtual void * LIBPE_CALLTYPE GetRawMemory();
 
     virtual PEAddressT<T> LIBPE_CALLTYPE GetRVA();
@@ -23,10 +26,13 @@ public:
     virtual PEAddressT<T> LIBPE_CALLTYPE GetSizeInFile();
 
 protected:
-    PEFileT *m_pFile;
+    PEFileT<T> *m_pFile;
     PEAddressT<T> m_nRVA;
     PEAddressT<T> m_nSizeInMemory;
     PEAddressT<T> m_nSizeInFile;
 };
+
+typedef PEElementT<PE32> PEElement32;
+typedef PEElementT<PE64> PEElement64;
 
 LIBPE_NAMESPACE_END

@@ -185,6 +185,10 @@
 			Name="PE"
 			>
 			<File
+				RelativePath="..\Source\PE\PEElement.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\Source\PE\PEElement.h"
 				>
 			</File>

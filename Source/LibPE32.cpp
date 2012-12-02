@@ -12,9 +12,7 @@ ParsePE32FromDiskFile(const file_char_t *pFilePath, IPEFile32 **ppFile)
 error_t
 ParsePE32FromMappedFile(void *pMemory, IPEFile32 **ppFile)
 {
-    LIBPE_UNUSED_PARAM(pMemory);
-    LIBPE_UNUSED_PARAM(ppFile);
-    return ERR_NOT_IMPL;
+    return PEFile32::ParsePEFromMappedFile(pMemory, ppFile);
 }
 
 #ifdef LIBPE_WINOS
@@ -22,17 +20,13 @@ ParsePE32FromMappedFile(void *pMemory, IPEFile32 **ppFile)
 error_t
 ParsePE32FromMappedResource(HMODULE hModule, IPEFile32 **ppFile)
 {
-    LIBPE_UNUSED_PARAM(hModule);
-    LIBPE_UNUSED_PARAM(ppFile);
-    return ERR_NOT_IMPL;
+    return PEFile32::ParsePEFromMappedResource(hModule, ppFile);
 }
 
 error_t
 ParsePE32FromLoadedModule(HMODULE hModule, IPEFile32 **ppFile)
 {
-    LIBPE_UNUSED_PARAM(hModule);
-    LIBPE_UNUSED_PARAM(ppFile);
-    return ERR_NOT_IMPL;
+    return PEFile32::ParsePEFromLoadedModule(hModule, ppFile);
 }
 
 #endif

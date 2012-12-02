@@ -152,6 +152,55 @@ PEFileT<T>::GetSection(uint32_t nIndex, IPESectionT<T> **ppSection)
     return m_vSections[nIndex].CopyTo(ppSection);
 }
 
+template <class T>
+PEAddressT<T>
+PEFileT<T>::GetRVAFromVA(PEAddressT<T> nVA)
+{
+    PEOptionalHeaderT<T> *pOptinalHeader = GetOptionalHeader();
+    LIBPE_ASSERT_RET(NULL != pOptinalHeader, NULL);
+    if(nVA < pOptinalHeader->ImageBase) {
+        return 0;
+    }
+    return nVA - pOptinalHeader->ImageBase;
+}
+
+template <class T>
+PEAddressT<T>
+PEFileT<T>::GetRVAFromFOA(PEAddressT<T> nFOA)
+{
+    return 0;
+}
+
+template <class T>
+PEAddressT<T>
+PEFileT<T>::GetVAFromRVA(PEAddressT<T> nRVA)
+{
+    PEOptionalHeaderT<T> *pOptinalHeader = GetOptionalHeader();
+    LIBPE_ASSERT_RET(NULL != pOptinalHeader, NULL);
+    return pOptinalHeader->ImageBase + nRVA;
+}
+
+template <class T>
+PEAddressT<T>
+PEFileT<T>::GetVAFromFOA(PEAddressT<T> nFOA)
+{
+    return 0;
+}
+
+template <class T>
+PEAddressT<T>
+PEFileT<T>::GetFOAFromRVA(PEAddressT<T> nRVA)
+{
+    return 0;
+}
+
+template <class T>
+PEAddressT<T>
+PEFileT<T>::GetFOAFromVA(PEAddressT<T> nVA)
+{
+    return 0;
+}
+
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEFile);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromDiskFile);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromMappedFile);
