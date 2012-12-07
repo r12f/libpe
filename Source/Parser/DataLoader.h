@@ -4,10 +4,11 @@
 
 LIBPE_NAMESPACE_BEGIN
 
-class DataLoader
+class DataLoader :
+    public ILibPEInterface
 {
 public:
-    virtual ~DataLoader() {}
+    LIBPE_SINGLE_THREAD_OBJECT();
     virtual PEParserType GetType() = 0;
     virtual int8_t * GetBuffer(uint64_t nOffset, uint64_t nSize) = 0;
 };

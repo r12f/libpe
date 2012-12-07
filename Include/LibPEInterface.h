@@ -19,6 +19,7 @@ public:
 
 template <class T> class IPEFileT;
 template <class T> class IPEElementT;
+template <class T> class IPESectionHeaderT;
 template <class T> class IPESectionT;
 template <class T> class IPEDataDirectoryT;
 template <class T> class IPEDataDirectoryItemT;
@@ -48,20 +49,21 @@ public:
 
     // Basic info
     virtual bool_t LIBPE_CALLTYPE Is32BitFile() = 0;
-    virtual PEDosHeaderT<T> * LIBPE_CALLTYPE GetDosHeader() = 0;
-    virtual PENtHeadersT<T> * LIBPE_CALLTYPE GetNtHeaders() = 0;
-    virtual PEFileHeaderT<T> * LIBPE_CALLTYPE GetFileHeader() = 0;
-    virtual PEOptionalHeaderT<T> * LIBPE_CALLTYPE GetOptionalHeader() = 0;
+    virtual LibPERawDosHeaderT(T) * LIBPE_CALLTYPE GetDosHeader() = 0;
+    virtual LibPERawNtHeadersT(T) * LIBPE_CALLTYPE GetNtHeaders() = 0;
+    virtual LibPERawFileHeaderT(T) * LIBPE_CALLTYPE GetFileHeader() = 0;
+    virtual LibPERawOptionalHeaderT(T) * LIBPE_CALLTYPE GetOptionalHeader() = 0;
 
     // Section
     virtual uint32_t LIBPE_CALLTYPE GetSectionNum() = 0;
+    virtual error_t LIBPE_CALLTYPE GetSectionHeader(uint32_t nIndex, IPESectionHeaderT<T> **ppSectionHeader) = 0;
     virtual error_t LIBPE_CALLTYPE GetSection(uint32_t nIndex, IPESectionT<T> **ppSection) = 0;
 
     // PEAddress<T> convert tools
-    virtual PEAddressT<T> LIBPE_CALLTYPE GetRVAFromFOA(PEAddressT<T> nFOA) = 0;
-    virtual PEAddressT<T> LIBPE_CALLTYPE GetVAFromFOA(PEAddressT<T> nFOA) = 0;
-    virtual PEAddressT<T> LIBPE_CALLTYPE GetFOAFromRVA(PEAddressT<T> nRVA) = 0;
-    virtual PEAddressT<T> LIBPE_CALLTYPE GetFOAFromVA(PEAddressT<T> nVA) = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVAFromFOA(LibPEAddressT(T) nFOA) = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVAFromFOA(LibPEAddressT(T) nFOA) = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOAFromRVA(LibPEAddressT(T) nRVA) = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOAFromVA(LibPEAddressT(T) nVA) = 0;
 
     // Data directory & Data Directory Entries
     virtual error_t LIBPE_CALLTYPE GetDataDirectory(int32_t nIndex, IPEDataDirectoryT<T> **ppDataDirectory) = 0;
@@ -91,12 +93,21 @@ public:
     // We can just guarantee only this particular element is loaded.
     virtual void * LIBPE_CALLTYPE GetRawMemory() = 0;
 
-    virtual PEAddressT<T> LIBPE_CALLTYPE GetRVA() = 0;
-    virtual PEAddressT<T> LIBPE_CALLTYPE GetVA() = 0;
-    virtual PEAddressT<T> LIBPE_CALLTYPE GetSizeInMemory() = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVA() = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVA() = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetSizeInMemory() = 0;
 
-    virtual PEAddressT<T> LIBPE_CALLTYPE GetFOA() = 0;
-    virtual PEAddressT<T> LIBPE_CALLTYPE GetSizeInFile() = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOA() = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetSizeInFile() = 0;
+};
+
+template <class T>
+class IPESectionHeaderT : public IPEElementT<T>
+{
+public:
+    virtual error_t LIBPE_CALLTYPE GetName(char *pName, int32_t nMaxSize) = 0;
+    virtual error_t LIBPE_CALLTYPE SetName(const char *pName) = 0;
+    virtual error_t LIBPE_CALLTYPE GetSection(IPESectionT<T> **ppSection) = 0;
 };
 
 template <class T>

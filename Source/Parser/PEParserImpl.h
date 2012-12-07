@@ -13,13 +13,13 @@ public:
     virtual ~PEParserDiskFileT() {}
 
     virtual PEParserType GetType() { return PE_PARSER_TYPE_DISK_FILE; }
-    virtual error_t ParsePEBasicInfo();
-    virtual error_t ParsePESection();
+    virtual error_t ParseBasicInfo();
+    virtual error_t ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESectionT<T> **ppSection);
 
 protected:
-    virtual PEAddressT<T> GetAddressFromRVA(PEAddressT<T> nRVA);
-    virtual PEAddressT<T> GetAddressFromVA(PEAddressT<T> nVA);
-    virtual PEAddressT<T> GetAddressFromFOA(PEAddressT<T> nFOA);
+    virtual LibPEAddressT(T) GetAddressFromRVA(LibPEAddressT(T) nRVA);
+    virtual LibPEAddressT(T) GetAddressFromVA(LibPEAddressT(T) nVA);
+    virtual LibPEAddressT(T) GetAddressFromFOA(LibPEAddressT(T) nFOA);
 };
 typedef PEParserDiskFileT<PE32> PEParserDiskFile32;
 typedef PEParserDiskFileT<PE64> PEParserDiskFile64;

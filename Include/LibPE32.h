@@ -7,12 +7,6 @@
 
 LIBPE_NAMESPACE_BEGIN
 
-typedef PEAddressT<PE32> PEAddress32;
-typedef PEDosHeaderT<PE32> PEDosHeader32;
-typedef PEFileHeaderT<PE32> PEFileHeader32;
-typedef PENtHeadersT<PE32> PENtHeaders32;
-typedef PEOptionalHeaderT<PE32> PEOptionalHeader32;
-
 typedef IPEFileT<PE32>                  IPEFile32;
 typedef IPEElementT<PE32>               IPEElement32;
 typedef IPESectionT<PE32>               IPESection32;

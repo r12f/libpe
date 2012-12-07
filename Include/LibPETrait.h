@@ -12,52 +12,44 @@ template <class T> struct PETrait {};
 template <>
 struct PETrait<PE32> {
     static const bool_t Is32Bit = true;
-    typedef uint32_t                AddressType;
-    typedef IMAGE_DOS_HEADER        DosHeader;
-    typedef IMAGE_NT_HEADERS32      NtHeaders;
-    typedef IMAGE_FILE_HEADER       FileHeader;
-    typedef IMAGE_OPTIONAL_HEADER32 OptionalHeader;
+    typedef uint32_t                        Address;
+    typedef IMAGE_DOS_HEADER                RawDosHeader;
+    typedef IMAGE_NT_HEADERS32              RawNtHeaders;
+    typedef IMAGE_FILE_HEADER               RawFileHeader;
+    typedef IMAGE_OPTIONAL_HEADER32         RawOptionalHeader;
+    typedef IMAGE_SECTION_HEADER            RawSectionHeader;
 };
 
 template <>
 struct PETrait<PE64> {
     static const bool_t Is32Bit = false;
-    typedef uint64_t                AddressType;
-    typedef IMAGE_DOS_HEADER        DosHeader;
-    typedef IMAGE_NT_HEADERS64      NtHeaders;
-    typedef IMAGE_FILE_HEADER       FileHeader;
-    typedef IMAGE_OPTIONAL_HEADER64 OptionalHeader;
+    typedef uint64_t                        Address;
+    typedef IMAGE_DOS_HEADER                RawDosHeader;
+    typedef IMAGE_NT_HEADERS64              RawNtHeaders;
+    typedef IMAGE_FILE_HEADER               RawFileHeader;
+    typedef IMAGE_OPTIONAL_HEADER64         RawOptionalHeader;
+    typedef IMAGE_SECTION_HEADER            RawSectionHeader;
 };
 
-// Shortcuts, avoid to write typename PETrait<T>::xxx everywhere
-template <class T>
-struct PEAddressT {
-    typedef typename PETrait<T>::AddressType AddressType;
-public:
-    PEAddressT() : m_nAddr(0) {}
-    PEAddressT(AddressType nAddr) { m_nAddr = nAddr; }
-    PEAddressT(const PEAddressT &rhs) : m_nAddr(rhs.m_nAddr) {}
-    operator AddressType () { return m_nAddr; }
-    AddressType m_nAddr;
-};
+#define LibPEAddressT(T)                    typename PETrait<T>::Address
+#define LibPERawDosHeaderT(T)               typename PETrait<T>::RawDosHeader
+#define LibPERawFileHeaderT(T)              typename PETrait<T>::RawFileHeader
+#define LibPERawNtHeadersT(T)               typename PETrait<T>::RawNtHeaders
+#define LibPERawOptionalHeaderT(T)          typename PETrait<T>::RawOptionalHeader
+#define LibPERawSectionHeaderT(T)           typename PETrait<T>::RawSectionHeader
 
-template <class T>
-class PEDosHeaderT : public PETrait<T>::DosHeader {
-    operator typename PETrait<T>::DosHeader () { return *this; }
-};
+typedef PETrait<PE32>::Address              PEAddress32;
+typedef PETrait<PE32>::RawDosHeader         PERawDosHeader32;
+typedef PETrait<PE32>::RawFileHeader        PERawFileHeader32;
+typedef PETrait<PE32>::RawNtHeaders         PERawNtHeaders32;
+typedef PETrait<PE32>::RawOptionalHeader    PERawOptionalHeader32;
+typedef PETrait<PE32>::RawSectionHeader     PERawSectionHeader32;
 
-template <class T>
-class PENtHeadersT : public PETrait<T>::NtHeaders {
-    operator typename PETrait<T>::NtHeaders () { return *this; }
-};
-template <class T>
-class PEFileHeaderT : public PETrait<T>::FileHeader {
-    operator typename PETrait<T>::FileHeader () { return *this; }
-};
-
-template <class T>
-class PEOptionalHeaderT : public PETrait<T>::OptionalHeader {
-    operator typename PETrait<T>::OptionalHeader () { return *this; }
-};
+typedef PETrait<PE64>::Address              PEAddress64;
+typedef PETrait<PE64>::RawDosHeader         PERawDosHeader64;
+typedef PETrait<PE64>::RawFileHeader        PERawFileHeader64;
+typedef PETrait<PE64>::RawNtHeaders         PERawNtHeaders64;
+typedef PETrait<PE64>::RawOptionalHeader    PERawOptionalHeader64;
+typedef PETrait<PE64>::RawSectionHeader     PERawSectionHeader64;
 
 LIBPE_NAMESPACE_END

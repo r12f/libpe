@@ -64,10 +64,10 @@ public:
         return p;
     }
 
-    HRESULT CopyTo(T **ppT)
+    error_t CopyTo(T **ppT)
     {
         if(NULL == ppT) {
-            return E_POINTER;
+            return ERR_POINTER;
         }
         *ppT = p;
         if(NULL != p) {

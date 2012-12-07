@@ -11,18 +11,27 @@ PEFileT<T>::ParsePEFromDiskFile(const file_char_t *pFilePath, IPEFileT<T> **ppFi
         return ERR_POINTER;
     }
 
+    *ppFile = NULL;
+
     PEFileT<T> *pRawFile = new PEFileT<T>();
     if(NULL == pRawFile) {
         return ERR_NO_MEM;
     }
 
     LibPEPtr<IPEFileT<T>> pFile = (IPEFileT<T> *)pRawFile;
-    ScopedPtr<PEParserT<T>> pParser = PEParserT<T>::CreateForDiskFile(pFilePath, pRawFile);
+    LibPEPtr<PEParserT<T>> pParser = PEParserT<T>::CreateForDiskFile(pFilePath, pRawFile);
     if(NULL == pParser) {
         return ERR_NO_MEM;
     }
 
-    pRawFile->SetParser(pParser.Detach());
+    // We need the basic PE head and section info to perform nearly all of the operations.
+    // So we parse them first.
+    error_t nError = pParser->ParseBasicInfo();
+    if(ERR_OK != nError) {
+        return nError;
+    }
+
+    pRawFile->SetParser(pParser);
 
     return pFile.CopyTo(ppFile);
 }
@@ -69,63 +78,33 @@ PEFileT<T>::PEFileT()
 }
 
 template <class T>
-PEFileT<T>::~PEFileT()
-{
-
-}
-
-template <class T>
-int8_t *
-PEFileT<T>::GetRawMemory(uint64_t nOffset, uint64_t nSize)
-{
-    LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
-    return m_pParser->GetRawMemory(nOffset, nSize);
-}
-
-template <class T>
-PEDosHeaderT<T> *
+LibPERawDosHeaderT(T) *
 PEFileT<T>::GetDosHeader()
 {
-    if(NULL == m_pDosHeader) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
-        m_pParser->ParsePEBasicInfo();
-    }
     LIBPE_ASSERT_RET(NULL != m_pDosHeader, NULL);
     return m_pDosHeader;
 }
 
 template <class T>
-PENtHeadersT<T> *
+LibPERawNtHeadersT(T) *
 PEFileT<T>::GetNtHeaders()
 {
-    if(NULL == m_pNtHeaders) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
-        m_pParser->ParsePEBasicInfo();
-    }
     LIBPE_ASSERT_RET(NULL != m_pNtHeaders, NULL);
     return m_pNtHeaders;
 }
 
 template <class T>
-PEFileHeaderT<T> *
+LibPERawFileHeaderT(T) *
 PEFileT<T>::GetFileHeader()
 {
-    if(NULL == m_pFileHeader) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
-        m_pParser->ParsePEBasicInfo();
-    }
     LIBPE_ASSERT_RET(NULL != m_pFileHeader, NULL);
     return m_pFileHeader;
 }
 
 template <class T>
-PEOptionalHeaderT<T> *
+LibPERawOptionalHeaderT(T) *
 PEFileT<T>::GetOptionalHeader()
 {
-    if(NULL == m_pOptionalHeader) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
-        m_pParser->ParsePEBasicInfo();
-    }
     LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
     return m_pOptionalHeader;
 }
@@ -134,13 +113,16 @@ template <class T>
 uint32_t
 PEFileT<T>::GetSectionNum()
 {
-    uint32_t nSectionNum = (uint32_t)m_vSections.size();
-    if(0 == nSectionNum) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, 0);
-        m_pParser->ParsePESection();
-    }
+    return (uint32_t)m_vSectionHeaders.size();
+}
 
-    return (uint32_t)m_vSections.size();
+template <class T>
+error_t
+PEFileT<T>::GetSectionHeader(uint32_t nIndex, IPESectionHeaderT<T> **ppSectionHeader)
+{
+    LIBPE_ASSERT_RET(NULL != ppSectionHeader, ERR_POINTER);
+    LIBPE_ASSERT_RET(nIndex < GetSectionNum(), ERR_INVALID_ARG);
+    return m_vSectionHeaders[nIndex].CopyTo(ppSectionHeader);
 }
 
 template <class T>
@@ -149,14 +131,15 @@ PEFileT<T>::GetSection(uint32_t nIndex, IPESectionT<T> **ppSection)
 {
     LIBPE_ASSERT_RET(NULL != ppSection, ERR_POINTER);
     LIBPE_ASSERT_RET(nIndex < GetSectionNum(), ERR_INVALID_ARG);
-    return m_vSections[nIndex].CopyTo(ppSection);
+    LIBPE_ASSERT_RET(NULL != m_vSectionHeaders[nIndex], ERR_FAIL);
+    return m_vSectionHeaders[nIndex]->GetSection(ppSection);
 }
 
 template <class T>
-PEAddressT<T>
-PEFileT<T>::GetRVAFromVA(PEAddressT<T> nVA)
+LibPEAddressT(T)
+PEFileT<T>::GetRVAFromVA(LibPEAddressT(T) nVA)
 {
-    PEOptionalHeaderT<T> *pOptinalHeader = GetOptionalHeader();
+    LibPERawOptionalHeaderT(T) *pOptinalHeader = GetOptionalHeader();
     LIBPE_ASSERT_RET(NULL != pOptinalHeader, NULL);
     if(nVA < pOptinalHeader->ImageBase) {
         return 0;
@@ -165,38 +148,38 @@ PEFileT<T>::GetRVAFromVA(PEAddressT<T> nVA)
 }
 
 template <class T>
-PEAddressT<T>
-PEFileT<T>::GetRVAFromFOA(PEAddressT<T> nFOA)
+LibPEAddressT(T)
+PEFileT<T>::GetRVAFromFOA(LibPEAddressT(T) nFOA)
 {
     return 0;
 }
 
 template <class T>
-PEAddressT<T>
-PEFileT<T>::GetVAFromRVA(PEAddressT<T> nRVA)
+LibPEAddressT(T)
+PEFileT<T>::GetVAFromRVA(LibPEAddressT(T) nRVA)
 {
-    PEOptionalHeaderT<T> *pOptinalHeader = GetOptionalHeader();
+    LibPERawOptionalHeaderT(T) *pOptinalHeader = GetOptionalHeader();
     LIBPE_ASSERT_RET(NULL != pOptinalHeader, NULL);
     return pOptinalHeader->ImageBase + nRVA;
 }
 
 template <class T>
-PEAddressT<T>
-PEFileT<T>::GetVAFromFOA(PEAddressT<T> nFOA)
+LibPEAddressT(T)
+PEFileT<T>::GetVAFromFOA(LibPEAddressT(T) nFOA)
 {
     return 0;
 }
 
 template <class T>
-PEAddressT<T>
-PEFileT<T>::GetFOAFromRVA(PEAddressT<T> nRVA)
+LibPEAddressT(T)
+PEFileT<T>::GetFOAFromRVA(LibPEAddressT(T) nRVA)
 {
     return 0;
 }
 
 template <class T>
-PEAddressT<T>
-PEFileT<T>::GetFOAFromVA(PEAddressT<T> nVA)
+LibPEAddressT(T)
+PEFileT<T>::GetFOAFromVA(LibPEAddressT(T) nVA)
 {
     return 0;
 }

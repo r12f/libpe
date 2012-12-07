@@ -11,21 +11,21 @@ PEParserT<T>::CreateForDiskFile(const file_char_t *pFilePath, PEFileT<T> *pFile)
 {
     LIBPE_ASSERT_RET(NULL != pFilePath && NULL != pFile, NULL);
 
-    ScopedPtr<DataLoader> pDataLoader = new DataLoaderDiskFile;
+    LibPEPtr<DataLoader> pDataLoader = new DataLoaderDiskFile;
     LIBPE_ASSERT_RET(NULL != pDataLoader, NULL);
 
-    DataLoaderDiskFile *pRawDataLoader = (DataLoaderDiskFile *)pDataLoader.m_ptr;
+    DataLoaderDiskFile *pRawDataLoader = (DataLoaderDiskFile *)pDataLoader.p;
     LIBPE_ASSERT_RET(pRawDataLoader->LoadFile(pFilePath), NULL);
 
-    ScopedPtr<PEParserT<T > > pDiskFile = PEParserT::Create(PE_PARSER_TYPE_DISK_FILE);
-    LIBPE_ASSERT_RET(NULL != pDiskFile, NULL);
+    PEParserT<T > *pDiskFileParser = PEParserT::Create(PE_PARSER_TYPE_DISK_FILE);
+    LIBPE_ASSERT_RET(NULL != pDiskFileParser, NULL);
 
-    PEParserDiskFileT<T > *pRawDiskFile = (PEParserDiskFileT<T > *)pDiskFile.m_ptr;
+    PEParserDiskFileT<T > *pRawDiskFileParser = (PEParserDiskFileT<T > *)pDiskFileParser;
 
-    pRawDiskFile->SetPEFile(pFile);
-    pRawDiskFile->SetDataLoader(pDataLoader.Detach());
+    pRawDiskFileParser->SetPEFile(pFile);
+    pRawDiskFileParser->SetDataLoader(pDataLoader);
 
-    return pDiskFile.Detach();
+    return pDiskFileParser;
 }
 
 
