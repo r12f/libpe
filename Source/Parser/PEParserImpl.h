@@ -13,6 +13,7 @@ public:
     virtual ~PEParserDiskFileT() {}
 
     virtual PEParserType GetType() { return PE_PARSER_TYPE_DISK_FILE; }
+    virtual bool_t IsRawAddressVA() { return false; }
     virtual error_t ParseBasicInfo();
     virtual error_t ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESectionT<T> **ppSection);
 

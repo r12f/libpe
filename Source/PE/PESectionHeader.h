@@ -14,12 +14,10 @@ public:
     virtual ~PESectionHeaderT() {}
 
     LIBPE_SINGLE_THREAD_OBJECT()
-    DECLARE_PE_ELEMENT()
+    DECLARE_PE_ELEMENT(LibPERawSectionHeaderT(T))
 
     void SetRawSectionHeader(LibPERawSectionHeaderT(T) *pSectionHeader) { m_pSectionHeader = pSectionHeader; }
 
-    virtual error_t LIBPE_CALLTYPE GetName(char *pName, int32_t nMaxSize);
-    virtual error_t LIBPE_CALLTYPE SetName(const char *pName);
     virtual error_t LIBPE_CALLTYPE GetSection(IPESectionT<T> **ppSection);
 
 private:

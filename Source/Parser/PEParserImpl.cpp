@@ -77,30 +77,24 @@ template <class T>
 error_t
 PEParserDiskFileT<T>::ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESectionT<T> **ppSection)
 {
-    /*
-    if(m_bIsSectionParsed) {
-        return ERR_OK;
-    }
-
+    LIBPE_ASSERT_RET(NULL != pSectionHeader && NULL != ppSection, ERR_POINTER);
     LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, ERR_FAIL);
 
-    LibPERawDosHeaderT(T) *pDosHeader = m_pFile->GetDosHeader();
-    LibPERawFileHeaderT(T) *pFileHeader = m_pFile->GetFileHeader();
-    if(NULL == pDosHeader || NULL == pFileHeader) {
-        return ERR_FAIL;
+    LibPEPtr<PESectionT<T>> pRawSection = new PESectionT<T>();
+    if(NULL == pRawSection) {
+        return ERR_NO_MEM;
     }
 
+    pRawSection->SetParser(this);
+    pRawSection->SetPEFile(m_pFile);
+    pRawSection->SetRVA(pSectionHeader->VirtualAddress);
+    pRawSection->SetSizeInMemory(pSectionHeader->SizeOfRawData);
+    pRawSection->SetFOA(pSectionHeader->PointerToRawData);
+    pRawSection->SetSizeInFile(pSectionHeader->SizeOfRawData);
+    pRawSection->SetRawSectionHeader(pSectionHeader);
 
-    m_bIsSectionParsed = true;
+    *ppSection = pRawSection.Detach();
 
-        pRawSection->SetParser(this);
-        pRawSection->SetPEFile(m_pFile);
-        pRawSection->SetRVA(pSectionHeader->VirtualAddress);
-        pRawSection->SetSizeInMemory(pSectionHeader->SizeOfRawData);
-        pRawSection->SetFOA(pSectionHeader->PointerToRawData);
-        pRawSection->SetSizeInFile(pSectionHeader->SizeOfRawData);
-        pRawSection->SetRawSectionHeader(pSectionHeader);
-*/
     return ERR_OK;
 }
 

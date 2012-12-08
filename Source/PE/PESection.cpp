@@ -4,10 +4,33 @@
 LIBPE_NAMESPACE_BEGIN
 
 template <class T>
-error_t
-PESectionT<T>::GetName(char *pName, int32_t nMaxSize)
+const char *
+PESectionT<T>::GetName()
 {
-    return ERR_OK;
+    LIBPE_ASSERT_RET(NULL != m_pSectionHeader, "");
+    return (const char *)m_pSectionHeader->Name;
+}
+
+template <class T>
+error_t
+PESectionT<T>::GetRelocations()
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+error_t
+PESectionT<T>::GetLineNumbers()
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+uint32_t
+PESectionT<T>::GetCharacteristics()
+{
+    LIBPE_ASSERT_RET(NULL != m_pSectionHeader, 0);
+    return m_pSectionHeader->Characteristics;
 }
 
 template <class T>

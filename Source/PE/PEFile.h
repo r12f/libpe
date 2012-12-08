@@ -35,11 +35,6 @@ public:
         m_vSectionHeaders.push_back(pSectionHeader);
     }
 
-    int8_t * GetRawMemory(uint64_t nOffset, uint64_t nSize) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
-        return m_pParser->GetRawMemory(nOffset, nSize);
-    }
-
     // Override IPEFileT<T>
     // Rebuild
     virtual error_t LIBPE_CALLTYPE Rebuild(const file_char_t *pFilePath) { return ERR_OK; }
@@ -58,10 +53,10 @@ public:
 
     // LibPEAddressT(T) convert tools
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVAFromVA(LibPEAddressT(T) nVA);
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVAFromFOA(LibPEAddressT(T) nFOA);
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVAFromRVA(LibPEAddressT(T) nRVA);
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVAFromFOA(LibPEAddressT(T) nFOA);
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVAFromFOA(LibPEAddressT(T) nFOA);
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOAFromRVA(LibPEAddressT(T) nRVA);
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVAFromFOA(LibPEAddressT(T) nFOA);
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOAFromVA(LibPEAddressT(T) nVA);
 
     // Data directory & Data Directory Entries

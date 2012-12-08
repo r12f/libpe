@@ -14,15 +14,19 @@ public:
     virtual ~PESectionT() {}
 
     LIBPE_SINGLE_THREAD_OBJECT()
-    DECLARE_PE_ELEMENT()
+    DECLARE_PE_ELEMENT(void)
 
     void SetRawSectionHeader(typename PETrait<T>::RawSectionHeader *pSectionHeader) { m_pSectionHeader = pSectionHeader; }
 
-    virtual error_t LIBPE_CALLTYPE GetName(char *pName, int32_t nMaxSize);
+    virtual const char * LIBPE_CALLTYPE GetName();
+    virtual error_t LIBPE_CALLTYPE GetRelocations();
+    virtual error_t LIBPE_CALLTYPE GetLineNumbers();
+    virtual uint32_t LIBPE_CALLTYPE GetCharacteristics();
+
     virtual error_t LIBPE_CALLTYPE SetName(const char *pName);
 
 private:
-    typename PETrait<T>::RawSectionHeader  *m_pSectionHeader;
+    LibPERawSectionHeaderT(T) *m_pSectionHeader;
 };
 
 typedef PESectionT<PE32> PESection32;

@@ -139,49 +139,48 @@ template <class T>
 LibPEAddressT(T)
 PEFileT<T>::GetRVAFromVA(LibPEAddressT(T) nVA)
 {
-    LibPERawOptionalHeaderT(T) *pOptinalHeader = GetOptionalHeader();
-    LIBPE_ASSERT_RET(NULL != pOptinalHeader, NULL);
-    if(nVA < pOptinalHeader->ImageBase) {
-        return 0;
-    }
-    return nVA - pOptinalHeader->ImageBase;
-}
-
-template <class T>
-LibPEAddressT(T)
-PEFileT<T>::GetRVAFromFOA(LibPEAddressT(T) nFOA)
-{
-    return 0;
+    LIBPE_ASSERT_RET(NULL != m_pParser, 0);
+    return m_pParser->GetRVAFromVA(nVA);
 }
 
 template <class T>
 LibPEAddressT(T)
 PEFileT<T>::GetVAFromRVA(LibPEAddressT(T) nRVA)
 {
-    LibPERawOptionalHeaderT(T) *pOptinalHeader = GetOptionalHeader();
-    LIBPE_ASSERT_RET(NULL != pOptinalHeader, NULL);
-    return pOptinalHeader->ImageBase + nRVA;
+    LIBPE_ASSERT_RET(NULL != m_pParser, 0);
+    return m_pParser->GetVAFromRVA(nRVA);
 }
 
 template <class T>
 LibPEAddressT(T)
-PEFileT<T>::GetVAFromFOA(LibPEAddressT(T) nFOA)
+PEFileT<T>::GetRVAFromFOA(LibPEAddressT(T) nFOA)
 {
-    return 0;
+    LIBPE_ASSERT_RET(NULL != m_pParser, 0);
+    return m_pParser->GetRVAFromFOA(nFOA);
 }
 
 template <class T>
 LibPEAddressT(T)
 PEFileT<T>::GetFOAFromRVA(LibPEAddressT(T) nRVA)
 {
-    return 0;
+    LIBPE_ASSERT_RET(NULL != m_pParser, 0);
+    return m_pParser->GetFOAFromRVA(nRVA);
+}
+
+template <class T>
+LibPEAddressT(T)
+PEFileT<T>::GetVAFromFOA(LibPEAddressT(T) nFOA)
+{
+    LIBPE_ASSERT_RET(NULL != m_pParser, 0);
+    return m_pParser->GetVAFromFOA(nFOA);
 }
 
 template <class T>
 LibPEAddressT(T)
 PEFileT<T>::GetFOAFromVA(LibPEAddressT(T) nVA)
 {
-    return 0;
+    LIBPE_ASSERT_RET(NULL != m_pParser, 0);
+    return m_pParser->GetFOAFromVA(nVA);
 }
 
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEFile);

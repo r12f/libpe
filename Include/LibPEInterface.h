@@ -60,9 +60,11 @@ public:
     virtual error_t LIBPE_CALLTYPE GetSection(uint32_t nIndex, IPESectionT<T> **ppSection) = 0;
 
     // PEAddress<T> convert tools
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVAFromVA(LibPEAddressT(T) nVA) = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVAFromRVA(LibPEAddressT(T) nRVA) = 0;
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVAFromFOA(LibPEAddressT(T) nFOA) = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVAFromFOA(LibPEAddressT(T) nFOA) = 0;
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOAFromRVA(LibPEAddressT(T) nRVA) = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVAFromFOA(LibPEAddressT(T) nFOA) = 0;
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOAFromVA(LibPEAddressT(T) nVA) = 0;
 
     // Data directory & Data Directory Entries
@@ -92,6 +94,8 @@ public:
     // Using raw memory directly may be dangerous. Because some related data may not be loaded.
     // We can just guarantee only this particular element is loaded.
     virtual void * LIBPE_CALLTYPE GetRawMemory() = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawAddress() = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawSize() = 0;
 
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVA() = 0;
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVA() = 0;
@@ -105,8 +109,7 @@ template <class T>
 class IPESectionHeaderT : public IPEElementT<T>
 {
 public:
-    virtual error_t LIBPE_CALLTYPE GetName(char *pName, int32_t nMaxSize) = 0;
-    virtual error_t LIBPE_CALLTYPE SetName(const char *pName) = 0;
+    virtual LibPERawSectionHeaderT(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
     virtual error_t LIBPE_CALLTYPE GetSection(IPESectionT<T> **ppSection) = 0;
 };
 
@@ -114,7 +117,12 @@ template <class T>
 class IPESectionT : public IPEElementT<T>
 {
 public:
-    virtual error_t LIBPE_CALLTYPE GetName(char *pName, int32_t nMaxSize) = 0;
+    virtual void * LIBPE_CALLTYPE GetRawStruct() = 0;
+    virtual const char * LIBPE_CALLTYPE GetName() = 0;
+    virtual error_t LIBPE_CALLTYPE GetRelocations() = 0;
+    virtual error_t LIBPE_CALLTYPE GetLineNumbers() = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetCharacteristics() = 0;
+
     virtual error_t LIBPE_CALLTYPE SetName(const char *pName) = 0;
 };
 

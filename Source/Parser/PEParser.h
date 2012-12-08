@@ -21,13 +21,21 @@ public:
 #endif
 
 public:
-    PEParserT() : m_pFile(NULL), m_bIsBasicInfoParsed(false), m_bIsSectionParsed(false) {}
+    PEParserT() : m_pFile(NULL), m_bIsBasicInfoParsed(false) {}
     virtual ~PEParserT() {}
 
     LIBPE_SINGLE_THREAD_OBJECT();
 
     virtual PEParserType GetType() = 0;
+    virtual bool_t IsRawAddressVA() = 0;
     virtual int8_t * GetRawMemory(uint64_t nOffset, uint64_t nSize);
+
+    virtual LibPEAddressT(T) GetRVAFromVA(LibPEAddressT(T) nVA);
+    virtual LibPEAddressT(T) GetVAFromRVA(LibPEAddressT(T) nRVA);
+    virtual LibPEAddressT(T) GetRVAFromFOA(LibPEAddressT(T) nFOA);
+    virtual LibPEAddressT(T) GetFOAFromRVA(LibPEAddressT(T) nRVA);
+    virtual LibPEAddressT(T) GetVAFromFOA(LibPEAddressT(T) nFOA);
+    virtual LibPEAddressT(T) GetFOAFromVA(LibPEAddressT(T) nVA);
 
     virtual error_t ParseBasicInfo() = 0;
     virtual error_t ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESectionT<T> **ppSection) = 0;
@@ -59,7 +67,6 @@ protected:
     LibPEPtr<DataLoader>    m_pLoader;
     PEFileT<T>              *m_pFile;
     bool_t                  m_bIsBasicInfoParsed;
-    bool_t                  m_bIsSectionParsed;
 };
 
 typedef PEParserT<PE32> PEParser32;

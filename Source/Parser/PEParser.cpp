@@ -62,6 +62,97 @@ PEParserT<T>::GetRawMemory(uint64_t nOffset, uint64_t nSize)
     return m_pLoader->GetBuffer(nOffset, nSize);
 }
 
+template <class T>
+LibPEAddressT(T)
+PEParserT<T>::GetRVAFromVA(LibPEAddressT(T) nVA)
+{
+    LIBPE_ASSERT_RET(NULL != m_pFile, 0);
+    LibPERawOptionalHeaderT(T) *pOptinalHeader = m_pFile->GetOptionalHeader();
+    LIBPE_ASSERT_RET(NULL != pOptinalHeader, NULL);
+    if(nVA < pOptinalHeader->ImageBase) {
+        return 0;
+    }
+    return nVA - pOptinalHeader->ImageBase;
+}
+
+template <class T>
+LibPEAddressT(T)
+PEParserT<T>::GetVAFromRVA(LibPEAddressT(T) nRVA)
+{
+    LIBPE_ASSERT_RET(NULL != m_pFile, 0);
+    LibPERawOptionalHeaderT(T) *pOptinalHeader = m_pFile->GetOptionalHeader();
+    LIBPE_ASSERT_RET(NULL != pOptinalHeader, NULL);
+    return pOptinalHeader->ImageBase + nRVA;
+}
+
+template <class T>
+LibPEAddressT(T)
+PEParserT<T>::GetRVAFromFOA(LibPEAddressT(T) nFOA)
+{
+    LIBPE_ASSERT_RET(NULL != m_pFile, 0);
+    
+    LibPEPtr<IPESectionT<T>> pLastSection, pSection;
+    uint32_t nSectionId = 0, nSectionNum = m_pFile->GetSectionNum();
+    for(nSectionId = 0; nSectionId < nSectionNum; ++nSectionId) {
+        if(ERR_OK != m_pFile->GetSection(nSectionId, &pSection) || NULL == pSection) {
+            return 0;
+        }
+
+        if(pSection->GetFOA() > nFOA) {
+            break;
+        }
+
+        pLastSection.Attach(pSection.Detach());
+    }
+
+    if(NULL == pLastSection) {
+        return nFOA;
+    }
+
+    return pLastSection->GetRVA() + nFOA - pLastSection->GetFOA();
+}
+
+template <class T>
+LibPEAddressT(T)
+PEParserT<T>::GetFOAFromRVA(LibPEAddressT(T) nRVA)
+{
+    LIBPE_ASSERT_RET(NULL != m_pFile, 0);
+    
+    LibPEPtr<IPESectionT<T>> pLastSection, pSection;
+    uint32_t nSectionId = 0, nSectionNum = m_pFile->GetSectionNum();
+    for(nSectionId = 0; nSectionId < nSectionNum; ++nSectionId) {
+        if(ERR_OK != m_pFile->GetSection(nSectionId, &pSection) || NULL == pSection) {
+            return 0;
+        }
+
+        if(pSection->GetRVA() > nRVA) {
+            break;
+        }
+
+        pLastSection.Attach(pSection.Detach());
+    }
+
+    if(NULL == pLastSection) {
+        return nRVA;
+    }
+
+    return pLastSection->GetFOA() + nRVA - pLastSection->GetRVA();
+}
+
+template <class T>
+LibPEAddressT(T)
+PEParserT<T>::GetVAFromFOA(LibPEAddressT(T) nFOA)
+{
+    return GetVAFromRVA(GetRVAFromFOA(nFOA));
+}
+
+template <class T>
+LibPEAddressT(T)
+PEParserT<T>::GetFOAFromVA(LibPEAddressT(T) nVA)
+{
+    return GetFOAFromRVA(GetRVAFromVA(nVA));
+}
+
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEParser);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser, CreateForDiskFile);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser, CreateForMappedFile);
