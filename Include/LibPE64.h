@@ -9,9 +9,8 @@ LIBPE_NAMESPACE_BEGIN
 
 typedef IPEFileT<PE64>                  IPEFile64;
 typedef IPEElementT<PE64>               IPEElement64;
+typedef IPESectionHeaderT<PE64>         IPESectionHeader64;
 typedef IPESectionT<PE64>               IPESection64;
-typedef IPEDataDirectoryT<PE64>         IPEDataDirectory64;
-typedef IPEDataDirectoryItemT<PE64>     IPEDataDirectoryItem64;
 typedef IPEExportTableT<PE64>           IPEExportTable64;
 typedef IPEExportTableItemT<PE64>       IPEExportTableItem64;
 typedef IPEImportTableT<PE64>           IPEImportTable64;

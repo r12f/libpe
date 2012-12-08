@@ -14,7 +14,7 @@ public:
 
     virtual PEParserType GetType() { return PE_PARSER_TYPE_DISK_FILE; }
     virtual bool_t IsRawAddressVA() { return false; }
-    virtual error_t ParseBasicInfo();
+    virtual error_t ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPERawNtHeadersT(T) **ppNtHeaders, SectionHeaderList *pSectionHeaders);
     virtual error_t ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESectionT<T> **ppSection);
 
 protected:

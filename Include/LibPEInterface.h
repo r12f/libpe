@@ -21,8 +21,6 @@ template <class T> class IPEFileT;
 template <class T> class IPEElementT;
 template <class T> class IPESectionHeaderT;
 template <class T> class IPESectionT;
-template <class T> class IPEDataDirectoryT;
-template <class T> class IPEDataDirectoryItemT;
 template <class T> class IPEExportTableT;
 template <class T> class IPEExportTableItemT;
 template <class T> class IPEImportTableT;
@@ -67,8 +65,7 @@ public:
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVAFromFOA(LibPEAddressT(T) nFOA) = 0;
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOAFromVA(LibPEAddressT(T) nVA) = 0;
 
-    // Data directory & Data Directory Entries
-    virtual error_t LIBPE_CALLTYPE GetDataDirectory(int32_t nIndex, IPEDataDirectoryT<T> **ppDataDirectory) = 0;
+    // Data directory entries operations
     virtual error_t LIBPE_CALLTYPE GetExportTable(IPEExportTableT<T> **ppExportTable) = 0;
     virtual error_t LIBPE_CALLTYPE GetImportTable(IPEImportTableT<T> **ppImportTable) = 0;
     virtual error_t LIBPE_CALLTYPE GetResourceTable(IPEResourceTableT<T> **ppResourceTable) = 0;
@@ -82,6 +79,20 @@ public:
     virtual error_t LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTable) = 0;
     virtual error_t LIBPE_CALLTYPE GetDelayImportTable(IPEDelayImportTableT<T> **ppDelayImportTable) = 0;
     virtual error_t LIBPE_CALLTYPE GetCLRHeader(IPECLRHeaderT<T> **ppCLRHeader) = 0;
+
+    virtual error_t LIBPE_CALLTYPE RemoveExportTable() = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveImportTable() = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveResourceTable() = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveExceptionTable() = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveCertificateTable() = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveRelocationTable() = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveDebugInfoTable() = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveGlobalRegister() = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveTlsTable() = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveBoundImportTable() = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveImportAddressTable() = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveDelayImportTable() = 0;
+    virtual error_t LIBPE_CALLTYPE RemoveCLRHeader() = 0;
 
     // PE Verification
     virtual bool_t LIBPE_CALLTYPE IsValidPE() = 0;
@@ -124,15 +135,6 @@ public:
     virtual uint32_t LIBPE_CALLTYPE GetCharacteristics() = 0;
 
     virtual error_t LIBPE_CALLTYPE SetName(const char *pName) = 0;
-};
-
-template <class T>
-class IPEDataDirectoryT : public IPEElementT<T>
-{
-public:
-    virtual error_t LIBPE_CALLTYPE AddItem(int32_t nItemId, IPEDataDirectoryItemT<T> *pItem) = 0;
-    virtual error_t LIBPE_CALLTYPE RemoveItem(int32_t nItemId) = 0;
-    virtual error_t LIBPE_CALLTYPE GetItem(int32_t nItemId, IPEDataDirectoryItemT<T> **ppItem) = 0;
 };
 
 template <class T>

@@ -12,6 +12,9 @@ class PEParserT :
     public ILibPEInterface
 {
 public:
+    typedef std::vector<LibPEPtr<IPESectionHeaderT<T>>> SectionHeaderList;
+
+public:
     static PEParserT<T> * Create(PEParserType nType);
     static PEParserT<T> * CreateForDiskFile(const file_char_t *pFilePath, PEFileT<T> *pFile);
     static PEParserT<T> * CreateForMappedFile(void *pMemory, PEFileT<T> *pFile);
@@ -21,7 +24,7 @@ public:
 #endif
 
 public:
-    PEParserT() : m_pFile(NULL), m_bIsBasicInfoParsed(false) {}
+    PEParserT() : m_pFile(NULL) {}
     virtual ~PEParserT() {}
 
     LIBPE_SINGLE_THREAD_OBJECT();
@@ -37,9 +40,8 @@ public:
     virtual LibPEAddressT(T) GetVAFromFOA(LibPEAddressT(T) nFOA);
     virtual LibPEAddressT(T) GetFOAFromVA(LibPEAddressT(T) nVA);
 
-    virtual error_t ParseBasicInfo() = 0;
+    virtual error_t ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPERawNtHeadersT(T) **ppNtHeaders, SectionHeaderList *pSectionHeaders) = 0;
     virtual error_t ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESectionT<T> **ppSection) = 0;
-    virtual error_t ParseDataDirectory(int32_t nIndex, IPEDataDirectoryT<T> **ppDataDirectory) { return ERR_NOT_IMPL; }
     virtual error_t ParseExportTable(IPEExportTableT<T> **ppExportTable) { return ERR_NOT_IMPL; }
     virtual error_t ParseImportTable(IPEImportTableT<T> **ppImportTable) { return ERR_NOT_IMPL; }
     virtual error_t ParseResourceTable(IPEResourceTableT<T> **ppResourceTable) { return ERR_NOT_IMPL; }
@@ -66,7 +68,6 @@ protected:
 protected:
     LibPEPtr<DataLoader>    m_pLoader;
     PEFileT<T>              *m_pFile;
-    bool_t                  m_bIsBasicInfoParsed;
 };
 
 typedef PEParserT<PE32> PEParser32;

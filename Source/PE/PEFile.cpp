@@ -7,18 +7,15 @@ template <class T>
 error_t
 PEFileT<T>::ParsePEFromDiskFile(const file_char_t *pFilePath, IPEFileT<T> **ppFile)
 {
-    if(NULL == pFilePath || NULL == ppFile) {
-        return ERR_POINTER;
-    }
+    LIBPE_ASSERT_RET(NULL != pFilePath && NULL != ppFile, ERR_POINTER);
 
     *ppFile = NULL;
 
-    PEFileT<T> *pRawFile = new PEFileT<T>();
+    LibPEPtr<PEFileT<T>> pRawFile = new PEFileT<T>();
     if(NULL == pRawFile) {
         return ERR_NO_MEM;
     }
 
-    LibPEPtr<IPEFileT<T>> pFile = (IPEFileT<T> *)pRawFile;
     LibPEPtr<PEParserT<T>> pParser = PEParserT<T>::CreateForDiskFile(pFilePath, pRawFile);
     if(NULL == pParser) {
         return ERR_NO_MEM;
@@ -26,14 +23,11 @@ PEFileT<T>::ParsePEFromDiskFile(const file_char_t *pFilePath, IPEFileT<T> **ppFi
 
     // We need the basic PE head and section info to perform nearly all of the operations.
     // So we parse them first.
-    error_t nError = pParser->ParseBasicInfo();
-    if(ERR_OK != nError) {
-        return nError;
-    }
+    pRawFile->Init(pParser);
 
-    pRawFile->SetParser(pParser);
+    *ppFile = pRawFile.Detach();
 
-    return pFile.CopyTo(ppFile);
+    return ERR_OK;
 }
 
 template <class T>
@@ -183,6 +177,20 @@ PEFileT<T>::GetFOAFromVA(LibPEAddressT(T) nVA)
     return m_pParser->GetFOAFromVA(nVA);
 }
 
+template <class T>
+error_t
+PEFileT<T>::GetImportTable(IPEImportTableT<T> **ppImportTable)
+{
+    if(NULL == m_pImportTable) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
+        if(ERR_OK != m_pParser->ParseImportTable(&m_pImportTable) || NULL == m_pImportTable) {
+            return ERR_FAIL;
+        }
+    }
+
+    return m_pImportTable.CopyTo(ppImportTable);
+}
+
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEFile);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromDiskFile);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromMappedFile);
@@ -190,5 +198,6 @@ LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromMappedFile);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromMappedResource);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromLoadedModule);
 #endif
+
 
 LIBPE_NAMESPACE_END

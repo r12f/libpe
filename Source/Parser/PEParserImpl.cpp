@@ -20,14 +20,12 @@ PEParserT<T>::Create(PEParserType nType)
 
 template <class T>
 error_t
-PEParserDiskFileT<T>::ParseBasicInfo()
+PEParserDiskFileT<T>::ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPERawNtHeadersT(T) **ppNtHeaders, SectionHeaderList *pSectionHeaders)
 {
-    if(m_bIsBasicInfoParsed) {
-        return ERR_OK;
-    }
-
+    LIBPE_ASSERT_RET(NULL != ppDosHeader && NULL != ppNtHeaders && NULL != pSectionHeaders, ERR_POINTER);
     LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, ERR_FAIL);
 
+    // Parse PE header
     LibPERawDosHeaderT(T) *pDosHeader = (LibPERawDosHeaderT(T) *)m_pLoader->GetBuffer(0, sizeof(LibPERawDosHeaderT(T)));
     LIBPE_ASSERT_RET(NULL != pDosHeader, ERR_NO_MEM);
     LIBPE_ASSERT_RET(IMAGE_DOS_SIGNATURE == pDosHeader->e_magic, ERR_FAIL);
@@ -36,11 +34,10 @@ PEParserDiskFileT<T>::ParseBasicInfo()
     LIBPE_ASSERT_RET(NULL != pNtHeaders, ERR_NO_MEM);
     LIBPE_ASSERT_RET(IMAGE_NT_SIGNATURE == pNtHeaders->Signature, ERR_FAIL);
 
-    m_pFile->SetDosHeader(pDosHeader);
-    m_pFile->SetNtHeaders(pNtHeaders);
-    m_pFile->SetFileHeader(&(pNtHeaders->FileHeader));
-    m_pFile->SetOptionalHeader(&(pNtHeaders->OptionalHeader));
+    *ppDosHeader = pDosHeader;
+    *ppNtHeaders = pNtHeaders;
 
+    // Parse section headers
     uint32_t nSectionHeaderOffset = 0;
     uint32_t nStartSectionHeaderOffset = pDosHeader->e_lfanew + sizeof(DWORD) + sizeof(LibPERawFileHeaderT(T)) + pNtHeaders->FileHeader.SizeOfOptionalHeader;
     LibPERawSectionHeaderT(T) *pSectionHeader = NULL;
@@ -65,10 +62,8 @@ PEParserDiskFileT<T>::ParseBasicInfo()
         pRawSectionHeader->SetSizeInFile(sizeof(LibPERawOptionalHeaderT(T)));
         pRawSectionHeader->SetRawSectionHeader(pSectionHeader);
 
-        m_pFile->AddSectionHeader(pRawSectionHeader);
+        pSectionHeaders->push_back(pRawSectionHeader.p);
     }
-
-    m_bIsBasicInfoParsed = true;
 
     return ERR_OK;
 }

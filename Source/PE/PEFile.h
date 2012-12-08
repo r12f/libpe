@@ -24,15 +24,12 @@ public:
 
     LIBPE_SINGLE_THREAD_OBJECT();
 
-    void SetParser(PEParserT<T> *pParser) { m_pParser = pParser; }
-    void SetDosHeader(LibPERawDosHeaderT(T) *pDosHeader) { m_pDosHeader = pDosHeader; }
-    void SetNtHeaders(LibPERawNtHeadersT(T) *pNtHeaders) { m_pNtHeaders = pNtHeaders; }
-    void SetFileHeader(LibPERawFileHeaderT(T) *pFileHeader) { m_pFileHeader = pFileHeader; }
-    void SetOptionalHeader(LibPERawOptionalHeaderT(T) *pOptionalHeader) { m_pOptionalHeader = pOptionalHeader; }
-
-    void AddSectionHeader(IPESectionHeaderT<T> *pSectionHeader) {
-        LIBPE_ASSERT_RET_VOID(NULL != pSectionHeader);
-        m_vSectionHeaders.push_back(pSectionHeader);
+    void Init(PEParserT<T> *pParser) {
+        LIBPE_ASSERT_RET_VOID(NULL != pParser);
+        if(ERR_OK == pParser->ParseBasicInfo(&m_pDosHeader, &m_pNtHeaders, &m_vSectionHeaders) && NULL != m_pDosHeader && NULL != m_pNtHeaders) {
+            m_pFileHeader = &(m_pNtHeaders->FileHeader);
+            m_pOptionalHeader = &(m_pNtHeaders->OptionalHeader);
+        }
     }
 
     // Override IPEFileT<T>
@@ -59,21 +56,34 @@ public:
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVAFromFOA(LibPEAddressT(T) nFOA);
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOAFromVA(LibPEAddressT(T) nVA);
 
-    // Data directory & Data Directory Entries
-    virtual error_t LIBPE_CALLTYPE GetDataDirectory(int32_t nIndex, IPEDataDirectoryT<T> **ppDataDirectory) { return ERR_OK; }
-    virtual error_t LIBPE_CALLTYPE GetExportTable(IPEExportTableT<T> **ppExportTable) { return ERR_OK; }
-    virtual error_t LIBPE_CALLTYPE GetImportTable(IPEImportTableT<T> **ppImportTable) { return ERR_OK; }
-    virtual error_t LIBPE_CALLTYPE GetResourceTable(IPEResourceTableT<T> **ppResourceTable) { return ERR_OK; }
-    virtual error_t LIBPE_CALLTYPE GetExceptionTable(IPEExceptionTableT<T> **ppExceptionTable) { return ERR_OK; }
-    virtual error_t LIBPE_CALLTYPE GetCertificateTable(IPECertificateTableT<T> **ppCertificateTable) { return ERR_OK; }
-    virtual error_t LIBPE_CALLTYPE GetRelocationTable(IPERelocationTableT<T> **ppRelocationTable) { return ERR_OK; }
-    virtual error_t LIBPE_CALLTYPE GetDebugInfoTable(IPEDebugInfoTableT<T> **ppDebugInfoTable) { return ERR_OK; }
-    virtual error_t LIBPE_CALLTYPE GetGlobalRegister(IPEGlobalRegisterT<T> **ppGlobalRegister) { return ERR_OK; }
-    virtual error_t LIBPE_CALLTYPE GetTlsTable(IPETlsTableT<T> **ppTlsTable) { return ERR_OK; }
-    virtual error_t LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTableT<T> **ppBoundImportTable) { return ERR_OK; }
-    virtual error_t LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTable) { return ERR_OK; }
-    virtual error_t LIBPE_CALLTYPE GetDelayImportTable(IPEDelayImportTableT<T> **ppDelayImportTable) { return ERR_OK; }
-    virtual error_t LIBPE_CALLTYPE GetCLRHeader(IPECLRHeaderT<T> **ppCLRHeader) { return ERR_OK; }
+    // Data directory entries operations
+    virtual error_t LIBPE_CALLTYPE GetExportTable(IPEExportTableT<T> **ppExportTable) { return ERR_NOT_IMPL; }
+    virtual error_t LIBPE_CALLTYPE GetImportTable(IPEImportTableT<T> **ppImportTable);
+    virtual error_t LIBPE_CALLTYPE GetResourceTable(IPEResourceTableT<T> **ppResourceTable) { return ERR_NOT_IMPL; }
+    virtual error_t LIBPE_CALLTYPE GetExceptionTable(IPEExceptionTableT<T> **ppExceptionTable) { return ERR_NOT_IMPL; }
+    virtual error_t LIBPE_CALLTYPE GetCertificateTable(IPECertificateTableT<T> **ppCertificateTable) { return ERR_NOT_IMPL; }
+    virtual error_t LIBPE_CALLTYPE GetRelocationTable(IPERelocationTableT<T> **ppRelocationTable) { return ERR_NOT_IMPL; }
+    virtual error_t LIBPE_CALLTYPE GetDebugInfoTable(IPEDebugInfoTableT<T> **ppDebugInfoTable) { return ERR_NOT_IMPL; }
+    virtual error_t LIBPE_CALLTYPE GetGlobalRegister(IPEGlobalRegisterT<T> **ppGlobalRegister) { return ERR_NOT_IMPL; }
+    virtual error_t LIBPE_CALLTYPE GetTlsTable(IPETlsTableT<T> **ppTlsTable) { return ERR_NOT_IMPL; }
+    virtual error_t LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTableT<T> **ppBoundImportTable) { return ERR_NOT_IMPL; }
+    virtual error_t LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTable) { return ERR_NOT_IMPL; }
+    virtual error_t LIBPE_CALLTYPE GetDelayImportTable(IPEDelayImportTableT<T> **ppDelayImportTable) { return ERR_NOT_IMPL; }
+    virtual error_t LIBPE_CALLTYPE GetCLRHeader(IPECLRHeaderT<T> **ppCLRHeader) { return ERR_NOT_IMPL; }
+
+    virtual error_t LIBPE_CALLTYPE RemoveExportTable() { return ERR_NOT_IMPL; };
+    virtual error_t LIBPE_CALLTYPE RemoveImportTable() { return ERR_NOT_IMPL; };
+    virtual error_t LIBPE_CALLTYPE RemoveResourceTable() { return ERR_NOT_IMPL; };
+    virtual error_t LIBPE_CALLTYPE RemoveExceptionTable() { return ERR_NOT_IMPL; };
+    virtual error_t LIBPE_CALLTYPE RemoveCertificateTable() { return ERR_NOT_IMPL; };
+    virtual error_t LIBPE_CALLTYPE RemoveRelocationTable() { return ERR_NOT_IMPL; };
+    virtual error_t LIBPE_CALLTYPE RemoveDebugInfoTable() { return ERR_NOT_IMPL; };
+    virtual error_t LIBPE_CALLTYPE RemoveGlobalRegister() { return ERR_NOT_IMPL; };
+    virtual error_t LIBPE_CALLTYPE RemoveTlsTable() { return ERR_NOT_IMPL; };
+    virtual error_t LIBPE_CALLTYPE RemoveBoundImportTable() { return ERR_NOT_IMPL; };
+    virtual error_t LIBPE_CALLTYPE RemoveImportAddressTable() { return ERR_NOT_IMPL; };
+    virtual error_t LIBPE_CALLTYPE RemoveDelayImportTable() { return ERR_NOT_IMPL; };
+    virtual error_t LIBPE_CALLTYPE RemoveCLRHeader() { return ERR_NOT_IMPL; };
 
     // PE Verification
     virtual bool_t LIBPE_CALLTYPE IsValidPE() { return true; }
@@ -85,6 +95,7 @@ private:
     LibPERawFileHeaderT(T)          *m_pFileHeader;
     LibPERawOptionalHeaderT(T)      *m_pOptionalHeader;
     SectionHeaderList               m_vSectionHeaders;
+    LibPEPtr<IPEImportTableT<T>>    m_pImportTable;
 };
 
 typedef PEFileT<PE32> PEFile32;

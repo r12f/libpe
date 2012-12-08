@@ -7,13 +7,11 @@ template <class T>
 error_t
 PESectionHeaderT<T>::GetSection(IPESectionT<T> **ppSection)
 {
-    if(NULL != m_pSection) {
-        return m_pSection.CopyTo(ppSection);
-    }
-
-    LIBPE_ASSERT_RET(NULL != m_pSectionHeader, ERR_FAIL);
-    if(ERR_OK != m_pParser->ParseSection(m_pSectionHeader, &m_pSection) || NULL == m_pSection) {
-        return ERR_FAIL;
+    if(NULL == m_pSection) {
+        LIBPE_ASSERT_RET(NULL != m_pParser && NULL != m_pSectionHeader, ERR_FAIL);
+        if(ERR_OK != m_pParser->ParseSection(m_pSectionHeader, &m_pSection) || NULL == m_pSection) {
+            return ERR_FAIL;
+        }
     }
 
     return m_pSection.CopyTo(ppSection);

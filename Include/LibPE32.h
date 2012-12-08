@@ -9,9 +9,8 @@ LIBPE_NAMESPACE_BEGIN
 
 typedef IPEFileT<PE32>                  IPEFile32;
 typedef IPEElementT<PE32>               IPEElement32;
+typedef IPESectionHeaderT<PE32>         IPESectionHeader32;
 typedef IPESectionT<PE32>               IPESection32;
-typedef IPEDataDirectoryT<PE32>         IPEDataDirectory32;
-typedef IPEDataDirectoryItemT<PE32>     IPEDataDirectoryItem32;
 typedef IPEExportTableT<PE32>           IPEExportTable32;
 typedef IPEExportTableItemT<PE32>       IPEExportTableItem32;
 typedef IPEImportTableT<PE32>           IPEImportTable32;
