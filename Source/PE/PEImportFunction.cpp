@@ -19,7 +19,7 @@ PEImportFunctionT<T>::GetName()
 
 template <class T>
 uint16_t  
-PEImportFunctionT<T>::GetOrdinal()
+PEImportFunctionT<T>::GetHint()
 {
     return m_pImportByName->Hint;
 }

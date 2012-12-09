@@ -16,6 +16,8 @@ public:
     virtual bool_t IsRawAddressVA() { return false; }
     virtual error_t ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPERawNtHeadersT(T) **ppNtHeaders, SectionHeaderList *pSectionHeaders);
     virtual error_t ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESectionT<T> **ppSection);
+    virtual error_t ParseExportTable(IPEExportTableT<T> **ppExportTable);
+    virtual error_t ParseExportFunction(IPEExportTableT<T> *pExportTable, uint32_t nIndex, IPEExportFunctionT<T> **ppFunction);
     virtual error_t ParseImportTable(IPEImportTableT<T> **ppImportTable);
     virtual error_t ParseImportModule(LibPEAddressT(T) nImportDescRVA, LibPEAddressT(T) nImportDescFOA, LibPERawImportDescriptor(T) *pImportDescriptor, IPEImportModuleT<T> **ppImportModule);
     virtual error_t ParseImportFunction(LibPERawThunkData(T) *pThunkData, IPEImportFunctionT<T> **ppFunction);

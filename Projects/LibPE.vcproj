@@ -193,6 +193,22 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Source\PE\PEExportFunction.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Source\PE\PEExportFunction.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Source\PE\PEExportTable.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Source\PE\PEExportTable.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Source\PE\PEFile.cpp"
 				>
 			</File>

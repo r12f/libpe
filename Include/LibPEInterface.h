@@ -22,7 +22,7 @@ template <class T> class IPEElementT;
 template <class T> class IPESectionHeaderT;
 template <class T> class IPESectionT;
 template <class T> class IPEExportTableT;
-template <class T> class IPEExportTableItemT;
+template <class T> class IPEExportFunctionT;
 template <class T> class IPEImportTableT;
 template <class T> class IPEImportModuleT;
 template <class T> class IPEImportFunctionT;
@@ -142,31 +142,36 @@ template <class T>
 class IPEExportTableT : public IPEElementT<T>
 {
 public:
-    virtual error_t LIBPE_CALLTYPE AddOrUpdateItem() = 0;
-    virtual error_t LIBPE_CALLTYPE RemoveItem() = 0;
-    virtual error_t LIBPE_CALLTYPE GetItem() = 0;
-
-    virtual uint32_t LIBPE_CALLTYPE GetItemCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetItemByIndex(int32_t nIndex) = 0;
+    virtual LibPERawExportDirectory(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetExportFunctionCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetExportFunctionByIndex(uint32_t nIndex, IPEExportFunctionT<T> **ppFunction) = 0;
+    virtual error_t LIBPE_CALLTYPE GetExportFunctionByName(const char *pFunctionName, IPEExportFunctionT<T> **ppFunction) = 0;
 };
 
 template <class T>
-class IPEExportTableItemT : public IPEElementT<T> {};
+class IPEExportFunctionT: public IPEElementT<T>
+{
+public:
+    virtual const char * LIBPE_CALLTYPE GetName() = 0;
+    virtual uint16_t LIBPE_CALLTYPE GetHint() = 0;
+};
 
 template <class T>
 class IPEImportTableT : public IPEElementT<T>
 {
 public:
+    virtual LibPERawImportDescriptor(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
     virtual uint32_t LIBPE_CALLTYPE GetImportModuleCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetImportModuleByIndex(uint32_t nDllId, IPEImportModuleT<T> **ppImportModule) = 0;
-    virtual error_t LIBPE_CALLTYPE GetImportModuleByName(const char *pDllName, IPEImportModuleT<T> **ppImportModule) = 0;
-    virtual error_t LIBPE_CALLTYPE GetImportFunctionByName(const char *pDllName, const char *pFunctionName, IPEImportFunctionT<T> **ppImportFunction) = 0;
+    virtual error_t LIBPE_CALLTYPE GetImportModuleByIndex(uint32_t nIndex, IPEImportModuleT<T> **ppImportModule) = 0;
+    virtual error_t LIBPE_CALLTYPE GetImportModuleByName(const char *pModuleName, IPEImportModuleT<T> **ppImportModule) = 0;
+    virtual error_t LIBPE_CALLTYPE GetImportFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunctionT<T> **ppImportFunction) = 0;
 };
 
 template <class T>
 class IPEImportModuleT: public IPEElementT<T>
 {
 public:
+    virtual LibPERawImportDescriptor(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
     virtual const char * LIBPE_CALLTYPE GetName() = 0;
     virtual uint32_t LIBPE_CALLTYPE GetImportFunctionCount() = 0;
     virtual error_t LIBPE_CALLTYPE GetImportFunctionByIndex(uint32_t nFunctionId, IPEImportFunctionT<T> **ppFunction) = 0;
@@ -180,7 +185,7 @@ public:
     virtual LibPERawImportByName(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
     virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawThunkData() = 0;
     virtual const char * LIBPE_CALLTYPE GetName() = 0;
-    virtual uint16_t LIBPE_CALLTYPE GetOrdinal() = 0;
+    virtual uint16_t LIBPE_CALLTYPE GetHint() = 0;
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetEntry() = 0;
 };
 

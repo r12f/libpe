@@ -32,7 +32,7 @@ public:
 
     virtual const char * LIBPE_CALLTYPE GetName() { return m_pName; }
     virtual uint32_t LIBPE_CALLTYPE GetImportFunctionCount() { return (uint32_t)m_vFunctions.size(); }
-    virtual error_t LIBPE_CALLTYPE GetImportFunctionByIndex(uint32_t nFunctionId, IPEImportFunctionT<T> **ppFunction);
+    virtual error_t LIBPE_CALLTYPE GetImportFunctionByIndex(uint32_t nIndex, IPEImportFunctionT<T> **ppFunction);
     virtual error_t LIBPE_CALLTYPE GetImportFunctionByName(const char *pFunctionName, IPEImportFunctionT<T> **ppFunction);
 
 private:

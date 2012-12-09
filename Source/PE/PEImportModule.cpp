@@ -5,14 +5,14 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 error_t
-PEImportModuleT<T>::GetImportFunctionByIndex(uint32_t nFunctionId, IPEImportFunctionT<T> **ppFunction)
+PEImportModuleT<T>::GetImportFunctionByIndex(uint32_t nIndex, IPEImportFunctionT<T> **ppFunction)
 {
     LIBPE_ASSERT_RET(NULL != ppFunction, ERR_POINTER);
 
     uint32_t nFunctionCount = GetImportFunctionCount();
-    LIBPE_ASSERT_RET(nFunctionId < nFunctionCount, ERR_INVALID_ARG);
+    LIBPE_ASSERT_RET(nIndex < nFunctionCount, ERR_INVALID_ARG);
 
-    FunctionInfo &oInfo = m_vFunctions[nFunctionId];
+    FunctionInfo &oInfo = m_vFunctions[nIndex];
     if(NULL == oInfo.m_pFunction) {
         LIBPE_ASSERT_RET(NULL != m_pParser && NULL != m_pFile && NULL != oInfo.m_pThunkData, ERR_FAIL);
         if(ERR_OK != m_pParser->ParseImportFunction(oInfo.m_pThunkData, &oInfo.m_pFunction) || NULL == oInfo.m_pFunction) {

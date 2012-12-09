@@ -25,7 +25,7 @@ public:
 
     virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawThunkData();
     virtual const char * LIBPE_CALLTYPE GetName();
-    virtual uint16_t LIBPE_CALLTYPE GetOrdinal();
+    virtual uint16_t LIBPE_CALLTYPE GetHint();
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetEntry();
 
 private:

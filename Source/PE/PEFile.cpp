@@ -179,6 +179,20 @@ PEFileT<T>::GetFOAFromVA(LibPEAddressT(T) nVA)
 
 template <class T>
 error_t
+PEFileT<T>::GetExportTable(IPEExportTableT<T> **ppExportTable)
+{
+    if(NULL == m_pExportTable) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
+        if(ERR_OK != m_pParser->ParseExportTable(&m_pExportTable) || NULL == m_pExportTable) {
+            return ERR_FAIL;
+        }
+    }
+
+    return m_pExportTable.CopyTo(ppExportTable);
+}
+
+template <class T>
+error_t
 PEFileT<T>::GetImportTable(IPEImportTableT<T> **ppImportTable)
 {
     if(NULL == m_pImportTable) {

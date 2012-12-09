@@ -2,6 +2,45 @@
 
 using namespace LibPE;
 
+void TestExportTable(IPEFile32 *pFile) 
+{
+    // Export Table
+    LibPEPtr<IPEExportTable32> pExportTable;
+    pFile->GetExportTable(&pExportTable);
+
+    printf("Export Table:\n");
+    for(uint32_t nExportFunctionIndex = 0; nExportFunctionIndex < pExportTable->GetExportFunctionCount(); ++nExportFunctionIndex) {
+        LibPEPtr<IPEExportFunction32> pExportFunction;
+        pExportTable->GetExportFunctionByIndex(nExportFunctionIndex, &pExportFunction);
+        printf("Export Function: Name = %s, Hint = %d\n", pExportFunction->GetName(), pExportFunction->GetHint());
+    }
+
+    printf("\n");
+}
+
+void TestImportTable(IPEFile32 *pFile) 
+{
+    // Import Table
+    LibPEPtr<IPEImportTable32> pImportTable;
+    pFile->GetImportTable(&pImportTable);
+
+    printf("Export Table:\n");
+    for(uint32_t nImportModuleIndex = 0; nImportModuleIndex < pImportTable->GetImportModuleCount(); ++nImportModuleIndex) {
+        LibPEPtr<IPEImportModule32> pImportModule;
+        pImportTable->GetImportModuleByIndex(nImportModuleIndex, &pImportModule);
+        printf("Import Module: %s\n", pImportModule->GetName());
+
+        for(uint32_t nImportFunctionIndex = 0; nImportFunctionIndex < pImportModule->GetImportFunctionCount(); ++nImportFunctionIndex) {
+            LibPEPtr<IPEImportFunction32> pImportFunction;
+            pImportModule->GetImportFunctionByIndex(nImportFunctionIndex, &pImportFunction);
+            printf("Import Function: %s\n", pImportFunction->GetName());
+        }
+
+        printf("\n");
+    }
+}
+
+
 int wmain(int argc, wchar_t* argv[])
 {
     LibPEPtr<IPEFile32> pFile;
@@ -17,22 +56,8 @@ int wmain(int argc, wchar_t* argv[])
     printf("FileHeader: 0x%08x\n", pFile->GetFileHeader());
     printf("OptionalHeader: 0x%08x\n", pFile->GetOptionalHeader());
 
-    LibPEPtr<IPEImportTable32> pImportTable;
-    pFile->GetImportTable(&pImportTable);
-
-    for(uint32_t nModuleId = 0; nModuleId < pImportTable->GetImportModuleCount(); ++nModuleId) {
-        LibPEPtr<IPEImportModule32> pImportModule;
-        pImportTable->GetImportModuleByIndex(nModuleId, &pImportModule);
-        printf("Import Module: %s\n", pImportModule->GetName());
-
-        for(uint32_t nFunctionId = 0; nFunctionId < pImportModule->GetImportFunctionCount(); ++nFunctionId) {
-            LibPEPtr<IPEImportFunction32> pImportFunction;
-            pImportModule->GetImportFunctionByIndex(nFunctionId, &pImportFunction);
-            printf("Import Function: %s\n", pImportFunction->GetName());
-        }
-
-        printf("\n");
-    }
+    TestExportTable(pFile);
+    //TestImportTable(pFile);
 
 	return 0;
 }

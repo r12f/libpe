@@ -58,7 +58,7 @@ public:
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOAFromVA(LibPEAddressT(T) nVA);
 
     // Data directory entries operations
-    virtual error_t LIBPE_CALLTYPE GetExportTable(IPEExportTableT<T> **ppExportTable) { return ERR_NOT_IMPL; }
+    virtual error_t LIBPE_CALLTYPE GetExportTable(IPEExportTableT<T> **ppExportTable);
     virtual error_t LIBPE_CALLTYPE GetImportTable(IPEImportTableT<T> **ppImportTable);
     virtual error_t LIBPE_CALLTYPE GetResourceTable(IPEResourceTableT<T> **ppResourceTable) { return ERR_NOT_IMPL; }
     virtual error_t LIBPE_CALLTYPE GetExceptionTable(IPEExceptionTableT<T> **ppExceptionTable) { return ERR_NOT_IMPL; }
@@ -96,6 +96,7 @@ private:
     LibPERawFileHeaderT(T)          *m_pFileHeader;
     LibPERawOptionalHeaderT(T)      *m_pOptionalHeader;
     SectionHeaderList               m_vSectionHeaders;
+    LibPEPtr<IPEExportTableT<T>>    m_pExportTable;
     LibPEPtr<IPEImportTableT<T>>    m_pImportTable;
 };
 

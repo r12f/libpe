@@ -3,6 +3,8 @@
 #include "PE/PEFile.h"
 #include "PE/PESectionHeader.h"
 #include "PE/PESection.h"
+#include "PE/PEExportTable.h"
+#include "PE/PEExportFunction.h"
 #include "PE/PEImportTable.h"
 #include "PE/PEImportModule.h"
 #include "PE/PEImportFunction.h"
@@ -95,6 +97,104 @@ PEParserDiskFileT<T>::ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IP
 
     return ERR_OK;
 }
+
+template <class T>
+error_t
+PEParserDiskFileT<T>::ParseExportTable(IPEExportTableT<T> **ppExportTable)
+{
+    LIBPE_ASSERT_RET(NULL != ppExportTable, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, ERR_FAIL);
+
+    *ppExportTable = NULL;
+
+    LibPERawDataDirectoryT(T) *pDataDirectory = GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_EXPORT);
+    if(NULL == pDataDirectory || 0 == pDataDirectory->VirtualAddress || 0 == pDataDirectory->Size) {
+        return ERR_FAIL;
+    }
+
+    LibPEAddressT(T) nExportTableRVA = pDataDirectory->VirtualAddress;
+    LibPEAddressT(T) nExportTableFOA = GetFOAFromRVA(nExportTableRVA);
+
+    LibPEPtr<PEExportTableT<T>> pExportTable = new PEExportTableT<T>();
+    if(NULL == pExportTable) {
+        return ERR_NO_MEM;
+    }
+
+    pExportTable->SetParser(this);
+    pExportTable->SetPEFile(m_pFile);
+    pExportTable->SetRVA(nExportTableRVA);
+    pExportTable->SetSizeInMemory(pDataDirectory->Size);
+    pExportTable->SetFOA(nExportTableFOA);
+    pExportTable->SetSizeInFile(pDataDirectory->Size);
+
+    LibPERawExportDirectory(T) *pExportDirectory = (LibPERawExportDirectory(T) *)m_pLoader->GetBuffer(nExportTableFOA, pDataDirectory->Size);
+    if(NULL == pExportDirectory) {
+        return ERR_NO_MEM;
+    }
+
+    LibPEAddressT(T) nFunctionListFOA = GetFOAFromRVA(pExportDirectory->AddressOfFunctions);
+    LibPEAddressT(T) nNameListFOA = GetFOAFromRVA(pExportDirectory->AddressOfNames);
+    LibPEAddressT(T) nNameOrdinalListFOA = GetFOAFromRVA(pExportDirectory->AddressOfNameOrdinals);
+
+    LibPEAddressT(T) *pFunctionList = (LibPEAddressT(T) *)m_pLoader->GetBuffer(nFunctionListFOA, pExportDirectory->NumberOfFunctions * sizeof(LibPEAddressT(T)));
+    LibPEAddressT(T) *pNameList = (LibPEAddressT(T) *)m_pLoader->GetBuffer(nNameListFOA, pExportDirectory->NumberOfNames * sizeof(LibPEAddressT(T)));
+    uint16_t *pNameOrdinalList = (uint16_t *)m_pLoader->GetBuffer(nNameOrdinalListFOA, pExportDirectory->NumberOfFunctions * sizeof(uint16_t));
+
+    LIBPE_ASSERT_RET(NULL != pFunctionList && NULL != pNameList && NULL != pNameOrdinalList, ERR_NO_MEM);
+
+    pExportTable->SetRawFunctionList(pFunctionList);
+    pExportTable->SetRawNameList(pNameList);
+    pExportTable->SetRawNameOrdinalList(pNameOrdinalList);
+    
+    if(!pExportTable->PrepareForUsing()) {
+        return ERR_FAIL;
+    }
+
+    *ppExportTable = pExportTable.Detach();
+
+    return ERR_OK;
+}
+
+template <class T>
+error_t
+PEParserDiskFileT<T>::ParseExportFunction(IPEExportTableT<T> *pExportTable, uint32_t nIndex, IPEExportFunctionT<T> **ppFunction)
+{
+    LIBPE_ASSERT_RET(NULL != pExportTable && NULL != ppFunction, ERR_POINTER);
+
+    PEExportTableT<T> *pRawExportTable = static_cast<PEExportTableT<T> *>(pExportTable);
+    LibPEAddressT(T) *pFunctionList = pRawExportTable->GetRawFunctionList();
+    LibPEAddressT(T) *pNameList = pRawExportTable->GetRawNameList();
+    uint16_t *pNameOrdinalList = pRawExportTable->GetRawNameOrdinalList();
+
+    LIBPE_ASSERT_RET(NULL != pFunctionList && NULL != pNameList && NULL != pNameOrdinalList, ERR_FAIL);
+
+    LibPEAddressT(T) nFunctionRVA = pFunctionList[nIndex];
+    LibPEAddressT(T) nNameRVA = (nIndex < pRawExportTable->GetExportFunctionCount()) ? pNameList[nIndex] : 0;
+    uint16_t nNameOrdinal = pNameOrdinalList[nIndex];
+
+    LibPEPtr<PEExportFunctionT<T>> pFunction = new PEExportFunctionT<T>();
+    if(NULL == pFunction) {
+        return ERR_NO_MEM;
+    }
+
+    pFunction->SetParser(this);
+    pFunction->SetPEFile(m_pFile);
+    pFunction->SetRVA(nFunctionRVA);
+    pFunction->SetSizeInMemory(0);
+    pFunction->SetSizeInFile(0);
+    pFunction->SetRawHint(nNameOrdinal);
+
+    if(nNameRVA != 0) {
+        LibPEAddressT(T) nNameFOA = GetFOAFromRVA(nNameRVA);
+        const char *pName = m_pLoader->GetBuffer(nNameFOA, 256);
+        pFunction->SetRawName(pName);
+    }
+
+    *ppFunction = pFunction.Detach();
+
+    return ERR_OK;
+}
+
 
 template <class T>
 error_t
