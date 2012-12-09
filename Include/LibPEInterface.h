@@ -24,7 +24,8 @@ template <class T> class IPESectionT;
 template <class T> class IPEExportTableT;
 template <class T> class IPEExportTableItemT;
 template <class T> class IPEImportTableT;
-template <class T> class IPEImportTableItemT;
+template <class T> class IPEImportModuleT;
+template <class T> class IPEImportFunctionT;
 template <class T> class IPEResourceTableT;
 template <class T> class IPEResourceTableItemT;
 template <class T> class IPEExceptionTableT;
@@ -156,16 +157,32 @@ template <class T>
 class IPEImportTableT : public IPEElementT<T>
 {
 public:
-    virtual error_t LIBPE_CALLTYPE AddOrUpdateItem() = 0;
-    virtual error_t LIBPE_CALLTYPE RemoveItem() = 0;
-    virtual error_t LIBPE_CALLTYPE GetItem() = 0;
-
-    virtual uint32_t LIBPE_CALLTYPE GetItemCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetItemByIndex(int32_t nIndex) = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetImportModuleCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetImportModuleByIndex(uint32_t nDllId, IPEImportModuleT<T> **ppImportModule) = 0;
+    virtual error_t LIBPE_CALLTYPE GetImportModuleByName(const char *pDllName, IPEImportModuleT<T> **ppImportModule) = 0;
+    virtual error_t LIBPE_CALLTYPE GetImportFunctionByName(const char *pDllName, const char *pFunctionName, IPEImportFunctionT<T> **ppImportFunction) = 0;
 };
 
 template <class T>
-class IPEImportTableItemT : public IPEElementT<T> {};
+class IPEImportModuleT: public IPEElementT<T>
+{
+public:
+    virtual const char * LIBPE_CALLTYPE GetName() = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetImportFunctionCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetImportFunctionByIndex(uint32_t nFunctionId, IPEImportFunctionT<T> **ppFunction) = 0;
+    virtual error_t LIBPE_CALLTYPE GetImportFunctionByName(const char *pFunctionName, IPEImportFunctionT<T> **ppFunction) = 0;
+};
+
+template <class T>
+class IPEImportFunctionT: public IPEElementT<T>
+{
+public:
+    virtual LibPERawImportByName(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
+    virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawThunkData() = 0;
+    virtual const char * LIBPE_CALLTYPE GetName() = 0;
+    virtual uint16_t LIBPE_CALLTYPE GetOrdinal() = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetEntry() = 0;
+};
 
 template <class T>
 class IPEResourceTableT : public IPEElementT<T>

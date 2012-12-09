@@ -93,7 +93,7 @@ int32_t
 DataLoaderDiskFile::GetBlockId(uint64_t nOffset)
 {
     if(nOffset >= m_nFileSize) {
-        return -1;
+        nOffset = m_nFileSize;
     }
 
     return (int32_t)(nOffset / FILE_IO_BLOCK_SIZE);

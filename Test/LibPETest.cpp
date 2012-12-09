@@ -17,5 +17,22 @@ int wmain(int argc, wchar_t* argv[])
     printf("FileHeader: 0x%08x\n", pFile->GetFileHeader());
     printf("OptionalHeader: 0x%08x\n", pFile->GetOptionalHeader());
 
+    LibPEPtr<IPEImportTable32> pImportTable;
+    pFile->GetImportTable(&pImportTable);
+
+    for(uint32_t nModuleId = 0; nModuleId < pImportTable->GetImportModuleCount(); ++nModuleId) {
+        LibPEPtr<IPEImportModule32> pImportModule;
+        pImportTable->GetImportModuleByIndex(nModuleId, &pImportModule);
+        printf("Import Module: %s\n", pImportModule->GetName());
+
+        for(uint32_t nFunctionId = 0; nFunctionId < pImportModule->GetImportFunctionCount(); ++nFunctionId) {
+            LibPEPtr<IPEImportFunction32> pImportFunction;
+            pImportModule->GetImportFunctionByIndex(nFunctionId, &pImportFunction);
+            printf("Import Function: %s\n", pImportFunction->GetName());
+        }
+
+        printf("\n");
+    }
+
 	return 0;
 }

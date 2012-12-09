@@ -201,6 +201,30 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Source\PE\PEImportFunction.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Source\PE\PEImportFunction.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Source\PE\PEImportModule.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Source\PE\PEImportModule.h"
+				>
+			</File>
+			<File
+				RelativePath="..\Source\PE\PEImportTable.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Source\PE\PEImportTable.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Source\PE\PESection.cpp"
 				>
 			</File>

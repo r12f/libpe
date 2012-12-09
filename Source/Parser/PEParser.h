@@ -43,7 +43,9 @@ public:
     virtual error_t ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPERawNtHeadersT(T) **ppNtHeaders, SectionHeaderList *pSectionHeaders) = 0;
     virtual error_t ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESectionT<T> **ppSection) = 0;
     virtual error_t ParseExportTable(IPEExportTableT<T> **ppExportTable) { return ERR_NOT_IMPL; }
-    virtual error_t ParseImportTable(IPEImportTableT<T> **ppImportTable) { return ERR_NOT_IMPL; }
+    virtual error_t ParseImportTable(IPEImportTableT<T> **ppImportTable) = 0;
+    virtual error_t ParseImportModule(LibPEAddressT(T) nImportDescRVA, LibPEAddressT(T) nImportDescFOA, LibPERawImportDescriptor(T) *pImportDescriptor, IPEImportModuleT<T> **ppDll) = 0;
+    virtual error_t ParseImportFunction(LibPERawThunkData(T) *pThunkData, IPEImportFunctionT<T> **ppFunction) = 0;
     virtual error_t ParseResourceTable(IPEResourceTableT<T> **ppResourceTable) { return ERR_NOT_IMPL; }
     virtual error_t ParseExceptionTable(IPEExceptionTableT<T> **ppExceptionTable) { return ERR_NOT_IMPL; }
     virtual error_t ParseCertificateTable(IPECertificateTableT<T> **ppCertificateTable) { return ERR_NOT_IMPL; }
@@ -60,6 +62,16 @@ protected:
     virtual LibPEAddressT(T) GetAddressFromRVA(LibPEAddressT(T) nRVA) = 0;
     virtual LibPEAddressT(T) GetAddressFromVA(LibPEAddressT(T) nVA) = 0;
     virtual LibPEAddressT(T) GetAddressFromFOA(LibPEAddressT(T) nFOA) = 0;
+
+    LibPERawDataDirectoryT(T) * GetDataDirectoryEntry(int32_t nDataDirectoryEntryIndex) 
+    {
+        LIBPE_ASSERT_RET(NULL != m_pFile, NULL);
+        LibPERawOptionalHeaderT(T) *pOptionalHeader = m_pFile->GetOptionalHeader();
+        if(NULL == pOptionalHeader) {
+            return NULL;
+        }
+        return &(pOptionalHeader->DataDirectory[nDataDirectoryEntryIndex]);
+    }
 
 protected:
     void SetPEFile(PEFileT<T> *pFile) { m_pFile = pFile; }

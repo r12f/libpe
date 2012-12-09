@@ -26,6 +26,7 @@ public:
 
     void Init(PEParserT<T> *pParser) {
         LIBPE_ASSERT_RET_VOID(NULL != pParser);
+        m_pParser = pParser;
         if(ERR_OK == pParser->ParseBasicInfo(&m_pDosHeader, &m_pNtHeaders, &m_vSectionHeaders) && NULL != m_pDosHeader && NULL != m_pNtHeaders) {
             m_pFileHeader = &(m_pNtHeaders->FileHeader);
             m_pOptionalHeader = &(m_pNtHeaders->OptionalHeader);
