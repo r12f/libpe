@@ -21,7 +21,6 @@ template <class T> struct PETrait {};
 
 template <>
 struct PETrait<PE32> : PETraitBase {
-    static const bool_t Is32Bit = true;
     typedef uint32_t                        Address;
     typedef IMAGE_NT_HEADERS32              RawNtHeaders;
     typedef IMAGE_OPTIONAL_HEADER32         RawOptionalHeader;
@@ -30,7 +29,6 @@ struct PETrait<PE32> : PETraitBase {
 
 template <>
 struct PETrait<PE64> : PETraitBase {
-    static const bool_t Is32Bit = false;
     typedef uint64_t                        Address;
     typedef IMAGE_NT_HEADERS64              RawNtHeaders;
     typedef IMAGE_OPTIONAL_HEADER64         RawOptionalHeader;

@@ -34,20 +34,23 @@ public:
     }
 
     // Override IPEFileT<T>
-    // Rebuild
-    virtual error_t LIBPE_CALLTYPE Rebuild(const file_char_t *pFilePath) { return ERR_OK; }
-
     // Basic info
-    virtual bool_t LIBPE_CALLTYPE Is32BitFile() { return PETrait<T>::Is32Bit; }
     virtual LibPERawDosHeaderT(T) * LIBPE_CALLTYPE GetDosHeader();
     virtual LibPERawNtHeadersT(T) * LIBPE_CALLTYPE GetNtHeaders();
     virtual LibPERawFileHeaderT(T) * LIBPE_CALLTYPE GetFileHeader();
     virtual LibPERawOptionalHeaderT(T) * LIBPE_CALLTYPE GetOptionalHeader();
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetImageBase();
+    virtual uint32_t LIBPE_CALLTYPE GetImageSize();
+    virtual uint32_t LIBPE_CALLTYPE GetEntryPoint();
 
     // Section
-    virtual uint32_t LIBPE_CALLTYPE GetSectionNum();
+    virtual uint32_t LIBPE_CALLTYPE GetSectionCount();
     virtual error_t LIBPE_CALLTYPE GetSectionHeader(uint32_t nIndex, IPESectionHeaderT<T> **ppSectionHeader);
     virtual error_t LIBPE_CALLTYPE GetSection(uint32_t nIndex, IPESectionT<T> **ppSection);
+    virtual error_t LIBPE_CALLTYPE GetSectionByRVA(LibPEAddressT(T) nRVA, IPESectionT<T> **ppSection);
+    virtual error_t LIBPE_CALLTYPE GetSectionByVA(LibPEAddressT(T) nVA, IPESectionT<T> **ppSection);
+    virtual error_t LIBPE_CALLTYPE GetSectionByFOA(LibPEAddressT(T) nFOA, IPESectionT<T> **ppSection);
+    virtual error_t LIBPE_CALLTYPE GetExtraData(IPEExtraDataT<T> **ppExtraData);
 
     // LibPEAddressT(T) convert tools
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVAFromVA(LibPEAddressT(T) nVA);
@@ -87,7 +90,10 @@ public:
     virtual error_t LIBPE_CALLTYPE RemoveCLRHeader() { return ERR_NOT_IMPL; };
 
     // PE Verification
-    virtual bool_t LIBPE_CALLTYPE IsValidPE() { return true; }
+    virtual bool_t LIBPE_CALLTYPE ValidatePEHeader() { return true; }
+
+    // Rebuild
+    virtual error_t LIBPE_CALLTYPE Rebuild(const file_char_t *pFilePath) { return ERR_OK; }
 
 private:
     LibPEPtr<PEParserT<T>>          m_pParser;

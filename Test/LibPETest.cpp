@@ -12,7 +12,7 @@ void TestExportTable(IPEFile32 *pFile)
     for(uint32_t nExportFunctionIndex = 0; nExportFunctionIndex < pExportTable->GetExportFunctionCount(); ++nExportFunctionIndex) {
         LibPEPtr<IPEExportFunction32> pExportFunction;
         pExportTable->GetExportFunctionByIndex(nExportFunctionIndex, &pExportFunction);
-        printf("Export Function: Name = %s, Hint = %d\n", pExportFunction->GetName(), pExportFunction->GetHint());
+        printf("Export Function: Name = %s, Hint = %d, RVA = 0x%08x\n", pExportFunction->GetName(), pExportFunction->GetHint(), pExportFunction->GetRVA());
     }
 
     printf("\n");
@@ -48,7 +48,6 @@ int wmain(int argc, wchar_t* argv[])
 
     printf("AddRef: %d\n", pFile->AddRef());
     printf("Release: %d\n", pFile->Release());
-    printf("Is32BitFile: %d\n", pFile->Is32BitFile());
 
     IMAGE_DOS_HEADER *pDosHeader = pFile->GetDosHeader();
     printf("DosHeader: 0x%08x\n", pDosHeader);
@@ -57,7 +56,7 @@ int wmain(int argc, wchar_t* argv[])
     printf("OptionalHeader: 0x%08x\n", pFile->GetOptionalHeader());
 
     TestExportTable(pFile);
-    //TestImportTable(pFile);
+    TestImportTable(pFile);
 
 	return 0;
 }

@@ -104,8 +104,32 @@ PEFileT<T>::GetOptionalHeader()
 }
 
 template <class T>
+LibPEAddressT(T)
+PEFileT<T>::GetImageBase()
+{
+    LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
+    return m_pOptionalHeader->ImageBase;
+}
+
+template <class T>
+uint32_t 
+PEFileT<T>::GetImageSize()
+{
+    LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
+    return m_pOptionalHeader->SizeOfImage;
+}
+
+template <class T>
+uint32_t 
+PEFileT<T>::GetEntryPoint()
+{
+    LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
+    return m_pOptionalHeader->AddressOfEntryPoint;
+}
+
+template <class T>
 uint32_t
-PEFileT<T>::GetSectionNum()
+PEFileT<T>::GetSectionCount()
 {
     return (uint32_t)m_vSectionHeaders.size();
 }
@@ -115,7 +139,7 @@ error_t
 PEFileT<T>::GetSectionHeader(uint32_t nIndex, IPESectionHeaderT<T> **ppSectionHeader)
 {
     LIBPE_ASSERT_RET(NULL != ppSectionHeader, ERR_POINTER);
-    LIBPE_ASSERT_RET(nIndex < GetSectionNum(), ERR_INVALID_ARG);
+    LIBPE_ASSERT_RET(nIndex < GetSectionCount(), ERR_INVALID_ARG);
     return m_vSectionHeaders[nIndex].CopyTo(ppSectionHeader);
 }
 
@@ -124,9 +148,77 @@ error_t
 PEFileT<T>::GetSection(uint32_t nIndex, IPESectionT<T> **ppSection)
 {
     LIBPE_ASSERT_RET(NULL != ppSection, ERR_POINTER);
-    LIBPE_ASSERT_RET(nIndex < GetSectionNum(), ERR_INVALID_ARG);
+    LIBPE_ASSERT_RET(nIndex < GetSectionCount(), ERR_INVALID_ARG);
     LIBPE_ASSERT_RET(NULL != m_vSectionHeaders[nIndex], ERR_FAIL);
     return m_vSectionHeaders[nIndex]->GetSection(ppSection);
+}
+
+template <class T>
+error_t
+PEFileT<T>::GetSectionByRVA(LibPEAddressT(T) nRVA, IPESectionT<T> **ppSection)
+{
+    LIBPE_ASSERT_RET(NULL != ppSection, ERR_POINTER);
+
+    LibPEPtr<IPESectionT<T>> pHitSection;
+    uint32_t nSectionCount = GetSectionCount();
+    for(uint32_t nSectionIndex = 0; nSectionIndex < nSectionCount; ++nSectionIndex) {
+        LibPEPtr<IPESectionT<T>> pSection;
+        if(ERR_OK == GetSection(nSectionIndex, &pSection) && NULL != pSection) {
+            if(pSection->GetRVA() <= nRVA && nRVA <= pSection->GetRVA() + pSection->GetSizeInMemory()) {
+                pHitSection = pSection;
+                break;
+            }
+        }
+    }
+
+    if(NULL == pHitSection) {
+        return ERR_FAIL;
+    }
+
+    *ppSection = pHitSection.Detach();
+
+    return ERR_OK;
+}
+
+template <class T>
+error_t
+PEFileT<T>::GetSectionByVA(LibPEAddressT(T) nVA, IPESectionT<T> **ppSection)
+{
+    return GetSectionByRVA(GetRVAFromVA(nVA), ppSection);
+}
+
+template <class T>
+error_t
+PEFileT<T>::GetSectionByFOA(LibPEAddressT(T) nFOA, IPESectionT<T> **ppSection)
+{
+    LIBPE_ASSERT_RET(NULL != ppSection, ERR_POINTER);
+
+    LibPEPtr<IPESectionT<T>> pHitSection;
+    uint32_t nSectionCount = GetSectionCount();
+    for(uint32_t nSectionIndex = 0; nSectionIndex < nSectionCount; ++nSectionIndex) {
+        LibPEPtr<IPESectionT<T>> pSection;
+        if(ERR_OK == GetSection(nSectionIndex, &pSection) && NULL != pSection) {
+            if(pSection->GetFOA() <= nFOA && nFOA <= pSection->GetFOA() + pSection->GetSizeInFile()) {
+                pHitSection = pSection;
+                break;
+            }
+        }
+    }
+
+    if(NULL == pHitSection) {
+        return ERR_FAIL;
+    }
+
+    *ppSection = pHitSection.Detach();
+
+    return ERR_OK;
+}
+
+template <class T>
+error_t
+PEFileT<T>::GetExtraData(IPEExtraDataT<T> **ppExtraData)
+{
+    return ERR_NOT_IMPL;
 }
 
 template <class T>

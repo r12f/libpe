@@ -20,7 +20,7 @@
 LIBPE_NAMESPACE_BEGIN
 
 // Basic types
-typedef char                bool_t;
+typedef bool                bool_t;
 
 #ifdef LIBPE_WINOS
 typedef char                int8_t;

@@ -331,6 +331,83 @@ PEParserDiskFileT<T>::ParseImportFunction(LibPERawThunkData(T) *pThunkData, IPEI
 }
 
 template <class T>
+error_t
+PEParserDiskFileT<T>::ParseResourceTable(IPEResourceTableT<T> **ppResourceTable)
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+error_t
+PEParserDiskFileT<T>::ParseExceptionTable(IPEExceptionTableT<T> **ppExceptionTable)
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+error_t
+PEParserDiskFileT<T>::ParseCertificateTable(IPECertificateTableT<T> **ppCertificateTable)
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+error_t
+PEParserDiskFileT<T>::ParseRelocationTable(IPERelocationTableT<T> **ppRelocationTable)
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+error_t
+PEParserDiskFileT<T>::ParseDebugInfoTable(IPEDebugInfoTableT<T> **ppDebugInfoTable)
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+error_t
+PEParserDiskFileT<T>::ParseGlobalRegister(IPEGlobalRegisterT<T> **ppGlobalRegister)
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+error_t
+PEParserDiskFileT<T>::ParseTlsTable(IPETlsTableT<T> **ppTlsTable)
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+error_t
+PEParserDiskFileT<T>::ParseBoundImportTable(IPEBoundImportTableT<T> **ppBoundImportTable)
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+error_t
+PEParserDiskFileT<T>::ParseImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTable)
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+error_t
+PEParserDiskFileT<T>::ParseDelayImportTable(IPEDelayImportTableT<T> **ppDelayImportTable)
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+error_t
+PEParserDiskFileT<T>::ParseCLRHeader(IPECLRHeaderT<T> **ppCLRHeader)
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
 LibPEAddressT(T)
 PEParserDiskFileT<T>::GetAddressFromRVA(LibPEAddressT(T) nRVA)
 {

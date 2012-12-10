@@ -21,6 +21,7 @@ template <class T> class IPEFileT;
 template <class T> class IPEElementT;
 template <class T> class IPESectionHeaderT;
 template <class T> class IPESectionT;
+template <class T> class IPEExtraDataT;
 template <class T> class IPEExportTableT;
 template <class T> class IPEExportFunctionT;
 template <class T> class IPEImportTableT;
@@ -43,20 +44,23 @@ template <class T>
 class IPEFileT : public ILibPEInterface
 {
 public:
-    // Rebuild
-    virtual error_t LIBPE_CALLTYPE Rebuild(const file_char_t *pFilePath) = 0;
-
     // Basic info
-    virtual bool_t LIBPE_CALLTYPE Is32BitFile() = 0;
     virtual LibPERawDosHeaderT(T) * LIBPE_CALLTYPE GetDosHeader() = 0;
     virtual LibPERawNtHeadersT(T) * LIBPE_CALLTYPE GetNtHeaders() = 0;
     virtual LibPERawFileHeaderT(T) * LIBPE_CALLTYPE GetFileHeader() = 0;
     virtual LibPERawOptionalHeaderT(T) * LIBPE_CALLTYPE GetOptionalHeader() = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetImageBase() = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetImageSize() = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetEntryPoint() = 0;
 
-    // Section
-    virtual uint32_t LIBPE_CALLTYPE GetSectionNum() = 0;
+    // Section & Extra data
+    virtual uint32_t LIBPE_CALLTYPE GetSectionCount() = 0;
     virtual error_t LIBPE_CALLTYPE GetSectionHeader(uint32_t nIndex, IPESectionHeaderT<T> **ppSectionHeader) = 0;
     virtual error_t LIBPE_CALLTYPE GetSection(uint32_t nIndex, IPESectionT<T> **ppSection) = 0;
+    virtual error_t LIBPE_CALLTYPE GetSectionByRVA(LibPEAddressT(T) nRVA, IPESectionT<T> **ppSection) = 0;
+    virtual error_t LIBPE_CALLTYPE GetSectionByVA(LibPEAddressT(T) nVA, IPESectionT<T> **ppSection) = 0;
+    virtual error_t LIBPE_CALLTYPE GetSectionByFOA(LibPEAddressT(T) nFOA, IPESectionT<T> **ppSection) = 0;
+    virtual error_t LIBPE_CALLTYPE GetExtraData(IPEExtraDataT<T> **ppExtraData) = 0;
 
     // PEAddress<T> convert tools
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVAFromVA(LibPEAddressT(T) nVA) = 0;
@@ -66,7 +70,7 @@ public:
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVAFromFOA(LibPEAddressT(T) nFOA) = 0;
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOAFromVA(LibPEAddressT(T) nVA) = 0;
 
-    // Data directory entries operations
+    // Data directory entries
     virtual error_t LIBPE_CALLTYPE GetExportTable(IPEExportTableT<T> **ppExportTable) = 0;
     virtual error_t LIBPE_CALLTYPE GetImportTable(IPEImportTableT<T> **ppImportTable) = 0;
     virtual error_t LIBPE_CALLTYPE GetResourceTable(IPEResourceTableT<T> **ppResourceTable) = 0;
@@ -96,7 +100,10 @@ public:
     virtual error_t LIBPE_CALLTYPE RemoveCLRHeader() = 0;
 
     // PE Verification
-    virtual bool_t LIBPE_CALLTYPE IsValidPE() = 0;
+    virtual bool_t LIBPE_CALLTYPE ValidatePEHeader() = 0;
+
+    // Rebuild
+    virtual error_t LIBPE_CALLTYPE Rebuild(const file_char_t *pFilePath) = 0;
 };
 
 template <class T>
@@ -136,6 +143,13 @@ public:
     virtual uint32_t LIBPE_CALLTYPE GetCharacteristics() = 0;
 
     virtual error_t LIBPE_CALLTYPE SetName(const char *pName) = 0;
+};
+
+template <class T>
+class IPEExtraDataT : public IPEElementT<T>
+{
+public:
+    virtual void * LIBPE_CALLTYPE GetRawStruct() = 0;
 };
 
 template <class T>

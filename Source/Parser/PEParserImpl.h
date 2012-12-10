@@ -21,6 +21,17 @@ public:
     virtual error_t ParseImportTable(IPEImportTableT<T> **ppImportTable);
     virtual error_t ParseImportModule(LibPEAddressT(T) nImportDescRVA, LibPEAddressT(T) nImportDescFOA, LibPERawImportDescriptor(T) *pImportDescriptor, IPEImportModuleT<T> **ppImportModule);
     virtual error_t ParseImportFunction(LibPERawThunkData(T) *pThunkData, IPEImportFunctionT<T> **ppFunction);
+    virtual error_t ParseResourceTable(IPEResourceTableT<T> **ppResourceTable);
+    virtual error_t ParseExceptionTable(IPEExceptionTableT<T> **ppExceptionTable);
+    virtual error_t ParseCertificateTable(IPECertificateTableT<T> **ppCertificateTable);
+    virtual error_t ParseRelocationTable(IPERelocationTableT<T> **ppRelocationTable);
+    virtual error_t ParseDebugInfoTable(IPEDebugInfoTableT<T> **ppDebugInfoTable);
+    virtual error_t ParseGlobalRegister(IPEGlobalRegisterT<T> **ppGlobalRegister);
+    virtual error_t ParseTlsTable(IPETlsTableT<T> **ppTlsTable);
+    virtual error_t ParseBoundImportTable(IPEBoundImportTableT<T> **ppBoundImportTable);
+    virtual error_t ParseImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTable);
+    virtual error_t ParseDelayImportTable(IPEDelayImportTableT<T> **ppDelayImportTable);
+    virtual error_t ParseCLRHeader(IPECLRHeaderT<T> **ppCLRHeader);
 
 protected:
     virtual LibPEAddressT(T) GetAddressFromRVA(LibPEAddressT(T) nRVA);

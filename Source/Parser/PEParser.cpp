@@ -92,8 +92,8 @@ PEParserT<T>::GetRVAFromFOA(LibPEAddressT(T) nFOA)
     LIBPE_ASSERT_RET(NULL != m_pFile, 0);
     
     LibPEPtr<IPESectionT<T>> pLastSection, pSection;
-    uint32_t nSectionId = 0, nSectionNum = m_pFile->GetSectionNum();
-    for(nSectionId = 0; nSectionId < nSectionNum; ++nSectionId) {
+    uint32_t nSectionId = 0, nSectionCount = m_pFile->GetSectionCount();
+    for(nSectionId = 0; nSectionId < nSectionCount; ++nSectionId) {
         if(ERR_OK != m_pFile->GetSection(nSectionId, &pSection) || NULL == pSection) {
             return 0;
         }
@@ -119,8 +119,8 @@ PEParserT<T>::GetFOAFromRVA(LibPEAddressT(T) nRVA)
     LIBPE_ASSERT_RET(NULL != m_pFile, 0);
     
     LibPEPtr<IPESectionT<T>> pLastSection, pSection;
-    uint32_t nSectionId = 0, nSectionNum = m_pFile->GetSectionNum();
-    for(nSectionId = 0; nSectionId < nSectionNum; ++nSectionId) {
+    uint32_t nSectionId = 0, nSectionCount = m_pFile->GetSectionCount();
+    for(nSectionId = 0; nSectionId < nSectionCount; ++nSectionId) {
         if(ERR_OK != m_pFile->GetSection(nSectionId, &pSection) || NULL == pSection) {
             return 0;
         }
