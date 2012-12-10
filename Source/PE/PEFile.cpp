@@ -159,25 +159,18 @@ PEFileT<T>::GetSectionByRVA(LibPEAddressT(T) nRVA, IPESectionT<T> **ppSection)
 {
     LIBPE_ASSERT_RET(NULL != ppSection, ERR_POINTER);
 
-    LibPEPtr<IPESectionT<T>> pHitSection;
     uint32_t nSectionCount = GetSectionCount();
     for(uint32_t nSectionIndex = 0; nSectionIndex < nSectionCount; ++nSectionIndex) {
         LibPEPtr<IPESectionT<T>> pSection;
         if(ERR_OK == GetSection(nSectionIndex, &pSection) && NULL != pSection) {
             if(pSection->GetRVA() <= nRVA && nRVA <= pSection->GetRVA() + pSection->GetSizeInMemory()) {
-                pHitSection = pSection;
-                break;
+                *ppSection = pSection.Detach();
+                return ERR_OK;
             }
         }
     }
 
-    if(NULL == pHitSection) {
-        return ERR_FAIL;
-    }
-
-    *ppSection = pHitSection.Detach();
-
-    return ERR_OK;
+    return ERR_FAIL;
 }
 
 template <class T>
@@ -193,25 +186,18 @@ PEFileT<T>::GetSectionByFOA(LibPEAddressT(T) nFOA, IPESectionT<T> **ppSection)
 {
     LIBPE_ASSERT_RET(NULL != ppSection, ERR_POINTER);
 
-    LibPEPtr<IPESectionT<T>> pHitSection;
     uint32_t nSectionCount = GetSectionCount();
     for(uint32_t nSectionIndex = 0; nSectionIndex < nSectionCount; ++nSectionIndex) {
         LibPEPtr<IPESectionT<T>> pSection;
         if(ERR_OK == GetSection(nSectionIndex, &pSection) && NULL != pSection) {
-            if(pSection->GetFOA() <= nFOA && nFOA <= pSection->GetFOA() + pSection->GetSizeInFile()) {
-                pHitSection = pSection;
-                break;
+            if(pSection->GetFOA() <= nFOA && nFOA <= pSection->GetFOA() + pSection->GetSizeInMemory()) {
+                *ppSection = pSection.Detach();
+                return ERR_OK;
             }
         }
     }
 
-    if(NULL == pHitSection) {
-        return ERR_FAIL;
-    }
-
-    *ppSection = pHitSection.Detach();
-
-    return ERR_OK;
+    return ERR_FAIL;
 }
 
 template <class T>

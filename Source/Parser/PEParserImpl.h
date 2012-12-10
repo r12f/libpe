@@ -20,7 +20,7 @@ public:
     virtual error_t ParseExportFunction(IPEExportTableT<T> *pExportTable, uint32_t nIndex, IPEExportFunctionT<T> **ppFunction);
     virtual error_t ParseImportTable(IPEImportTableT<T> **ppImportTable);
     virtual error_t ParseImportModule(LibPEAddressT(T) nImportDescRVA, LibPEAddressT(T) nImportDescFOA, LibPERawImportDescriptor(T) *pImportDescriptor, IPEImportModuleT<T> **ppImportModule);
-    virtual error_t ParseImportFunction(LibPERawThunkData(T) *pThunkData, IPEImportFunctionT<T> **ppFunction);
+    virtual error_t ParseImportFunction(LibPERawImportDescriptor(T) *pImportDescriptor, LibPERawThunkData(T) *pThunkData, IPEImportFunctionT<T> **ppFunction);
     virtual error_t ParseResourceTable(IPEResourceTableT<T> **ppResourceTable);
     virtual error_t ParseExceptionTable(IPEExceptionTableT<T> **ppExceptionTable);
     virtual error_t ParseCertificateTable(IPECertificateTableT<T> **ppCertificateTable);

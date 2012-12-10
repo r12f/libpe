@@ -15,7 +15,7 @@ PEImportModuleT<T>::GetImportFunctionByIndex(uint32_t nIndex, IPEImportFunctionT
     FunctionInfo &oInfo = m_vFunctions[nIndex];
     if(NULL == oInfo.m_pFunction) {
         LIBPE_ASSERT_RET(NULL != m_pParser && NULL != m_pFile && NULL != oInfo.m_pThunkData, ERR_FAIL);
-        if(ERR_OK != m_pParser->ParseImportFunction(oInfo.m_pThunkData, &oInfo.m_pFunction) || NULL == oInfo.m_pFunction) {
+        if(ERR_OK != m_pParser->ParseImportFunction(GetRawStruct(), oInfo.m_pThunkData, &oInfo.m_pFunction) || NULL == oInfo.m_pFunction) {
             return ERR_FAIL;
         }
     }

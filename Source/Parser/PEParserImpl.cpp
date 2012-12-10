@@ -295,20 +295,20 @@ PEParserDiskFileT<T>::ParseImportModule(LibPEAddressT(T) nImportDescRVA, LibPEAd
 
 template <class T>
 error_t
-PEParserDiskFileT<T>::ParseImportFunction(LibPERawThunkData(T) *pThunkData, IPEImportFunctionT<T> **ppFunction)
+PEParserDiskFileT<T>::ParseImportFunction(LibPERawImportDescriptor(T) *pImportDescriptor, LibPERawThunkData(T) *pThunkData, IPEImportFunctionT<T> **ppFunction)
 {
     // TODO: We should deal with bound data and unbound data here.
-    LIBPE_ASSERT_RET(NULL != pThunkData && NULL != ppFunction, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != pImportDescriptor && NULL != pThunkData && NULL != ppFunction, ERR_POINTER);
 
     *ppFunction = NULL;
 
-    LibPEAddressT(T) nImportRVA = pThunkData->u1.AddressOfData;
-    LibPEAddressT(T) nImportFOA = GetFOAFromRVA(nImportRVA);
-    if(0 == nImportFOA) {
+    LibPEAddressT(T) nRawImportFunctionRVA = pThunkData->u1.AddressOfData;
+    LibPEAddressT(T) nRawImportFunctionFOA = GetFOAFromRVA(nRawImportFunctionRVA);
+    if(0 == nRawImportFunctionFOA) {
         return ERR_FAIL;
     }
 
-    LibPERawImportByName(T) *pImport = (LibPERawImportByName(T) *)m_pLoader->GetBuffer(nImportFOA, sizeof(LibPERawImportByName(T)));
+    LibPERawImportByName(T) *pRawImportFunction = (LibPERawImportByName(T) *)m_pLoader->GetBuffer(nRawImportFunctionFOA, sizeof(LibPERawImportByName(T)));
 
     LibPEPtr<PEImportFunctionT<T>> pFunction = new PEImportFunctionT<T>();
     if(NULL == pFunction) {
@@ -317,13 +317,13 @@ PEParserDiskFileT<T>::ParseImportFunction(LibPERawThunkData(T) *pThunkData, IPEI
 
     pFunction->SetParser(this);
     pFunction->SetPEFile(m_pFile);
-    pFunction->SetRVA(nImportRVA);
+    pFunction->SetRVA(nRawImportFunctionRVA);
     pFunction->SetSizeInMemory(sizeof(IMAGE_IMPORT_BY_NAME));
-    pFunction->SetFOA(nImportFOA);
+    pFunction->SetFOA(nRawImportFunctionFOA);
     pFunction->SetSizeInFile(sizeof(IMAGE_IMPORT_BY_NAME));
     pFunction->SetRawThunkData(pThunkData);
-    pFunction->SetRawImportByName(pImport);
-    pFunction->SetRawName((const char *)pImport->Name);
+    pFunction->SetRawImportByName(pRawImportFunction);
+    pFunction->SetRawName((const char *)pRawImportFunction->Name);
 
     *ppFunction = pFunction.Detach();
 
@@ -355,7 +355,23 @@ template <class T>
 error_t
 PEParserDiskFileT<T>::ParseRelocationTable(IPERelocationTableT<T> **ppRelocationTable)
 {
-    return ERR_NOT_IMPL;
+    LIBPE_ASSERT_RET(NULL != ppRelocationTable, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, ERR_FAIL);
+
+    *ppRelocationTable = NULL;
+
+    LibPERawDataDirectoryT(T) *pDataDirectory = GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_IMPORT);
+    if(NULL == pDataDirectory || 0 == pDataDirectory->VirtualAddress || 0 == pDataDirectory->Size) {
+        return ERR_FAIL;
+    }
+
+    LibPEAddressT(T) nRelocationTableRVA = pDataDirectory->VirtualAddress;
+    LibPEAddressT(T) nRelocationTableFOA = GetFOAFromRVA(nRelocationTableRVA);
+    if(0 == nRelocationTableFOA) {
+        return ERR_FAIL;
+    }
+
+    return ERR_FAIL;
 }
 
 template <class T>

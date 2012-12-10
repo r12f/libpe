@@ -11,6 +11,7 @@ public:
     LIBPE_SINGLE_THREAD_OBJECT();
     virtual PEParserType GetType() = 0;
     virtual int8_t * GetBuffer(uint64_t nOffset, uint64_t nSize) = 0;
+    virtual int8_t * GetAnsiString(uint64_t nOffset, uint64_t &nSize) = 0;
 };
 
 class DataLoaderDiskFile :
@@ -33,6 +34,7 @@ public:
     // Override PELoader
     virtual PEParserType GetType() { return PE_PARSER_TYPE_DISK_FILE; }
     virtual int8_t * GetBuffer(uint64_t nOffset, uint64_t nSize);
+    virtual int8_t * GetAnsiString(uint64_t nOffset, uint64_t &nSize) { return NULL; }
 
 protected:
     void Reset();
