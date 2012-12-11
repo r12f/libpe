@@ -77,8 +77,8 @@ public:
     RefCountThreadSafe() : m_nRefCount(0) {}
     ~RefCountThreadSafe() {}
 
-    uint32_t AddRef(void) { return (uint32_t)::InterlockedIncrement(&m_nRefCount); }
-    uint32_t Release(void) { return (uint32_t)::InterlockedDecrement(&m_nRefCount); }
+    uint32_t AddRef(void) { return (uint32_t)::InterlockedIncrement((volatile LONG *)&m_nRefCount); }
+    uint32_t Release(void) { return (uint32_t)::InterlockedDecrement((volatile LONG *)&m_nRefCount); }
 
 private:
     uint32_t m_nRefCount;

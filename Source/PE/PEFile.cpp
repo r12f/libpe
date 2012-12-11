@@ -283,6 +283,42 @@ PEFileT<T>::GetImportTable(IPEImportTableT<T> **ppImportTable)
     return m_pImportTable.CopyTo(ppImportTable);
 }
 
+
+template <class T>
+error_t
+PEFileT<T>::GetResourceTable(IPEResourceTableT<T> **ppResourceTable)
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+error_t
+PEFileT<T>::GetExceptionTable(IPEExceptionTableT<T> **ppExceptionTable)
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+error_t
+PEFileT<T>::GetCertificateTable(IPECertificateTableT<T> **ppCertificateTable)
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+error_t
+PEFileT<T>::GetRelocationTable(IPERelocationTableT<T> **ppRelocationTable)
+{
+    if(NULL == m_pRelocationTable) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
+        if(ERR_OK != m_pParser->ParseRelocationTable(&m_pRelocationTable) || NULL == m_pRelocationTable) {
+            return ERR_FAIL;
+        }
+    }
+
+    return m_pRelocationTable.CopyTo(ppRelocationTable);
+}
+
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEFile);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromDiskFile);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromMappedFile);

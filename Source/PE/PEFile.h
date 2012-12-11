@@ -63,10 +63,10 @@ public:
     // Data directory entries operations
     virtual error_t LIBPE_CALLTYPE GetExportTable(IPEExportTableT<T> **ppExportTable);
     virtual error_t LIBPE_CALLTYPE GetImportTable(IPEImportTableT<T> **ppImportTable);
-    virtual error_t LIBPE_CALLTYPE GetResourceTable(IPEResourceTableT<T> **ppResourceTable) { return ERR_NOT_IMPL; }
-    virtual error_t LIBPE_CALLTYPE GetExceptionTable(IPEExceptionTableT<T> **ppExceptionTable) { return ERR_NOT_IMPL; }
-    virtual error_t LIBPE_CALLTYPE GetCertificateTable(IPECertificateTableT<T> **ppCertificateTable) { return ERR_NOT_IMPL; }
-    virtual error_t LIBPE_CALLTYPE GetRelocationTable(IPERelocationTableT<T> **ppRelocationTable) { return ERR_NOT_IMPL; }
+    virtual error_t LIBPE_CALLTYPE GetResourceTable(IPEResourceTableT<T> **ppResourceTable);
+    virtual error_t LIBPE_CALLTYPE GetExceptionTable(IPEExceptionTableT<T> **ppExceptionTable);
+    virtual error_t LIBPE_CALLTYPE GetCertificateTable(IPECertificateTableT<T> **ppCertificateTable);
+    virtual error_t LIBPE_CALLTYPE GetRelocationTable(IPERelocationTableT<T> **ppRelocationTable);
     virtual error_t LIBPE_CALLTYPE GetDebugInfoTable(IPEDebugInfoTableT<T> **ppDebugInfoTable) { return ERR_NOT_IMPL; }
     virtual error_t LIBPE_CALLTYPE GetGlobalRegister(IPEGlobalRegisterT<T> **ppGlobalRegister) { return ERR_NOT_IMPL; }
     virtual error_t LIBPE_CALLTYPE GetTlsTable(IPETlsTableT<T> **ppTlsTable) { return ERR_NOT_IMPL; }
@@ -96,14 +96,15 @@ public:
     virtual error_t LIBPE_CALLTYPE Rebuild(const file_char_t *pFilePath) { return ERR_OK; }
 
 private:
-    LibPEPtr<PEParserT<T>>          m_pParser;
-    LibPERawDosHeaderT(T)           *m_pDosHeader;
-    LibPERawNtHeadersT(T)           *m_pNtHeaders;
-    LibPERawFileHeaderT(T)          *m_pFileHeader;
-    LibPERawOptionalHeaderT(T)      *m_pOptionalHeader;
-    SectionHeaderList               m_vSectionHeaders;
-    LibPEPtr<IPEExportTableT<T>>    m_pExportTable;
-    LibPEPtr<IPEImportTableT<T>>    m_pImportTable;
+    LibPEPtr<PEParserT<T>>              m_pParser;
+    LibPERawDosHeaderT(T)               *m_pDosHeader;
+    LibPERawNtHeadersT(T)               *m_pNtHeaders;
+    LibPERawFileHeaderT(T)              *m_pFileHeader;
+    LibPERawOptionalHeaderT(T)          *m_pOptionalHeader;
+    SectionHeaderList                   m_vSectionHeaders;
+    LibPEPtr<IPEExportTableT<T>>        m_pExportTable;
+    LibPEPtr<IPEImportTableT<T>>        m_pImportTable;
+    LibPEPtr<IPERelocationTableT<T>>    m_pRelocationTable;
 };
 
 typedef PEFileT<PE32> PEFile32;

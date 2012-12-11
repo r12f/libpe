@@ -40,6 +40,10 @@ void TestImportTable(IPEFile32 *pFile)
     }
 }
 
+void TestRelocationTable(IPEFile32 *pFile)
+{
+
+}
 
 int wmain(int argc, wchar_t* argv[])
 {

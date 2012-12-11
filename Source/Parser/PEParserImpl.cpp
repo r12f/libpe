@@ -8,6 +8,7 @@
 #include "PE/PEImportTable.h"
 #include "PE/PEImportModule.h"
 #include "PE/PEImportFunction.h"
+#include "PE/PERelocationTable.h"
 
 LIBPE_NAMESPACE_BEGIN
 
@@ -369,6 +370,61 @@ PEParserDiskFileT<T>::ParseRelocationTable(IPERelocationTableT<T> **ppRelocation
     LibPEAddressT(T) nRelocationTableFOA = GetFOAFromRVA(nRelocationTableRVA);
     if(0 == nRelocationTableFOA) {
         return ERR_FAIL;
+    }
+
+    LibPEPtr<PERelocationTableT<T>> pRelocationTable = new PERelocationTableT<T>();
+    if(NULL == pRelocationTable) {
+        return ERR_NO_MEM;
+    }
+
+    pRelocationTable->SetParser(this);
+    pRelocationTable->SetPEFile(m_pFile);
+    pRelocationTable->SetRVA(nRelocationTableRVA);
+    pRelocationTable->SetSizeInMemory(pDataDirectory->Size);
+    pRelocationTable->SetFOA(nRelocationTableFOA);
+    pRelocationTable->SetSizeInFile(pDataDirectory->Size);
+
+    LibPERawBaseRelocation(T) *pRawRelocationTable = (LibPERawBaseRelocation(T) *)m_pLoader->GetBuffer(nRelocationTableFOA, pDataDirectory->Size);
+    if(NULL == pRawRelocationTable) {
+        return ERR_NO_MEM;
+    }
+
+    LibPEAddressT(T) nRelocationPageRVA = nRelocationTableRVA;
+    LibPEAddressT(T) nRelocationPageFOA = nRelocationTableFOA;
+    while(0 != pRawRelocationTable->VirtualAddress) {
+        LibPEAddressT(T) nRelocationAddressRVABase = pRawRelocationTable->VirtualAddress;
+
+        LibPEAddressT(T) nRelocationItemRVA = nRelocationPageRVA + sizeof(LibPERawBaseRelocation(T));
+        LibPEAddressT(T) nRelocationItemFOA = nRelocationPageFOA + sizeof(LibPERawBaseRelocation(T));
+        uint32_t nBlockIndex = 0, nBlockCount = pRawRelocationTable->SizeOfBlock;
+        uint16_t *pBlockList = (uint16_t *)(&pRawRelocationTable[1]);
+        while(nBlockIndex < nBlockCount) {
+            LibPEPtr<PERelocationItemT<T>> pRelocationItem = new PERelocationItemT<T>();
+            if(NULL == pRelocationItem) {
+                return ERR_NO_MEM;
+            }
+
+            pRelocationItem->SetParser(this);
+            pRelocationItem->SetPEFile(m_pFile);
+            pRelocationItem->SetRVA(nRelocationItemRVA);
+            pRelocationItem->SetSizeInMemory(sizeof(uint16_t));
+            pRelocationItem->SetFOA(nRelocationItemFOA);
+            pRelocationItem->SetSizeInFile(sizeof(uint16_t));
+
+            uint16_t nRelocateFlag = (pBlockList[nBlockIndex] & 0xF000);
+            LibPEAddressT(T) nRelocationAddressRVA = nRelocationAddressRVABase + pBlockList[nBlockIndex] & 0x0FFF;
+            pRelocationItem->InnerSetRelocateFlag(nRelocateFlag);
+            pRelocationItem->InnerSetAddressRVA(nRelocationAddressRVA);
+
+            pRelocationTable->InnerAddRelocationItem(pRelocationItem);
+
+            nRelocationItemRVA += sizeof(uint16_t);
+            nRelocationItemFOA += sizeof(uint16_t);
+            ++nBlockIndex;
+        }
+
+        nRelocationPageRVA = nRelocationItemRVA;
+        nRelocationPageFOA = nRelocationItemFOA;
     }
 
     return ERR_FAIL;

@@ -32,6 +32,8 @@ template <class T> class IPEResourceTableItemT;
 template <class T> class IPEExceptionTableT;
 template <class T> class IPECertificateTableT;
 template <class T> class IPERelocationTableT;
+template <class T> class IPERelocationPageT;
+template <class T> class IPERelocationItemT;
 template <class T> class IPEDebugInfoTableT;
 template <class T> class IPEGlobalRegisterT;
 template <class T> class IPETlsTableT;
@@ -223,7 +225,35 @@ template <class T>
 class IPECertificateTableT : public IPEElementT<T> {};
 
 template <class T>
-class IPERelocationTableT : public IPEElementT<T> {};
+class IPERelocationTableT : public IPEElementT<T>
+{
+public:
+    virtual uint32_t LIBPE_CALLTYPE GetRelocationPageCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetRelocationPageByIndex(uint32_t nIndex, IPERelocationPageT<T> **ppRelocationPage) = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetRelocationItemCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetRelocationItemByIndex(uint32_t nIndex, IPERelocationItemT<T> **ppRelocationItem) = 0;
+    virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(LibPEAddressT(T) nRVA) = 0;
+    virtual error_t LIBPE_CALLTYPE GetRelocationItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem) = 0;
+};
+
+template <class T>
+class IPERelocationPageT : public IPEElementT<T>
+{
+public:
+    virtual uint32_t LIBPE_CALLTYPE GetRelocationItemCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetRelocationItemByIndex(uint32_t nIndex, IPERelocationItemT<T> **ppRelocationItem) = 0;
+    virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(LibPEAddressT(T) nRVA) = 0;
+    virtual error_t LIBPE_CALLTYPE GetRelocationitemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem) = 0;
+};
+
+template <class T>
+class IPERelocationItemT : public IPEElementT<T>
+{
+public:
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetAddressRVA() = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetAddressContent() = 0;
+    virtual LibPEAddressT(T) * LIBPE_CALLTYPE GetRawAddressContent() = 0;
+};
 
 template <class T>
 class IPEDebugInfoTableT : public IPEElementT<T> {};

@@ -15,6 +15,7 @@ struct PETraitBase {
     typedef IMAGE_EXPORT_DIRECTORY          RawExportDirectory;
     typedef IMAGE_IMPORT_DESCRIPTOR         RawImportDescriptor;
     typedef IMAGE_IMPORT_BY_NAME            RawImportByName;
+    typedef IMAGE_BASE_RELOCATION           RawBaseRelocation;
 };
 
 template <class T> struct PETrait {};
@@ -46,6 +47,7 @@ struct PETrait<PE64> : PETraitBase {
 #define LibPERawImportDescriptor(T)         typename PETrait<T>::RawImportDescriptor
 #define LibPERawThunkData(T)                typename PETrait<T>::RawThunkData
 #define LibPERawImportByName(T)             typename PETrait<T>::RawImportByName
+#define LibPERawBaseRelocation(T)           typename PETrait<T>::RawBaseRelocation
 
 typedef PETraitBase::RawDosHeader           PERawDosHeader;
 typedef PETraitBase::RawFileHeader          PERawFileHeader;
@@ -54,6 +56,7 @@ typedef PETraitBase::RawSectionHeader       PERawSectionHeader;
 typedef PETraitBase::RawExportDirectory     PERawExportDirectory;
 typedef PETraitBase::RawImportDescriptor    PERawImportDescriptor;
 typedef PETraitBase::RawImportByName        PERawImportByName;
+typedef PETraitBase::RawBaseRelocation      PERawBaseRelocation;
 
 typedef PETrait<PE32>::Address              PEAddress32;
 typedef PETrait<PE32>::RawNtHeaders         PERawNtHeaders32;

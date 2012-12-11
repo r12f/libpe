@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{9E9032C9-65B3-488A-8CC7-1E4B93E381C3}"
 	ProjectSection(SolutionItems) = preProject
 		..\Include\LibPE.h = ..\Include\LibPE.h
@@ -21,9 +21,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibPETest", "LibPETest.vcpr
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{8AD18879-6291-427A-8838-AA21110D2757}"
-	ProjectSection(SolutionItems) = preProject
-		..\Include\LibPETrait.h = ..\Include\LibPETrait.h
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
