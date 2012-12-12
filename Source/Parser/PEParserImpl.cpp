@@ -46,29 +46,28 @@ PEParserDiskFileT<T>::ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPER
     // Parse section headers
     uint32_t nSectionHeaderOffset = 0;
     uint32_t nStartSectionHeaderOffset = pDosHeader->e_lfanew + sizeof(DWORD) + sizeof(LibPERawFileHeaderT(T)) + pNtHeaders->FileHeader.SizeOfOptionalHeader;
-    LibPERawSectionHeaderT(T) *pSectionHeader = NULL;
+    LibPERawSectionHeaderT(T) *pRawSectionHeader = NULL;
     for(uint16_t nSectionId = 0; nSectionId < pNtHeaders->FileHeader.NumberOfSections; ++nSectionId) {
         nSectionHeaderOffset = nStartSectionHeaderOffset + nSectionId * sizeof(LibPERawSectionHeaderT(T));
-        pSectionHeader = (LibPERawSectionHeaderT(T) *)m_pLoader->GetBuffer(nSectionHeaderOffset, sizeof(LibPERawSectionHeaderT(T)));
-        if(NULL == pSectionHeader) {
+        pRawSectionHeader = (LibPERawSectionHeaderT(T) *)m_pLoader->GetBuffer(nSectionHeaderOffset, sizeof(LibPERawSectionHeaderT(T)));
+        if(NULL == pRawSectionHeader) {
             return ERR_FAIL;
         }
 
-        LibPEPtr<PESectionHeaderT<T>> pRawSectionHeader = new PESectionHeaderT<T>();
-        LibPEPtr<PESectionT<T>> pRawSection = new PESectionT<T>();
-        if(NULL == pRawSectionHeader || NULL == pRawSection) {
+        LibPEPtr<PESectionHeaderT<T>> pSectionHeader = new PESectionHeaderT<T>();
+        if(NULL == pSectionHeader) {
             return ERR_NO_MEM;
         }
 
-        pRawSectionHeader->SetParser(this);
-        pRawSectionHeader->SetPEFile(m_pFile);
-        pRawSectionHeader->SetRVA(nSectionHeaderOffset);
-        pRawSectionHeader->SetSizeInMemory(sizeof(LibPERawOptionalHeaderT(T)));
-        pRawSectionHeader->SetFOA(nSectionHeaderOffset);
-        pRawSectionHeader->SetSizeInFile(sizeof(LibPERawOptionalHeaderT(T)));
-        pRawSectionHeader->SetRawSectionHeader(pSectionHeader);
+        pSectionHeader->SetParser(this);
+        pSectionHeader->SetPEFile(m_pFile);
+        pSectionHeader->SetRVA(nSectionHeaderOffset);
+        pSectionHeader->SetSizeInMemory(sizeof(LibPERawOptionalHeaderT(T)));
+        pSectionHeader->SetFOA(nSectionHeaderOffset);
+        pSectionHeader->SetSizeInFile(sizeof(LibPERawOptionalHeaderT(T)));
+        pSectionHeader->SetRawSectionHeader(pRawSectionHeader);
 
-        pSectionHeaders->push_back(pRawSectionHeader.p);
+        pSectionHeaders->push_back(pSectionHeader.p);
     }
 
     return ERR_OK;

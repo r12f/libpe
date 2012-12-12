@@ -42,7 +42,15 @@ void TestImportTable(IPEFile32 *pFile)
 
 void TestRelocationTable(IPEFile32 *pFile)
 {
+    LibPEPtr<IPERelocationTable32> pRelocationTable;
+    pFile->GetRelocationTable(&pRelocationTable);
 
+    printf("Relocation Table:\n");
+    for(uint32_t nIndex = 0; nIndex < pRelocationTable->GetRelocationItemCount(); ++nIndex) {
+        LibPEPtr<IPERelocationItem32> pRelocationItem;
+        pRelocationTable->GetRelocationItemByIndex(nIndex, &pRelocationItem);
+        printf("Relocation Item: RVA = %lu, Address = %lu\n", pRelocationItem->GetAddressRVA(), pRelocationItem->GetRawAddressContent());
+    }
 }
 
 int wmain(int argc, wchar_t* argv[])
@@ -59,8 +67,9 @@ int wmain(int argc, wchar_t* argv[])
     printf("FileHeader: 0x%08x\n", pFile->GetFileHeader());
     printf("OptionalHeader: 0x%08x\n", pFile->GetOptionalHeader());
 
-    TestExportTable(pFile);
-    TestImportTable(pFile);
+    //TestExportTable(pFile);
+    //TestImportTable(pFile);
+    TestRelocationTable(pFile);
 
 	return 0;
 }
