@@ -47,21 +47,11 @@ class PERelocationPageT :
     public PEElementT<T>
 {
 public:
-    PERelocationPageT() : m_nItemCount(0) {}
+    PERelocationPageT() {}
     virtual ~PERelocationPageT() {}
 
     DECLARE_PE_ELEMENT(LibPERawBaseRelocation(T))
     LIBPE_SINGLE_THREAD_OBJECT()
-
-    void InnerSetItemCount(uint32_t nItemCount) { m_nItemCount = nItemCount; }
-
-    virtual uint32_t LIBPE_CALLTYPE GetRelocationItemCount();
-    virtual error_t LIBPE_CALLTYPE GetRelocationItemByIndex(uint32_t nIndex, IPERelocationItemT<T> **ppRelocationItem);
-    virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(LibPEAddressT(T) nRVA);
-    virtual error_t LIBPE_CALLTYPE GetRelocationItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem);
-
-private:
-    uint32_t m_nItemCount;
 };
 
 template <class T>
@@ -76,6 +66,7 @@ public:
     DECLARE_PE_ELEMENT(void)
     LIBPE_SINGLE_THREAD_OBJECT()
 
+    void InnerSetRelocationPage(IPERelocationPageT<T> *pPage) { m_pPage = pPage; }
     void InnerSetRelocateFlag(uint16_t nRelocateFlag) { m_nRelocateFlag = nRelocateFlag; }
     void InnerSetAddressRVA(LibPEAddressT(T) nRVA) { m_nAddressRVA = nRVA; }
 
@@ -84,9 +75,9 @@ public:
     virtual LibPEAddressT(T) * LIBPE_CALLTYPE GetRawAddressContent();
 
 private:
-    uint16_t                m_nRelocateFlag;
-    LibPEAddressT(T)        m_nAddressRVA;
-    LibPEAddressT(T)        *m_pAddressContent;
+    LibPEPtr<IPERelocationPageT<T>> m_pPage;
+    uint16_t                        m_nRelocateFlag;
+    LibPEAddressT(T)                m_nAddressRVA;
 };
 
 typedef PERelocationTableT<PE32> PERelocationTable32;

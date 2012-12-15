@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="gb2312"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="LibPE"
 	ProjectGUID="{28692735-9677-476B-91F3-684977E5823A}"
 	RootNamespace="LibPE"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -213,22 +214,6 @@
 			</File>
 			<File
 				RelativePath="..\Source\PE\PEFile.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEImportFunction.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEImportFunction.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEImportModule.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEImportModule.h"
 				>
 			</File>
 			<File

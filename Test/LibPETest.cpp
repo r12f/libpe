@@ -56,7 +56,7 @@ void TestRelocationTable(IPEFile32 *pFile)
 int wmain(int argc, wchar_t* argv[])
 {
     LibPEPtr<IPEFile32> pFile;
-    ParsePE32FromDiskFile(L"c:\\windows\\system32\\kernel32.dll", &pFile);
+    ParsePE32FromDiskFile(L"C:\\Windows\\SysWOW64\\kernel32.dll", &pFile);
 
     printf("AddRef: %d\n", pFile->AddRef());
     printf("Release: %d\n", pFile->Release());

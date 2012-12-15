@@ -34,6 +34,23 @@ public:
     virtual error_t ParseCLRHeader(IPECLRHeaderT<T> **ppCLRHeader);
 
 protected:
+    error_t GetDataDirectoryEntryInfo(int32_t nDataDirectoryEntryIndex, LibPEAddressT(T) &nRVA, LibPEAddressT(T) &nFOA, LibPEAddressT(T) &nSize)
+    {
+        LibPERawDataDirectoryT(T) *pDataDirectory = GetDataDirectoryEntry(nDataDirectoryEntryIndex);
+        if(NULL == pDataDirectory || 0 == pDataDirectory->VirtualAddress || 0 == pDataDirectory->Size) {
+            return ERR_FAIL;
+        }
+
+        nRVA = pDataDirectory->VirtualAddress;
+        nFOA = GetFOAFromRVA(nRVA);
+        if(0 == nFOA) {
+            return ERR_FAIL;
+        }
+
+        return ERR_OK;
+    }
+
+protected:
     virtual LibPEAddressT(T) GetAddressFromRVA(LibPEAddressT(T) nRVA);
     virtual LibPEAddressT(T) GetAddressFromVA(LibPEAddressT(T) nVA);
     virtual LibPEAddressT(T) GetAddressFromFOA(LibPEAddressT(T) nFOA);

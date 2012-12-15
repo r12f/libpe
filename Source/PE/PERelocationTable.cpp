@@ -57,37 +57,6 @@ PERelocationTableT<T>::GetRelocationItemByRVA(LibPEAddressT(T) nRVA, IPERelocati
 }
 
 template <class T>
-uint32_t
-PERelocationPageT<T>::GetRelocationItemCount()
-{
-    return m_nItemCount;
-}
-
-template <class T>
-error_t
-PERelocationPageT<T>::GetRelocationItemByIndex(uint32_t nIndex, IPERelocationItemT<T> **ppRelocationItem)
-{
-    return ERR_NOT_IMPL;
-}
-
-template <class T>
-bool_t
-PERelocationPageT<T>::IsRVANeedRelocation(LibPEAddressT(T) nRVA)
-{
-    LibPEPtr<IPERelocationItemT<T>> pItem;
-    return GetRelocationItemByRVA(nRVA, &pItem) && NULL != pItem;
-}
-
-template <class T>
-error_t
-PERelocationPageT<T>::GetRelocationItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem)
-{
-    LIBPE_ASSERT_RET(NULL != ppRelocationItem, ERR_POINTER);
-    return ERR_NOT_IMPL;
-}
-
-
-template <class T>
 LibPEAddressT(T)
 PERelocationItemT<T>::GetAddressRVA()
 {

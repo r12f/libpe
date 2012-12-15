@@ -45,6 +45,63 @@ PEImportTableT<T>::GetImportFunctionByName(const char *pModuleName, const char *
     return ERR_NOT_IMPL;
 }
 
+template <class T>
+error_t
+PEImportModuleT<T>::GetImportFunctionByIndex(uint32_t nIndex, IPEImportFunctionT<T> **ppFunction)
+{
+    LIBPE_ASSERT_RET(NULL != ppFunction, ERR_POINTER);
+
+    uint32_t nFunctionCount = GetImportFunctionCount();
+    LIBPE_ASSERT_RET(nIndex < nFunctionCount, ERR_INVALID_ARG);
+
+    FunctionInfo &oInfo = m_vFunctions[nIndex];
+    if(NULL == oInfo.m_pFunction) {
+        LIBPE_ASSERT_RET(NULL != m_pParser && NULL != m_pFile && NULL != oInfo.m_pThunkData, ERR_FAIL);
+        if(ERR_OK != m_pParser->ParseImportFunction(GetRawStruct(), oInfo.m_pThunkData, &oInfo.m_pFunction) || NULL == oInfo.m_pFunction) {
+            return ERR_FAIL;
+        }
+    }
+
+    return oInfo.m_pFunction.CopyTo(ppFunction);
+}
+
+template <class T>
+error_t
+PEImportModuleT<T>::GetImportFunctionByName(const char *pFunctionName, IPEImportFunctionT<T> **ppFunction)
+{
+    return ERR_NOT_IMPL;
+}
+
+template <class T>
+LibPERawThunkData(T) *  
+PEImportFunctionT<T>::GetRawThunkData()
+{
+    return m_pThunkData;
+}
+
+template <class T>
+const char *  
+PEImportFunctionT<T>::GetName()
+{
+    return m_pFunctionName;
+}
+
+template <class T>
+uint16_t  
+PEImportFunctionT<T>::GetHint()
+{
+    return m_pImportByName->Hint;
+}
+
+template <class T>
+LibPEAddressT(T)  
+PEImportFunctionT<T>::GetEntry()
+{
+    return NULL;
+}
+
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEImportTable);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEImportModule);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEImportFunction);
 
 LIBPE_NAMESPACE_END

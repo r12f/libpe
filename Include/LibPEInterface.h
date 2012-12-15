@@ -240,10 +240,7 @@ template <class T>
 class IPERelocationPageT : public IPEElementT<T>
 {
 public:
-    virtual uint32_t LIBPE_CALLTYPE GetRelocationItemCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetRelocationItemByIndex(uint32_t nIndex, IPERelocationItemT<T> **ppRelocationItem) = 0;
-    virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(LibPEAddressT(T) nRVA) = 0;
-    virtual error_t LIBPE_CALLTYPE GetRelocationitemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem) = 0;
+    virtual LibPERawBaseRelocation(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
 };
 
 template <class T>
