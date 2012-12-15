@@ -55,7 +55,7 @@ PEParserT<T>::CreateForLoadedModule(HMODULE hModule, PEFileT<T> *pFile)
 #endif
 
 template <class T>
-int8_t *
+void *
 PEParserT<T>::GetRawMemory(uint64_t nOffset, uint64_t nSize)
 {
     LIBPE_ASSERT_RET(NULL != m_pLoader, NULL);

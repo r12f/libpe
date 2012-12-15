@@ -46,7 +46,7 @@ DataLoaderDiskFile::LoadFile(const file_t &strPath)
     return true;
 }
 
-int8_t *
+void *
 DataLoaderDiskFile::GetBuffer(uint64_t nOffset, uint64_t nSize)
 {
     if(NULL == m_pFileBuffer || NULL == m_pBlockStatus) {

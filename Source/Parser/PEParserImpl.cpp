@@ -184,7 +184,7 @@ PEParserDiskFileT<T>::ParseExportFunction(IPEExportTableT<T> *pExportTable, uint
 
     if(nNameRVA != 0) {
         LibPEAddressT(T) nNameFOA = GetFOAFromRVA(nNameRVA);
-        const char *pName = m_pLoader->GetBuffer(nNameFOA, 256);
+        const char *pName = (const char *)m_pLoader->GetBuffer(nNameFOA, 256);
         pFunction->SetRawName(pName);
     }
 
@@ -383,8 +383,9 @@ PEParserDiskFileT<T>::ParseRelocationTable(IPERelocationTableT<T> **ppRelocation
     LibPEAddressT(T) nRelocationPageRVA = nRelocationTableRVA;
     LibPEAddressT(T) nRelocationPageFOA = nRelocationTableFOA;
     while(0 != pRawRelocationPage->VirtualAddress) {
-        uint32_t nBlockIndex = 0, nBlockCount = pRawRelocationPage->SizeOfBlock;
-        uint16_t *pBlockList = (uint16_t *)(&pRawRelocationPage[1]);
+        uint16_t *pRawItemList = (uint16_t *)(&pRawRelocationPage[1]);
+        uint32_t nItemIndex = 0;
+        uint32_t nItemCount = (pRawRelocationPage->SizeOfBlock - sizeof(LibPERawBaseRelocation(T))) / sizeof(uint16_t);
 
         LibPEPtr<PERelocationPageT<T>> pRelocationPage = new PERelocationPageT<T>;
         if(NULL == pRelocationPage) {
@@ -394,15 +395,14 @@ PEParserDiskFileT<T>::ParseRelocationTable(IPERelocationTableT<T> **ppRelocation
         pRelocationPage->SetParser(this);
         pRelocationPage->SetPEFile(m_pFile);
         pRelocationPage->SetRVA(nRelocationPageRVA);
-        pRelocationPage->SetSizeInMemory(sizeof(LibPERawBaseRelocation(T)) + nBlockCount * sizeof(uint16_t));
+        pRelocationPage->SetSizeInMemory(sizeof(LibPERawBaseRelocation(T)) + nItemCount * sizeof(uint16_t));
         pRelocationPage->SetFOA(nRelocationPageFOA);
-        pRelocationPage->SetSizeInFile(sizeof(LibPERawBaseRelocation(T)) + nBlockCount * sizeof(uint16_t));
-
+        pRelocationPage->SetSizeInFile(sizeof(LibPERawBaseRelocation(T)) + nItemCount * sizeof(uint16_t));
         pRelocationTable->InnerAddRelocationPage(pRelocationPage);
 
         LibPEAddressT(T) nRelocationItemRVA = nRelocationPageRVA + sizeof(LibPERawBaseRelocation(T));
         LibPEAddressT(T) nRelocationItemFOA = nRelocationPageFOA + sizeof(LibPERawBaseRelocation(T));
-        while(nBlockIndex < nBlockCount) {
+        while(nItemIndex < nItemCount) {
             LibPEPtr<PERelocationItemT<T>> pRelocationItem = new PERelocationItemT<T>();
             if(NULL == pRelocationItem) {
                 return ERR_NO_MEM;
@@ -414,23 +414,23 @@ PEParserDiskFileT<T>::ParseRelocationTable(IPERelocationTableT<T> **ppRelocation
             pRelocationItem->SetSizeInMemory(sizeof(uint16_t));
             pRelocationItem->SetFOA(nRelocationItemFOA);
             pRelocationItem->SetSizeInFile(sizeof(uint16_t));
-            pRelocationItem->InnerSetRelocationPage(pRelocationPage);
-            pRelocationItem->InnerSetRelocateFlag(pBlockList[nBlockIndex] & 0xF000);
-            pRelocationItem->InnerSetAddressRVA(pRawRelocationPage->VirtualAddress + (pBlockList[nBlockIndex] & 0x0FFF));
-
-            pRelocationTable->InnerAddRelocationItem(pRelocationItem);
+            pRelocationItem->InnerSetRelocateFlag(pRawItemList[nItemIndex] & 0xF000);
+            pRelocationItem->InnerSetAddressRVA(pRawRelocationPage->VirtualAddress + (pRawItemList[nItemIndex] & 0x0FFF));
+            pRelocationPage->InnerAddRelocationItem(pRelocationItem);
 
             nRelocationItemRVA += sizeof(uint16_t);
             nRelocationItemFOA += sizeof(uint16_t);
-            ++nBlockIndex;
+            ++nItemIndex;
         }
 
         nRelocationPageRVA = nRelocationItemRVA;
         nRelocationPageFOA = nRelocationItemFOA;
-        pRawRelocationPage = (LibPERawBaseRelocation(T) *)(((uint8_t *)pRawRelocationPage) + sizeof(LibPERawBaseRelocation(T)) + sizeof(uint16_t) * nBlockCount);
+        pRawRelocationPage = (LibPERawBaseRelocation(T) *)(((uint8_t *)pRawRelocationPage) + sizeof(LibPERawBaseRelocation(T)) + sizeof(uint16_t) * nItemCount);
     }
 
-    return ERR_FAIL;
+    *ppRelocationTable = pRelocationTable.Detach();
+
+    return ERR_OK;
 }
 
 template <class T>

@@ -46,17 +46,25 @@ void TestRelocationTable(IPEFile32 *pFile)
     pFile->GetRelocationTable(&pRelocationTable);
 
     printf("Relocation Table:\n");
-    for(uint32_t nIndex = 0; nIndex < pRelocationTable->GetRelocationItemCount(); ++nIndex) {
-        LibPEPtr<IPERelocationItem32> pRelocationItem;
-        pRelocationTable->GetRelocationItemByIndex(nIndex, &pRelocationItem);
-        printf("Relocation Item: RVA = %lu, Address = %lu\n", pRelocationItem->GetAddressRVA(), pRelocationItem->GetRawAddressContent());
+    for(uint32_t nPageIndex = 0; nPageIndex < pRelocationTable->GetRelocationPageCount(); ++nPageIndex) {
+        LibPEPtr<IPERelocationPage32> pRelocationPage;
+        pRelocationTable->GetRelocationPageByIndex(nPageIndex, &pRelocationPage);
+        printf("Relocation Page: RVA = 0x%08x\n", pRelocationPage->GetPageRVA());
+
+        for(uint32_t nItemIndex = 0; nItemIndex < pRelocationPage->GetRelocationItemCount(); ++nItemIndex) {
+            LibPEPtr<IPERelocationItem32> pRelocationItem;
+            pRelocationPage->GetRelocationItemByIndex(nItemIndex, &pRelocationItem);
+            printf("Relocation Item: RVA = 0x%08x, Address = 0x%08x\n", pRelocationItem->GetAddressRVA(), pRelocationItem->GetRawAddressContent());
+        }
+
+        printf("\n");
     }
 }
 
 int wmain(int argc, wchar_t* argv[])
 {
     LibPEPtr<IPEFile32> pFile;
-    ParsePE32FromDiskFile(L"C:\\Windows\\SysWOW64\\kernel32.dll", &pFile);
+    ParsePE32FromDiskFile(L"C:\\Windows\\system32\\kernel32.dll", &pFile);
 
     printf("AddRef: %d\n", pFile->AddRef());
     printf("Release: %d\n", pFile->Release());

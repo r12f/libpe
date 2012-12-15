@@ -31,7 +31,7 @@ public:
 
     virtual PEParserType GetType() = 0;
     virtual bool_t IsRawAddressVA() = 0;
-    virtual int8_t * GetRawMemory(uint64_t nOffset, uint64_t nSize);
+    virtual void * GetRawMemory(uint64_t nOffset, uint64_t nSize);
 
     virtual LibPEAddressT(T) GetRVAFromVA(LibPEAddressT(T) nVA);
     virtual LibPEAddressT(T) GetVAFromRVA(LibPEAddressT(T) nRVA);

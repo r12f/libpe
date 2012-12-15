@@ -12,7 +12,7 @@ class PEElementT :
 {
 public:
     PEElementT()
-        : m_pFile(NULL), m_nRVA(0), m_nVA(0), m_nSizeInMemory(0), m_nFOA(0), m_nSizeInFile(0)
+        : m_pFile(NULL), m_pRawBuffer(NULL), m_nRVA(0), m_nVA(0), m_nSizeInMemory(0), m_nFOA(0), m_nSizeInFile(0)
     {}
 
     virtual ~PEElementT() {}
@@ -40,6 +40,7 @@ public:
 protected:
     LibPEPtr<PEParserT<T>>  m_pParser;
     PEFileT<T>              *m_pFile;
+    void                    *m_pRawBuffer;
     LibPEAddressT(T)        m_nRVA;
     LibPEAddressT(T)        m_nVA;
     LibPEAddressT(T)        m_nSizeInMemory;

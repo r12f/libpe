@@ -7,8 +7,12 @@ template <class T>
 void *
 PEElementT<T>::GetRawMemory()
 {
-    LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
-    return m_pParser->GetRawMemory(GetRawAddress(), GetRawSize());
+    if(NULL == m_pRawBuffer) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
+        m_pRawBuffer = m_pParser->GetRawMemory(GetRawAddress(), GetRawSize());
+    }
+
+    return m_pRawBuffer;
 }
 
 template <class T>
