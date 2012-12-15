@@ -18,12 +18,12 @@ public:
     DECLARE_PE_ELEMENT(LibPERawExportDirectory(T))
     LIBPE_SINGLE_THREAD_OBJECT()
 
-    void SetRawFunctionList(LibPEAddressT(T) *pFunctionList) { m_pFunctionList = pFunctionList; }
-    void SetRawNameList(LibPEAddressT(T) *pNameList) { m_pNameList = pNameList; }
+    void SetRawFunctionList(uint32_t *pFunctionList) { m_pFunctionList = pFunctionList; }
+    void SetRawNameList(uint32_t *pNameList) { m_pNameList = pNameList; }
     void SetRawNameOrdinalList(uint16_t *pNameOrdinalList) { m_pNameOrdinalList = pNameOrdinalList; }
 
-    LibPEAddressT(T) * GetRawFunctionList() { return m_pFunctionList; }
-    LibPEAddressT(T) * GetRawNameList() { return m_pNameList; }
+    uint32_t * GetRawFunctionList() { return m_pFunctionList; }
+    uint32_t * GetRawNameList() { return m_pNameList; }
     uint16_t * GetRawNameOrdinalList() { return m_pNameOrdinalList; }
 
     bool_t PrepareForUsing() {
@@ -39,8 +39,8 @@ public:
 
 private:
     FunctionList        m_vExportFunctions;
-    LibPEAddressT(T)    *m_pFunctionList;
-    LibPEAddressT(T)    *m_pNameList;
+    uint32_t            *m_pFunctionList;
+    uint32_t            *m_pNameList;
     uint16_t            *m_pNameOrdinalList;
 };
 

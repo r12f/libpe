@@ -130,8 +130,8 @@ PEParserDiskFileT<T>::ParseExportTable(IPEExportTableT<T> **ppExportTable)
     LibPEAddressT(T) nNameListFOA = GetFOAFromRVA(pExportDirectory->AddressOfNames);
     LibPEAddressT(T) nNameOrdinalListFOA = GetFOAFromRVA(pExportDirectory->AddressOfNameOrdinals);
 
-    LibPEAddressT(T) *pFunctionList = (LibPEAddressT(T) *)m_pLoader->GetBuffer(nFunctionListFOA, pExportDirectory->NumberOfFunctions * sizeof(LibPEAddressT(T)));
-    LibPEAddressT(T) *pNameList = (LibPEAddressT(T) *)m_pLoader->GetBuffer(nNameListFOA, pExportDirectory->NumberOfNames * sizeof(LibPEAddressT(T)));
+    uint32_t *pFunctionList = (uint32_t *)m_pLoader->GetBuffer(nFunctionListFOA, pExportDirectory->NumberOfFunctions * sizeof(LibPEAddressT(T)));
+    uint32_t *pNameList = (uint32_t *)m_pLoader->GetBuffer(nNameListFOA, pExportDirectory->NumberOfNames * sizeof(LibPEAddressT(T)));
     uint16_t *pNameOrdinalList = (uint16_t *)m_pLoader->GetBuffer(nNameOrdinalListFOA, pExportDirectory->NumberOfFunctions * sizeof(uint16_t));
 
     LIBPE_ASSERT_RET(NULL != pFunctionList && NULL != pNameList && NULL != pNameOrdinalList, ERR_NO_MEM);
@@ -156,8 +156,8 @@ PEParserDiskFileT<T>::ParseExportFunction(IPEExportTableT<T> *pExportTable, uint
     LIBPE_ASSERT_RET(NULL != pExportTable && NULL != ppFunction, ERR_POINTER);
 
     PEExportTableT<T> *pRawExportTable = static_cast<PEExportTableT<T> *>(pExportTable);
-    LibPEAddressT(T) *pFunctionList = pRawExportTable->GetRawFunctionList();
-    LibPEAddressT(T) *pNameList = pRawExportTable->GetRawNameList();
+    uint32_t *pFunctionList = pRawExportTable->GetRawFunctionList();
+    uint32_t *pNameList = pRawExportTable->GetRawNameList();
     uint16_t *pNameOrdinalList = pRawExportTable->GetRawNameOrdinalList();
 
     LIBPE_ASSERT_RET(NULL != pFunctionList && NULL != pNameList && NULL != pNameOrdinalList, ERR_FAIL);

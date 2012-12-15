@@ -124,6 +124,8 @@ DataLoaderDiskFile::ReadBlock(int32_t nBlockId)
         return false;
     }
 
+    m_pBlockStatus[nBlockId] = 1;
+
     return true;
 }
 
