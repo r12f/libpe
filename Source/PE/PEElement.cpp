@@ -9,7 +9,7 @@ PEElementT<T>::GetRawMemory()
 {
     if(NULL == m_pRawBuffer) {
         LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
-        m_pRawBuffer = m_pParser->GetRawMemory(GetRawAddress(), GetRawSize());
+        m_pRawBuffer = m_pParser->GetRawMemory(GetRawOffset(), GetRawSize());
     }
 
     return m_pRawBuffer;
@@ -17,7 +17,7 @@ PEElementT<T>::GetRawMemory()
 
 template <class T>
 LibPEAddressT(T)
-PEElementT<T>::GetRawAddress()
+PEElementT<T>::GetRawOffset()
 {
     LIBPE_ASSERT_RET(NULL != m_pParser, 0);
     return m_pParser->IsRawAddressVA() ? GetRVA() : GetFOA();

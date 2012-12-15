@@ -27,7 +27,7 @@ public:
 
     // Override IPEElementT<T>
     virtual void * LIBPE_CALLTYPE GetRawMemory();
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawAddress();
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawOffset();
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawSize();
 
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVA() { return m_nRVA; }
@@ -53,7 +53,7 @@ typedef PEElementT<PE64> PEElement64;
 
 #define DECLARE_PE_ELEMENT(struct_type)     \
     virtual void * LIBPE_CALLTYPE GetRawMemory() { return PEElementT<T>::GetRawMemory(); }                  \
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawAddress() { return PEElementT<T>::GetRawAddress(); }      \
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawOffset() { return PEElementT<T>::GetRawOffset(); }      \
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawSize() { return PEElementT<T>::GetRawSize(); }            \
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVA() { return PEElementT<T>::GetRVA(); }                    \
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVA() { return PEElementT<T>::GetVA(); }                      \

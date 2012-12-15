@@ -104,13 +104,10 @@ PEParserDiskFileT<T>::ParseExportTable(IPEExportTableT<T> **ppExportTable)
 
     *ppExportTable = NULL;
 
-    LibPERawDataDirectoryT(T) *pDataDirectory = GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_EXPORT);
-    if(NULL == pDataDirectory || 0 == pDataDirectory->VirtualAddress || 0 == pDataDirectory->Size) {
+    LibPEAddressT(T) nExportTableRVA = 0, nExportTableFOA = 0, nExportTableSize = 0;
+    if(ERR_OK != GetDataDirectoryEntryInfo(IMAGE_DIRECTORY_ENTRY_EXPORT, nExportTableRVA, nExportTableFOA, nExportTableSize)) {
         return ERR_FAIL;
     }
-
-    LibPEAddressT(T) nExportTableRVA = pDataDirectory->VirtualAddress;
-    LibPEAddressT(T) nExportTableFOA = GetFOAFromRVA(nExportTableRVA);
 
     LibPEPtr<PEExportTableT<T>> pExportTable = new PEExportTableT<T>();
     if(NULL == pExportTable) {
@@ -120,11 +117,11 @@ PEParserDiskFileT<T>::ParseExportTable(IPEExportTableT<T> **ppExportTable)
     pExportTable->SetParser(this);
     pExportTable->SetPEFile(m_pFile);
     pExportTable->SetRVA(nExportTableRVA);
-    pExportTable->SetSizeInMemory(pDataDirectory->Size);
+    pExportTable->SetSizeInMemory(nExportTableSize);
     pExportTable->SetFOA(nExportTableFOA);
-    pExportTable->SetSizeInFile(pDataDirectory->Size);
+    pExportTable->SetSizeInFile(nExportTableSize);
 
-    LibPERawExportDirectory(T) *pExportDirectory = (LibPERawExportDirectory(T) *)m_pLoader->GetBuffer(nExportTableFOA, pDataDirectory->Size);
+    LibPERawExportDirectory(T) *pExportDirectory = pExportTable->GetRawStruct();
     if(NULL == pExportDirectory) {
         return ERR_NO_MEM;
     }
@@ -202,14 +199,8 @@ PEParserDiskFileT<T>::ParseImportTable(IPEImportTableT<T> **ppImportTable)
 
     *ppImportTable = NULL;
 
-    LibPERawDataDirectoryT(T) *pDataDirectory = GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_IMPORT);
-    if(NULL == pDataDirectory || 0 == pDataDirectory->VirtualAddress || 0 == pDataDirectory->Size) {
-        return ERR_FAIL;
-    }
-
-    LibPEAddressT(T) nImportDescRVA = pDataDirectory->VirtualAddress;
-    LibPEAddressT(T) nImportDescFOA = GetFOAFromRVA(nImportDescRVA);
-    if(0 == nImportDescFOA) {
+    LibPEAddressT(T) nImportTableRVA = 0, nImportTableFOA = 0, nImportTableSize = 0;
+    if(ERR_OK != GetDataDirectoryEntryInfo(IMAGE_DIRECTORY_ENTRY_IMPORT, nImportTableRVA, nImportTableFOA, nImportTableSize)) {
         return ERR_FAIL;
     }
 
@@ -220,16 +211,17 @@ PEParserDiskFileT<T>::ParseImportTable(IPEImportTableT<T> **ppImportTable)
 
     pImportTable->SetParser(this);
     pImportTable->SetPEFile(m_pFile);
-    pImportTable->SetRVA(nImportDescRVA);
-    pImportTable->SetSizeInMemory(pDataDirectory->Size);
-    pImportTable->SetFOA(nImportDescFOA);
-    pImportTable->SetSizeInFile(pDataDirectory->Size);
+    pImportTable->SetRVA(nImportTableRVA);
+    pImportTable->SetSizeInMemory(nImportTableSize);
+    pImportTable->SetFOA(nImportTableFOA);
+    pImportTable->SetSizeInFile(nImportTableSize);
 
-    LibPERawImportDescriptor(T) *pImportDesc = (LibPERawImportDescriptor(T) *)m_pLoader->GetBuffer(nImportDescFOA, pDataDirectory->Size);
+    LibPERawImportDescriptor(T) *pImportDesc = pImportTable->GetRawStruct();
     if(NULL == pImportDesc) {
         return ERR_NO_MEM;
     }
 
+    LibPEAddressT(T) nImportDescRVA = nImportTableRVA, nImportDescFOA = nImportTableFOA;
     while(0 != pImportDesc->Characteristics && 0 != pImportDesc->Name) {
         pImportTable->AddImportDescriptor(nImportDescRVA, nImportDescFOA, pImportDesc);
         ++pImportDesc;

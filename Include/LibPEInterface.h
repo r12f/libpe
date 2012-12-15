@@ -115,7 +115,7 @@ public:
     // Using raw memory directly may be dangerous. Because some related data may not be loaded.
     // We can just guarantee only this particular element is loaded.
     virtual void * LIBPE_CALLTYPE GetRawMemory() = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawAddress() = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawOffset() = 0;
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawSize() = 0;
 
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVA() = 0;
