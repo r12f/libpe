@@ -32,7 +32,7 @@ public:
     // Override PELoader
     virtual PEParserType GetType() { return PE_PARSER_TYPE_DISK_FILE; }
     virtual void * GetBuffer(uint64_t nOffset, uint64_t nSize);
-    virtual int8_t * GetAnsiString(uint64_t nOffset, uint64_t &nSize) { return NULL; }
+    virtual int8_t * GetAnsiString(uint64_t nOffset, uint64_t &nSize);
 
 protected:
     void Reset();

@@ -31,4 +31,36 @@ ParsePE32FromLoadedModule(HMODULE hModule, IPEFile32 **ppFile)
 
 #endif
 
+#ifndef _WIN64
+
+error_t
+ParsePEFromDiskFile(const file_char_t *pFilePath, IPEFile **ppFile)
+{
+    return ParsePE32FromDiskFile(pFilePath, ppFile);
+}
+
+error_t
+ParsePEFromMappedFile(void *pMemory, IPEFile **ppFile)
+{
+    return ParsePE32FromMappedFile(pMemory, ppFile);
+}
+
+#ifdef LIBPE_WINOS
+
+error_t
+ParsePEFromMappedResource(HMODULE hModule, IPEFile **ppFile)
+{
+    return ParsePE32FromMappedResource(hModule, ppFile);
+}
+
+error_t
+ParsePEFromLoadedModule(HMODULE hModule, IPEFile **ppFile)
+{
+    return ParsePE32FromLoadedModule(hModule, ppFile);
+}
+
+#endif
+
+#endif
+
 LIBPE_NAMESPACE_END

@@ -180,7 +180,8 @@ PEParserDiskFileT<T>::ParseExportFunction(IPEExportTableT<T> *pExportTable, uint
 
     if(nNameRVA != 0) {
         LibPEAddressT(T) nNameFOA = GetFOAFromRVA(nNameRVA);
-        const char *pName = (const char *)m_pLoader->GetBuffer(nNameFOA, 256);
+        uint64_t nNameBufferSize = 0;
+        const char *pName = m_pLoader->GetAnsiString(nNameFOA, nNameBufferSize);
         pFunction->SetRawName(pName);
     }
 
@@ -247,7 +248,8 @@ PEParserDiskFileT<T>::ParseImportModule(LibPEAddressT(T) nImportDescRVA, LibPEAd
         return ERR_FAIL;
     }
 
-    const char *pImportName = (const char *)m_pLoader->GetBuffer(nImportNameFOA, 256);
+    uint64_t nNameBufferSize = 0;
+    const char *pImportName = m_pLoader->GetAnsiString(nImportNameFOA, nNameBufferSize);
 
     LibPEPtr<PEImportModuleT<T>> pImportModule = new PEImportModuleT<T>();
     LIBPE_ASSERT_RET(NULL != pImportModule, ERR_NO_MEM);
@@ -297,7 +299,12 @@ PEParserDiskFileT<T>::ParseImportFunction(LibPERawImportDescriptor(T) *pImportDe
         return ERR_FAIL;
     }
 
-    LibPERawImportByName(T) *pRawImportFunction = (LibPERawImportByName(T) *)m_pLoader->GetBuffer(nRawImportFunctionFOA, sizeof(LibPERawImportByName(T)));
+    uint64_t nNameBufferSize = 0; 
+    if(NULL == m_pLoader->GetAnsiString(nRawImportFunctionFOA + sizeof(uint16_t), nNameBufferSize)) {
+        return ERR_NO_MEM;
+    }
+
+    LibPEAddressT(T) nRawImportFunctionSize = (LibPEAddressT(T))(sizeof(uint16_t) + nNameBufferSize);
 
     LibPEPtr<PEImportFunctionT<T>> pFunction = new PEImportFunctionT<T>();
     if(NULL == pFunction) {
@@ -307,12 +314,10 @@ PEParserDiskFileT<T>::ParseImportFunction(LibPERawImportDescriptor(T) *pImportDe
     pFunction->SetParser(this);
     pFunction->SetPEFile(m_pFile);
     pFunction->SetRVA(nRawImportFunctionRVA);
-    pFunction->SetSizeInMemory(sizeof(IMAGE_IMPORT_BY_NAME));
+    pFunction->SetSizeInMemory(nRawImportFunctionSize);
     pFunction->SetFOA(nRawImportFunctionFOA);
-    pFunction->SetSizeInFile(sizeof(IMAGE_IMPORT_BY_NAME));
+    pFunction->SetSizeInFile(nRawImportFunctionSize);
     pFunction->SetRawThunkData(pThunkData);
-    pFunction->SetRawImportByName(pRawImportFunction);
-    pFunction->SetRawName((const char *)pRawImportFunction->Name);
 
     *ppFunction = pFunction.Detach();
 

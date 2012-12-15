@@ -85,17 +85,13 @@ class PEImportFunctionT :
     public PEElementT<T>
 {
 public:
-    PEImportFunctionT()
-        : m_pThunkData(NULL), m_pImportByName(NULL), m_pFunctionName(NULL), m_nOrdinal(0)
-    {}
+    PEImportFunctionT() : m_pThunkData(NULL) {}
     virtual ~PEImportFunctionT() {}
 
     DECLARE_PE_ELEMENT(LibPERawImportByName(T))
     LIBPE_SINGLE_THREAD_OBJECT()
 
     void SetRawThunkData(LibPERawThunkData(T) *pThunkData) { m_pThunkData = pThunkData; }
-    void SetRawImportByName(LibPERawImportByName(T) *pImportByName) { m_pImportByName = pImportByName; }
-    void SetRawName(const char *pFunctionName) { m_pFunctionName = pFunctionName; }
     void SetRawOrdinal(uint16_t nOrdinal) { m_nOrdinal = nOrdinal; }
 
     virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawThunkData();
@@ -105,9 +101,6 @@ public:
 
 private:
     LibPERawThunkData(T) *m_pThunkData;
-    LibPERawImportByName(T) *m_pImportByName;
-    const char *m_pFunctionName;
-    uint16_t m_nOrdinal;
 };
 
 typedef PEImportTableT<PE32> PEImportTable32;

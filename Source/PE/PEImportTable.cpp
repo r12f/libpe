@@ -83,14 +83,18 @@ template <class T>
 const char *  
 PEImportFunctionT<T>::GetName()
 {
-    return m_pFunctionName;
+    LibPERawImportByName(T) *pImportByName = GetRawStruct();
+    LIBPE_ASSERT_RET(NULL != pImportByName, 0);
+    return (const char *)pImportByName->Name;
 }
 
 template <class T>
 uint16_t  
 PEImportFunctionT<T>::GetHint()
 {
-    return m_pImportByName->Hint;
+    LibPERawImportByName(T) *pImportByName = GetRawStruct();
+    LIBPE_ASSERT_RET(NULL != pImportByName, 0);
+    return pImportByName->Hint;
 }
 
 template <class T>

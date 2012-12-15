@@ -42,6 +42,7 @@ protected:
         }
 
         nRVA = pDataDirectory->VirtualAddress;
+        nSize = pDataDirectory->Size;
         nFOA = GetFOAFromRVA(nRVA);
         if(0 == nFOA) {
             return ERR_FAIL;
