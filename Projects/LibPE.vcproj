@@ -193,14 +193,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\Source\PE\PEExportFunction.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEExportFunction.h"
-				>
-			</File>
-			<File
 				RelativePath="..\Source\PE\PEExportTable.cpp"
 				>
 			</File>
@@ -255,6 +247,14 @@
 		</File>
 		<File
 			RelativePath="..\Source\LibPE64.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\Source\LibPEConfig.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\Source\LibPEConfig.h"
 			>
 		</File>
 		<File

@@ -36,6 +36,21 @@ PEExportTableT<T>::GetExportFunctionByName(const char *pFunctionName, IPEExportF
     return ERR_NOT_IMPL;
 }
 
+template <class T>
+const char *
+PEExportFunctionT<T>::GetName()
+{
+    return m_pName;
+}
+
+template <class T>
+uint16_t
+PEExportFunctionT<T>::GetHint()
+{
+    return m_nHint;
+}
+
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEExportTable);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEExportFunction);
 
 LIBPE_NAMESPACE_END

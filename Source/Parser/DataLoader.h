@@ -23,8 +23,6 @@ class DataLoaderDiskFile :
     typedef int FileHandle;
 #endif
 
-    enum { FILE_IO_BLOCK_SIZE  = 2 * 1024 * 1024 };
-
 public:
     DataLoaderDiskFile();
     virtual ~DataLoaderDiskFile();
@@ -47,6 +45,7 @@ private:
     uint64_t    m_nFileSize;
     bool_t      *m_pBlockStatus;
     int32_t     m_nBlockStatusCount;
+    uint64_t    m_nBlockSize;
 };
 
 LIBPE_NAMESPACE_END

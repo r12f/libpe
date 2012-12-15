@@ -4,7 +4,6 @@
 #include "PE/PESectionHeader.h"
 #include "PE/PESection.h"
 #include "PE/PEExportTable.h"
-#include "PE/PEExportFunction.h"
 #include "PE/PEImportTable.h"
 #include "PE/PERelocationTable.h"
 

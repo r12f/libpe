@@ -1,6 +1,7 @@
 #pragma once
 
 #include "LibPE.h"
+#include "LibPEConfig.h"
 
 LIBPE_NAMESPACE_BEGIN
 

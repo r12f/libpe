@@ -111,10 +111,11 @@ private:
 };
 
 typedef PEImportTableT<PE32> PEImportTable32;
-typedef PEImportTableT<PE64> PEImportTable64;
 typedef PEImportModuleT<PE32> PEImportModule32;
-typedef PEImportModuleT<PE64> PEImportModule64;
 typedef PEImportFunctionT<PE32> PEImportFunction32;
+
+typedef PEImportTableT<PE64> PEImportTable64;
+typedef PEImportModuleT<PE64> PEImportModule64;
 typedef PEImportFunctionT<PE64> PEImportFunction64;
 
 LIBPE_NAMESPACE_END
