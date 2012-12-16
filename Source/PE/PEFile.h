@@ -71,7 +71,7 @@ public:
     virtual error_t LIBPE_CALLTYPE GetGlobalRegister(IPEGlobalRegisterT<T> **ppGlobalRegister) { return ERR_NOT_IMPL; }
     virtual error_t LIBPE_CALLTYPE GetTlsTable(IPETlsTableT<T> **ppTlsTable) { return ERR_NOT_IMPL; }
     virtual error_t LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTableT<T> **ppBoundImportTable) { return ERR_NOT_IMPL; }
-    virtual error_t LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTable) { return ERR_NOT_IMPL; }
+    virtual error_t LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTable);
     virtual error_t LIBPE_CALLTYPE GetDelayImportTable(IPEDelayImportTableT<T> **ppDelayImportTable) { return ERR_NOT_IMPL; }
     virtual error_t LIBPE_CALLTYPE GetCLRHeader(IPECLRHeaderT<T> **ppCLRHeader) { return ERR_NOT_IMPL; }
 
@@ -105,6 +105,7 @@ private:
     LibPEPtr<IPEExportTableT<T>>        m_pExportTable;
     LibPEPtr<IPEImportTableT<T>>        m_pImportTable;
     LibPEPtr<IPERelocationTableT<T>>    m_pRelocationTable;
+    LibPEPtr<IPEImportAddressTableT<T>> m_pImportAddressTable;
 };
 
 typedef PEFileT<PE32> PEFile32;

@@ -19,6 +19,7 @@ public:
 
     void SetPEFile(PEFileT<T> *pFile) { m_pFile = pFile; }
     void SetParser(PEParserT<T> *pParser) { m_pParser = pParser; }
+    void SetRawMemory(void *pRawBuffer) { m_pRawBuffer = pRawBuffer; }
     void SetRVA(LibPEAddressT(T) nRVA) { m_nRVA = nRVA; }
     void SetVA(LibPEAddressT(T) nVA) { m_nVA = nVA; }
     void SetSizeInMemory(LibPEAddressT(T) nSizeInMemory) { m_nSizeInMemory = nSizeInMemory; }

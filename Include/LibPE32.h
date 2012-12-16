@@ -28,6 +28,8 @@ typedef IPEGlobalRegisterT<PE32>        IPEGlobalRegister32;
 typedef IPETlsTableT<PE32>              IPETlsTable32;
 typedef IPEBoundImportTableT<PE32>      IPEBoundImportTable32;
 typedef IPEImportAddressTableT<PE32>    IPEImportAddressTable32;
+typedef IPEImportAddressBlockT<PE32>    IPEImportAddressBlock32;
+typedef IPEImportAddressItemT<PE32>     IPEImportAddressItem32;
 typedef IPEDelayImportTableT<PE32>      IPEDelayImportTable32;
 typedef IPECLRHeaderT<PE32>             IPECLRHeader32;
 

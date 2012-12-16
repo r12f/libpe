@@ -28,6 +28,8 @@ typedef IPEGlobalRegisterT<PE64>        IPEGlobalRegister64;
 typedef IPETlsTableT<PE64>              IPETlsTable64;
 typedef IPEBoundImportTableT<PE64>      IPEBoundImportTable64;
 typedef IPEImportAddressTableT<PE64>    IPEImportAddressTable64;
+typedef IPEImportAddressBlockT<PE64>    IPEImportAddressBlock64;
+typedef IPEImportAddressItemT<PE64>     IPEImportAddressItem64;
 typedef IPEDelayImportTableT<PE64>      IPEDelayImportTable64;
 typedef IPECLRHeaderT<PE64>             IPECLRHeader64;
 

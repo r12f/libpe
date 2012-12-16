@@ -39,6 +39,8 @@ template <class T> class IPEGlobalRegisterT;
 template <class T> class IPETlsTableT;
 template <class T> class IPEBoundImportTableT;
 template <class T> class IPEImportAddressTableT;
+template <class T> class IPEImportAddressBlockT;
+template <class T> class IPEImportAddressItemT;
 template <class T> class IPEDelayImportTableT;
 template <class T> class IPECLRHeaderT;
 
@@ -270,7 +272,33 @@ template <class T>
 class IPEBoundImportTableT : public IPEElementT<T> {};
 
 template <class T>
-class IPEImportAddressTableT : public IPEElementT<T> {};
+class IPEImportAddressTableT : public IPEElementT<T>
+{
+public:
+    virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetImportAddressBlockCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetImportAddressBlockByIndex(uint32_t nIndex, IPEImportAddressBlockT<T> **ppBlock) = 0;
+    virtual bool_t LIBPE_CALLTYPE IsImportAddressBlockInTable(IPEImportAddressBlockT<T> *pBlock) = 0;
+    virtual bool_t LIBPE_CALLTYPE IsImportAddressItemInTable(IPEImportAddressItemT<T> *pItem) = 0;
+};
+
+template <class T>
+class IPEImportAddressBlockT : public IPEElementT<T>
+{
+public:
+    virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetImportAddressItemCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetImportAddressItemByIndex(uint32_t nIndex, IPEImportAddressItemT<T> **ppItem) = 0;
+    virtual bool_t LIBPE_CALLTYPE IsImportAddressItemInTable(IPEImportAddressItemT<T> *pItem) = 0;
+};
+
+template <class T>
+class IPEImportAddressItemT : public IPEElementT<T>
+{
+public:
+    virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawAddress() = 0;
+};
 
 template <class T>
 class IPEDelayImportTableT : public IPEElementT<T> {};

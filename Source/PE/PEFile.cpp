@@ -319,6 +319,20 @@ PEFileT<T>::GetRelocationTable(IPERelocationTableT<T> **ppRelocationTable)
     return m_pRelocationTable.CopyTo(ppRelocationTable);
 }
 
+template <class T>
+error_t
+PEFileT<T>::GetImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTable)
+{
+    if(NULL == m_pImportAddressTable) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
+        if(ERR_OK != m_pParser->ParseImportAddressTable(&m_pImportAddressTable) || NULL == m_pImportAddressTable) {
+            return ERR_FAIL;
+        }
+    }
+
+    return m_pImportAddressTable.CopyTo(ppImportAddressTable);
+}
+
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEFile);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromDiskFile);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromMappedFile);
@@ -326,6 +340,5 @@ LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromMappedFile);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromMappedResource);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromLoadedModule);
 #endif
-
 
 LIBPE_NAMESPACE_END

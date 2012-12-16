@@ -6,6 +6,7 @@
 #include "PE/PEExportTable.h"
 #include "PE/PEImportTable.h"
 #include "PE/PERelocationTable.h"
+#include "PE/PEImportAddressTable.h"
 
 LIBPE_NAMESPACE_BEGIN
 
@@ -262,6 +263,7 @@ PEParserDiskFileT<T>::ParseImportModule(LibPEAddressT(T) nImportDescRVA, LibPEAd
     pImportModule->SetSizeInFile(sizeof(IMAGE_IMPORT_BY_NAME));
     pImportModule->SetRawName(pImportName);
 
+    // TODO: We should deal with bound data and unbound data here.
     // First bridge to IMAGE_IMPORT_BY_NAME
     LibPEAddressT(T) nImportThunkRVA = pImportDescriptor->OriginalFirstThunk;
     LibPEAddressT(T) nImportThunkFOA = GetFOAFromRVA(nImportThunkRVA);
@@ -288,7 +290,6 @@ template <class T>
 error_t
 PEParserDiskFileT<T>::ParseImportFunction(LibPERawImportDescriptor(T) *pImportDescriptor, LibPERawThunkData(T) *pThunkData, IPEImportFunctionT<T> **ppFunction)
 {
-    // TODO: We should deal with bound data and unbound data here.
     LIBPE_ASSERT_RET(NULL != pImportDescriptor && NULL != pThunkData && NULL != ppFunction, ERR_POINTER);
 
     *ppFunction = NULL;
@@ -461,7 +462,155 @@ template <class T>
 error_t
 PEParserDiskFileT<T>::ParseImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTable)
 {
-    return ERR_NOT_IMPL;
+    LIBPE_ASSERT_RET(NULL != ppImportAddressTable, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, ERR_FAIL);
+
+    *ppImportAddressTable = NULL;
+
+    LibPEAddressT(T) nImportAddressTableRVA = 0, nImportAddressTableFOA = 0, nImportAddressTableSize = 0;
+    if(ERR_OK != GetDataDirectoryEntryInfo(IMAGE_DIRECTORY_ENTRY_IAT, nImportAddressTableRVA, nImportAddressTableFOA, nImportAddressTableSize)) {
+        return ERR_FAIL;
+    }
+
+    LibPEPtr<PEImportAddressTableT<T>> pImportAddressTable = new PEImportAddressTableT<T>();
+    if(NULL == pImportAddressTable) {
+        return ERR_NO_MEM;
+    }
+
+    pImportAddressTable->SetParser(this);
+    pImportAddressTable->SetPEFile(m_pFile);
+    pImportAddressTable->SetRVA(nImportAddressTableRVA);
+    pImportAddressTable->SetSizeInMemory(nImportAddressTableSize);
+    pImportAddressTable->SetFOA(nImportAddressTableFOA);
+    pImportAddressTable->SetSizeInFile(nImportAddressTableSize);
+
+    if(ERR_OK != ParseImportAddressTableContent(pImportAddressTable->GetRawStruct(), pImportAddressTable)) {
+        return ERR_FAIL;
+    }
+
+    *ppImportAddressTable = pImportAddressTable.Detach();
+
+    return ERR_OK;
+}
+
+template <class T>
+error_t
+PEParserDiskFileT<T>::ParseImportAddressTableContent(LibPERawThunkData(T) *pRawTable, IPEImportAddressTableT<T> *pImportAddressTable)
+{
+    LIBPE_ASSERT_RET(NULL != pRawTable && NULL != pImportAddressTable, ERR_POINTER);
+
+    PEImportAddressTableT<T> *pInnerImportAddressTable = static_cast<PEImportAddressTableT<T> *>(pImportAddressTable);
+    LibPEAddressT(T) nTableRVA = pImportAddressTable->GetRVA();
+    LibPEAddressT(T) nTableFOA = pImportAddressTable->GetFOA();
+
+    LibPERawThunkData(T) *pRawBlock = pRawTable;
+    LibPEAddressT(T) nParsedSize = 0, nTotalSize = pInnerImportAddressTable->GetSizeInFile();
+
+    while(nParsedSize < nTotalSize && 0 != pRawBlock->u1.Function) {
+        LibPEPtr<IPEImportAddressBlockT<T>> pBlock;
+        if(ERR_OK != ParseImportAddressBlock(pRawBlock, nTableRVA + nParsedSize, nTableFOA + nParsedSize, &pBlock) || NULL == pBlock) {
+            return ERR_FAIL;
+        }
+        pInnerImportAddressTable->InnerAddImportAddressBlock(pBlock);
+
+        nParsedSize += pBlock->GetSizeInFile();
+        pRawBlock = (LibPERawThunkData(T) *)(((uint8_t *)pRawTable) + nParsedSize);
+    }
+
+    return ERR_OK;
+}
+
+template <class T>
+error_t
+PEParserDiskFileT<T>::ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, LibPEAddressT(T) nBlockRVA, LibPEAddressT(T) nBlockFOA, IPEImportAddressBlockT<T> **ppBlock)
+{
+    LIBPE_ASSERT_RET(0 != nBlockRVA && 0 != nBlockFOA, ERR_INVALID_ARG);
+    LIBPE_ASSERT_RET(NULL != ppBlock, ERR_POINTER);
+
+    *ppBlock = NULL;
+
+    LibPEPtr<PEImportAddressBlockT<T>> pBlock = new PEImportAddressBlockT<T>();
+    if(NULL == pBlock) {
+        return ERR_NO_MEM;
+    }
+
+    pBlock->SetParser(this);
+    pBlock->SetPEFile(m_pFile);
+    pBlock->SetRawMemory(pRawBlock);
+    pBlock->SetRVA(nBlockRVA);
+    pBlock->SetFOA(nBlockFOA);
+    
+    // Reload FOA to ensure it is avaliable. Because we need it right now.
+    nBlockFOA = pBlock->GetFOA();
+
+    // If the RawBlock is NULL, we should ready the memory ourself.
+    LibPERawThunkData(T) *pRawItem = NULL;
+    bool_t bNeedLoadMemory = false;
+    if(NULL == pRawBlock) {
+        LIBPE_ASSERT_RET(NULL != m_pLoader, ERR_FAIL);
+        pRawItem = (LibPERawThunkData(T) *)m_pLoader->GetBuffer(nBlockFOA, sizeof(LibPERawThunkData(T)));
+        LIBPE_ASSERT_RET(NULL != pRawBlock, ERR_NO_MEM);
+        bNeedLoadMemory = true;
+    } else {
+        pRawItem = pRawBlock;
+    }
+
+    // Parse the child import address item. If you don't do this, we will never know the size of this block.
+    LibPEAddressT(T) nBlockSize = 0;
+    while(pRawItem->u1.Function != 0) {
+        LibPEPtr<IPEImportAddressItemT<T>> pItem;
+        if(ERR_OK != ParseImportAddressItem(pRawItem, nBlockRVA + nBlockSize, nBlockFOA + nBlockSize, &pItem)) {
+            return ERR_FAIL;
+        }
+        pBlock->InnerAddImportAddressItem(pItem);
+
+        nBlockSize += sizeof(LibPERawThunkData(T));
+
+        if(bNeedLoadMemory) {
+            pRawItem = (LibPERawThunkData(T) *)m_pLoader->GetBuffer(nBlockFOA + nBlockSize, sizeof(LibPERawThunkData(T)));
+            LIBPE_ASSERT_RET(NULL != pRawItem, ERR_NO_MEM);
+        } else {
+            ++pRawItem;
+        }
+    }
+
+    nBlockSize += sizeof(LibPERawThunkData(T));
+
+    pBlock->SetSizeInMemory(nBlockSize);
+    pBlock->SetSizeInFile(nBlockSize);
+
+    *ppBlock = pBlock.Detach();
+
+    return ERR_OK;
+}
+
+template <class T>
+error_t
+PEParserDiskFileT<T>::ParseImportAddressItem(LibPERawThunkData(T) *pRawItem, LibPEAddressT(T) nItemRVA, LibPEAddressT(T) nItemFOA, IPEImportAddressItemT<T> **ppItem)
+{
+    // We can ignore the condition - (NULL != pRawItem) here.
+    // Because the memory will be ready while you call GetRawStruct() at the first time.
+    LIBPE_ASSERT_RET(NULL != ppItem, ERR_POINTER);
+    LIBPE_ASSERT_RET(0 != nItemRVA && 0 != nItemFOA, ERR_INVALID_ARG);
+
+    *ppItem = NULL;
+
+    LibPEPtr<PEImportAddressItemT<T>> pItem = new PEImportAddressItemT<T>();
+    if(NULL == pItem) {
+        return ERR_NO_MEM;
+    }
+
+    pItem->SetParser(this);
+    pItem->SetPEFile(m_pFile);
+    pItem->SetRawMemory(pRawItem);
+    pItem->SetRVA(nItemRVA);
+    pItem->SetSizeInMemory(sizeof(LibPERawThunkData(T)));
+    pItem->SetFOA(nItemFOA);
+    pItem->SetSizeInFile(sizeof(LibPERawThunkData(T)));
+
+    *ppItem = pItem.Detach();
+
+    return ERR_OK;
 }
 
 template <class T>

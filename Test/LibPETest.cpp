@@ -61,6 +61,27 @@ void TestRelocationTable(IPEFile *pFile)
     }
 }
 
+void TestImportAddressTable(IPEFile *pFile)
+{
+    LibPEPtr<IPEImportAddressTable> pImportAddressTable;
+    pFile->GetImportAddressTable(&pImportAddressTable);
+
+    printf("Import Address Table:\n");
+    for(uint32_t nBlockIndex = 0; nBlockIndex < pImportAddressTable->GetImportAddressBlockCount(); ++nBlockIndex) {
+        LibPEPtr<IPEImportAddressBlock> pImportAddressBlock;
+        pImportAddressTable->GetImportAddressBlockByIndex(nBlockIndex, &pImportAddressBlock);
+        printf("Import Address Block: RVA = 0x%08x\n", pImportAddressBlock->GetRVA());
+
+        for(uint32_t nItemIndex = 0; nItemIndex < pImportAddressBlock->GetImportAddressItemCount(); ++nItemIndex) {
+            LibPEPtr<IPEImportAddressItem> pImportAddressItem;
+            pImportAddressBlock->GetImportAddressItemByIndex(nItemIndex, &pImportAddressItem);
+            printf("Import Address Item: RVA = 0x%08x, Address = 0x%08x\n", pImportAddressItem->GetRVA(), pImportAddressItem->GetRawAddress());
+        }
+
+        printf("\n");
+    }
+}
+
 int wmain(int argc, wchar_t* argv[])
 {
     LibPEPtr<IPEFile> pFile;
@@ -75,9 +96,10 @@ int wmain(int argc, wchar_t* argv[])
     printf("FileHeader: 0x%08x\n", pFile->GetFileHeader());
     printf("OptionalHeader: 0x%08x\n", pFile->GetOptionalHeader());
 
-    TestExportTable(pFile);
-    TestImportTable(pFile);
-    TestRelocationTable(pFile);
+    //TestExportTable(pFile);
+    //TestImportTable(pFile);
+    //TestRelocationTable(pFile);
+    TestImportAddressTable(pFile);
 
 	return 0;
 }

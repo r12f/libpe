@@ -343,6 +343,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Source\PE\PEImportAddressTable.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\Source\PE\PEImportAddressTable.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Source\PE\PEImportTable.cpp"
 				>
 			</File>

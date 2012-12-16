@@ -56,6 +56,9 @@ public:
     virtual error_t ParseTlsTable(IPETlsTableT<T> **ppTlsTable) = 0;
     virtual error_t ParseBoundImportTable(IPEBoundImportTableT<T> **ppBoundImportTable) = 0;
     virtual error_t ParseImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTable) = 0;
+    virtual error_t ParseImportAddressTableContent(LibPERawThunkData(T) *pRawTable, IPEImportAddressTableT<T> *pImportAddressTable) = 0;
+    virtual error_t ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, LibPEAddressT(T) nBlockRVA, LibPEAddressT(T) nBlockFOA, IPEImportAddressBlockT<T> **ppBlock) = 0;
+    virtual error_t ParseImportAddressItem(LibPERawThunkData(T) *pRawItem, LibPEAddressT(T) nItemRVA, LibPEAddressT(T) nItemFOA, IPEImportAddressItemT<T> **ppItem) = 0;
     virtual error_t ParseDelayImportTable(IPEDelayImportTableT<T> **ppDelayImportTable) = 0;
     virtual error_t ParseCLRHeader(IPECLRHeaderT<T> **ppCLRHeader) = 0;
 

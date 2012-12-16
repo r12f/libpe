@@ -36,6 +36,8 @@ typedef IPEGlobalRegister32         IPEGlobalRegister;
 typedef IPETlsTable32               IPETlsTable;
 typedef IPEBoundImportTable32       IPEBoundImportTable;
 typedef IPEImportAddressTable32     IPEImportAddressTable;
+typedef IPEImportAddressBlock32     IPEImportAddressBlock;
+typedef IPEImportAddressItem32      IPEImportAddressItem;
 typedef IPEDelayImportTable32       IPEDelayImportTable;
 typedef IPECLRHeader32              IPECLRHeader;
 
@@ -67,6 +69,8 @@ typedef IPEGlobalRegister64         IPEGlobalRegister;
 typedef IPETlsTable64               IPETlsTable;
 typedef IPEBoundImportTable64       IPEBoundImportTable;
 typedef IPEImportAddressTable64     IPEImportAddressTable;
+typedef IPEImportAddressBlock64     IPEImportAddressBlock;
+typedef IPEImportAddressItem64      IPEImportAddressItem;
 typedef IPEDelayImportTable64       IPEDelayImportTable;
 typedef IPECLRHeader64              IPECLRHeader;
 
