@@ -24,9 +24,9 @@ PEParserT<T>::Create(PEParserType nType)
 
 template <class T>
 error_t
-PEParserDiskFileT<T>::ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPERawNtHeadersT(T) **ppNtHeaders, SectionHeaderList *pSectionHeaders)
+PEParserDiskFileT<T>::ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPERawNtHeadersT(T) **ppNtHeaders, SectionHeaderList *pSectionHeaders, IPEExtraDataT<T> **ppExtraData)
 {
-    LIBPE_ASSERT_RET(NULL != ppDosHeader && NULL != ppNtHeaders && NULL != pSectionHeaders, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != ppDosHeader && NULL != ppNtHeaders && NULL != pSectionHeaders && NULL != ppExtraData, ERR_POINTER);
     LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, ERR_FAIL);
 
     // Parse PE header
@@ -42,17 +42,13 @@ PEParserDiskFileT<T>::ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPER
     *ppNtHeaders = pNtHeaders;
 
     // Parse section headers
-    uint32_t nSectionHeaderOffset = 0;
     uint32_t nStartSectionHeaderOffset = pDosHeader->e_lfanew + sizeof(DWORD) + sizeof(LibPERawFileHeaderT(T)) + pNtHeaders->FileHeader.SizeOfOptionalHeader;
-    LibPERawSectionHeaderT(T) *pRawSectionHeader = NULL;
+    uint32_t nSectionHeaderOffset = nStartSectionHeaderOffset;
+    LibPEPtr<PESectionHeaderT<T>> pSectionHeader;
     for(uint16_t nSectionId = 0; nSectionId < pNtHeaders->FileHeader.NumberOfSections; ++nSectionId) {
         nSectionHeaderOffset = nStartSectionHeaderOffset + nSectionId * sizeof(LibPERawSectionHeaderT(T));
-        pRawSectionHeader = (LibPERawSectionHeaderT(T) *)m_pLoader->GetBuffer(nSectionHeaderOffset, sizeof(LibPERawSectionHeaderT(T)));
-        if(NULL == pRawSectionHeader) {
-            return ERR_FAIL;
-        }
 
-        LibPEPtr<PESectionHeaderT<T>> pSectionHeader = new PESectionHeaderT<T>();
+        pSectionHeader = new PESectionHeaderT<T>();
         if(NULL == pSectionHeader) {
             return ERR_NO_MEM;
         }
@@ -63,9 +59,40 @@ PEParserDiskFileT<T>::ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPER
         pSectionHeader->SetSizeInMemory(sizeof(LibPERawOptionalHeaderT(T)));
         pSectionHeader->SetFOA(nSectionHeaderOffset);
         pSectionHeader->SetSizeInFile(sizeof(LibPERawOptionalHeaderT(T)));
-        pSectionHeader->SetRawSectionHeader(pRawSectionHeader);
 
         pSectionHeaders->push_back(pSectionHeader.p);
+    }
+
+    // Parse extra data
+    LibPEAddressT(T) nExtraDataBeginFOA = nStartSectionHeaderOffset;
+    LibPEAddressT(T) nExtraDataBeginRVA = nStartSectionHeaderOffset;
+    if(NULL != pSectionHeader) {
+        LibPEPtr<IPESectionT<T>> pSection;
+        if(ERR_OK != pSectionHeader->GetSection(&pSection) || NULL == pSection) {
+            return ERR_FAIL;
+        }
+
+        nExtraDataBeginFOA = pSection->GetFOA() + pSection->GetSizeInFile();
+        nExtraDataBeginRVA = pSection->GetRVA() + pSection->GetSizeInMemory();
+    }
+
+    LibPEAddressT(T) nFileSize = (LibPEAddressT(T))(m_pLoader->GetSize());
+    if(nExtraDataBeginFOA < nFileSize) {
+        LibPEAddressT(T) nExtraDataSize = nFileSize - nExtraDataBeginFOA;
+
+        LibPEPtr<PEExtraDataT<T>> pExtraData = new PEExtraDataT<T>();
+        if(NULL == pExtraData) {
+            return ERR_NO_MEM;
+        }
+        
+        pExtraData->SetParser(this);
+        pExtraData->SetPEFile(m_pFile);
+        pExtraData->SetRVA(nExtraDataBeginRVA);
+        pExtraData->SetSizeInMemory(nExtraDataSize);
+        pExtraData->SetFOA(nExtraDataBeginFOA);
+        pExtraData->SetSizeInFile(nExtraDataSize);
+
+        *ppExtraData = pExtraData.Detach();
     }
 
     return ERR_OK;
@@ -263,9 +290,14 @@ PEParserDiskFileT<T>::ParseImportModule(LibPEAddressT(T) nImportDescRVA, LibPEAd
     pImportModule->SetSizeInFile(sizeof(IMAGE_IMPORT_BY_NAME));
     pImportModule->SetRawName(pImportName);
 
-    // TODO: We should deal with bound data and unbound data here.
-    // First bridge to IMAGE_IMPORT_BY_NAME
+    // By default, we use the first bridge to IMAGE_IMPORT_BY_NAME. But in some cases, the first bridge is NULL.
+    // Compilers use the second bridge only. So we should fix the thunk entry at that time.
     LibPEAddressT(T) nImportThunkRVA = pImportDescriptor->OriginalFirstThunk;
+    if(0 == pImportDescriptor->OriginalFirstThunk) {
+        nImportThunkRVA = pImportDescriptor->FirstThunk;
+    }
+    LIBPE_ASSERT_RET(0 != nImportThunkRVA, ERR_FAIL);
+
     LibPEAddressT(T) nImportThunkFOA = GetFOAFromRVA(nImportThunkRVA);
     if(0 == nImportThunkFOA) {
         return ERR_FAIL;
@@ -549,7 +581,7 @@ PEParserDiskFileT<T>::ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, L
     if(NULL == pRawBlock) {
         LIBPE_ASSERT_RET(NULL != m_pLoader, ERR_FAIL);
         pRawItem = (LibPERawThunkData(T) *)m_pLoader->GetBuffer(nBlockFOA, sizeof(LibPERawThunkData(T)));
-        LIBPE_ASSERT_RET(NULL != pRawBlock, ERR_NO_MEM);
+        LIBPE_ASSERT_RET(NULL != pRawItem, ERR_NO_MEM);
         bNeedLoadMemory = true;
     } else {
         pRawItem = pRawBlock;

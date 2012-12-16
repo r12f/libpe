@@ -190,10 +190,12 @@ class IPEImportModuleT: public IPEElementT<T>
 {
 public:
     virtual LibPERawImportDescriptor(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
+    virtual bool_t LIBPE_CALLTYPE IsBound() = 0;
     virtual const char * LIBPE_CALLTYPE GetName() = 0;
     virtual uint32_t LIBPE_CALLTYPE GetImportFunctionCount() = 0;
     virtual error_t LIBPE_CALLTYPE GetImportFunctionByIndex(uint32_t nFunctionId, IPEImportFunctionT<T> **ppFunction) = 0;
     virtual error_t LIBPE_CALLTYPE GetImportFunctionByName(const char *pFunctionName, IPEImportFunctionT<T> **ppFunction) = 0;
+    virtual error_t LIBPE_CALLTYPE GetRelatedImportAddressBlock(IPEImportAddressBlockT<T> **ppBlock) = 0;
 };
 
 template <class T>

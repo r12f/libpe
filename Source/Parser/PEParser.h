@@ -40,7 +40,7 @@ public:
     virtual LibPEAddressT(T) GetVAFromFOA(LibPEAddressT(T) nFOA);
     virtual LibPEAddressT(T) GetFOAFromVA(LibPEAddressT(T) nVA);
 
-    virtual error_t ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPERawNtHeadersT(T) **ppNtHeaders, SectionHeaderList *pSectionHeaders) = 0;
+    virtual error_t ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPERawNtHeadersT(T) **ppNtHeaders, SectionHeaderList *pSectionHeaders, IPEExtraDataT<T> **ppExtraData) = 0;
     virtual error_t ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESectionT<T> **ppSection) = 0;
     virtual error_t ParseExportTable(IPEExportTableT<T> **ppExportTable) = 0;
     virtual error_t ParseExportFunction(IPEExportTableT<T> *pExportTable, uint32_t nIndex, IPEExportFunctionT<T> **ppFunction) = 0;

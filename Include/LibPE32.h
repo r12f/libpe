@@ -11,6 +11,7 @@ typedef IPEFileT<PE32>                  IPEFile32;
 typedef IPEElementT<PE32>               IPEElement32;
 typedef IPESectionHeaderT<PE32>         IPESectionHeader32;
 typedef IPESectionT<PE32>               IPESection32;
+typedef IPEExtraDataT<PE32>             IPEExtraData32;
 typedef IPEExportTableT<PE32>           IPEExportTable32;
 typedef IPEExportFunctionT<PE32>        IPEExportFunction32;
 typedef IPEImportTableT<PE32>           IPEImportTable32;

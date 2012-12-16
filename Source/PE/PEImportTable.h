@@ -69,14 +69,17 @@ public:
 
     void SetRawName(const char *pName) { m_pName = pName; }
 
+    virtual bool_t LIBPE_CALLTYPE IsBound();
     virtual const char * LIBPE_CALLTYPE GetName() { return m_pName; }
     virtual uint32_t LIBPE_CALLTYPE GetImportFunctionCount() { return (uint32_t)m_vFunctions.size(); }
     virtual error_t LIBPE_CALLTYPE GetImportFunctionByIndex(uint32_t nIndex, IPEImportFunctionT<T> **ppFunction);
     virtual error_t LIBPE_CALLTYPE GetImportFunctionByName(const char *pFunctionName, IPEImportFunctionT<T> **ppFunction);
+    virtual error_t LIBPE_CALLTYPE GetRelatedImportAddressBlock(IPEImportAddressBlockT<T> **ppBlock);
 
 private:
-    const char                      *m_pName;
-    FunctionList                    m_vFunctions;
+    const char                          *m_pName;
+    FunctionList                        m_vFunctions;
+    LibPEPtr<IPEImportAddressBlockT<T>> m_pRelatedIABlock;
 };
 
 template <class T>

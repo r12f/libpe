@@ -27,7 +27,7 @@ public:
     void Init(PEParserT<T> *pParser) {
         LIBPE_ASSERT_RET_VOID(NULL != pParser);
         m_pParser = pParser;
-        if(ERR_OK == pParser->ParseBasicInfo(&m_pDosHeader, &m_pNtHeaders, &m_vSectionHeaders) && NULL != m_pDosHeader && NULL != m_pNtHeaders) {
+        if(ERR_OK == pParser->ParseBasicInfo(&m_pDosHeader, &m_pNtHeaders, &m_vSectionHeaders, &m_pExtraData) && NULL != m_pDosHeader && NULL != m_pNtHeaders) {
             m_pFileHeader = &(m_pNtHeaders->FileHeader);
             m_pOptionalHeader = &(m_pNtHeaders->OptionalHeader);
         }
@@ -102,6 +102,7 @@ private:
     LibPERawFileHeaderT(T)              *m_pFileHeader;
     LibPERawOptionalHeaderT(T)          *m_pOptionalHeader;
     SectionHeaderList                   m_vSectionHeaders;
+    LibPEPtr<IPEExtraDataT<T>>          m_pExtraData;
     LibPEPtr<IPEExportTableT<T>>        m_pExportTable;
     LibPEPtr<IPEImportTableT<T>>        m_pImportTable;
     LibPEPtr<IPERelocationTableT<T>>    m_pRelocationTable;

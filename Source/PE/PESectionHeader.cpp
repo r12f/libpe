@@ -8,8 +8,8 @@ error_t
 PESectionHeaderT<T>::GetSection(IPESectionT<T> **ppSection)
 {
     if(NULL == m_pSection) {
-        LIBPE_ASSERT_RET(NULL != m_pParser && NULL != m_pSectionHeader, ERR_FAIL);
-        if(ERR_OK != m_pParser->ParseSection(m_pSectionHeader, &m_pSection) || NULL == m_pSection) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
+        if(ERR_OK != m_pParser->ParseSection(GetRawStruct(), &m_pSection) || NULL == m_pSection) {
             return ERR_FAIL;
         }
     }

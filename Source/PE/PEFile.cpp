@@ -204,7 +204,8 @@ template <class T>
 error_t
 PEFileT<T>::GetExtraData(IPEExtraDataT<T> **ppExtraData)
 {
-    return ERR_NOT_IMPL;
+    LIBPE_ASSERT_RET(NULL != ppExtraData, ERR_POINTER);
+    return m_pExtraData.CopyTo(ppExtraData);
 }
 
 template <class T>

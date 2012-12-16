@@ -11,6 +11,7 @@ typedef IPEFileT<PE64>                  IPEFile64;
 typedef IPEElementT<PE64>               IPEElement64;
 typedef IPESectionHeaderT<PE64>         IPESectionHeader64;
 typedef IPESectionT<PE64>               IPESection64;
+typedef IPEExtraDataT<PE64>             IPEExtraData64;
 typedef IPEExportTableT<PE64>           IPEExportTable64;
 typedef IPEExportFunctionT<PE64>        IPEExportFunction64;
 typedef IPEImportTableT<PE64>           IPEImportTable64;

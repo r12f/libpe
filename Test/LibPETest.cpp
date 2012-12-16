@@ -2,6 +2,31 @@
 
 using namespace LibPE;
 
+void TestSection(IPEFile *pFile)
+{
+    printf("Sections:\n");
+
+    uint32_t nSectionCount = pFile->GetSectionCount();
+    for(uint32_t nSectionIndex = 0; nSectionIndex < nSectionCount; ++nSectionIndex) {
+        LibPEPtr<IPESection> pSection;
+        pFile->GetSection(nSectionIndex, &pSection);
+        printf("Section #%lu: Name = %s, RVA = 0x%08x, SizeInMemory = 0x%08x, FOA = 0x%08x, SizeInFile = 0x%08x\n",
+            nSectionIndex, pSection->GetName(), pSection->GetRVA(), pSection->GetSizeInMemory(),
+            pSection->GetFOA(), pSection->GetSizeInFile());
+    }
+
+    LibPEPtr<IPEExtraData> pExtraData;
+    if(ERR_OK != pFile->GetExtraData(&pExtraData) || NULL == pExtraData) {
+        printf("No extra data found.\n");
+    } else {
+        printf("Extra data: RVA = 0x%08x, SizeInMemory = 0x%08x, FOA = 0x%08x, SizeInFile = 0x%08x\n",
+            pExtraData->GetRVA(), pExtraData->GetSizeInMemory(),
+            pExtraData->GetFOA(), pExtraData->GetSizeInFile());
+    }
+
+    printf("\n");
+}
+
 void TestExportTable(IPEFile *pFile) 
 {
     // Export Table
@@ -28,7 +53,11 @@ void TestImportTable(IPEFile *pFile)
     for(uint32_t nImportModuleIndex = 0; nImportModuleIndex < pImportTable->GetImportModuleCount(); ++nImportModuleIndex) {
         LibPEPtr<IPEImportModule> pImportModule;
         pImportTable->GetImportModuleByIndex(nImportModuleIndex, &pImportModule);
-        printf("Import Module: %s\n", pImportModule->GetName());
+
+        LibPEPtr<IPEImportAddressBlock> pRelatedIABlock;
+        pImportModule->GetRelatedImportAddressBlock(&pRelatedIABlock);
+
+        printf("Import Module: %s (Bound: %s, IABlock: %08x)\n", pImportModule->GetName(), pImportModule->IsBound() ? "true" : "false", pRelatedIABlock->GetRVA());
 
         for(uint32_t nImportFunctionIndex = 0; nImportFunctionIndex < pImportModule->GetImportFunctionCount(); ++nImportFunctionIndex) {
             LibPEPtr<IPEImportFunction> pImportFunction;
@@ -96,10 +125,11 @@ int wmain(int argc, wchar_t* argv[])
     printf("FileHeader: 0x%08x\n", pFile->GetFileHeader());
     printf("OptionalHeader: 0x%08x\n", pFile->GetOptionalHeader());
 
+    //TestSection(pFile);
     //TestExportTable(pFile);
-    //TestImportTable(pFile);
+    TestImportTable(pFile);
     //TestRelocationTable(pFile);
-    TestImportAddressTable(pFile);
+    //TestImportAddressTable(pFile);
 
 	return 0;
 }

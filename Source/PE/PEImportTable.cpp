@@ -46,6 +46,16 @@ PEImportTableT<T>::GetImportFunctionByName(const char *pModuleName, const char *
 }
 
 template <class T>
+bool_t
+PEImportModuleT<T>::IsBound()
+{
+    LibPERawImportDescriptor(T) *pImportDesc = GetRawStruct();
+    LIBPE_ASSERT_RET(NULL != pImportDesc, 0);
+    return (0 != pImportDesc->TimeDateStamp);
+}
+
+
+template <class T>
 error_t
 PEImportModuleT<T>::GetImportFunctionByIndex(uint32_t nIndex, IPEImportFunctionT<T> **ppFunction)
 {
@@ -70,6 +80,31 @@ error_t
 PEImportModuleT<T>::GetImportFunctionByName(const char *pFunctionName, IPEImportFunctionT<T> **ppFunction)
 {
     return ERR_NOT_IMPL;
+}
+
+template <class T>
+error_t
+PEImportModuleT<T>::GetRelatedImportAddressBlock(IPEImportAddressBlockT<T> **ppBlock)
+{
+    LIBPE_ASSERT_RET(NULL != ppBlock, ERR_POINTER);
+
+    // However, we should parse the related IAT block here. Very useful for bounded module.
+    if(NULL == m_pRelatedIABlock) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
+
+        LibPERawImportDescriptor(T) *pImportDescriptor = GetRawStruct();
+        LIBPE_ASSERT_RET(NULL != pImportDescriptor, ERR_FAIL);
+
+        LibPEAddressT(T) nImportAddressBlockRVA = pImportDescriptor->FirstThunk;
+        if(0 != nImportAddressBlockRVA) {
+            LibPEAddressT(T) nImportAddressBlockFOA = m_pParser->GetFOAFromRVA(nImportAddressBlockRVA);
+            if(ERR_OK != m_pParser->ParseImportAddressBlock(NULL, nImportAddressBlockRVA, nImportAddressBlockFOA, &m_pRelatedIABlock) || NULL == m_pRelatedIABlock) {
+                return ERR_FAIL;
+            }
+        }
+    }
+
+    return m_pRelatedIABlock.CopyTo(ppBlock);
 }
 
 template <class T>

@@ -29,7 +29,23 @@ private:
     LibPERawSectionHeaderT(T) *m_pSectionHeader;
 };
 
-typedef PESectionT<PE32> PESection32;
-typedef PESectionT<PE64> PESection64;
+template <class T>
+class PEExtraDataT :
+    public IPEExtraDataT<T>,
+    public PEElementT<T>
+{
+public:
+    PEExtraDataT() {}
+    virtual ~PEExtraDataT() {}
+
+    LIBPE_SINGLE_THREAD_OBJECT()
+    DECLARE_PE_ELEMENT(void)
+};
+
+typedef PESectionT<PE32>    PESection32;
+typedef PEExtraDataT<PE32>  PEExtraData32;
+
+typedef PESectionT<PE64>    PESection64;
+typedef PEExtraDataT<PE64>  PEExtraData64;
 
 LIBPE_NAMESPACE_END
