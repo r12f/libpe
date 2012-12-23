@@ -17,14 +17,29 @@ public:
 
     virtual ~PEElementT() {}
 
-    void SetPEFile(PEFileT<T> *pFile) { m_pFile = pFile; }
-    void SetParser(PEParserT<T> *pParser) { m_pParser = pParser; }
-    void SetRawMemory(void *pRawBuffer) { m_pRawBuffer = pRawBuffer; }
-    void SetRVA(LibPEAddressT(T) nRVA) { m_nRVA = nRVA; }
-    void SetVA(LibPEAddressT(T) nVA) { m_nVA = nVA; }
-    void SetSizeInMemory(LibPEAddressT(T) nSizeInMemory) { m_nSizeInMemory = nSizeInMemory; }
-    void SetFOA(LibPEAddressT(T) nFOA) { m_nFOA = nFOA; }
-    void SetSizeInFile(LibPEAddressT(T) nSizeInFile) { m_nSizeInFile = nSizeInFile; }
+    void InnerSetBase(PEFileT<T> *pFile, PEParserT<T> *pParser)
+    {
+        m_pFile = pFile;
+        m_pParser = pParser;
+    }
+
+    void InnerSetRawMemory(void *pRawBuffer)
+    {
+        m_pRawBuffer = pRawBuffer;
+    }
+    
+    void InnerSetMemoryInfo(LibPEAddressT(T) nRVA, LibPEAddressT(T) nVA, LibPEAddressT(T) nSizeInMemory)
+    {
+        m_nRVA = nRVA;
+        m_nVA = nVA;
+        m_nSizeInMemory = nSizeInMemory;
+    }
+
+    void InnerSetFileInfo(LibPEAddressT(T) nFOA, LibPEAddressT(T) nSizeInFile)
+    {
+        m_nFOA = nFOA;
+        m_nSizeInFile = nSizeInFile;
+    }
 
     // Override IPEElementT<T>
     virtual void * LIBPE_CALLTYPE GetRawMemory();

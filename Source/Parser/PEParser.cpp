@@ -189,12 +189,9 @@ PEParserT<T>::ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPERawNtHead
             return ERR_NO_MEM;
         }
 
-        pSectionHeader->SetParser(this);
-        pSectionHeader->SetPEFile(m_pFile);
-        pSectionHeader->SetRVA(nSectionHeaderOffset);
-        pSectionHeader->SetSizeInMemory(sizeof(LibPERawOptionalHeaderT(T)));
-        pSectionHeader->SetFOA(nSectionHeaderOffset);
-        pSectionHeader->SetSizeInFile(sizeof(LibPERawOptionalHeaderT(T)));
+        pSectionHeader->InnerSetBase(m_pFile, this);
+        pSectionHeader->InnerSetMemoryInfo(nSectionHeaderOffset, 0, sizeof(LibPERawOptionalHeaderT(T)));
+        pSectionHeader->InnerSetFileInfo(nSectionHeaderOffset, sizeof(LibPERawOptionalHeaderT(T)));
 
         pSectionHeaders->push_back(pSectionHeader.p);
     }
@@ -221,12 +218,9 @@ PEParserT<T>::ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPERawNtHead
             return ERR_NO_MEM;
         }
         
-        pOverlay->SetParser(this);
-        pOverlay->SetPEFile(m_pFile);
-        pOverlay->SetRVA(nOverlayBeginRVA);
-        pOverlay->SetSizeInMemory(nOverlaySize);
-        pOverlay->SetFOA(nOverlayBeginFOA);
-        pOverlay->SetSizeInFile(nOverlaySize);
+        pOverlay->InnerSetBase(m_pFile, this);
+        pOverlay->InnerSetMemoryInfo(nOverlayBeginRVA, 0, nOverlaySize);
+        pOverlay->InnerSetFileInfo(nOverlayBeginFOA, nOverlaySize);
 
         *ppOverlay = pOverlay.Detach();
     }
@@ -246,13 +240,10 @@ PEParserT<T>::ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESection
         return ERR_NO_MEM;
     }
 
-    pRawSection->SetParser(this);
-    pRawSection->SetPEFile(m_pFile);
-    pRawSection->SetRVA(pSectionHeader->VirtualAddress);
-    pRawSection->SetSizeInMemory(pSectionHeader->SizeOfRawData);
-    pRawSection->SetFOA(pSectionHeader->PointerToRawData);
-    pRawSection->SetSizeInFile(pSectionHeader->SizeOfRawData);
-    pRawSection->SetRawSectionHeader(pSectionHeader);
+    pRawSection->InnerSetBase(m_pFile, this);
+    pRawSection->InnerSetMemoryInfo(pSectionHeader->VirtualAddress, 0, pSectionHeader->SizeOfRawData);
+    pRawSection->InnerSetFileInfo(pSectionHeader->PointerToRawData, pSectionHeader->SizeOfRawData);
+    pRawSection->InnerSetSectionHeader(pSectionHeader);
 
     *ppSection = pRawSection.Detach();
 
@@ -278,12 +269,9 @@ PEParserT<T>::ParseExportTable(IPEExportTableT<T> **ppExportTable)
         return ERR_NO_MEM;
     }
 
-    pExportTable->SetParser(this);
-    pExportTable->SetPEFile(m_pFile);
-    pExportTable->SetRVA(nExportTableRVA);
-    pExportTable->SetSizeInMemory(nExportTableSize);
-    pExportTable->SetFOA(nExportTableFOA);
-    pExportTable->SetSizeInFile(nExportTableSize);
+    pExportTable->InnerSetBase(m_pFile, this);
+    pExportTable->InnerSetMemoryInfo(nExportTableRVA, 0, nExportTableSize);
+    pExportTable->InnerSetFileInfo(nExportTableFOA, nExportTableSize);
 
     LibPERawExportDirectory(T) *pExportDirectory = pExportTable->GetRawStruct();
     if(NULL == pExportDirectory) {
@@ -300,9 +288,9 @@ PEParserT<T>::ParseExportTable(IPEExportTableT<T> **ppExportTable)
 
     LIBPE_ASSERT_RET(NULL != pFunctionList && NULL != pNameList && NULL != pNameOrdinalList, ERR_NO_MEM);
 
-    pExportTable->SetRawFunctionList(pFunctionList);
-    pExportTable->SetRawNameList(pNameList);
-    pExportTable->SetRawNameOrdinalList(pNameOrdinalList);
+    pExportTable->InnerSetFunctionList(pFunctionList);
+    pExportTable->InnerSetNameList(pNameList);
+    pExportTable->InnerSetNameOrdinalList(pNameOrdinalList);
     
     if(!pExportTable->PrepareForUsing()) {
         return ERR_FAIL;
@@ -335,18 +323,16 @@ PEParserT<T>::ParseExportFunction(IPEExportTableT<T> *pExportTable, uint32_t nIn
         return ERR_NO_MEM;
     }
 
-    pFunction->SetParser(this);
-    pFunction->SetPEFile(m_pFile);
-    pFunction->SetRVA(nFunctionRVA);
-    pFunction->SetSizeInMemory(0);
-    pFunction->SetSizeInFile(0);
-    pFunction->SetRawHint(nNameOrdinal);
+    pFunction->InnerSetBase(m_pFile, this);
+    pFunction->InnerSetMemoryInfo(nFunctionRVA, 0, 0);
+    pFunction->InnerSetFileInfo(0, 0);
+    pFunction->InnerSetHint(nNameOrdinal);
 
     if(nNameRVA != 0) {
         LibPEAddressT(T) nNameFOA = GetFOAFromRVA(nNameRVA);
         uint64_t nNameBufferSize = 0;
         const char *pName = m_pLoader->GetAnsiString(nNameFOA, nNameBufferSize);
-        pFunction->SetRawName(pName);
+        pFunction->InnerSetName(pName);
     }
 
     *ppFunction = pFunction.Detach();
@@ -374,12 +360,9 @@ PEParserT<T>::ParseImportTable(IPEImportTableT<T> **ppImportTable)
         return ERR_NO_MEM;
     }
 
-    pImportTable->SetParser(this);
-    pImportTable->SetPEFile(m_pFile);
-    pImportTable->SetRVA(nImportTableRVA);
-    pImportTable->SetSizeInMemory(nImportTableSize);
-    pImportTable->SetFOA(nImportTableFOA);
-    pImportTable->SetSizeInFile(nImportTableSize);
+    pImportTable->InnerSetBase(m_pFile, this);
+    pImportTable->InnerSetMemoryInfo(nImportTableRVA, 0, nImportTableSize);
+    pImportTable->InnerSetFileInfo(nImportTableFOA, nImportTableSize);
 
     LibPERawImportDescriptor(T) *pImportDesc = pImportTable->GetRawStruct();
     if(NULL == pImportDesc) {
@@ -418,13 +401,10 @@ PEParserT<T>::ParseImportModule(LibPEAddressT(T) nImportDescRVA, LibPEAddressT(T
     LibPEPtr<PEImportModuleT<T>> pImportModule = new PEImportModuleT<T>();
     LIBPE_ASSERT_RET(NULL != pImportModule, ERR_NO_MEM);
 
-    pImportModule->SetParser(this);
-    pImportModule->SetPEFile(m_pFile);
-    pImportModule->SetRVA(nImportDescRVA);
-    pImportModule->SetSizeInMemory(sizeof(IMAGE_IMPORT_BY_NAME));
-    pImportModule->SetFOA(nImportDescFOA);
-    pImportModule->SetSizeInFile(sizeof(IMAGE_IMPORT_BY_NAME));
-    pImportModule->SetRawName(pImportName);
+    pImportModule->InnerSetBase(m_pFile, this);
+    pImportModule->InnerSetMemoryInfo(nImportDescRVA, 0, sizeof(IMAGE_IMPORT_BY_NAME));
+    pImportModule->InnerSetFileInfo(nImportDescFOA, sizeof(IMAGE_IMPORT_BY_NAME));
+    pImportModule->InnerSetName(pImportName);
 
     // By default, we use the first bridge to IMAGE_IMPORT_BY_NAME. But in some cases, the first bridge is NULL.
     // Compilers use the second bridge only. So we should fix the thunk entry at that time.
@@ -480,13 +460,10 @@ PEParserT<T>::ParseImportFunction(LibPERawImportDescriptor(T) *pImportDescriptor
         return ERR_NO_MEM;
     }
 
-    pFunction->SetParser(this);
-    pFunction->SetPEFile(m_pFile);
-    pFunction->SetRVA(nRawImportFunctionRVA);
-    pFunction->SetSizeInMemory(nRawImportFunctionSize);
-    pFunction->SetFOA(nRawImportFunctionFOA);
-    pFunction->SetSizeInFile(nRawImportFunctionSize);
-    pFunction->SetRawThunkData(pThunkData);
+    pFunction->InnerSetBase(m_pFile, this);
+    pFunction->InnerSetMemoryInfo(nRawImportFunctionRVA, 0, nRawImportFunctionSize);
+    pFunction->InnerSetFileInfo(nRawImportFunctionFOA, nRawImportFunctionSize);
+    pFunction->InnerSetThunkData(pThunkData);
 
     *ppFunction = pFunction.Detach();
 
@@ -543,12 +520,9 @@ PEParserT<T>::ParseRelocationTable(IPERelocationTableT<T> **ppRelocationTable)
         return ERR_NO_MEM;
     }
 
-    pRelocationTable->SetParser(this);
-    pRelocationTable->SetPEFile(m_pFile);
-    pRelocationTable->SetRVA(nRelocationTableRVA);
-    pRelocationTable->SetSizeInMemory(nRelocationTableSize);
-    pRelocationTable->SetFOA(nRelocationTableFOA);
-    pRelocationTable->SetSizeInFile(nRelocationTableSize);
+    pRelocationTable->InnerSetBase(m_pFile, this);
+    pRelocationTable->InnerSetMemoryInfo(nRelocationTableRVA, 0, nRelocationTableSize);
+    pRelocationTable->InnerSetFileInfo(nRelocationTableFOA, nRelocationTableSize);
 
     LibPERawBaseRelocation(T) *pRawRelocationPage = pRelocationTable->GetRawStruct();
     if(NULL == pRawRelocationPage) {
@@ -567,12 +541,12 @@ PEParserT<T>::ParseRelocationTable(IPERelocationTableT<T> **ppRelocationTable)
             return ERR_NO_MEM;
         }
 
-        pRelocationPage->SetParser(this);
-        pRelocationPage->SetPEFile(m_pFile);
-        pRelocationPage->SetRVA(nRelocationPageRVA);
-        pRelocationPage->SetSizeInMemory(sizeof(LibPERawBaseRelocation(T)) + nItemCount * sizeof(uint16_t));
-        pRelocationPage->SetFOA(nRelocationPageFOA);
-        pRelocationPage->SetSizeInFile(sizeof(LibPERawBaseRelocation(T)) + nItemCount * sizeof(uint16_t));
+        LibPEAddressT(T) nPageSize = sizeof(LibPERawBaseRelocation(T)) + nItemCount * sizeof(uint16_t);
+
+        pRelocationPage->InnerSetBase(m_pFile, this);
+        pRelocationPage->InnerSetMemoryInfo(nRelocationPageRVA, 0, nPageSize);
+        pRelocationPage->InnerSetFileInfo(nRelocationPageFOA, nPageSize);
+
         pRelocationTable->InnerAddRelocationPage(pRelocationPage);
 
         LibPEAddressT(T) nRelocationItemRVA = nRelocationPageRVA + sizeof(LibPERawBaseRelocation(T));
@@ -583,12 +557,9 @@ PEParserT<T>::ParseRelocationTable(IPERelocationTableT<T> **ppRelocationTable)
                 return ERR_NO_MEM;
             }
 
-            pRelocationItem->SetParser(this);
-            pRelocationItem->SetPEFile(m_pFile);
-            pRelocationItem->SetRVA(nRelocationItemRVA);
-            pRelocationItem->SetSizeInMemory(sizeof(uint16_t));
-            pRelocationItem->SetFOA(nRelocationItemFOA);
-            pRelocationItem->SetSizeInFile(sizeof(uint16_t));
+            pRelocationItem->InnerSetBase(m_pFile, this);
+            pRelocationItem->InnerSetMemoryInfo(nRelocationItemRVA, 0, sizeof(uint16_t));
+            pRelocationItem->InnerSetFileInfo(nRelocationItemFOA, sizeof(uint16_t));
             pRelocationItem->InnerSetRelocateFlag(pRawItemList[nItemIndex] & 0xF000);
             pRelocationItem->InnerSetAddressRVA(pRawRelocationPage->VirtualAddress + (pRawItemList[nItemIndex] & 0x0FFF));
             pRelocationPage->InnerAddRelocationItem(pRelocationItem);
@@ -655,12 +626,9 @@ PEParserT<T>::ParseImportAddressTable(IPEImportAddressTableT<T> **ppImportAddres
         return ERR_NO_MEM;
     }
 
-    pImportAddressTable->SetParser(this);
-    pImportAddressTable->SetPEFile(m_pFile);
-    pImportAddressTable->SetRVA(nImportAddressTableRVA);
-    pImportAddressTable->SetSizeInMemory(nImportAddressTableSize);
-    pImportAddressTable->SetFOA(nImportAddressTableFOA);
-    pImportAddressTable->SetSizeInFile(nImportAddressTableSize);
+    pImportAddressTable->InnerSetBase(m_pFile, this);
+    pImportAddressTable->InnerSetMemoryInfo(nImportAddressTableRVA, 0, nImportAddressTableSize);
+    pImportAddressTable->InnerSetFileInfo(nImportAddressTableFOA, nImportAddressTableSize);
 
     if(ERR_OK != ParseImportAddressTableContent(pImportAddressTable->GetRawStruct(), pImportAddressTable)) {
         return ERR_FAIL;
@@ -702,7 +670,7 @@ template <class T>
 error_t
 PEParserT<T>::ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, LibPEAddressT(T) nBlockRVA, LibPEAddressT(T) nBlockFOA, IPEImportAddressBlockT<T> **ppBlock)
 {
-    LIBPE_ASSERT_RET(0 != nBlockRVA && 0 != nBlockFOA, ERR_INVALID_ARG);
+    LIBPE_ASSERT_RET(0 != nBlockRVA, ERR_INVALID_ARG);
     LIBPE_ASSERT_RET(NULL != ppBlock, ERR_POINTER);
 
     *ppBlock = NULL;
@@ -712,14 +680,15 @@ PEParserT<T>::ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, LibPEAddr
         return ERR_NO_MEM;
     }
 
-    pBlock->SetParser(this);
-    pBlock->SetPEFile(m_pFile);
-    pBlock->SetRawMemory(pRawBlock);
-    pBlock->SetRVA(nBlockRVA);
-    pBlock->SetFOA(nBlockFOA);
-    
+    pBlock->InnerSetBase(m_pFile, this);
+    pBlock->InnerSetRawMemory(pRawBlock);
+    pBlock->InnerSetMemoryInfo(nBlockRVA, 0, 0);
+    pBlock->InnerSetFileInfo(nBlockFOA, 0);
+
     // Reload FOA to ensure it is avaliable. Because we need it right now.
-    nBlockFOA = pBlock->GetFOA();
+    if(0 == nBlockFOA) {
+        nBlockFOA = GetFOAFromRVA(nBlockRVA);
+    }
 
     // If the RawBlock is NULL, we should ready the memory ourself.
     LibPERawThunkData(T) *pRawItem = NULL;
@@ -754,8 +723,8 @@ PEParserT<T>::ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, LibPEAddr
 
     nBlockSize += sizeof(LibPERawThunkData(T));
 
-    pBlock->SetSizeInMemory(nBlockSize);
-    pBlock->SetSizeInFile(nBlockSize);
+    pBlock->InnerSetMemoryInfo(nBlockRVA, 0, nBlockSize);
+    pBlock->InnerSetFileInfo(nBlockFOA, nBlockSize);
 
     *ppBlock = pBlock.Detach();
 
@@ -778,13 +747,10 @@ PEParserT<T>::ParseImportAddressItem(LibPERawThunkData(T) *pRawItem, LibPEAddres
         return ERR_NO_MEM;
     }
 
-    pItem->SetParser(this);
-    pItem->SetPEFile(m_pFile);
-    pItem->SetRawMemory(pRawItem);
-    pItem->SetRVA(nItemRVA);
-    pItem->SetSizeInMemory(sizeof(LibPERawThunkData(T)));
-    pItem->SetFOA(nItemFOA);
-    pItem->SetSizeInFile(sizeof(LibPERawThunkData(T)));
+    pItem->InnerSetBase(m_pFile, this);
+    pItem->InnerSetRawMemory(pRawItem);
+    pItem->InnerSetMemoryInfo(nItemRVA, 0, sizeof(LibPERawThunkData(T)));
+    pItem->InnerSetFileInfo(nItemRVA, sizeof(LibPERawThunkData(T)));
 
     *ppItem = pItem.Detach();
 

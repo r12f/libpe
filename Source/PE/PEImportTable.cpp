@@ -37,7 +37,6 @@ PEImportTableT<T>::GetModuleByName(const char *pModuleName, IPEImportModuleT<T> 
     return ERR_NOT_IMPL;
 }
 
-
 template <class T>
 error_t
 PEImportTableT<T>::GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunctionT<T> **ppImportFunction)

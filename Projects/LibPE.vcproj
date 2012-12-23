@@ -367,6 +367,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\Source\PE\PEResourceTable.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\Source\PE\PEResourceTable.h"
 				>
 			</File>

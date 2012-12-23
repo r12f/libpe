@@ -18,9 +18,9 @@ public:
     DECLARE_PE_ELEMENT(LibPERawExportDirectory(T))
     LIBPE_SINGLE_THREAD_OBJECT()
 
-    void SetRawFunctionList(uint32_t *pFunctionList) { m_pFunctionList = pFunctionList; }
-    void SetRawNameList(uint32_t *pNameList) { m_pNameList = pNameList; }
-    void SetRawNameOrdinalList(uint16_t *pNameOrdinalList) { m_pNameOrdinalList = pNameOrdinalList; }
+    void InnerSetFunctionList(uint32_t *pFunctionList) { m_pFunctionList = pFunctionList; }
+    void InnerSetNameList(uint32_t *pNameList) { m_pNameList = pNameList; }
+    void InnerSetNameOrdinalList(uint16_t *pNameOrdinalList) { m_pNameOrdinalList = pNameOrdinalList; }
 
     uint32_t * GetRawFunctionList() { return m_pFunctionList; }
     uint32_t * GetRawNameList() { return m_pNameList; }
@@ -56,8 +56,8 @@ public:
     DECLARE_PE_ELEMENT(void)
     LIBPE_SINGLE_THREAD_OBJECT()
 
-    void SetRawName(const char *pName) { m_pName = pName; }
-    void SetRawHint(uint16_t nHint) { m_nHint = nHint; }
+    void InnerSetName(const char *pName) { m_pName = pName; }
+    void InnerSetHint(uint16_t nHint) { m_nHint = nHint; }
 
     virtual const char * LIBPE_CALLTYPE GetName();
     virtual uint16_t LIBPE_CALLTYPE GetHint();

@@ -232,10 +232,17 @@ template <class T>
 class IPEResourceDirectoryEntryT : public IPEElementT<T>
 {
     virtual LibPERawResourceDirectoryEntry(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
+
+    virtual bool_t LIBPE_CALLTYPE IsNameId() = 0;
+    virtual uint16_t LIBPE_CALLTYPE GetId() = 0;
+
+    virtual bool_t LIBPE_CALLTYPE IsNameString() = 0;
     virtual const wchar_t * LIBPE_CALLTYPE GetName() = 0;
-    virtual bool_t LIBPE_CALLTYPE IsDirectory() = 0;
-    virtual bool_t LIBPE_CALLTYPE IsDataEntry() = 0;
+    
+    virtual bool_t LIBPE_CALLTYPE IsEntryDirectory() = 0;
     virtual error_t LIBPE_CALLTYPE GetDirectory(IPEResourceDirectoryT<T> **ppDirectory) = 0;
+
+    virtual bool_t LIBPE_CALLTYPE IsEntryDataEntry() = 0;
     virtual error_t LIBPE_CALLTYPE GetDataEntry(IPEResourceDataEntryT<T> **ppDataEntry) = 0;
 };
 

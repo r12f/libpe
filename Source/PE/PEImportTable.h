@@ -67,7 +67,7 @@ public:
         m_vFunctions.push_back(oInfo);
     }
 
-    void SetRawName(const char *pName) { m_pName = pName; }
+    void InnerSetName(const char *pName) { m_pName = pName; }
 
     virtual bool_t LIBPE_CALLTYPE IsBound();
     virtual const char * LIBPE_CALLTYPE GetName() { return m_pName; }
@@ -94,8 +94,8 @@ public:
     DECLARE_PE_ELEMENT(LibPERawImportByName(T))
     LIBPE_SINGLE_THREAD_OBJECT()
 
-    void SetRawThunkData(LibPERawThunkData(T) *pThunkData) { m_pThunkData = pThunkData; }
-    void SetRawOrdinal(uint16_t nOrdinal) { m_nOrdinal = nOrdinal; }
+    void InnerSetThunkData(LibPERawThunkData(T) *pThunkData) { m_pThunkData = pThunkData; }
+    void InnerSetOrdinal(uint16_t nOrdinal) { m_nOrdinal = nOrdinal; }
 
     virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawThunkData();
     virtual const char * LIBPE_CALLTYPE GetName();

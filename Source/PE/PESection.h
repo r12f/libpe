@@ -16,7 +16,7 @@ public:
     LIBPE_SINGLE_THREAD_OBJECT()
     DECLARE_PE_ELEMENT(void)
 
-    void SetRawSectionHeader(typename PETrait<T>::RawSectionHeader *pSectionHeader) { m_pSectionHeader = pSectionHeader; }
+    void InnerSetSectionHeader(typename PETrait<T>::RawSectionHeader *pSectionHeader) { m_pSectionHeader = pSectionHeader; }
 
     virtual const char * LIBPE_CALLTYPE GetName();
     virtual error_t LIBPE_CALLTYPE GetRelocations();

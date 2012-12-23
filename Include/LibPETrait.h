@@ -8,8 +8,6 @@ struct PE32 {};
 struct PE64 {};
 
 struct PETraitBase {
-    typedef IMAGE_RESOURCE_DIRECTORY_STRING     AnsiString;
-    typedef IMAGE_RESOURCE_DIR_STRING_U         UnicodeString;
     typedef IMAGE_DOS_HEADER                    RawDosHeader;
     typedef IMAGE_FILE_HEADER                   RawFileHeader;
     typedef IMAGE_DATA_DIRECTORY                RawDataDirectory;
@@ -21,6 +19,8 @@ struct PETraitBase {
     typedef IMAGE_RESOURCE_DIRECTORY            RawResourceDirectory;
     typedef IMAGE_RESOURCE_DIRECTORY_ENTRY      RawResourceDirectoryEntry;
     typedef IMAGE_RESOURCE_DATA_ENTRY           RawResourceDataEntry;
+    typedef IMAGE_RESOURCE_DIRECTORY_STRING     RawResourceString;
+    typedef IMAGE_RESOURCE_DIR_STRING_U         RawResourceStringU;
 };
 
 template <class T> struct PETrait {};
@@ -42,8 +42,8 @@ struct PETrait<PE64> : PETraitBase {
 };
 
 #define LibPEAddressT(T)                        typename PETrait<T>::Address
-#define LibPEAnsiString(T)                      typename PETrait<T>::AnsiString;
-#define LibPEUnicodeString(T)                   typename PETrait<T>::UnicodeString;
+#define LibPERawResourceString(T)               typename PETrait<T>::RawResourceString;
+#define LibPERawResourceStringU(T)              typename PETrait<T>::RawResourceStringU;
 #define LibPERawDosHeaderT(T)                   typename PETrait<T>::RawDosHeader
 #define LibPERawFileHeaderT(T)                  typename PETrait<T>::RawFileHeader
 #define LibPERawNtHeadersT(T)                   typename PETrait<T>::RawNtHeaders
@@ -70,8 +70,8 @@ typedef PETraitBase::RawBaseRelocation          PERawBaseRelocation;
 typedef PETraitBase::RawResourceDirectory       PERawResourceDirectory;
 typedef PETraitBase::RawResourceDirectoryEntry  PERawResourceDirectoryEntry;
 typedef PETraitBase::RawResourceDataEntry       PERawResourceDataEntry;
-typedef PETraitBase::AnsiString                 PEAnsiString;
-typedef PETraitBase::UnicodeString              PEUnicodeString;
+typedef PETraitBase::RawResourceString          PERawResourceString;
+typedef PETraitBase::RawResourceStringU         PERawResourceStringU;
 
 typedef PETrait<PE32>::Address                  PEAddress32;
 typedef PETrait<PE32>::RawNtHeaders             PERawNtHeaders32;
