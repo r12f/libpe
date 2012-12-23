@@ -202,10 +202,10 @@ PEFileT<T>::GetSectionByFOA(LibPEAddressT(T) nFOA, IPESectionT<T> **ppSection)
 
 template <class T>
 error_t
-PEFileT<T>::GetExtraData(IPEExtraDataT<T> **ppExtraData)
+PEFileT<T>::GetOverlay(IPEOverlayT<T> **ppOverlay)
 {
-    LIBPE_ASSERT_RET(NULL != ppExtraData, ERR_POINTER);
-    return m_pExtraData.CopyTo(ppExtraData);
+    LIBPE_ASSERT_RET(NULL != ppOverlay, ERR_POINTER);
+    return m_pOverlay.CopyTo(ppOverlay);
 }
 
 template <class T>

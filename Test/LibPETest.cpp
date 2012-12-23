@@ -15,13 +15,13 @@ void TestSection(IPEFile *pFile)
             pSection->GetFOA(), pSection->GetSizeInFile());
     }
 
-    LibPEPtr<IPEExtraData> pExtraData;
-    if(ERR_OK != pFile->GetExtraData(&pExtraData) || NULL == pExtraData) {
+    LibPEPtr<IPEOverlay> pOverlay;
+    if(ERR_OK != pFile->GetOverlay(&pOverlay) || NULL == pOverlay) {
         printf("No extra data found.\n");
     } else {
         printf("Extra data: RVA = 0x%08x, SizeInMemory = 0x%08x, FOA = 0x%08x, SizeInFile = 0x%08x\n",
-            pExtraData->GetRVA(), pExtraData->GetSizeInMemory(),
-            pExtraData->GetFOA(), pExtraData->GetSizeInFile());
+            pOverlay->GetRVA(), pOverlay->GetSizeInMemory(),
+            pOverlay->GetFOA(), pOverlay->GetSizeInFile());
     }
 
     printf("\n");
@@ -131,5 +131,5 @@ int wmain(int argc, wchar_t* argv[])
     //TestRelocationTable(pFile);
     //TestImportAddressTable(pFile);
 
-	return 0;
+    return 0;
 }

@@ -8,64 +8,79 @@ struct PE32 {};
 struct PE64 {};
 
 struct PETraitBase {
-    typedef IMAGE_DOS_HEADER                RawDosHeader;
-    typedef IMAGE_FILE_HEADER               RawFileHeader;
-    typedef IMAGE_DATA_DIRECTORY            RawDataDirectory;
-    typedef IMAGE_SECTION_HEADER            RawSectionHeader;
-    typedef IMAGE_EXPORT_DIRECTORY          RawExportDirectory;
-    typedef IMAGE_IMPORT_DESCRIPTOR         RawImportDescriptor;
-    typedef IMAGE_IMPORT_BY_NAME            RawImportByName;
-    typedef IMAGE_BASE_RELOCATION           RawBaseRelocation;
+    typedef IMAGE_RESOURCE_DIRECTORY_STRING     AnsiString;
+    typedef IMAGE_RESOURCE_DIR_STRING_U         UnicodeString;
+    typedef IMAGE_DOS_HEADER                    RawDosHeader;
+    typedef IMAGE_FILE_HEADER                   RawFileHeader;
+    typedef IMAGE_DATA_DIRECTORY                RawDataDirectory;
+    typedef IMAGE_SECTION_HEADER                RawSectionHeader;
+    typedef IMAGE_EXPORT_DIRECTORY              RawExportDirectory;
+    typedef IMAGE_IMPORT_DESCRIPTOR             RawImportDescriptor;
+    typedef IMAGE_IMPORT_BY_NAME                RawImportByName;
+    typedef IMAGE_BASE_RELOCATION               RawBaseRelocation;
+    typedef IMAGE_RESOURCE_DIRECTORY            RawResourceDirectory;
+    typedef IMAGE_RESOURCE_DIRECTORY_ENTRY      RawResourceDirectoryEntry;
+    typedef IMAGE_RESOURCE_DATA_ENTRY           RawResourceDataEntry;
 };
 
 template <class T> struct PETrait {};
 
 template <>
 struct PETrait<PE32> : PETraitBase {
-    typedef uint32_t                        Address;
-    typedef IMAGE_NT_HEADERS32              RawNtHeaders;
-    typedef IMAGE_OPTIONAL_HEADER32         RawOptionalHeader;
-    typedef IMAGE_THUNK_DATA32              RawThunkData;
+    typedef uint32_t                            Address;
+    typedef IMAGE_NT_HEADERS32                  RawNtHeaders;
+    typedef IMAGE_OPTIONAL_HEADER32             RawOptionalHeader;
+    typedef IMAGE_THUNK_DATA32                  RawThunkData;
 };
 
 template <>
 struct PETrait<PE64> : PETraitBase {
-    typedef uint64_t                        Address;
-    typedef IMAGE_NT_HEADERS64              RawNtHeaders;
-    typedef IMAGE_OPTIONAL_HEADER64         RawOptionalHeader;
-    typedef IMAGE_THUNK_DATA64              RawThunkData;
+    typedef uint64_t                            Address;
+    typedef IMAGE_NT_HEADERS64                  RawNtHeaders;
+    typedef IMAGE_OPTIONAL_HEADER64             RawOptionalHeader;
+    typedef IMAGE_THUNK_DATA64                  RawThunkData;
 };
 
-#define LibPEAddressT(T)                    typename PETrait<T>::Address
-#define LibPERawDosHeaderT(T)               typename PETrait<T>::RawDosHeader
-#define LibPERawFileHeaderT(T)              typename PETrait<T>::RawFileHeader
-#define LibPERawNtHeadersT(T)               typename PETrait<T>::RawNtHeaders
-#define LibPERawOptionalHeaderT(T)          typename PETrait<T>::RawOptionalHeader
-#define LibPERawDataDirectoryT(T)           typename PETrait<T>::RawDataDirectory
-#define LibPERawSectionHeaderT(T)           typename PETrait<T>::RawSectionHeader
-#define LibPERawExportDirectory(T)          typename PETrait<T>::RawExportDirectory
-#define LibPERawImportDescriptor(T)         typename PETrait<T>::RawImportDescriptor
-#define LibPERawThunkData(T)                typename PETrait<T>::RawThunkData
-#define LibPERawImportByName(T)             typename PETrait<T>::RawImportByName
-#define LibPERawBaseRelocation(T)           typename PETrait<T>::RawBaseRelocation
+#define LibPEAddressT(T)                        typename PETrait<T>::Address
+#define LibPEAnsiString(T)                      typename PETrait<T>::AnsiString;
+#define LibPEUnicodeString(T)                   typename PETrait<T>::UnicodeString;
+#define LibPERawDosHeaderT(T)                   typename PETrait<T>::RawDosHeader
+#define LibPERawFileHeaderT(T)                  typename PETrait<T>::RawFileHeader
+#define LibPERawNtHeadersT(T)                   typename PETrait<T>::RawNtHeaders
+#define LibPERawOptionalHeaderT(T)              typename PETrait<T>::RawOptionalHeader
+#define LibPERawDataDirectoryT(T)               typename PETrait<T>::RawDataDirectory
+#define LibPERawSectionHeaderT(T)               typename PETrait<T>::RawSectionHeader
+#define LibPERawExportDirectory(T)              typename PETrait<T>::RawExportDirectory
+#define LibPERawImportDescriptor(T)             typename PETrait<T>::RawImportDescriptor
+#define LibPERawThunkData(T)                    typename PETrait<T>::RawThunkData
+#define LibPERawImportByName(T)                 typename PETrait<T>::RawImportByName
+#define LibPERawBaseRelocation(T)               typename PETrait<T>::RawBaseRelocation
+#define LibPERawResourceDirectory(T)            typename PETrait<T>::RawResourceDirectory;
+#define LibPERawResourceDirectoryEntry(T)       typename PETrait<T>::RawResourceDirectoryEntry;
+#define LibPERawResourceDataEntry(T)            typename PETrait<T>::RawResourceDataEntry;
 
-typedef PETraitBase::RawDosHeader           PERawDosHeader;
-typedef PETraitBase::RawFileHeader          PERawFileHeader;
-typedef PETraitBase::RawDataDirectory       PERawDataDirectory;
-typedef PETraitBase::RawSectionHeader       PERawSectionHeader;
-typedef PETraitBase::RawExportDirectory     PERawExportDirectory;
-typedef PETraitBase::RawImportDescriptor    PERawImportDescriptor;
-typedef PETraitBase::RawImportByName        PERawImportByName;
-typedef PETraitBase::RawBaseRelocation      PERawBaseRelocation;
+typedef PETraitBase::RawDosHeader               PERawDosHeader;
+typedef PETraitBase::RawFileHeader              PERawFileHeader;
+typedef PETraitBase::RawDataDirectory           PERawDataDirectory;
+typedef PETraitBase::RawSectionHeader           PERawSectionHeader;
+typedef PETraitBase::RawExportDirectory         PERawExportDirectory;
+typedef PETraitBase::RawImportDescriptor        PERawImportDescriptor;
+typedef PETraitBase::RawImportByName            PERawImportByName;
+typedef PETraitBase::RawBaseRelocation          PERawBaseRelocation;
+typedef PETraitBase::RawResourceDirectory       PERawResourceDirectory;
+typedef PETraitBase::RawResourceDirectoryEntry  PERawResourceDirectoryEntry;
+typedef PETraitBase::RawResourceDataEntry       PERawResourceDataEntry;
+typedef PETraitBase::AnsiString                 PEAnsiString;
+typedef PETraitBase::UnicodeString              PEUnicodeString;
 
-typedef PETrait<PE32>::Address              PEAddress32;
-typedef PETrait<PE32>::RawNtHeaders         PERawNtHeaders32;
-typedef PETrait<PE32>::RawOptionalHeader    PERawOptionalHeader32;
-typedef PETrait<PE32>::RawThunkData         PERawThunkData32;
+typedef PETrait<PE32>::Address                  PEAddress32;
+typedef PETrait<PE32>::RawNtHeaders             PERawNtHeaders32;
+typedef PETrait<PE32>::RawOptionalHeader        PERawOptionalHeader32;
+typedef PETrait<PE32>::RawThunkData             PERawThunkData32;
 
-typedef PETrait<PE64>::Address              PEAddress64;
-typedef PETrait<PE64>::RawNtHeaders         PERawNtHeaders64;
-typedef PETrait<PE64>::RawOptionalHeader    PERawOptionalHeader64;
-typedef PETrait<PE64>::RawThunkData         PERawThunkData64;
+typedef PETrait<PE64>::Address                  PEAddress64;
+typedef PETrait<PE64>::RawNtHeaders             PERawNtHeaders64;
+typedef PETrait<PE64>::RawOptionalHeader        PERawOptionalHeader64;
+typedef PETrait<PE64>::RawThunkData             PERawThunkData64;
 
 LIBPE_NAMESPACE_END

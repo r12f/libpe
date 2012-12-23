@@ -21,7 +21,7 @@ template <class T> class IPEFileT;
 template <class T> class IPEElementT;
 template <class T> class IPESectionHeaderT;
 template <class T> class IPESectionT;
-template <class T> class IPEExtraDataT;
+template <class T> class IPEOverlayT;
 template <class T> class IPEExportTableT;
 template <class T> class IPEExportFunctionT;
 template <class T> class IPEImportTableT;
@@ -64,7 +64,7 @@ public:
     virtual error_t LIBPE_CALLTYPE GetSectionByRVA(LibPEAddressT(T) nRVA, IPESectionT<T> **ppSection) = 0;
     virtual error_t LIBPE_CALLTYPE GetSectionByVA(LibPEAddressT(T) nVA, IPESectionT<T> **ppSection) = 0;
     virtual error_t LIBPE_CALLTYPE GetSectionByFOA(LibPEAddressT(T) nFOA, IPESectionT<T> **ppSection) = 0;
-    virtual error_t LIBPE_CALLTYPE GetExtraData(IPEExtraDataT<T> **ppExtraData) = 0;
+    virtual error_t LIBPE_CALLTYPE GetOverlay(IPEOverlayT<T> **ppOverlay) = 0;
 
     // PEAddress<T> convert tools
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVAFromVA(LibPEAddressT(T) nVA) = 0;
@@ -150,7 +150,7 @@ public:
 };
 
 template <class T>
-class IPEExtraDataT : public IPEElementT<T>
+class IPEOverlayT : public IPEElementT<T>
 {
 public:
     virtual void * LIBPE_CALLTYPE GetRawStruct() = 0;
