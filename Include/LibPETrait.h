@@ -55,9 +55,9 @@ struct PETrait<PE64> : PETraitBase {
 #define LibPERawThunkData(T)                    typename PETrait<T>::RawThunkData
 #define LibPERawImportByName(T)                 typename PETrait<T>::RawImportByName
 #define LibPERawBaseRelocation(T)               typename PETrait<T>::RawBaseRelocation
-#define LibPERawResourceDirectory(T)            typename PETrait<T>::RawResourceDirectory;
-#define LibPERawResourceDirectoryEntry(T)       typename PETrait<T>::RawResourceDirectoryEntry;
-#define LibPERawResourceDataEntry(T)            typename PETrait<T>::RawResourceDataEntry;
+#define LibPERawResourceDirectory(T)            typename PETrait<T>::RawResourceDirectory
+#define LibPERawResourceDirectoryEntry(T)       typename PETrait<T>::RawResourceDirectoryEntry
+#define LibPERawResourceDataEntry(T)            typename PETrait<T>::RawResourceDataEntry
 
 typedef PETraitBase::RawDosHeader               PERawDosHeader;
 typedef PETraitBase::RawFileHeader              PERawFileHeader;

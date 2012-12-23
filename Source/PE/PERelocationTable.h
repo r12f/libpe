@@ -23,10 +23,10 @@ public:
         m_vPages.push_back(pPage);
     }
 
-    virtual uint32_t LIBPE_CALLTYPE GetRelocationPageCount();
-    virtual error_t LIBPE_CALLTYPE GetRelocationPageByIndex(uint32_t nIndex, IPERelocationPageT<T> **ppRelocationPage);
+    virtual uint32_t LIBPE_CALLTYPE GetPageCount();
+    virtual error_t LIBPE_CALLTYPE GetPageByIndex(uint32_t nIndex, IPERelocationPageT<T> **ppRelocationPage);
     virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(LibPEAddressT(T) nRVA);
-    virtual error_t LIBPE_CALLTYPE GetRelocationItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem);
+    virtual error_t LIBPE_CALLTYPE GetItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem);
 
 private:
     RelocationPageList m_vPages;
@@ -52,10 +52,10 @@ public:
     }
 
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetPageRVA();
-    virtual uint32_t LIBPE_CALLTYPE GetRelocationItemCount();
-    virtual error_t LIBPE_CALLTYPE GetRelocationItemByIndex(uint32_t nIndex, IPERelocationItemT<T> **ppRelocationItem);
+    virtual uint32_t LIBPE_CALLTYPE GetItemCount();
+    virtual error_t LIBPE_CALLTYPE GetItemByIndex(uint32_t nIndex, IPERelocationItemT<T> **ppRelocationItem);
     virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(LibPEAddressT(T) nRVA);
-    virtual error_t LIBPE_CALLTYPE GetRelocationItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem);
+    virtual error_t LIBPE_CALLTYPE GetItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem);
 
 private:
     RelocationItemList m_vItems;

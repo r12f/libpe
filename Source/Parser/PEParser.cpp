@@ -327,7 +327,7 @@ PEParserT<T>::ParseExportFunction(IPEExportTableT<T> *pExportTable, uint32_t nIn
     LIBPE_ASSERT_RET(NULL != pFunctionList && NULL != pNameList && NULL != pNameOrdinalList, ERR_FAIL);
 
     LibPEAddressT(T) nFunctionRVA = pFunctionList[nIndex];
-    LibPEAddressT(T) nNameRVA = (nIndex < pRawExportTable->GetExportFunctionCount()) ? pNameList[nIndex] : 0;
+    LibPEAddressT(T) nNameRVA = (nIndex < pRawExportTable->GetFunctionCount()) ? pNameList[nIndex] : 0;
     uint16_t nNameOrdinal = pNameOrdinalList[nIndex];
 
     LibPEPtr<PEExportFunctionT<T>> pFunction = new PEExportFunctionT<T>();
@@ -497,6 +497,16 @@ template <class T>
 error_t
 PEParserT<T>::ParseResourceTable(IPEResourceTableT<T> **ppResourceTable)
 {
+    LIBPE_ASSERT_RET(NULL != ppResourceTable, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, ERR_FAIL);
+
+    *ppResourceTable = NULL;
+
+    LibPEAddressT(T) nResourceTableRVA = 0, nResourceTableFOA = 0, nResourceTableSize = 0;
+    if(ERR_OK != GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_RESOURCE, nResourceTableRVA, nResourceTableFOA, nResourceTableSize)) {
+        return ERR_FAIL;
+    }
+
     return ERR_NOT_IMPL;
 }
 

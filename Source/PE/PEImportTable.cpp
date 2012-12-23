@@ -5,18 +5,18 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 uint32_t
-PEImportTableT<T>::GetImportModuleCount()
+PEImportTableT<T>::GetModuleCount()
 {
     return (uint32_t)m_vModules.size();
 }
 
 template <class T>
 error_t
-PEImportTableT<T>::GetImportModuleByIndex(uint32_t nModuleId, IPEImportModuleT<T> **ppImportModule)
+PEImportTableT<T>::GetModuleByIndex(uint32_t nModuleId, IPEImportModuleT<T> **ppImportModule)
 {
     LIBPE_ASSERT_RET(NULL != ppImportModule, ERR_POINTER);
 
-    uint32_t nModuleCount = GetImportModuleCount();
+    uint32_t nModuleCount = GetModuleCount();
     LIBPE_ASSERT_RET(nModuleId < nModuleCount, ERR_INVALID_ARG);
 
     ModuleInfo &oInfo = m_vModules[nModuleId];
@@ -32,7 +32,7 @@ PEImportTableT<T>::GetImportModuleByIndex(uint32_t nModuleId, IPEImportModuleT<T
 
 template <class T>
 error_t
-PEImportTableT<T>::GetImportModuleByName(const char *pModuleName, IPEImportModuleT<T> **ppImportModule)
+PEImportTableT<T>::GetModuleByName(const char *pModuleName, IPEImportModuleT<T> **ppImportModule)
 {
     return ERR_NOT_IMPL;
 }
@@ -40,7 +40,7 @@ PEImportTableT<T>::GetImportModuleByName(const char *pModuleName, IPEImportModul
 
 template <class T>
 error_t
-PEImportTableT<T>::GetImportFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunctionT<T> **ppImportFunction)
+PEImportTableT<T>::GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunctionT<T> **ppImportFunction)
 {
     return ERR_NOT_IMPL;
 }
@@ -57,11 +57,11 @@ PEImportModuleT<T>::IsBound()
 
 template <class T>
 error_t
-PEImportModuleT<T>::GetImportFunctionByIndex(uint32_t nIndex, IPEImportFunctionT<T> **ppFunction)
+PEImportModuleT<T>::GetFunctionByIndex(uint32_t nIndex, IPEImportFunctionT<T> **ppFunction)
 {
     LIBPE_ASSERT_RET(NULL != ppFunction, ERR_POINTER);
 
-    uint32_t nFunctionCount = GetImportFunctionCount();
+    uint32_t nFunctionCount = GetFunctionCount();
     LIBPE_ASSERT_RET(nIndex < nFunctionCount, ERR_INVALID_ARG);
 
     FunctionInfo &oInfo = m_vFunctions[nIndex];
@@ -77,7 +77,7 @@ PEImportModuleT<T>::GetImportFunctionByIndex(uint32_t nIndex, IPEImportFunctionT
 
 template <class T>
 error_t
-PEImportModuleT<T>::GetImportFunctionByName(const char *pFunctionName, IPEImportFunctionT<T> **ppFunction)
+PEImportModuleT<T>::GetFunctionByName(const char *pFunctionName, IPEImportFunctionT<T> **ppFunction)
 {
     return ERR_NOT_IMPL;
 }

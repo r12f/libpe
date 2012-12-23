@@ -33,9 +33,9 @@ public:
         return true;
     }
 
-    virtual uint32_t LIBPE_CALLTYPE GetExportFunctionCount();
-    virtual error_t LIBPE_CALLTYPE GetExportFunctionByIndex(uint32_t nIndex, IPEExportFunctionT<T> **ppFunction);
-    virtual error_t LIBPE_CALLTYPE GetExportFunctionByName(const char *pFunctionName, IPEExportFunctionT<T> **ppFunction);
+    virtual uint32_t LIBPE_CALLTYPE GetFunctionCount();
+    virtual error_t LIBPE_CALLTYPE GetFunctionByIndex(uint32_t nIndex, IPEExportFunctionT<T> **ppFunction);
+    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEExportFunctionT<T> **ppFunction);
 
 private:
     FunctionList        m_vExportFunctions;

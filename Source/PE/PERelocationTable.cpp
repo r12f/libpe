@@ -5,18 +5,18 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 uint32_t
-PERelocationTableT<T>::GetRelocationPageCount()
+PERelocationTableT<T>::GetPageCount()
 {
     return (uint32_t)m_vPages.size();
 }
 
 template <class T>
 error_t
-PERelocationTableT<T>::GetRelocationPageByIndex(uint32_t nIndex, IPERelocationPageT<T> **ppRelocationPage)
+PERelocationTableT<T>::GetPageByIndex(uint32_t nIndex, IPERelocationPageT<T> **ppRelocationPage)
 {
     LIBPE_ASSERT_RET(NULL != ppRelocationPage, ERR_POINTER);
 
-    uint32_t nPageCount = GetRelocationPageCount();
+    uint32_t nPageCount = GetPageCount();
     LIBPE_ASSERT_RET(nIndex < nPageCount, ERR_FAIL);
 
     return m_vPages[nIndex].CopyTo(ppRelocationPage);
@@ -27,19 +27,19 @@ bool_t
 PERelocationTableT<T>::IsRVANeedRelocation(LibPEAddressT(T) nRVA)
 {
     LibPEPtr<IPERelocationItemT<T>> pItem;
-    return ((ERR_OK == GetRelocationItemByRVA(nRVA, &pItem)) && NULL != pItem);
+    return ((ERR_OK == GetItemByRVA(nRVA, &pItem)) && NULL != pItem);
 }
 
 template <class T>
 error_t
-PERelocationTableT<T>::GetRelocationItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem)
+PERelocationTableT<T>::GetItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem)
 {
     LIBPE_ASSERT_RET(NULL != ppRelocationItem, ERR_POINTER);
     *ppRelocationItem = NULL;
 
-    uint32_t nPageCount = GetRelocationPageCount();
+    uint32_t nPageCount = GetPageCount();
     for(uint32_t nPageIndex = 0; nPageIndex < nPageCount; ++nPageIndex) {
-        switch(m_vPages[nPageIndex]->GetRelocationItemByRVA(nRVA, ppRelocationItem)) {
+        switch(m_vPages[nPageIndex]->GetItemByRVA(nRVA, ppRelocationItem)) {
         case ERR_OK:
             return ERR_OK;
         case ERR_INVALID_ARG:
@@ -64,18 +64,18 @@ PERelocationPageT<T>::GetPageRVA()
 
 template <class T>
 uint32_t
-PERelocationPageT<T>::GetRelocationItemCount()
+PERelocationPageT<T>::GetItemCount()
 {
     return (uint32_t)m_vItems.size();
 }
 
 template <class T>
 error_t
-PERelocationPageT<T>::GetRelocationItemByIndex(uint32_t nIndex, IPERelocationItemT<T> **ppRelocationItem)
+PERelocationPageT<T>::GetItemByIndex(uint32_t nIndex, IPERelocationItemT<T> **ppRelocationItem)
 {
     LIBPE_ASSERT_RET(NULL != ppRelocationItem, ERR_POINTER);
 
-    uint32_t nItemCount = GetRelocationItemCount();
+    uint32_t nItemCount = GetItemCount();
     LIBPE_ASSERT_RET(nIndex < nItemCount, ERR_FAIL);
 
     return m_vItems[nIndex].CopyTo(ppRelocationItem);
@@ -86,12 +86,12 @@ bool_t
 PERelocationPageT<T>::IsRVANeedRelocation(LibPEAddressT(T) nRVA)
 {
     LibPEPtr<IPERelocationItemT<T>> pItem;
-    return ((ERR_OK == GetRelocationItemByRVA(nRVA, &pItem)) && NULL != pItem);
+    return ((ERR_OK == GetItemByRVA(nRVA, &pItem)) && NULL != pItem);
 }
 
 template <class T>
 error_t
-PERelocationPageT<T>::GetRelocationItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem)
+PERelocationPageT<T>::GetItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem)
 {
     LIBPE_ASSERT_RET(NULL != ppRelocationItem, ERR_POINTER);
     *ppRelocationItem = NULL;
@@ -101,7 +101,7 @@ PERelocationPageT<T>::GetRelocationItemByRVA(LibPEAddressT(T) nRVA, IPERelocatio
         return ERR_INVALID_ARG;
     }
 
-    uint32_t nItemCount = GetRelocationItemCount();
+    uint32_t nItemCount = GetItemCount();
     for(uint32_t nItemIndex = 0; nItemIndex < nItemCount; ++nItemIndex) {
         if(m_vItems[nItemIndex]->GetAddressRVA() == nRVA) {
             return m_vItems[nItemIndex].CopyTo(ppRelocationItem);

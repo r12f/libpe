@@ -2,6 +2,15 @@
 
 using namespace LibPE;
 
+void TestBasicInfo(IPEFile *pFile)
+{
+    IMAGE_DOS_HEADER *pDosHeader = pFile->GetDosHeader();
+    printf("DosHeader: 0x%08x\n", pDosHeader);
+    printf("NtHeaders: 0x%08x\n", pFile->GetNtHeaders());
+    printf("FileHeader: 0x%08x\n", pFile->GetFileHeader());
+    printf("OptionalHeader: 0x%08x\n", pFile->GetOptionalHeader());
+}
+
 void TestSection(IPEFile *pFile)
 {
     printf("Sections:\n");
@@ -34,9 +43,10 @@ void TestExportTable(IPEFile *pFile)
     pFile->GetExportTable(&pExportTable);
 
     printf("Export Table:\n");
-    for(uint32_t nExportFunctionIndex = 0; nExportFunctionIndex < pExportTable->GetExportFunctionCount(); ++nExportFunctionIndex) {
+    uint32_t nExportFunctionCount = pExportTable->GetFunctionCount();
+    for(uint32_t nExportFunctionIndex = 0; nExportFunctionIndex < nExportFunctionCount; ++nExportFunctionIndex) {
         LibPEPtr<IPEExportFunction> pExportFunction;
-        pExportTable->GetExportFunctionByIndex(nExportFunctionIndex, &pExportFunction);
+        pExportTable->GetFunctionByIndex(nExportFunctionIndex, &pExportFunction);
         printf("Export Function: Name = %s, Hint = %d, RVA = 0x%08x\n", pExportFunction->GetName(), pExportFunction->GetHint(), pExportFunction->GetRVA());
     }
 
@@ -50,18 +60,19 @@ void TestImportTable(IPEFile *pFile)
     pFile->GetImportTable(&pImportTable);
 
     printf("Export Table:\n");
-    for(uint32_t nImportModuleIndex = 0; nImportModuleIndex < pImportTable->GetImportModuleCount(); ++nImportModuleIndex) {
+    uint32_t nImportModuleCount = pImportTable->GetModuleCount();
+    for(uint32_t nImportModuleIndex = 0; nImportModuleIndex < nImportModuleCount; ++nImportModuleIndex) {
         LibPEPtr<IPEImportModule> pImportModule;
-        pImportTable->GetImportModuleByIndex(nImportModuleIndex, &pImportModule);
+        pImportTable->GetModuleByIndex(nImportModuleIndex, &pImportModule);
 
         LibPEPtr<IPEImportAddressBlock> pRelatedIABlock;
         pImportModule->GetRelatedImportAddressBlock(&pRelatedIABlock);
 
         printf("Import Module: %s (Bound: %s, IABlock: %08x)\n", pImportModule->GetName(), pImportModule->IsBound() ? "true" : "false", pRelatedIABlock->GetRVA());
 
-        for(uint32_t nImportFunctionIndex = 0; nImportFunctionIndex < pImportModule->GetImportFunctionCount(); ++nImportFunctionIndex) {
+        for(uint32_t nImportFunctionIndex = 0; nImportFunctionIndex < pImportModule->GetFunctionCount(); ++nImportFunctionIndex) {
             LibPEPtr<IPEImportFunction> pImportFunction;
-            pImportModule->GetImportFunctionByIndex(nImportFunctionIndex, &pImportFunction);
+            pImportModule->GetFunctionByIndex(nImportFunctionIndex, &pImportFunction);
             printf("Import Function: %s\n", pImportFunction->GetName());
         }
 
@@ -75,14 +86,16 @@ void TestRelocationTable(IPEFile *pFile)
     pFile->GetRelocationTable(&pRelocationTable);
 
     printf("Relocation Table:\n");
-    for(uint32_t nPageIndex = 0; nPageIndex < pRelocationTable->GetRelocationPageCount(); ++nPageIndex) {
+    uint32_t nRelocationPageCount = pRelocationTable->GetPageCount();
+    for(uint32_t nPageIndex = 0; nPageIndex < nRelocationPageCount; ++nPageIndex) {
         LibPEPtr<IPERelocationPage> pRelocationPage;
-        pRelocationTable->GetRelocationPageByIndex(nPageIndex, &pRelocationPage);
+        pRelocationTable->GetPageByIndex(nPageIndex, &pRelocationPage);
         printf("Relocation Page: RVA = 0x%08x\n", pRelocationPage->GetPageRVA());
 
-        for(uint32_t nItemIndex = 0; nItemIndex < pRelocationPage->GetRelocationItemCount(); ++nItemIndex) {
+        uint32_t nRelocationItemCount = pRelocationPage->GetItemCount();
+        for(uint32_t nItemIndex = 0; nItemIndex < nRelocationItemCount; ++nItemIndex) {
             LibPEPtr<IPERelocationItem> pRelocationItem;
-            pRelocationPage->GetRelocationItemByIndex(nItemIndex, &pRelocationItem);
+            pRelocationPage->GetItemByIndex(nItemIndex, &pRelocationItem);
             printf("Relocation Item: RVA = 0x%08x, Address = 0x%08x\n", pRelocationItem->GetAddressRVA(), pRelocationItem->GetRawAddressContent());
         }
 
@@ -96,14 +109,16 @@ void TestImportAddressTable(IPEFile *pFile)
     pFile->GetImportAddressTable(&pImportAddressTable);
 
     printf("Import Address Table:\n");
-    for(uint32_t nBlockIndex = 0; nBlockIndex < pImportAddressTable->GetImportAddressBlockCount(); ++nBlockIndex) {
+    uint32_t nImportAddressBlockCount = pImportAddressTable->GetBlockCount();
+    for(uint32_t nBlockIndex = 0; nBlockIndex < nImportAddressBlockCount; ++nBlockIndex) {
         LibPEPtr<IPEImportAddressBlock> pImportAddressBlock;
-        pImportAddressTable->GetImportAddressBlockByIndex(nBlockIndex, &pImportAddressBlock);
+        pImportAddressTable->GetBlockByIndex(nBlockIndex, &pImportAddressBlock);
         printf("Import Address Block: RVA = 0x%08x\n", pImportAddressBlock->GetRVA());
 
-        for(uint32_t nItemIndex = 0; nItemIndex < pImportAddressBlock->GetImportAddressItemCount(); ++nItemIndex) {
+        uint32_t nImportAddressItemCount = pImportAddressBlock->GetItemCount();
+        for(uint32_t nItemIndex = 0; nItemIndex < nImportAddressItemCount; ++nItemIndex) {
             LibPEPtr<IPEImportAddressItem> pImportAddressItem;
-            pImportAddressBlock->GetImportAddressItemByIndex(nItemIndex, &pImportAddressItem);
+            pImportAddressBlock->GetItemByIndex(nItemIndex, &pImportAddressItem);
             printf("Import Address Item: RVA = 0x%08x, Address = 0x%08x\n", pImportAddressItem->GetRVA(), pImportAddressItem->GetRawAddress());
         }
 
@@ -119,17 +134,12 @@ int wmain(int argc, wchar_t* argv[])
     printf("AddRef: %d\n", pFile->AddRef());
     printf("Release: %d\n", pFile->Release());
 
-    IMAGE_DOS_HEADER *pDosHeader = pFile->GetDosHeader();
-    printf("DosHeader: 0x%08x\n", pDosHeader);
-    printf("NtHeaders: 0x%08x\n", pFile->GetNtHeaders());
-    printf("FileHeader: 0x%08x\n", pFile->GetFileHeader());
-    printf("OptionalHeader: 0x%08x\n", pFile->GetOptionalHeader());
-
-    //TestSection(pFile);
-    //TestExportTable(pFile);
+    TestBasicInfo(pFile);
+    TestSection(pFile);
+    TestExportTable(pFile);
     TestImportTable(pFile);
-    //TestRelocationTable(pFile);
-    //TestImportAddressTable(pFile);
+    TestRelocationTable(pFile);
+    TestImportAddressTable(pFile);
 
     return 0;
 }

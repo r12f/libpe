@@ -28,7 +28,9 @@ template <class T> class IPEImportTableT;
 template <class T> class IPEImportModuleT;
 template <class T> class IPEImportFunctionT;
 template <class T> class IPEResourceTableT;
-template <class T> class IPEResourceTableItemT;
+template <class T> class IPEResourceDirectoryT;
+template <class T> class IPEResourceDirectoryEntryT;
+template <class T> class IPEResourceDataEntryT;
 template <class T> class IPEExceptionTableT;
 template <class T> class IPECertificateTableT;
 template <class T> class IPERelocationTableT;
@@ -161,9 +163,9 @@ class IPEExportTableT : public IPEElementT<T>
 {
 public:
     virtual LibPERawExportDirectory(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
-    virtual uint32_t LIBPE_CALLTYPE GetExportFunctionCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetExportFunctionByIndex(uint32_t nIndex, IPEExportFunctionT<T> **ppFunction) = 0;
-    virtual error_t LIBPE_CALLTYPE GetExportFunctionByName(const char *pFunctionName, IPEExportFunctionT<T> **ppFunction) = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetFunctionCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetFunctionByIndex(uint32_t nIndex, IPEExportFunctionT<T> **ppFunction) = 0;
+    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEExportFunctionT<T> **ppFunction) = 0;
 };
 
 template <class T>
@@ -179,10 +181,10 @@ class IPEImportTableT : public IPEElementT<T>
 {
 public:
     virtual LibPERawImportDescriptor(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
-    virtual uint32_t LIBPE_CALLTYPE GetImportModuleCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetImportModuleByIndex(uint32_t nIndex, IPEImportModuleT<T> **ppImportModule) = 0;
-    virtual error_t LIBPE_CALLTYPE GetImportModuleByName(const char *pModuleName, IPEImportModuleT<T> **ppImportModule) = 0;
-    virtual error_t LIBPE_CALLTYPE GetImportFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunctionT<T> **ppImportFunction) = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetModuleCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetModuleByIndex(uint32_t nIndex, IPEImportModuleT<T> **ppImportModule) = 0;
+    virtual error_t LIBPE_CALLTYPE GetModuleByName(const char *pModuleName, IPEImportModuleT<T> **ppImportModule) = 0;
+    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunctionT<T> **ppImportFunction) = 0;
 };
 
 template <class T>
@@ -192,9 +194,9 @@ public:
     virtual LibPERawImportDescriptor(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
     virtual bool_t LIBPE_CALLTYPE IsBound() = 0;
     virtual const char * LIBPE_CALLTYPE GetName() = 0;
-    virtual uint32_t LIBPE_CALLTYPE GetImportFunctionCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetImportFunctionByIndex(uint32_t nFunctionId, IPEImportFunctionT<T> **ppFunction) = 0;
-    virtual error_t LIBPE_CALLTYPE GetImportFunctionByName(const char *pFunctionName, IPEImportFunctionT<T> **ppFunction) = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetFunctionCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetFunctionByIndex(uint32_t nFunctionId, IPEImportFunctionT<T> **ppFunction) = 0;
+    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEImportFunctionT<T> **ppFunction) = 0;
     virtual error_t LIBPE_CALLTYPE GetRelatedImportAddressBlock(IPEImportAddressBlockT<T> **ppBlock) = 0;
 };
 
@@ -213,14 +215,36 @@ template <class T>
 class IPEResourceTableT : public IPEElementT<T>
 {
 public:
-    virtual error_t LIBPE_CALLTYPE AddItem(IPEResourceTableItemT<T> *pItem) = 0;
-    virtual error_t LIBPE_CALLTYPE RemoveItem(int32_t nIndex) = 0;
-    virtual error_t LIBPE_CALLTYPE GetItem(int32_t nIndex, IPEResourceTableItemT<T> **ppItem) = 0;
-    virtual error_t LIBPE_CALLTYPE GetItemCount() = 0;
+    virtual LibPERawResourceDirectory(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetDirectoryCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetDirectoryByIndex(uint32_t nIndex, IPEResourceDirectoryT<T> **ppDirectory) = 0;
 };
 
 template <class T>
-class IPEResourceTableItemT : public IPEElementT<T> {};
+class IPEResourceDirectoryT : public IPEElementT<T>
+{
+    virtual LibPERawResourceDirectory(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetEntryCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetEntryByIndex(uint32_t nIndex, IPEResourceDirectoryEntryT<T> **ppEntry) = 0;
+};
+
+template <class T>
+class IPEResourceDirectoryEntryT : public IPEElementT<T>
+{
+    virtual LibPERawResourceDirectoryEntry(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
+    virtual const wchar_t * LIBPE_CALLTYPE GetName() = 0;
+    virtual bool_t LIBPE_CALLTYPE IsDirectory() = 0;
+    virtual bool_t LIBPE_CALLTYPE IsDataEntry() = 0;
+    virtual error_t LIBPE_CALLTYPE GetDirectory(IPEResourceDirectoryT<T> **ppDirectory) = 0;
+    virtual error_t LIBPE_CALLTYPE GetDataEntry(IPEResourceDataEntryT<T> **ppDataEntry) = 0;
+};
+
+template <class T>
+class IPEResourceDataEntryT : public IPEElementT<T>
+{
+public:
+    virtual LibPERawResourceDataEntry(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
+};
 
 template <class T>
 class IPEExceptionTableT : public IPEElementT<T> {};
@@ -233,10 +257,10 @@ class IPERelocationTableT : public IPEElementT<T>
 {
 public:
     virtual LibPERawBaseRelocation(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
-    virtual uint32_t LIBPE_CALLTYPE GetRelocationPageCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetRelocationPageByIndex(uint32_t nIndex, IPERelocationPageT<T> **ppRelocationPage) = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetPageCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetPageByIndex(uint32_t nIndex, IPERelocationPageT<T> **ppRelocationPage) = 0;
     virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(LibPEAddressT(T) nRVA) = 0;
-    virtual error_t LIBPE_CALLTYPE GetRelocationItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem) = 0;
+    virtual error_t LIBPE_CALLTYPE GetItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem) = 0;
 };
 
 template <class T>
@@ -245,10 +269,10 @@ class IPERelocationPageT : public IPEElementT<T>
 public:
     virtual LibPERawBaseRelocation(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetPageRVA() = 0;
-    virtual uint32_t LIBPE_CALLTYPE GetRelocationItemCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetRelocationItemByIndex(uint32_t nIndex, IPERelocationItemT<T> **ppRelocationItem) = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetItemCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetItemByIndex(uint32_t nIndex, IPERelocationItemT<T> **ppRelocationItem) = 0;
     virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(LibPEAddressT(T) nRVA) = 0;
-    virtual error_t LIBPE_CALLTYPE GetRelocationItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem) = 0;
+    virtual error_t LIBPE_CALLTYPE GetItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem) = 0;
 };
 
 template <class T>
@@ -278,10 +302,10 @@ class IPEImportAddressTableT : public IPEElementT<T>
 {
 public:
     virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
-    virtual uint32_t LIBPE_CALLTYPE GetImportAddressBlockCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetImportAddressBlockByIndex(uint32_t nIndex, IPEImportAddressBlockT<T> **ppBlock) = 0;
-    virtual bool_t LIBPE_CALLTYPE IsImportAddressBlockInTable(IPEImportAddressBlockT<T> *pBlock) = 0;
-    virtual bool_t LIBPE_CALLTYPE IsImportAddressItemInTable(IPEImportAddressItemT<T> *pItem) = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetBlockCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetBlockByIndex(uint32_t nIndex, IPEImportAddressBlockT<T> **ppBlock) = 0;
+    virtual bool_t LIBPE_CALLTYPE IsBlockExists(IPEImportAddressBlockT<T> *pBlock) = 0;
+    virtual bool_t LIBPE_CALLTYPE IsItemExist(IPEImportAddressItemT<T> *pItem) = 0;
 };
 
 template <class T>
@@ -289,9 +313,9 @@ class IPEImportAddressBlockT : public IPEElementT<T>
 {
 public:
     virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
-    virtual uint32_t LIBPE_CALLTYPE GetImportAddressItemCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetImportAddressItemByIndex(uint32_t nIndex, IPEImportAddressItemT<T> **ppItem) = 0;
-    virtual bool_t LIBPE_CALLTYPE IsImportAddressItemInTable(IPEImportAddressItemT<T> *pItem) = 0;
+    virtual uint32_t LIBPE_CALLTYPE GetItemCount() = 0;
+    virtual error_t LIBPE_CALLTYPE GetItemByIndex(uint32_t nIndex, IPEImportAddressItemT<T> **ppItem) = 0;
+    virtual bool_t LIBPE_CALLTYPE IsItemExist(IPEImportAddressItemT<T> *pItem) = 0;
 };
 
 template <class T>

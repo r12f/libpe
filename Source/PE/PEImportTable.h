@@ -34,10 +34,10 @@ public:
         return;
     }
 
-    virtual uint32_t LIBPE_CALLTYPE GetImportModuleCount();
-    virtual error_t LIBPE_CALLTYPE GetImportModuleByIndex(uint32_t nModuleId, IPEImportModuleT<T> **ppImportModule);
-    virtual error_t LIBPE_CALLTYPE GetImportModuleByName(const char *pModuleName, IPEImportModuleT<T> **ppImportModule);
-    virtual error_t LIBPE_CALLTYPE GetImportFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunctionT<T> **ppImportFunction);
+    virtual uint32_t LIBPE_CALLTYPE GetModuleCount();
+    virtual error_t LIBPE_CALLTYPE GetModuleByIndex(uint32_t nModuleId, IPEImportModuleT<T> **ppImportModule);
+    virtual error_t LIBPE_CALLTYPE GetModuleByName(const char *pModuleName, IPEImportModuleT<T> **ppImportModule);
+    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunctionT<T> **ppImportFunction);
 
 private:
     ModuleList m_vModules;
@@ -71,9 +71,9 @@ public:
 
     virtual bool_t LIBPE_CALLTYPE IsBound();
     virtual const char * LIBPE_CALLTYPE GetName() { return m_pName; }
-    virtual uint32_t LIBPE_CALLTYPE GetImportFunctionCount() { return (uint32_t)m_vFunctions.size(); }
-    virtual error_t LIBPE_CALLTYPE GetImportFunctionByIndex(uint32_t nIndex, IPEImportFunctionT<T> **ppFunction);
-    virtual error_t LIBPE_CALLTYPE GetImportFunctionByName(const char *pFunctionName, IPEImportFunctionT<T> **ppFunction);
+    virtual uint32_t LIBPE_CALLTYPE GetFunctionCount() { return (uint32_t)m_vFunctions.size(); }
+    virtual error_t LIBPE_CALLTYPE GetFunctionByIndex(uint32_t nIndex, IPEImportFunctionT<T> **ppFunction);
+    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEImportFunctionT<T> **ppFunction);
     virtual error_t LIBPE_CALLTYPE GetRelatedImportAddressBlock(IPEImportAddressBlockT<T> **ppBlock);
 
 private:

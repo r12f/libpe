@@ -5,18 +5,18 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 uint32_t
-PEExportTableT<T>::GetExportFunctionCount()
+PEExportTableT<T>::GetFunctionCount()
 {
     return (uint32_t)m_vExportFunctions.size();
 }
 
 template <class T>
 error_t
-PEExportTableT<T>::GetExportFunctionByIndex(uint32_t nIndex, IPEExportFunctionT<T> **ppFunction)
+PEExportTableT<T>::GetFunctionByIndex(uint32_t nIndex, IPEExportFunctionT<T> **ppFunction)
 {
     LIBPE_ASSERT_RET(NULL != ppFunction, ERR_POINTER);
 
-    uint32_t nFunctionCount = GetExportFunctionCount();
+    uint32_t nFunctionCount = GetFunctionCount();
     LIBPE_ASSERT_RET(nIndex < nFunctionCount, ERR_INVALID_ARG);
 
     if(NULL == m_vExportFunctions[nIndex]) {
@@ -31,7 +31,7 @@ PEExportTableT<T>::GetExportFunctionByIndex(uint32_t nIndex, IPEExportFunctionT<
 
 template <class T>
 error_t
-PEExportTableT<T>::GetExportFunctionByName(const char *pFunctionName, IPEExportFunctionT<T> **ppFunction)
+PEExportTableT<T>::GetFunctionByName(const char *pFunctionName, IPEExportFunctionT<T> **ppFunction)
 {
     return ERR_NOT_IMPL;
 }

@@ -23,10 +23,10 @@ public:
         m_vBlocks.push_back(pBlock);
     }
 
-    virtual uint32_t LIBPE_CALLTYPE GetImportAddressBlockCount();
-    virtual error_t LIBPE_CALLTYPE GetImportAddressBlockByIndex(uint32_t nIndex, IPEImportAddressBlockT<T> **ppBlock);
-    virtual bool_t LIBPE_CALLTYPE IsImportAddressBlockInTable(IPEImportAddressBlockT<T> *pBlock);
-    virtual bool_t LIBPE_CALLTYPE IsImportAddressItemInTable(IPEImportAddressItemT<T> *pItem);
+    virtual uint32_t LIBPE_CALLTYPE GetBlockCount();
+    virtual error_t LIBPE_CALLTYPE GetBlockByIndex(uint32_t nIndex, IPEImportAddressBlockT<T> **ppBlock);
+    virtual bool_t LIBPE_CALLTYPE IsBlockExists(IPEImportAddressBlockT<T> *pBlock);
+    virtual bool_t LIBPE_CALLTYPE IsItemExist(IPEImportAddressItemT<T> *pItem);
 
 private:
     BlockList   m_vBlocks;
@@ -51,9 +51,9 @@ public:
         m_vItems.push_back(pItem);
     }
 
-    virtual uint32_t LIBPE_CALLTYPE GetImportAddressItemCount();
-    virtual error_t LIBPE_CALLTYPE GetImportAddressItemByIndex(uint32_t nIndex, IPEImportAddressItemT<T> **ppItem);
-    virtual bool_t LIBPE_CALLTYPE IsImportAddressItemInTable(IPEImportAddressItemT<T> *pItem);
+    virtual uint32_t LIBPE_CALLTYPE GetItemCount();
+    virtual error_t LIBPE_CALLTYPE GetItemByIndex(uint32_t nIndex, IPEImportAddressItemT<T> **ppItem);
+    virtual bool_t LIBPE_CALLTYPE IsItemExist(IPEImportAddressItemT<T> *pItem);
 
 private:
     ItemList    m_vItems;

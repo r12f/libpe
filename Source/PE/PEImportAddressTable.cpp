@@ -5,18 +5,18 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 uint32_t
-PEImportAddressTableT<T>::GetImportAddressBlockCount()
+PEImportAddressTableT<T>::GetBlockCount()
 {
     return (uint32_t)m_vBlocks.size();
 }
 
 template <class T>
 error_t
-PEImportAddressTableT<T>::GetImportAddressBlockByIndex(uint32_t nIndex, IPEImportAddressBlockT<T> **ppBlock)
+PEImportAddressTableT<T>::GetBlockByIndex(uint32_t nIndex, IPEImportAddressBlockT<T> **ppBlock)
 {
     LIBPE_ASSERT_RET(NULL != ppBlock, ERR_POINTER);
     
-    uint32_t nBlockCount = GetImportAddressBlockCount();
+    uint32_t nBlockCount = GetBlockCount();
     LIBPE_ASSERT_RET(nIndex < nBlockCount, ERR_INVALID_ARG);
 
     return m_vBlocks[nIndex].CopyTo(ppBlock);
@@ -24,7 +24,7 @@ PEImportAddressTableT<T>::GetImportAddressBlockByIndex(uint32_t nIndex, IPEImpor
 
 template <class T>
 bool_t
-PEImportAddressTableT<T>::IsImportAddressBlockInTable(IPEImportAddressBlockT<T> *pBlock)
+PEImportAddressTableT<T>::IsBlockExists(IPEImportAddressBlockT<T> *pBlock)
 {
     LIBPE_ASSERT_RET(NULL != pBlock, false);
 
@@ -43,13 +43,13 @@ PEImportAddressTableT<T>::IsImportAddressBlockInTable(IPEImportAddressBlockT<T> 
 
 template <class T>
 bool_t
-PEImportAddressTableT<T>::IsImportAddressItemInTable(IPEImportAddressItemT<T> *pItem)
+PEImportAddressTableT<T>::IsItemExist(IPEImportAddressItemT<T> *pItem)
 {
     LIBPE_ASSERT_RET(NULL != pItem, false);
 
     BlockList::iterator oBlockIt;
     for(oBlockIt = m_vBlocks.begin(); oBlockIt != m_vBlocks.end(); ++oBlockIt) {
-        if((*oBlockIt)->IsImportAddressItemInTable(pItem)) {
+        if((*oBlockIt)->IsItemExist(pItem)) {
             return true;
         }
     }
@@ -59,18 +59,18 @@ PEImportAddressTableT<T>::IsImportAddressItemInTable(IPEImportAddressItemT<T> *p
 
 template <class T>
 uint32_t
-PEImportAddressBlockT<T>::GetImportAddressItemCount()
+PEImportAddressBlockT<T>::GetItemCount()
 {
     return (uint32_t)m_vItems.size();
 }
 
 template <class T>
 error_t
-PEImportAddressBlockT<T>::GetImportAddressItemByIndex(uint32_t nIndex, IPEImportAddressItemT<T> **ppItem)
+PEImportAddressBlockT<T>::GetItemByIndex(uint32_t nIndex, IPEImportAddressItemT<T> **ppItem)
 {
     LIBPE_ASSERT_RET(NULL != ppItem, ERR_POINTER);
     
-    uint32_t nItemCount = GetImportAddressItemCount();
+    uint32_t nItemCount = GetItemCount();
     LIBPE_ASSERT_RET(nIndex < nItemCount, ERR_INVALID_ARG);
 
     return m_vItems[nIndex].CopyTo(ppItem);
@@ -78,7 +78,7 @@ PEImportAddressBlockT<T>::GetImportAddressItemByIndex(uint32_t nIndex, IPEImport
 
 template <class T>
 bool_t
-PEImportAddressBlockT<T>::IsImportAddressItemInTable(IPEImportAddressItemT<T> *pItem)
+PEImportAddressBlockT<T>::IsItemExist(IPEImportAddressItemT<T> *pItem)
 {
     LIBPE_ASSERT_RET(NULL != pItem, false);
 
