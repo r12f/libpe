@@ -42,8 +42,8 @@ struct PETrait<PE64> : PETraitBase {
 };
 
 #define LibPEAddressT(T)                        typename PETrait<T>::Address
-#define LibPERawResourceString(T)               typename PETrait<T>::RawResourceString;
-#define LibPERawResourceStringU(T)              typename PETrait<T>::RawResourceStringU;
+#define LibPERawResourceString(T)               typename PETrait<T>::RawResourceString
+#define LibPERawResourceStringU(T)              typename PETrait<T>::RawResourceStringU
 #define LibPERawDosHeaderT(T)                   typename PETrait<T>::RawDosHeader
 #define LibPERawFileHeaderT(T)                  typename PETrait<T>::RawFileHeader
 #define LibPERawNtHeadersT(T)                   typename PETrait<T>::RawNtHeaders

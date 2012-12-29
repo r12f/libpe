@@ -40,6 +40,9 @@ public:
     virtual LibPEAddressT(T) GetVAFromFOA(LibPEAddressT(T) nFOA);
     virtual LibPEAddressT(T) GetFOAFromVA(LibPEAddressT(T) nVA);
 
+
+    virtual const char * ParseAnsiString(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, uint64_t &nSize);
+
     virtual error_t ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPERawNtHeadersT(T) **ppNtHeaders, SectionHeaderList *pSectionHeaders, IPEOverlayT<T> **ppOverlay);
     virtual error_t ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESectionT<T> **ppSection);
     virtual error_t ParseExportTable(IPEExportTableT<T> **ppExportTable);
@@ -48,6 +51,11 @@ public:
     virtual error_t ParseImportModule(LibPEAddressT(T) nImportDescRVA, LibPEAddressT(T) nImportDescFOA, LibPERawImportDescriptor(T) *pImportDescriptor, IPEImportModuleT<T> **ppImportModule);
     virtual error_t ParseImportFunction(LibPERawImportDescriptor(T) *pImportDescriptor, LibPERawThunkData(T) *pThunkData, IPEImportFunctionT<T> **ppFunction);
     virtual error_t ParseResourceTable(IPEResourceTableT<T> **ppResourceTable);
+    virtual error_t ParseResourceDirectory(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, IPEResourceDirectoryT<T> **ppDirectory);
+    virtual error_t ParseResourceDirectoryEntry(IPEResourceDirectoryT<T> *pDirectory, uint32_t nEntryIndex, IPEResourceDirectoryEntryT<T> **ppEntry);
+    virtual error_t ParseResourceDataEntry(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, IPEResourceDataEntryT<T> **ppDataEntry);
+    virtual LibPERawResourceString(T) * ParseResourceString(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, uint64_t &nSize);
+    virtual LibPERawResourceStringU(T) * ParseResourceStringU(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, uint64_t &nSize);
     virtual error_t ParseExceptionTable(IPEExceptionTableT<T> **ppExceptionTable);
     virtual error_t ParseCertificateTable(IPECertificateTableT<T> **ppCertificateTable);
     virtual error_t ParseRelocationTable(IPERelocationTableT<T> **ppRelocationTable);
@@ -56,7 +64,7 @@ public:
     virtual error_t ParseTlsTable(IPETlsTableT<T> **ppTlsTable);
     virtual error_t ParseBoundImportTable(IPEBoundImportTableT<T> **ppBoundImportTable);
     virtual error_t ParseImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTable);
-    virtual error_t ParseImportAddressTableContent(LibPERawThunkData(T) *pRawTable, IPEImportAddressTableT<T> *pImportAddressTable);
+    virtual error_t ParseImportAddressTableContent(IPEImportAddressTableT<T> *pImportAddressTable);
     virtual error_t ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, LibPEAddressT(T) nBlockRVA, LibPEAddressT(T) nBlockFOA, IPEImportAddressBlockT<T> **ppBlock);
     virtual error_t ParseImportAddressItem(LibPERawThunkData(T) *pRawItem, LibPEAddressT(T) nItemRVA, LibPEAddressT(T) nItemFOA, IPEImportAddressItemT<T> **ppItem);
     virtual error_t ParseDelayImportTable(IPEDelayImportTableT<T> **ppDelayImportTable);
@@ -65,6 +73,14 @@ public:
 protected:
     virtual LibPEAddressT(T) GetRVAFromAddressField(LibPEAddressT(T) nRVA) = 0;
     virtual LibPEAddressT(T) GetRawOffsetFromAddressField(LibPEAddressT(T) nAddress) = 0;
+    virtual LibPEAddressT(T) GetRawOffsetFromRVA(LibPEAddressT(T) nRVA) = 0;
+    virtual LibPEAddressT(T) GetRawOffsetFromFOA(LibPEAddressT(T) nFOA) = 0;
+
+    LibPEAddressT(T) GetRawOffset(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA)
+    {
+        LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, NULL);
+        return (0 != nRVA) ? GetRawOffsetFromRVA(nRVA) : GetRawOffsetFromFOA(nFOA);
+    }
 
     error_t GetDataDirectoryEntry(int32_t nDataDirectoryEntryIndex, LibPEAddressT(T) &nRVA, LibPEAddressT(T) &nFOA, LibPEAddressT(T) &nSize)
     {

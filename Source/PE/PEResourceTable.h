@@ -9,8 +9,6 @@ class PEResourceTableT :
     public IPEResourceTableT<T>,
     public PEElementT<T>
 {
-    typedef std::vector<LibPEPtr<IPEResourceDirectoryT<T>>> DirectoryList;
-
 public:
     PEResourceTableT() {}
     virtual ~PEResourceTableT() {}
@@ -18,17 +16,16 @@ public:
     DECLARE_PE_ELEMENT(LibPERawResourceDirectory(T))
     LIBPE_SINGLE_THREAD_OBJECT()
 
-    void InnerAddDirectory(IPEResourceDirectoryT<T> *pDirectory)
+    void InnerSetRootDirectory(IPEResourceDirectoryT<T> *pRootDirectory)
     {
-        LIBPE_ASSERT_RET_VOID(NULL != pDirectory);
-        m_vDirectories.push_back(pDirectory);
+        LIBPE_ASSERT_RET_VOID(NULL != pRootDirectory);
+        m_pRootDirectory = pRootDirectory;
     }
 
-    virtual uint32_t LIBPE_CALLTYPE GetDirectoryCount();
-    virtual error_t LIBPE_CALLTYPE GetDirectoryByIndex(uint32_t nIndex, IPEResourceDirectoryT<T> **ppDirectory);
+    virtual error_t LIBPE_CALLTYPE GetRootDirectory(IPEResourceDirectoryT<T> **ppDirectory);
 
 private:
-    DirectoryList   m_vDirectories;
+    LibPEPtr<IPEResourceDirectoryT<T>>  m_pRootDirectory;
 };
 
 template <class T>
@@ -45,10 +42,9 @@ public:
     DECLARE_PE_ELEMENT(LibPERawResourceDirectory(T))
     LIBPE_SINGLE_THREAD_OBJECT()
 
-    void InnerAddEntry(IPEResourceDirectoryEntryT<T> *pEntry)
+    void InnerReserveEntry(uint32_t nCount)
     {
-        LIBPE_ASSERT_RET_VOID(NULL != pEntry);
-        m_vEntries.push_back(pEntry);
+        m_vEntries.resize(nCount);
     }
 
     virtual uint32_t LIBPE_CALLTYPE GetEntryCount();

@@ -17,6 +17,6 @@ PESectionHeaderT<T>::GetSection(IPESectionT<T> **ppSection)
     return m_pSection.CopyTo(ppSection);
 }
 
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PESectionHeader);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PESectionHeaderT);
 
 LIBPE_NAMESPACE_END

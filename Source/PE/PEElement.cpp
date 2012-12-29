@@ -33,6 +33,17 @@ PEElementT<T>::GetRawSize()
 
 template <class T>
 LibPEAddressT(T)
+PEElementT<T>::GetRVA()
+{
+    if(0 == m_nRVA) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
+        m_nRVA = m_pParser->GetRVAFromFOA(m_nFOA);
+    }
+    return m_nRVA;
+}
+
+template <class T>
+LibPEAddressT(T)
 PEElementT<T>::GetVA()
 {
     if(0 == m_nVA) {
@@ -53,6 +64,7 @@ PEElementT<T>::GetFOA()
     return m_nFOA;
 }
 
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEElement);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEElementT);
+
 
 LIBPE_NAMESPACE_END

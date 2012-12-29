@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "LibPEInternal.h"
 
 LIBPE_NAMESPACE_BEGIN
 

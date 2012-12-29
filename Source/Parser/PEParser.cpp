@@ -6,10 +6,23 @@
 #include "PE/PESection.h"
 #include "PE/PEExportTable.h"
 #include "PE/PEImportTable.h"
+#include "PE/PEResourceTable.h"
 #include "PE/PERelocationTable.h"
 #include "PE/PEImportAddressTable.h"
 
 LIBPE_NAMESPACE_BEGIN
+
+template <class T>
+PEParserT<T> *
+PEParserT<T>::Create(PEParserType nType)
+{
+    switch(nType) {
+    case PE_PARSER_TYPE_DISK_FILE:
+        return new PEParserDiskFileT<T>;
+    }
+
+    return NULL;
+}
 
 template <class T>
 PEParserT<T> *
@@ -156,6 +169,14 @@ LibPEAddressT(T)
 PEParserT<T>::GetFOAFromVA(LibPEAddressT(T) nVA)
 {
     return GetFOAFromRVA(GetRVAFromVA(nVA));
+}
+
+template <class T>
+const char *
+PEParserT<T>::ParseAnsiString(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, uint64_t &nSize)
+{
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, NULL);
+    return m_pLoader->GetAnsiString(GetRawOffset(nRVA, nFOA), nSize);
 }
 
 template <class T>
@@ -340,7 +361,6 @@ PEParserT<T>::ParseExportFunction(IPEExportTableT<T> *pExportTable, uint32_t nIn
     return ERR_OK;
 }
 
-
 template <class T>
 error_t
 PEParserT<T>::ParseImportTable(IPEImportTableT<T> **ppImportTable)
@@ -484,7 +504,150 @@ PEParserT<T>::ParseResourceTable(IPEResourceTableT<T> **ppResourceTable)
         return ERR_FAIL;
     }
 
-    return ERR_NOT_IMPL;
+    LibPEPtr<PEResourceTableT<T>> pInnerTable = new PEResourceTableT<T>();
+    if(NULL == pInnerTable) {
+        return ERR_NO_MEM;
+    }
+
+    pInnerTable->InnerSetBase(m_pFile, this);
+    pInnerTable->InnerSetMemoryInfo(nResourceTableRVA, 0, nResourceTableSize);
+    pInnerTable->InnerSetFileInfo(nResourceTableFOA, nResourceTableSize);
+
+    LibPEPtr<IPEResourceDirectoryT<T>> pRootDirectory;
+    if(ERR_OK != ParseResourceDirectory(nResourceTableRVA, nResourceTableFOA, &pRootDirectory) || NULL == pRootDirectory) {
+        return ERR_NO_MEM;
+    }
+
+    pInnerTable->InnerSetRootDirectory(pRootDirectory.p);
+
+    *ppResourceTable = pInnerTable.Detach();
+
+    return ERR_OK;
+}
+
+template <class T>
+error_t
+PEParserT<T>::ParseResourceDirectory(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, IPEResourceDirectoryT<T> **ppDirectory)
+{
+    LIBPE_ASSERT_RET(NULL != ppDirectory, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, ERR_FAIL);
+
+    *ppDirectory = NULL;
+
+    LibPEPtr<PEResourceDirectoryT<T>> pInnerDirectory = new PEResourceDirectoryT<T>();
+    if(NULL == pInnerDirectory) {
+        return ERR_NO_MEM;
+    }
+
+    pInnerDirectory->InnerSetBase(m_pFile, this);
+    pInnerDirectory->InnerSetMemoryInfo(nRVA, 0, sizeof(LibPERawResourceDirectory(T)));
+    pInnerDirectory->InnerSetFileInfo(nFOA, sizeof(LibPERawResourceDirectory(T)));
+
+    LibPERawResourceDirectory(T) *pRawDirectory = pInnerDirectory->GetRawStruct();
+    if(NULL == pRawDirectory) {
+        return ERR_NO_MEM;
+    }
+
+    pInnerDirectory->InnerReserveEntry(pRawDirectory->NumberOfNamedEntries + pRawDirectory->NumberOfIdEntries);
+
+    *ppDirectory = pInnerDirectory.Detach();
+
+    return ERR_OK;
+}
+
+template <class T>
+error_t
+PEParserT<T>::ParseResourceDirectoryEntry(IPEResourceDirectoryT<T> *pDirectory, uint32_t nEntryIndex, IPEResourceDirectoryEntryT<T> **ppEntry)
+{
+    LIBPE_ASSERT_RET(NULL != pDirectory && NULL != ppEntry, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, ERR_FAIL);
+
+    *ppEntry = NULL;
+
+    LibPEAddressT(T) nFirstEntryRVA = pDirectory->GetRVA() + pDirectory->GetSizeInMemory();
+    LibPEAddressT(T) nFirstEntryFOA = pDirectory->GetFOA() + pDirectory->GetSizeInFile();
+
+    LibPEAddressT(T) nEntryRVA = nFirstEntryRVA + nEntryIndex * sizeof(LibPERawResourceDirectoryEntry(T));
+    LibPEAddressT(T) nEntryFOA = nFirstEntryFOA + nEntryIndex * sizeof(LibPERawResourceDirectoryEntry(T));
+
+    LibPEPtr<PEResourceDirectoryEntryT<T>> pInnerEntry = new PEResourceDirectoryEntryT<T>();
+    if(NULL == pInnerEntry) {
+        return ERR_NO_MEM;
+    }
+
+    pInnerEntry->InnerSetBase(m_pFile, this);
+    pInnerEntry->InnerSetMemoryInfo(nEntryRVA, 0, sizeof(LibPERawResourceDirectoryEntry(T)));
+    pInnerEntry->InnerSetFileInfo(nEntryFOA, sizeof(LibPERawResourceDirectoryEntry(T)));
+
+    *ppEntry = pInnerEntry.Detach();
+
+    return ERR_OK;
+}
+
+template <class T>
+error_t
+PEParserT<T>::ParseResourceDataEntry(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, IPEResourceDataEntryT<T> **ppDataEntry)
+{
+    LIBPE_ASSERT_RET(NULL != ppDataEntry, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, ERR_FAIL);
+
+    *ppDataEntry = NULL;
+
+    LibPEPtr<PEResourceDataEntryT<T>> pInnerDataEntry = new PEResourceDataEntryT<T>();
+    if(NULL == pInnerDataEntry) {
+        return ERR_NO_MEM;
+    }
+
+    pInnerDataEntry->InnerSetBase(m_pFile, this);
+    pInnerDataEntry->InnerSetMemoryInfo(nRVA, 0, sizeof(LibPERawResourceDataEntry(T)));
+    pInnerDataEntry->InnerSetFileInfo(nFOA, sizeof(LibPERawResourceDataEntry(T)));
+
+    LibPERawResourceDataEntry(T) *pRawDataEntry = pInnerDataEntry->GetRawStruct();
+    if(NULL == pRawDataEntry) {
+        return ERR_NO_MEM;
+    }
+
+    *ppDataEntry = pInnerDataEntry.Detach();
+
+    return ERR_OK;
+}
+
+template <class T>
+LibPERawResourceString(T) *
+PEParserT<T>::ParseResourceString(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, uint64_t &nSize)
+{
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, NULL);
+
+    LibPEAddressT(T) nRawOffset = GetRawOffset(nRVA, nFOA);
+    uint16_t *pRawStringSize = (uint16_t *)m_pLoader->GetBuffer(nRawOffset, sizeof(uint16_t));
+    if(NULL == pRawStringSize) {
+        return NULL;
+    }
+
+    if(NULL == m_pLoader->GetBuffer(nRawOffset + sizeof(uint16_t), *pRawStringSize)) {
+        return NULL;
+    }
+
+    return (LibPERawResourceString(T) *)pRawStringSize;
+}
+
+template <class T>
+LibPERawResourceStringU(T) *
+PEParserT<T>::ParseResourceStringU(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, uint64_t &nSize)
+{
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, NULL);
+
+    LibPEAddressT(T) nRawOffset = GetRawOffset(nRVA, nFOA);
+    uint16_t *pRawStringSize = (uint16_t *)m_pLoader->GetBuffer(nRawOffset, sizeof(uint16_t));
+    if(NULL == pRawStringSize) {
+        return NULL;
+    }
+
+    if(NULL == m_pLoader->GetBuffer(nRawOffset + sizeof(uint16_t), *pRawStringSize)) {
+        return NULL;
+    }
+
+    return (LibPERawResourceStringU(T) *)pRawStringSize;
 }
 
 template <class T>
@@ -630,7 +793,7 @@ PEParserT<T>::ParseImportAddressTable(IPEImportAddressTableT<T> **ppImportAddres
     pImportAddressTable->InnerSetMemoryInfo(nImportAddressTableRVA, 0, nImportAddressTableSize);
     pImportAddressTable->InnerSetFileInfo(nImportAddressTableFOA, nImportAddressTableSize);
 
-    if(ERR_OK != ParseImportAddressTableContent(pImportAddressTable->GetRawStruct(), pImportAddressTable)) {
+    if(ERR_OK != ParseImportAddressTableContent(pImportAddressTable)) {
         return ERR_FAIL;
     }
 
@@ -641,10 +804,11 @@ PEParserT<T>::ParseImportAddressTable(IPEImportAddressTableT<T> **ppImportAddres
 
 template <class T>
 error_t
-PEParserT<T>::ParseImportAddressTableContent(LibPERawThunkData(T) *pRawTable, IPEImportAddressTableT<T> *pImportAddressTable)
+PEParserT<T>::ParseImportAddressTableContent(IPEImportAddressTableT<T> *pImportAddressTable)
 {
-    LIBPE_ASSERT_RET(NULL != pRawTable && NULL != pImportAddressTable, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != pImportAddressTable, ERR_POINTER);
 
+    LibPERawThunkData(T) *pRawTable = pImportAddressTable->GetRawStruct();
     PEImportAddressTableT<T> *pInnerImportAddressTable = static_cast<PEImportAddressTableT<T> *>(pImportAddressTable);
     LibPEAddressT(T) nTableRVA = pImportAddressTable->GetRVA();
     LibPEAddressT(T) nTableFOA = pImportAddressTable->GetFOA();
@@ -771,12 +935,13 @@ PEParserT<T>::ParseCLRHeader(IPECLRHeaderT<T> **ppCLRHeader)
     return ERR_NOT_IMPL;
 }
 
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEParser);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser, CreateForDiskFile);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser, CreateForMappedFile);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEParserT);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParserT, Create);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParserT, CreateForDiskFile);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParserT, CreateForMappedFile);
 #ifdef LIBPE_WINOS
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser, CreateForMappedResource);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser, CreateForLoadedModule);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParserT, CreateForMappedResource);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParserT, CreateForLoadedModule);
 #endif
 
 LIBPE_NAMESPACE_END

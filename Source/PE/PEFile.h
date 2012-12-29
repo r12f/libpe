@@ -96,17 +96,18 @@ public:
     virtual error_t LIBPE_CALLTYPE Rebuild(const file_char_t *pFilePath) { return ERR_OK; }
 
 private:
-    LibPEPtr<PEParserT<T>>              m_pParser;
-    LibPERawDosHeaderT(T)               *m_pDosHeader;
-    LibPERawNtHeadersT(T)               *m_pNtHeaders;
-    LibPERawFileHeaderT(T)              *m_pFileHeader;
-    LibPERawOptionalHeaderT(T)          *m_pOptionalHeader;
-    SectionHeaderList                   m_vSectionHeaders;
-    LibPEPtr<IPEOverlayT<T>>          m_pOverlay;
-    LibPEPtr<IPEExportTableT<T>>        m_pExportTable;
-    LibPEPtr<IPEImportTableT<T>>        m_pImportTable;
-    LibPEPtr<IPERelocationTableT<T>>    m_pRelocationTable;
-    LibPEPtr<IPEImportAddressTableT<T>> m_pImportAddressTable;
+    LibPEPtr<PEParserT<T>>                  m_pParser;
+    LibPERawDosHeaderT(T)                   *m_pDosHeader;
+    LibPERawNtHeadersT(T)                   *m_pNtHeaders;
+    LibPERawFileHeaderT(T)                  *m_pFileHeader;
+    LibPERawOptionalHeaderT(T)              *m_pOptionalHeader;
+    SectionHeaderList                       m_vSectionHeaders;
+    LibPEPtr<IPEOverlayT<T>>                m_pOverlay;
+    LibPEPtr<IPEExportTableT<T>>            m_pExportTable;
+    LibPEPtr<IPEImportTableT<T>>            m_pImportTable;
+    LibPEPtr<IPEResourceTableT<T>>          m_pResourceTable;
+    LibPEPtr<IPERelocationTableT<T>>        m_pRelocationTable;
+    LibPEPtr<IPEImportAddressTableT<T>>     m_pImportAddressTable;
 };
 
 typedef PEFileT<PE32> PEFile32;

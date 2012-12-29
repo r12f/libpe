@@ -18,6 +18,8 @@ public:
 protected:
     virtual LibPEAddressT(T) GetRVAFromAddressField(LibPEAddressT(T) nAddress);
     virtual LibPEAddressT(T) GetRawOffsetFromAddressField(LibPEAddressT(T) nAddress);
+    virtual LibPEAddressT(T) GetRawOffsetFromRVA(LibPEAddressT(T) nRVA);
+    virtual LibPEAddressT(T) GetRawOffsetFromFOA(LibPEAddressT(T) nFOA);
 };
 typedef PEParserDiskFileT<PE32> PEParserDiskFile32;
 typedef PEParserDiskFileT<PE64> PEParserDiskFile64;

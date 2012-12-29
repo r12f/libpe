@@ -289,7 +289,14 @@ template <class T>
 error_t
 PEFileT<T>::GetResourceTable(IPEResourceTableT<T> **ppResourceTable)
 {
-    return ERR_NOT_IMPL;
+    if(NULL == m_pResourceTable) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
+        if(ERR_OK != m_pParser->ParseResourceTable(&m_pResourceTable) || NULL == m_pResourceTable) {
+            return ERR_FAIL;
+        }
+    }
+
+    return m_pResourceTable.CopyTo(ppResourceTable);
 }
 
 template <class T>
@@ -334,12 +341,12 @@ PEFileT<T>::GetImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTab
     return m_pImportAddressTable.CopyTo(ppImportAddressTable);
 }
 
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEFile);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromDiskFile);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromMappedFile);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEFileT);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFileT, ParsePEFromDiskFile);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFileT, ParsePEFromMappedFile);
 #ifdef LIBPE_WINOS
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromMappedResource);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFile, ParsePEFromLoadedModule);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFileT, ParsePEFromMappedResource);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFileT, ParsePEFromLoadedModule);
 #endif
 
 LIBPE_NAMESPACE_END

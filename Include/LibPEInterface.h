@@ -216,13 +216,13 @@ class IPEResourceTableT : public IPEElementT<T>
 {
 public:
     virtual LibPERawResourceDirectory(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
-    virtual uint32_t LIBPE_CALLTYPE GetDirectoryCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetDirectoryByIndex(uint32_t nIndex, IPEResourceDirectoryT<T> **ppDirectory) = 0;
+    virtual error_t LIBPE_CALLTYPE GetRootDirectory(IPEResourceDirectoryT<T> **ppDirectory) = 0;
 };
 
 template <class T>
 class IPEResourceDirectoryT : public IPEElementT<T>
 {
+public:
     virtual LibPERawResourceDirectory(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
     virtual uint32_t LIBPE_CALLTYPE GetEntryCount() = 0;
     virtual error_t LIBPE_CALLTYPE GetEntryByIndex(uint32_t nIndex, IPEResourceDirectoryEntryT<T> **ppEntry) = 0;
@@ -231,6 +231,7 @@ class IPEResourceDirectoryT : public IPEElementT<T>
 template <class T>
 class IPEResourceDirectoryEntryT : public IPEElementT<T>
 {
+public:
     virtual LibPERawResourceDirectoryEntry(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
 
     virtual bool_t LIBPE_CALLTYPE IsNameId() = 0;

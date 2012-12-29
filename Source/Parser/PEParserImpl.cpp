@@ -4,18 +4,6 @@
 LIBPE_NAMESPACE_BEGIN
 
 template <class T>
-PEParserT<T> *
-PEParserT<T>::Create(PEParserType nType)
-{
-    switch(nType) {
-    case PE_PARSER_TYPE_DISK_FILE:
-        return new PEParserDiskFileT<T>;
-    }
-
-    return NULL;
-}
-
-template <class T>
 LibPEAddressT(T)
 PEParserDiskFileT<T>::GetRVAFromAddressField(LibPEAddressT(T) nAddress)
 {
@@ -29,7 +17,20 @@ PEParserDiskFileT<T>::GetRawOffsetFromAddressField(LibPEAddressT(T) nAddress)
     return GetFOAFromRVA(nAddress);
 }
 
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEParserDiskFile);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParser, Create);
+template <class T>
+LibPEAddressT(T)
+PEParserDiskFileT<T>::GetRawOffsetFromRVA(LibPEAddressT(T) nRVA)
+{
+    return GetFOAFromRVA(nRVA);
+}
+
+template <class T>
+LibPEAddressT(T)
+PEParserDiskFileT<T>::GetRawOffsetFromFOA(LibPEAddressT(T) nFOA)
+{
+    return nFOA;
+}
+
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEParserDiskFileT);
 
 LIBPE_NAMESPACE_END

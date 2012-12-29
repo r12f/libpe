@@ -71,7 +71,7 @@ DataLoaderDiskFile::GetBuffer(uint64_t nOffset, uint64_t nSize)
     return &(m_pFileBuffer[nOffset]);
 }
 
-int8_t *
+const char *
 DataLoaderDiskFile::GetAnsiString(uint64_t nOffset, uint64_t &nSize)
 {
     if(nOffset >= m_nFileSize) {
@@ -99,6 +99,42 @@ DataLoaderDiskFile::GetAnsiString(uint64_t nOffset, uint64_t &nSize)
                 return &(m_pFileBuffer[nOffset]);
             }
             ++nCurOffset;
+        }
+
+        ++nStartBlockId;
+    }
+
+    return NULL;
+}
+
+const wchar_t *
+DataLoaderDiskFile::GetUnicodeString(uint64_t nOffset, uint64_t &nSize)
+{
+    if(nOffset >= m_nFileSize) {
+        return NULL;
+    }
+
+    int32_t nStartBlockId = GetBlockId(nOffset), nReadyBlockId = -1;
+    if(0 > nStartBlockId) {
+        return NULL;
+    }
+
+    uint64_t nCurOffset = nOffset, nBlockEnd = 0;
+    for(;;) {
+        if(nReadyBlockId != nStartBlockId) {
+            if(!ReadBlock(nStartBlockId)) {
+                break;
+            }
+            nReadyBlockId = nStartBlockId;
+            nBlockEnd = (nStartBlockId + 1) * m_nBlockSize;
+        }
+
+        while(nCurOffset < nBlockEnd) {
+            if(0 == m_pFileBuffer[nCurOffset]) {
+                nSize = nCurOffset - nOffset + 1;
+                return (const wchar_t *)&(m_pFileBuffer[nOffset]);
+            }
+            nCurOffset += sizeof(wchar_t);
         }
 
         ++nStartBlockId;

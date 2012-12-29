@@ -80,6 +80,55 @@ void TestImportTable(IPEFile *pFile)
     }
 }
 
+void TestResourceDirectory(IPEResourceDirectory *pDirectory);
+void TestResourceDirectoryEntry(IPEResourceDirectoryEntry *pDirectoryEntry)
+{
+    printf("Resource directory entry: ");
+    if(pDirectoryEntry->IsNameId()) {
+        printf("Id = %d, ", pDirectoryEntry->GetId());
+    } else {
+        printf("Name = %ws, ", pDirectoryEntry->GetName());
+    }
+
+    if(pDirectoryEntry->IsEntryDirectory()) {
+        LibPEPtr<IPEResourceDirectory> pChildDirectory;
+        pDirectoryEntry->GetDirectory(&pChildDirectory);
+        printf("DirectoryRVA = %lu\n", pChildDirectory->GetRVA());
+        TestResourceDirectory(pChildDirectory);
+    } else {
+        LibPEPtr<IPEResourceDataEntry> pChildEntry;
+        pDirectoryEntry->GetDataEntry(&pChildEntry);
+        printf("DataEntryRVA = %lu\n", pChildEntry->GetRVA());
+    }
+}
+
+void TestResourceDirectory(IPEResourceDirectory *pDirectory)
+{
+    printf("Resource directory:\n");
+    uint32_t nEntryCount = pDirectory->GetEntryCount();
+    for(uint32_t nEntryIndex = 0; nEntryIndex < nEntryCount; ++nEntryIndex) {
+        LibPEPtr<IPEResourceDirectoryEntry> pDirectoryEntry;
+        pDirectory->GetEntryByIndex(nEntryIndex, &pDirectoryEntry);
+        TestResourceDirectoryEntry(pDirectoryEntry);
+    }
+    printf("\n");
+}
+
+void TestResourceTable(IPEFile *pFile)
+{
+    printf("Resource table:\n");
+
+    LibPEPtr<IPEResourceTable> pResourceTable;
+    pFile->GetResourceTable(&pResourceTable);
+
+    LibPEPtr<IPEResourceDirectory> pDirectory;
+    pResourceTable->GetRootDirectory(&pDirectory);
+
+    TestResourceDirectory(pDirectory);
+
+    return;
+}
+
 void TestRelocationTable(IPEFile *pFile)
 {
     LibPEPtr<IPERelocationTable> pRelocationTable;
@@ -134,12 +183,13 @@ int wmain(int argc, wchar_t* argv[])
     printf("AddRef: %d\n", pFile->AddRef());
     printf("Release: %d\n", pFile->Release());
 
-    TestBasicInfo(pFile);
-    TestSection(pFile);
-    TestExportTable(pFile);
-    TestImportTable(pFile);
-    TestRelocationTable(pFile);
-    TestImportAddressTable(pFile);
+    //TestBasicInfo(pFile);
+    //TestSection(pFile);
+    //TestExportTable(pFile);
+    //TestImportTable(pFile);
+    TestResourceTable(pFile);
+    //TestRelocationTable(pFile);
+    //TestImportAddressTable(pFile);
 
     return 0;
 }

@@ -12,7 +12,8 @@ public:
     virtual PEParserType GetType() = 0;
     virtual uint64_t GetSize() = 0;
     virtual void * GetBuffer(uint64_t nOffset, uint64_t nSize) = 0;
-    virtual int8_t * GetAnsiString(uint64_t nOffset, uint64_t &nSize) = 0;
+    virtual const char * GetAnsiString(uint64_t nOffset, uint64_t &nSize) = 0;
+    virtual const wchar_t * GetUnicodeString(uint64_t nOffset, uint64_t &nSize) = 0;
 };
 
 class DataLoaderDiskFile :
@@ -34,7 +35,8 @@ public:
     virtual PEParserType GetType() { return PE_PARSER_TYPE_DISK_FILE; }
     virtual uint64_t GetSize() { return m_nFileSize; }
     virtual void * GetBuffer(uint64_t nOffset, uint64_t nSize);
-    virtual int8_t * GetAnsiString(uint64_t nOffset, uint64_t &nSize);
+    virtual const char * GetAnsiString(uint64_t nOffset, uint64_t &nSize);
+    virtual const wchar_t * GetUnicodeString(uint64_t nOffset, uint64_t &nSize);
 
 protected:
     void Reset();

@@ -46,7 +46,7 @@ public:
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawOffset();
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawSize();
 
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVA() { return m_nRVA; }
+    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVA();
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVA();
     virtual LibPEAddressT(T) LIBPE_CALLTYPE GetSizeInMemory() { return m_nSizeInMemory; }
 
