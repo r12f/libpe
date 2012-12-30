@@ -189,9 +189,40 @@ PEResourceDirectoryEntryT<T>::GetDataEntry(IPEResourceDataEntryT<T> **ppDataEntr
     return ERR_OK;
 }
 
+template <class T>
+error_t
+PEResourceDataEntryT<T>::GetResource(IPEResourceT<T> **ppResource)
+{
+    LIBPE_ASSERT_RET(NULL != ppResource, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
+
+    *ppResource = NULL;
+
+    if(NULL != m_pResource) {
+        return m_pResource.CopyTo(ppResource);
+    }
+
+    LibPERawResourceDataEntry(T) *pRawEntry = GetRawStruct();
+    if(NULL == pRawEntry) {
+        return ERR_NO_MEM;
+    }
+
+    LibPEPtr<IPEResourceTableT<T>> pTable;
+    if(ERR_OK != m_pFile->GetResourceTable(&pTable) || NULL == pTable) {
+        return NULL;
+    }
+
+    if(ERR_OK != m_pParser->ParseResource(this, &m_pResource) || NULL == m_pResource) {
+        return ERR_NO_MEM;
+    }
+
+    return m_pResource.CopyTo(ppResource);
+}
+
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEResourceTableT);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEResourceDirectoryT);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEResourceDirectoryEntryT);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEResourceDataEntryT);
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEResourceT);
 
 LIBPE_NAMESPACE_END

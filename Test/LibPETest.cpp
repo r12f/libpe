@@ -80,6 +80,13 @@ void TestImportTable(IPEFile *pFile)
     }
 }
 
+void TestResourceDataEntry(IPEResourceDataEntry *pDataEntry)
+{
+    LibPEPtr<IPEResource> pResource;
+    pDataEntry->GetResource(&pResource);
+    printf("Resource: RVA = 0x%08x, FOA = 0x%08x, Size = %lu", pResource->GetRVA(), pResource->GetFOA(), pResource->GetSizeInMemory());
+}
+
 void TestResourceDirectory(IPEResourceDirectory *pDirectory);
 void TestResourceDirectoryEntry(IPEResourceDirectoryEntry *pDirectoryEntry)
 {
@@ -99,6 +106,7 @@ void TestResourceDirectoryEntry(IPEResourceDirectoryEntry *pDirectoryEntry)
         LibPEPtr<IPEResourceDataEntry> pChildEntry;
         pDirectoryEntry->GetDataEntry(&pChildEntry);
         printf("DataEntryRVA = %lu\n", pChildEntry->GetRVA());
+        TestResourceDataEntry(pChildEntry);
     }
 }
 

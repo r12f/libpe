@@ -90,6 +90,24 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawResourceDataEntry(T))
     LIBPE_SINGLE_THREAD_OBJECT()
+
+    virtual error_t LIBPE_CALLTYPE GetResource(IPEResourceT<T> **ppResource);
+
+private:
+    LibPEPtr<IPEResourceT<T>> m_pResource;
+};
+
+template <class T>
+class PEResourceT :
+    public IPEResourceT<T>,
+    public PEElementT<T>
+{
+public:
+    PEResourceT() {}
+    virtual ~PEResourceT() {}
+
+    DECLARE_PE_ELEMENT(void)
+    LIBPE_SINGLE_THREAD_OBJECT()
 };
 
 LIBPE_NAMESPACE_END

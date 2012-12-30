@@ -21,6 +21,7 @@ typedef IPEResourceTableT<PE64>             IPEResourceTable64;
 typedef IPEResourceDirectoryT<PE64>         IPEResourceDirectory64;
 typedef IPEResourceDirectoryEntryT<PE64>    IPEResourceDirectoryEntry64;
 typedef IPEResourceDataEntryT<PE64>         IPEResourceDataEntry64;
+typedef IPEResourceT<PE64>                  IPEResource64;
 typedef IPEExceptionTableT<PE64>            IPEExceptionTable64;
 typedef IPECertificateTableT<PE64>          IPECertificateTable64;
 typedef IPERelocationTableT<PE64>           IPERelocationTable64;

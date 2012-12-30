@@ -54,6 +54,7 @@ public:
     virtual error_t ParseResourceDirectory(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, IPEResourceDirectoryT<T> **ppDirectory);
     virtual error_t ParseResourceDirectoryEntry(IPEResourceDirectoryT<T> *pDirectory, uint32_t nEntryIndex, IPEResourceDirectoryEntryT<T> **ppEntry);
     virtual error_t ParseResourceDataEntry(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, IPEResourceDataEntryT<T> **ppDataEntry);
+    virtual error_t ParseResource(IPEResourceDataEntryT<T> *pDataEntry, IPEResourceT<T> **ppResource);
     virtual LibPERawResourceString(T) * ParseResourceString(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, uint64_t &nSize);
     virtual LibPERawResourceStringU(T) * ParseResourceStringU(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, uint64_t &nSize);
     virtual error_t ParseExceptionTable(IPEExceptionTableT<T> **ppExceptionTable);

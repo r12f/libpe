@@ -602,12 +602,33 @@ PEParserT<T>::ParseResourceDataEntry(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFO
     pInnerDataEntry->InnerSetMemoryInfo(nRVA, 0, sizeof(LibPERawResourceDataEntry(T)));
     pInnerDataEntry->InnerSetFileInfo(nFOA, sizeof(LibPERawResourceDataEntry(T)));
 
-    LibPERawResourceDataEntry(T) *pRawDataEntry = pInnerDataEntry->GetRawStruct();
-    if(NULL == pRawDataEntry) {
+    *ppDataEntry = pInnerDataEntry.Detach();
+
+    return ERR_OK;
+}
+
+template <class T>
+error_t
+PEParserT<T>::ParseResource(IPEResourceDataEntryT<T> *pDataEntry, IPEResourceT<T> **ppResource)
+{
+    LIBPE_ASSERT_RET(NULL != pDataEntry && NULL != ppResource, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, ERR_FAIL);
+
+    *ppResource = NULL;
+
+    LibPERawResourceDataEntry(T) *pRawDataEntry = pDataEntry->GetRawStruct();
+    LIBPE_ASSERT_RET(NULL != pRawDataEntry, ERR_FAIL);
+
+    LibPEPtr<PEResourceT<T>> pInnerResource = new PEResourceT<T>();
+    if(NULL == pInnerResource) {
         return ERR_NO_MEM;
     }
 
-    *ppDataEntry = pInnerDataEntry.Detach();
+    pInnerResource->InnerSetBase(m_pFile, this);
+    pInnerResource->InnerSetMemoryInfo(pRawDataEntry->OffsetToData, 0, pRawDataEntry->Size);
+    pInnerResource->InnerSetFileInfo(0, pRawDataEntry->Size);
+
+    *ppResource = pInnerResource.Detach();
 
     return ERR_OK;
 }

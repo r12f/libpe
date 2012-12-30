@@ -31,6 +31,7 @@ template <class T> class IPEResourceTableT;
 template <class T> class IPEResourceDirectoryT;
 template <class T> class IPEResourceDirectoryEntryT;
 template <class T> class IPEResourceDataEntryT;
+template <class T> class IPEResourceT;
 template <class T> class IPEExceptionTableT;
 template <class T> class IPECertificateTableT;
 template <class T> class IPERelocationTableT;
@@ -252,6 +253,14 @@ class IPEResourceDataEntryT : public IPEElementT<T>
 {
 public:
     virtual LibPERawResourceDataEntry(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
+    virtual error_t LIBPE_CALLTYPE GetResource(IPEResourceT<T> **ppResource) = 0;
+};
+
+template <class T>
+class IPEResourceT : public IPEElementT<T>
+{
+public:
+    virtual void * LIBPE_CALLTYPE GetRawStruct() = 0;
 };
 
 template <class T>

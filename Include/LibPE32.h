@@ -21,6 +21,7 @@ typedef IPEResourceTableT<PE32>             IPEResourceTable32;
 typedef IPEResourceDirectoryT<PE32>         IPEResourceDirectory32;
 typedef IPEResourceDirectoryEntryT<PE32>    IPEResourceDirectoryEntry32;
 typedef IPEResourceDataEntryT<PE32>         IPEResourceDataEntry32;
+typedef IPEResourceT<PE32>                  IPEResource32;
 typedef IPEExceptionTableT<PE32>            IPEExceptionTable32;
 typedef IPECertificateTableT<PE32>          IPECertificateTable32;
 typedef IPERelocationTableT<PE32>           IPERelocationTable32;
