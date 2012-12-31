@@ -6,10 +6,10 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 class PEImportAddressTableT :
-    public IPEImportAddressTableT<T>,
+    public IPEImportAddressTable,
     public PEElementT<T>
 {
-    typedef std::vector<LibPEPtr<IPEImportAddressBlockT<T>>> BlockList;
+    typedef std::vector<LibPEPtr<IPEImportAddressBlock>> BlockList;
 
 public:
     PEImportAddressTableT() {}
@@ -18,15 +18,15 @@ public:
     LIBPE_SINGLE_THREAD_OBJECT()
     DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
-    void InnerAddImportAddressBlock(IPEImportAddressBlockT<T> *pBlock) {
+    void InnerAddImportAddressBlock(IPEImportAddressBlock *pBlock) {
         LIBPE_ASSERT_RET_VOID(NULL != pBlock);
         m_vBlocks.push_back(pBlock);
     }
 
     virtual uint32_t LIBPE_CALLTYPE GetBlockCount();
-    virtual error_t LIBPE_CALLTYPE GetBlockByIndex(uint32_t nIndex, IPEImportAddressBlockT<T> **ppBlock);
-    virtual bool_t LIBPE_CALLTYPE IsBlockExists(IPEImportAddressBlockT<T> *pBlock);
-    virtual bool_t LIBPE_CALLTYPE IsItemExist(IPEImportAddressItemT<T> *pItem);
+    virtual error_t LIBPE_CALLTYPE GetBlockByIndex(uint32_t nIndex, IPEImportAddressBlock **ppBlock);
+    virtual bool_t LIBPE_CALLTYPE IsBlockExists(IPEImportAddressBlock *pBlock);
+    virtual bool_t LIBPE_CALLTYPE IsItemExist(IPEImportAddressItem *pItem);
 
 private:
     BlockList   m_vBlocks;
@@ -34,10 +34,10 @@ private:
 
 template <class T>
 class PEImportAddressBlockT :
-    public IPEImportAddressBlockT<T>,
+    public IPEImportAddressBlock,
     public PEElementT<T>
 {
-    typedef std::vector<LibPEPtr<IPEImportAddressItemT<T>>> ItemList;
+    typedef std::vector<LibPEPtr<IPEImportAddressItem>> ItemList;
 
 public:
     PEImportAddressBlockT() {}
@@ -46,14 +46,14 @@ public:
     LIBPE_SINGLE_THREAD_OBJECT()
     DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
-    void InnerAddImportAddressItem(IPEImportAddressItemT<T> *pItem) {
+    void InnerAddImportAddressItem(IPEImportAddressItem *pItem) {
         LIBPE_ASSERT_RET_VOID(NULL != pItem);
         m_vItems.push_back(pItem);
     }
 
     virtual uint32_t LIBPE_CALLTYPE GetItemCount();
-    virtual error_t LIBPE_CALLTYPE GetItemByIndex(uint32_t nIndex, IPEImportAddressItemT<T> **ppItem);
-    virtual bool_t LIBPE_CALLTYPE IsItemExist(IPEImportAddressItemT<T> *pItem);
+    virtual error_t LIBPE_CALLTYPE GetItemByIndex(uint32_t nIndex, IPEImportAddressItem **ppItem);
+    virtual bool_t LIBPE_CALLTYPE IsItemExist(IPEImportAddressItem *pItem);
 
 private:
     ItemList    m_vItems;
@@ -61,7 +61,7 @@ private:
 
 template <class T>
 class PEImportAddressItemT :
-    public IPEImportAddressItemT<T>,
+    public IPEImportAddressItem,
     public PEElementT<T>
 {
 public:
@@ -71,7 +71,7 @@ public:
     LIBPE_SINGLE_THREAD_OBJECT()
     DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawAddress();
+    virtual PEAddress LIBPE_CALLTYPE GetRawAddress();
 };
 
 typedef PEImportAddressTableT<PE32> PEImportAddressTable32;

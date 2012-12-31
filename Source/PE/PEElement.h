@@ -8,7 +8,7 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 class PEElementT :
-    public IPEElementT<T>
+    public IPEElement
 {
 public:
     PEElementT()
@@ -28,54 +28,54 @@ public:
         m_pRawBuffer = pRawBuffer;
     }
     
-    void InnerSetMemoryInfo(LibPEAddressT(T) nRVA, LibPEAddressT(T) nVA, LibPEAddressT(T) nSizeInMemory)
+    void InnerSetMemoryInfo(PEAddress nRVA, PEAddress nVA, PEAddress nSizeInMemory)
     {
         m_nRVA = nRVA;
         m_nVA = nVA;
         m_nSizeInMemory = nSizeInMemory;
     }
 
-    void InnerSetFileInfo(LibPEAddressT(T) nFOA, LibPEAddressT(T) nSizeInFile)
+    void InnerSetFileInfo(PEAddress nFOA, PEAddress nSizeInFile)
     {
         m_nFOA = nFOA;
         m_nSizeInFile = nSizeInFile;
     }
 
-    // Override IPEElementT<T>
+    // Override IPEElement
     virtual void * LIBPE_CALLTYPE GetRawMemory();
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawOffset();
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawSize();
+    virtual PEAddress LIBPE_CALLTYPE GetRawOffset();
+    virtual PEAddress LIBPE_CALLTYPE GetRawSize();
 
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVA();
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVA();
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetSizeInMemory() { return m_nSizeInMemory; }
+    virtual PEAddress LIBPE_CALLTYPE GetRVA();
+    virtual PEAddress LIBPE_CALLTYPE GetVA();
+    virtual PEAddress LIBPE_CALLTYPE GetSizeInMemory() { return m_nSizeInMemory; }
 
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOA();
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetSizeInFile() { return m_nSizeInFile; }
+    virtual PEAddress LIBPE_CALLTYPE GetFOA();
+    virtual PEAddress LIBPE_CALLTYPE GetSizeInFile() { return m_nSizeInFile; }
 
 protected:
     LibPEPtr<PEParserT<T>>  m_pParser;
     PEFileT<T>              *m_pFile;
     void                    *m_pRawBuffer;
-    LibPEAddressT(T)        m_nRVA;
-    LibPEAddressT(T)        m_nVA;
-    LibPEAddressT(T)        m_nSizeInMemory;
-    LibPEAddressT(T)        m_nFOA;
-    LibPEAddressT(T)        m_nSizeInFile;
+    PEAddress               m_nRVA;
+    PEAddress               m_nVA;
+    PEAddress               m_nSizeInMemory;
+    PEAddress               m_nFOA;
+    PEAddress               m_nSizeInFile;
 };
 
 typedef PEElementT<PE32> PEElement32;
 typedef PEElementT<PE64> PEElement64;
 
-#define DECLARE_PE_ELEMENT(struct_type)     \
-    virtual void * LIBPE_CALLTYPE GetRawMemory() { return PEElementT<T>::GetRawMemory(); }                  \
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawOffset() { return PEElementT<T>::GetRawOffset(); }      \
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawSize() { return PEElementT<T>::GetRawSize(); }            \
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVA() { return PEElementT<T>::GetRVA(); }                    \
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVA() { return PEElementT<T>::GetVA(); }                      \
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetSizeInMemory() { return PEElementT<T>::GetSizeInMemory(); }  \
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOA() { return PEElementT<T>::GetFOA(); }                    \
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetSizeInFile(){ return PEElementT<T>::GetSizeInFile(); }       \
-    virtual struct_type * LIBPE_CALLTYPE GetRawStruct() { return (struct_type *)PEElementT<T>::GetRawMemory(); }
+#define DECLARE_PE_ELEMENT(struct_type)                                                                 \
+    virtual void * LIBPE_CALLTYPE GetRawMemory() { return PEElementT<T>::GetRawMemory(); }              \
+    virtual PEAddress LIBPE_CALLTYPE GetRawOffset() { return PEElementT<T>::GetRawOffset(); }           \
+    virtual PEAddress LIBPE_CALLTYPE GetRawSize() { return PEElementT<T>::GetRawSize(); }               \
+    virtual PEAddress LIBPE_CALLTYPE GetRVA() { return PEElementT<T>::GetRVA(); }                       \
+    virtual PEAddress LIBPE_CALLTYPE GetVA() { return PEElementT<T>::GetVA(); }                         \
+    virtual PEAddress LIBPE_CALLTYPE GetSizeInMemory() { return PEElementT<T>::GetSizeInMemory(); }     \
+    virtual PEAddress LIBPE_CALLTYPE GetFOA() { return PEElementT<T>::GetFOA(); }                       \
+    virtual PEAddress LIBPE_CALLTYPE GetSizeInFile(){ return PEElementT<T>::GetSizeInFile(); }          \
+    struct_type * GetRawStruct() { return (struct_type *)PEElementT<T>::GetRawMemory(); }
 
 LIBPE_NAMESPACE_END

@@ -6,14 +6,14 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 class PEImportTableT :
-    public IPEImportTableT<T>,
+    public IPEImportTable,
     public PEElementT<T>
 {
     struct ModuleInfo {
-        LibPEAddressT(T)                m_nImportDescRVA;
-        LibPEAddressT(T)                m_nImportDescFOA;
+        PEAddress                       m_nImportDescRVA;
+        PEAddress                       m_nImportDescFOA;
         LibPERawImportDescriptor(T)     *m_pImportDesc;
-        LibPEPtr<IPEImportModuleT<T>>   m_pImportModule;
+        LibPEPtr<IPEImportModule>   m_pImportModule;
     };
     typedef std::vector<ModuleInfo> ModuleList;
 
@@ -24,7 +24,7 @@ public:
     DECLARE_PE_ELEMENT(LibPERawImportDescriptor(T))
     LIBPE_SINGLE_THREAD_OBJECT()
 
-    void AddImportDescriptor(LibPEAddressT(T) nImportDescRVA, LibPEAddressT(T) nImportDescFOA, LibPERawImportDescriptor(T) *pImportDesc) {
+    void AddImportDescriptor(PEAddress nImportDescRVA, PEAddress nImportDescFOA, LibPERawImportDescriptor(T) *pImportDesc) {
         LIBPE_ASSERT_RET_VOID(0 != nImportDescRVA && 0 != nImportDescFOA && NULL != pImportDesc);
         ModuleInfo oInfo;
         oInfo.m_nImportDescRVA = nImportDescRVA;
@@ -35,9 +35,9 @@ public:
     }
 
     virtual uint32_t LIBPE_CALLTYPE GetModuleCount();
-    virtual error_t LIBPE_CALLTYPE GetModuleByIndex(uint32_t nModuleId, IPEImportModuleT<T> **ppImportModule);
-    virtual error_t LIBPE_CALLTYPE GetModuleByName(const char *pModuleName, IPEImportModuleT<T> **ppImportModule);
-    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunctionT<T> **ppImportFunction);
+    virtual error_t LIBPE_CALLTYPE GetModuleByIndex(uint32_t nModuleId, IPEImportModule **ppImportModule);
+    virtual error_t LIBPE_CALLTYPE GetModuleByName(const char *pModuleName, IPEImportModule **ppImportModule);
+    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunction **ppImportFunction);
 
 private:
     ModuleList m_vModules;
@@ -45,12 +45,12 @@ private:
 
 template <class T>
 class PEImportModuleT :
-    public IPEImportModuleT<T>,
+    public IPEImportModule,
     public PEElementT<T>
 {
     struct FunctionInfo {
         LibPERawThunkData(T)            *m_pThunkData;
-        LibPEPtr<IPEImportFunctionT<T>> m_pFunction;
+        LibPEPtr<IPEImportFunction> m_pFunction;
     };
     typedef std::vector<FunctionInfo> FunctionList;
 
@@ -72,19 +72,19 @@ public:
     virtual bool_t LIBPE_CALLTYPE IsBound();
     virtual const char * LIBPE_CALLTYPE GetName() { return m_pName; }
     virtual uint32_t LIBPE_CALLTYPE GetFunctionCount() { return (uint32_t)m_vFunctions.size(); }
-    virtual error_t LIBPE_CALLTYPE GetFunctionByIndex(uint32_t nIndex, IPEImportFunctionT<T> **ppFunction);
-    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEImportFunctionT<T> **ppFunction);
-    virtual error_t LIBPE_CALLTYPE GetRelatedImportAddressBlock(IPEImportAddressBlockT<T> **ppBlock);
+    virtual error_t LIBPE_CALLTYPE GetFunctionByIndex(uint32_t nIndex, IPEImportFunction **ppFunction);
+    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEImportFunction **ppFunction);
+    virtual error_t LIBPE_CALLTYPE GetRelatedImportAddressBlock(IPEImportAddressBlock **ppBlock);
 
 private:
     const char                          *m_pName;
     FunctionList                        m_vFunctions;
-    LibPEPtr<IPEImportAddressBlockT<T>> m_pRelatedIABlock;
+    LibPEPtr<IPEImportAddressBlock> m_pRelatedIABlock;
 };
 
 template <class T>
 class PEImportFunctionT :
-    public IPEImportFunctionT<T>,
+    public IPEImportFunction,
     public PEElementT<T>
 {
 public:
@@ -100,7 +100,7 @@ public:
     virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawThunkData();
     virtual const char * LIBPE_CALLTYPE GetName();
     virtual uint16_t LIBPE_CALLTYPE GetHint();
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetEntry();
+    virtual PEAddress LIBPE_CALLTYPE GetEntry();
 
 private:
     LibPERawThunkData(T) *m_pThunkData;

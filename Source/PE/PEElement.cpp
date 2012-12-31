@@ -16,7 +16,7 @@ PEElementT<T>::GetRawMemory()
 }
 
 template <class T>
-LibPEAddressT(T)
+PEAddress
 PEElementT<T>::GetRawOffset()
 {
     LIBPE_ASSERT_RET(NULL != m_pParser, 0);
@@ -24,7 +24,7 @@ PEElementT<T>::GetRawOffset()
 }
 
 template <class T>
-LibPEAddressT(T)
+PEAddress
 PEElementT<T>::GetRawSize()
 {
     LIBPE_ASSERT_RET(NULL != m_pParser, 0);
@@ -32,7 +32,7 @@ PEElementT<T>::GetRawSize()
 }
 
 template <class T>
-LibPEAddressT(T)
+PEAddress
 PEElementT<T>::GetRVA()
 {
     if(0 == m_nRVA) {
@@ -43,7 +43,7 @@ PEElementT<T>::GetRVA()
 }
 
 template <class T>
-LibPEAddressT(T)
+PEAddress
 PEElementT<T>::GetVA()
 {
     if(0 == m_nVA) {
@@ -54,7 +54,7 @@ PEElementT<T>::GetVA()
 }
 
 template <class T>
-LibPEAddressT(T)
+PEAddress
 PEElementT<T>::GetFOA()
 {
     if(0 == m_nFOA) {

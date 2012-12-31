@@ -12,16 +12,10 @@ class PEParserT :
     public ILibPEInterface
 {
 public:
-    typedef std::vector<LibPEPtr<IPESectionHeaderT<T>>> SectionHeaderList;
+    typedef std::vector<LibPEPtr<IPESectionHeader>> SectionHeaderList;
 
 public:
-    static PEParserT<T> * Create(PEParserType nType);
-    static PEParserT<T> * CreateForDiskFile(const file_char_t *pFilePath, PEFileT<T> *pFile);
-    static PEParserT<T> * CreateForMappedFile(void *pMemory, PEFileT<T> *pFile);
-#ifdef LIBPE_WINOS
-    static PEParserT<T> * CreateForMappedResource(HMODULE hModule, PEFileT<T> *pFile);
-    static PEParserT<T> * CreateForLoadedModule(HMODULE hModule, PEFileT<T> *pFile);
-#endif
+    static LibPEPtr<PEParserT<T>> Create(PEParserType nType);
 
 public:
     PEParserT() : m_pFile(NULL) {}
@@ -30,84 +24,87 @@ public:
     LIBPE_SINGLE_THREAD_OBJECT();
 
     virtual PEParserType GetType() = 0;
-    virtual bool_t IsRawAddressVA() = 0;
+
+    void SetPEFile(PEFileT<T> *pFile) { m_pFile = pFile; }
+    void SetDataLoader(DataLoader *pLoader) { m_pLoader = pLoader; }
 
     // Address converter
-    virtual LibPEAddressT(T) GetRVAFromVA(LibPEAddressT(T) nVA);
-    virtual LibPEAddressT(T) GetVAFromRVA(LibPEAddressT(T) nRVA);
-    virtual LibPEAddressT(T) GetRVAFromFOA(LibPEAddressT(T) nFOA);
-    virtual LibPEAddressT(T) GetFOAFromRVA(LibPEAddressT(T) nRVA);
-    virtual LibPEAddressT(T) GetVAFromFOA(LibPEAddressT(T) nFOA);
-    virtual LibPEAddressT(T) GetFOAFromVA(LibPEAddressT(T) nVA);
+    virtual bool_t IsRawAddressVA() = 0;
+    virtual PEAddress GetRVAFromVA(PEAddress nVA);
+    virtual PEAddress GetVAFromRVA(PEAddress nRVA);
+    virtual PEAddress GetRVAFromFOA(PEAddress nFOA);
+    virtual PEAddress GetFOAFromRVA(PEAddress nRVA);
+    virtual PEAddress GetVAFromFOA(PEAddress nFOA);
+    virtual PEAddress GetFOAFromVA(PEAddress nVA);
 
     // Raw memory getter
     virtual void * GetRawMemory(uint64_t nOffset, uint64_t nSize);
 
     // String parser
-    virtual const char * ParseAnsiString(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, uint64_t &nSize);
-    virtual const wchar_t * ParseUnicodeString(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, uint64_t &nSize);
+    virtual const char * ParseAnsiString(PEAddress nRVA, PEAddress nFOA, uint64_t &nSize);
+    virtual const wchar_t * ParseUnicodeString(PEAddress nRVA, PEAddress nFOA, uint64_t &nSize);
 
     // Basic info related functions
-    virtual error_t ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, LibPERawNtHeadersT(T) **ppNtHeaders, SectionHeaderList *pSectionHeaders, IPEOverlayT<T> **ppOverlay);
-    virtual error_t ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESectionT<T> **ppSection);
+    virtual error_t ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, void **ppNtHeaders, SectionHeaderList *pSectionHeaders, IPEOverlay **ppOverlay);
+    virtual error_t ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESection **ppSection);
 
     // Export table related functions
-    virtual error_t ParseExportTable(IPEExportTableT<T> **ppExportTable);
-    virtual error_t ParseExportFunction(IPEExportTableT<T> *pExportTable, uint32_t nIndex, IPEExportFunctionT<T> **ppFunction);
+    virtual error_t ParseExportTable(IPEExportTable **ppExportTable);
+    virtual error_t ParseExportFunction(IPEExportTable *pExportTable, uint32_t nIndex, IPEExportFunction **ppFunction);
 
     // Import table related functions
-    virtual error_t ParseImportTable(IPEImportTableT<T> **ppImportTable);
-    virtual error_t ParseImportModule(LibPEAddressT(T) nImportDescRVA, LibPEAddressT(T) nImportDescFOA, LibPERawImportDescriptor(T) *pImportDescriptor, IPEImportModuleT<T> **ppImportModule);
-    virtual error_t ParseImportFunction(LibPERawImportDescriptor(T) *pImportDescriptor, LibPERawThunkData(T) *pThunkData, IPEImportFunctionT<T> **ppFunction);
+    virtual error_t ParseImportTable(IPEImportTable **ppImportTable);
+    virtual error_t ParseImportModule(PEAddress nImportDescRVA, PEAddress nImportDescFOA, LibPERawImportDescriptor(T) *pImportDescriptor, IPEImportModule **ppImportModule);
+    virtual error_t ParseImportFunction(LibPERawImportDescriptor(T) *pImportDescriptor, LibPERawThunkData(T) *pThunkData, IPEImportFunction **ppFunction);
 
     // Resource table related functions
-    virtual error_t ParseResourceTable(IPEResourceTableT<T> **ppResourceTable);
-    virtual error_t ParseResourceDirectory(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, IPEResourceDirectoryT<T> **ppDirectory);
-    virtual error_t ParseResourceDirectoryEntry(IPEResourceDirectoryT<T> *pDirectory, uint32_t nEntryIndex, IPEResourceDirectoryEntryT<T> **ppEntry);
-    virtual error_t ParseResourceDataEntry(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, IPEResourceDataEntryT<T> **ppDataEntry);
-    virtual error_t ParseResource(IPEResourceDataEntryT<T> *pDataEntry, IPEResourceT<T> **ppResource);
-    virtual LibPERawResourceString(T) * ParseResourceString(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, uint64_t &nSize);
-    virtual LibPERawResourceStringU(T) * ParseResourceStringU(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, uint64_t &nSize);
+    virtual error_t ParseResourceTable(IPEResourceTable **ppResourceTable);
+    virtual error_t ParseResourceDirectory(PEAddress nRVA, PEAddress nFOA, IPEResourceDirectory **ppDirectory);
+    virtual error_t ParseResourceDirectoryEntry(IPEResourceDirectory *pDirectory, uint32_t nEntryIndex, IPEResourceDirectoryEntry **ppEntry);
+    virtual error_t ParseResourceDataEntry(PEAddress nRVA, PEAddress nFOA, IPEResourceDataEntry **ppDataEntry);
+    virtual error_t ParseResource(IPEResourceDataEntry *pDataEntry, IPEResource **ppResource);
+    virtual LibPERawResourceString(T) * ParseResourceString(PEAddress nRVA, PEAddress nFOA, uint64_t &nSize);
+    virtual LibPERawResourceStringU(T) * ParseResourceStringU(PEAddress nRVA, PEAddress nFOA, uint64_t &nSize);
 
-    virtual error_t ParseExceptionTable(IPEExceptionTableT<T> **ppExceptionTable);
-    virtual error_t ParseCertificateTable(IPECertificateTableT<T> **ppCertificateTable);
+    virtual error_t ParseExceptionTable(IPEExceptionTable **ppExceptionTable);
+    virtual error_t ParseCertificateTable(IPECertificateTable **ppCertificateTable);
 
     // Relocation table related functions.
-    virtual error_t ParseRelocationTable(IPERelocationTableT<T> **ppRelocationTable);
+    virtual error_t ParseRelocationTable(IPERelocationTable **ppRelocationTable);
 
-    virtual error_t ParseDebugInfoTable(IPEDebugInfoTableT<T> **ppDebugInfoTable);
-    virtual error_t ParseGlobalRegister(IPEGlobalRegisterT<T> **ppGlobalRegister);
-    virtual error_t ParseTlsTable(IPETlsTableT<T> **ppTlsTable);
-    virtual error_t ParseBoundImportTable(IPEBoundImportTableT<T> **ppBoundImportTable);
+    virtual error_t ParseDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable);
+    virtual error_t ParseGlobalRegister(IPEGlobalRegister **ppGlobalRegister);
+    virtual error_t ParseTlsTable(IPETlsTable **ppTlsTable);
+    virtual error_t ParseBoundImportTable(IPEBoundImportTable **ppBoundImportTable);
 
     // Import Address table related functions.
-    virtual error_t ParseImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTable);
-    virtual error_t ParseImportAddressTableContent(IPEImportAddressTableT<T> *pImportAddressTable);
-    virtual error_t ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, LibPEAddressT(T) nBlockRVA, LibPEAddressT(T) nBlockFOA, IPEImportAddressBlockT<T> **ppBlock);
-    virtual error_t ParseImportAddressItem(LibPERawThunkData(T) *pRawItem, LibPEAddressT(T) nItemRVA, LibPEAddressT(T) nItemFOA, IPEImportAddressItemT<T> **ppItem);
+    virtual error_t ParseImportAddressTable(IPEImportAddressTable **ppImportAddressTable);
+    virtual error_t ParseImportAddressTableContent(IPEImportAddressTable *pImportAddressTable);
+    virtual error_t ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, PEAddress nBlockRVA, PEAddress nBlockFOA, IPEImportAddressBlock **ppBlock);
+    virtual error_t ParseImportAddressItem(LibPERawThunkData(T) *pRawItem, PEAddress nItemRVA, PEAddress nItemFOA, IPEImportAddressItem **ppItem);
 
-    virtual error_t ParseDelayImportTable(IPEDelayImportTableT<T> **ppDelayImportTable);
-    virtual error_t ParseCLRHeader(IPECLRHeaderT<T> **ppCLRHeader);
+    virtual error_t ParseDelayImportTable(IPEDelayImportTable **ppDelayImportTable);
+    virtual error_t ParseCLRHeader(IPECLRHeader **ppCLRHeader);
 
 protected:
-    virtual LibPEAddressT(T) GetRawOffsetFromAddressField(LibPEAddressT(T) nAddress) = 0;
-    virtual LibPEAddressT(T) GetRVAFromAddressField(LibPEAddressT(T) nRVA) = 0;
-    virtual LibPEAddressT(T) GetFOAFromAddressField(LibPEAddressT(T) nRVA) = 0;
-    virtual LibPEAddressT(T) GetRawOffsetFromRVA(LibPEAddressT(T) nRVA) = 0;
-    virtual LibPEAddressT(T) GetRawOffsetFromFOA(LibPEAddressT(T) nFOA) = 0;
-    virtual LibPEAddressT(T) GetRVAFromRawOffset(LibPEAddressT(T) nRawOffset) = 0;
-    virtual LibPEAddressT(T) GetFOAFromRawOffset(LibPEAddressT(T) nRawOffset) = 0;
+    virtual PEAddress GetRawOffsetFromAddressField(PEAddress nAddress) = 0;
+    virtual PEAddress GetRVAFromAddressField(PEAddress nRVA) = 0;
+    virtual PEAddress GetFOAFromAddressField(PEAddress nRVA) = 0;
+    virtual PEAddress GetRawOffsetFromRVA(PEAddress nRVA) = 0;
+    virtual PEAddress GetRawOffsetFromFOA(PEAddress nFOA) = 0;
+    virtual PEAddress GetRVAFromRawOffset(PEAddress nRawOffset) = 0;
+    virtual PEAddress GetFOAFromRawOffset(PEAddress nRawOffset) = 0;
 
-    LibPEAddressT(T) GetRawOffset(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA)
+    PEAddress GetRawOffset(PEAddress nRVA, PEAddress nFOA)
     {
         LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, NULL);
         return (0 != nRVA) ? GetRawOffsetFromRVA(nRVA) : GetRawOffsetFromFOA(nFOA);
     }
 
-    error_t GetDataDirectoryEntry(int32_t nDataDirectoryEntryIndex, LibPEAddressT(T) &nRVA, LibPEAddressT(T) &nFOA, LibPEAddressT(T) &nSize)
+    error_t GetDataDirectoryEntry(int32_t nDataDirectoryEntryIndex, PEAddress &nRVA, PEAddress &nFOA, PEAddress &nSize)
     {
         LIBPE_ASSERT_RET(NULL != m_pFile, NULL);
-        LibPERawOptionalHeaderT(T) *pOptionalHeader = m_pFile->GetOptionalHeader();
+        LibPERawOptionalHeaderT(T) *pOptionalHeader = (LibPERawOptionalHeaderT(T) *)m_pFile->GetOptionalHeader();
         if(NULL == pOptionalHeader) {
             return NULL;
         }
@@ -126,10 +123,6 @@ protected:
 
         return ERR_OK;
     }
-
-protected:
-    void SetPEFile(PEFileT<T> *pFile) { m_pFile = pFile; }
-    void SetDataLoader(DataLoader *pLoader) { m_pLoader = pLoader; }
 
 protected:
     LibPEPtr<DataLoader>    m_pLoader;

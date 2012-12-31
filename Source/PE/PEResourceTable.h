@@ -6,7 +6,7 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 class PEResourceTableT :
-    public IPEResourceTableT<T>,
+    public IPEResourceTable,
     public PEElementT<T>
 {
 public:
@@ -16,24 +16,24 @@ public:
     DECLARE_PE_ELEMENT(LibPERawResourceDirectory(T))
     LIBPE_SINGLE_THREAD_OBJECT()
 
-    void InnerSetRootDirectory(IPEResourceDirectoryT<T> *pRootDirectory)
+    void InnerSetRootDirectory(IPEResourceDirectory *pRootDirectory)
     {
         LIBPE_ASSERT_RET_VOID(NULL != pRootDirectory);
         m_pRootDirectory = pRootDirectory;
     }
 
-    virtual error_t LIBPE_CALLTYPE GetRootDirectory(IPEResourceDirectoryT<T> **ppDirectory);
+    virtual error_t LIBPE_CALLTYPE GetRootDirectory(IPEResourceDirectory **ppDirectory);
 
 private:
-    LibPEPtr<IPEResourceDirectoryT<T>>  m_pRootDirectory;
+    LibPEPtr<IPEResourceDirectory>  m_pRootDirectory;
 };
 
 template <class T>
 class PEResourceDirectoryT :
-    public IPEResourceDirectoryT<T>,
+    public IPEResourceDirectory,
     public PEElementT<T>
 {
-    typedef std::vector<LibPEPtr<IPEResourceDirectoryEntryT<T>>> EntryList;
+    typedef std::vector<LibPEPtr<IPEResourceDirectoryEntry>> EntryList;
 
 public:
     PEResourceDirectoryT() {}
@@ -48,7 +48,7 @@ public:
     }
 
     virtual uint32_t LIBPE_CALLTYPE GetEntryCount();
-    virtual error_t LIBPE_CALLTYPE GetEntryByIndex(uint32_t nIndex, IPEResourceDirectoryEntryT<T> **ppEntry);
+    virtual error_t LIBPE_CALLTYPE GetEntryByIndex(uint32_t nIndex, IPEResourceDirectoryEntry **ppEntry);
 
 private:
     EntryList   m_vEntries;
@@ -56,7 +56,7 @@ private:
 
 template <class T>
 class PEResourceDirectoryEntryT :
-    public IPEResourceDirectoryEntryT<T>,
+    public IPEResourceDirectoryEntry,
     public PEElementT<T>
 {
 public:
@@ -73,15 +73,15 @@ public:
     virtual const wchar_t * LIBPE_CALLTYPE GetName();
     
     virtual bool_t LIBPE_CALLTYPE IsEntryDirectory();
-    virtual error_t LIBPE_CALLTYPE GetDirectory(IPEResourceDirectoryT<T> **ppDirectory);
+    virtual error_t LIBPE_CALLTYPE GetDirectory(IPEResourceDirectory **ppDirectory);
 
     virtual bool_t LIBPE_CALLTYPE IsEntryDataEntry();
-    virtual error_t LIBPE_CALLTYPE GetDataEntry(IPEResourceDataEntryT<T> **ppDataEntry);
+    virtual error_t LIBPE_CALLTYPE GetDataEntry(IPEResourceDataEntry **ppDataEntry);
 };
 
 template <class T>
 class PEResourceDataEntryT :
-    public IPEResourceDataEntryT<T>,
+    public IPEResourceDataEntry,
     public PEElementT<T>
 {
 public:
@@ -91,15 +91,15 @@ public:
     DECLARE_PE_ELEMENT(LibPERawResourceDataEntry(T))
     LIBPE_SINGLE_THREAD_OBJECT()
 
-    virtual error_t LIBPE_CALLTYPE GetResource(IPEResourceT<T> **ppResource);
+    virtual error_t LIBPE_CALLTYPE GetResource(IPEResource **ppResource);
 
 private:
-    LibPEPtr<IPEResourceT<T>> m_pResource;
+    LibPEPtr<IPEResource> m_pResource;
 };
 
 template <class T>
 class PEResourceT :
-    public IPEResourceT<T>,
+    public IPEResource,
     public PEElementT<T>
 {
 public:

@@ -6,10 +6,10 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 class PEExportTableT :
-    public IPEExportTableT<T>,
+    public IPEExportTable,
     public PEElementT<T>
 {
-    typedef std::vector<LibPEPtr<IPEExportFunctionT<T>>> FunctionList;
+    typedef std::vector<LibPEPtr<IPEExportFunction>> FunctionList;
 
 public:
     PEExportTableT() : m_pFunctionList(NULL), m_pNameList(NULL), m_pNameOrdinalList(NULL) {}
@@ -34,8 +34,8 @@ public:
     }
 
     virtual uint32_t LIBPE_CALLTYPE GetFunctionCount();
-    virtual error_t LIBPE_CALLTYPE GetFunctionByIndex(uint32_t nIndex, IPEExportFunctionT<T> **ppFunction);
-    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEExportFunctionT<T> **ppFunction);
+    virtual error_t LIBPE_CALLTYPE GetFunctionByIndex(uint32_t nIndex, IPEExportFunction **ppFunction);
+    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEExportFunction **ppFunction);
 
 private:
     FunctionList        m_vExportFunctions;
@@ -46,7 +46,7 @@ private:
 
 template <class T>
 class PEExportFunctionT :
-    public IPEExportFunctionT<T>,
+    public IPEExportFunction,
     public PEElementT<T>
 {
 public:

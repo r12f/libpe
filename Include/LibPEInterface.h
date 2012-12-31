@@ -17,80 +17,88 @@ public:
 #define LIBPE_METHOD_(ret_type, f)      virtual ret_type LIBPE_CALLTYPE f
 #define LIBPE_METHOD(f)                 LIBPE_METHOD_(error_t, f)
 
-template <class T> class IPEFileT;
-template <class T> class IPEElementT;
-template <class T> class IPESectionHeaderT;
-template <class T> class IPESectionT;
-template <class T> class IPEOverlayT;
-template <class T> class IPEExportTableT;
-template <class T> class IPEExportFunctionT;
-template <class T> class IPEImportTableT;
-template <class T> class IPEImportModuleT;
-template <class T> class IPEImportFunctionT;
-template <class T> class IPEResourceTableT;
-template <class T> class IPEResourceDirectoryT;
-template <class T> class IPEResourceDirectoryEntryT;
-template <class T> class IPEResourceDataEntryT;
-template <class T> class IPEResourceT;
-template <class T> class IPEExceptionTableT;
-template <class T> class IPECertificateTableT;
-template <class T> class IPERelocationTableT;
-template <class T> class IPERelocationPageT;
-template <class T> class IPERelocationItemT;
-template <class T> class IPEDebugInfoTableT;
-template <class T> class IPEGlobalRegisterT;
-template <class T> class IPETlsTableT;
-template <class T> class IPEBoundImportTableT;
-template <class T> class IPEImportAddressTableT;
-template <class T> class IPEImportAddressBlockT;
-template <class T> class IPEImportAddressItemT;
-template <class T> class IPEDelayImportTableT;
-template <class T> class IPECLRHeaderT;
+class IPEFile;
+class IPEElement;
+class IPESectionHeader;
+class IPESection;
+class IPEOverlay;
+class IPEExportTable;
+class IPEExportFunction;
+class IPEImportTable;
+class IPEImportModule;
+class IPEImportFunction;
+class IPEResourceTable;
+class IPEResourceDirectory;
+class IPEResourceDirectoryEntry;
+class IPEResourceDataEntry;
+class IPEResource;
+class IPEExceptionTable;
+class IPECertificateTable;
+class IPERelocationTable;
+class IPERelocationPage;
+class IPERelocationItem;
+class IPEDebugInfoTable;
+class IPEGlobalRegister;
+class IPETlsTable;
+class IPEBoundImportTable;
+class IPEImportAddressTable;
+class IPEImportAddressBlock;
+class IPEImportAddressItem;
+class IPEDelayImportTable;
+class IPECLRHeader;
 
-template <class T>
-class IPEFileT : public ILibPEInterface
+class IPEFile : public ILibPEInterface
 {
 public:
-    // Basic info
-    virtual LibPERawDosHeaderT(T) * LIBPE_CALLTYPE GetDosHeader() = 0;
-    virtual LibPERawNtHeadersT(T) * LIBPE_CALLTYPE GetNtHeaders() = 0;
-    virtual LibPERawFileHeaderT(T) * LIBPE_CALLTYPE GetFileHeader() = 0;
-    virtual LibPERawOptionalHeaderT(T) * LIBPE_CALLTYPE GetOptionalHeader() = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetImageBase() = 0;
+    // Get raw PE header now. But it is not a final solution.
+    // Dos header
+    virtual PERawDosHeader * LIBPE_CALLTYPE GetDosHeader() = 0;
+    virtual bool_t LIBPE_CALLTYPE IsDosFile() = 0;
+
+    // PE Header
+    virtual void * LIBPE_CALLTYPE GetNtHeaders() = 0;
+    virtual PERawNtHeaders32 * LIBPE_CALLTYPE GetNtHeaders32() = 0;
+    virtual PERawNtHeaders64 * LIBPE_CALLTYPE GetNtHeaders64() = 0;
+    virtual PERawFileHeader * LIBPE_CALLTYPE GetFileHeader() = 0;
+    virtual void * LIBPE_CALLTYPE GetOptionalHeader() = 0;
+    virtual PERawOptionalHeader32 * LIBPE_CALLTYPE GetOptionalHeader32() = 0;
+    virtual PERawOptionalHeader64 * LIBPE_CALLTYPE GetOptionalHeader64() = 0;
+    virtual bool_t LIBPE_CALLTYPE Is32Bit() = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetImageBase() = 0;
     virtual uint32_t LIBPE_CALLTYPE GetImageSize() = 0;
     virtual uint32_t LIBPE_CALLTYPE GetEntryPoint() = 0;
 
     // Section & Extra data
     virtual uint32_t LIBPE_CALLTYPE GetSectionCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetSectionHeader(uint32_t nIndex, IPESectionHeaderT<T> **ppSectionHeader) = 0;
-    virtual error_t LIBPE_CALLTYPE GetSection(uint32_t nIndex, IPESectionT<T> **ppSection) = 0;
-    virtual error_t LIBPE_CALLTYPE GetSectionByRVA(LibPEAddressT(T) nRVA, IPESectionT<T> **ppSection) = 0;
-    virtual error_t LIBPE_CALLTYPE GetSectionByVA(LibPEAddressT(T) nVA, IPESectionT<T> **ppSection) = 0;
-    virtual error_t LIBPE_CALLTYPE GetSectionByFOA(LibPEAddressT(T) nFOA, IPESectionT<T> **ppSection) = 0;
-    virtual error_t LIBPE_CALLTYPE GetOverlay(IPEOverlayT<T> **ppOverlay) = 0;
+    virtual error_t LIBPE_CALLTYPE GetSectionHeader(uint32_t nIndex, IPESectionHeader **ppSectionHeader) = 0;
+    virtual error_t LIBPE_CALLTYPE GetSection(uint32_t nIndex, IPESection **ppSection) = 0;
+    virtual error_t LIBPE_CALLTYPE GetSectionByRVA(PEAddress nRVA, IPESection **ppSection) = 0;
+    virtual error_t LIBPE_CALLTYPE GetSectionByVA(PEAddress nVA, IPESection **ppSection) = 0;
+    virtual error_t LIBPE_CALLTYPE GetSectionByFOA(PEAddress nFOA, IPESection **ppSection) = 0;
+    virtual error_t LIBPE_CALLTYPE GetOverlay(IPEOverlay **ppOverlay) = 0;
 
     // PEAddress<T> convert tools
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVAFromVA(LibPEAddressT(T) nVA) = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVAFromRVA(LibPEAddressT(T) nRVA) = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVAFromFOA(LibPEAddressT(T) nFOA) = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOAFromRVA(LibPEAddressT(T) nRVA) = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVAFromFOA(LibPEAddressT(T) nFOA) = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOAFromVA(LibPEAddressT(T) nVA) = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetRVAFromVA(PEAddress nVA) = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetVAFromRVA(PEAddress nRVA) = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetRVAFromFOA(PEAddress nFOA) = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetFOAFromRVA(PEAddress nRVA) = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetVAFromFOA(PEAddress nFOA) = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetFOAFromVA(PEAddress nVA) = 0;
 
     // Data directory entries
-    virtual error_t LIBPE_CALLTYPE GetExportTable(IPEExportTableT<T> **ppExportTable) = 0;
-    virtual error_t LIBPE_CALLTYPE GetImportTable(IPEImportTableT<T> **ppImportTable) = 0;
-    virtual error_t LIBPE_CALLTYPE GetResourceTable(IPEResourceTableT<T> **ppResourceTable) = 0;
-    virtual error_t LIBPE_CALLTYPE GetExceptionTable(IPEExceptionTableT<T> **ppExceptionTable) = 0;
-    virtual error_t LIBPE_CALLTYPE GetCertificateTable(IPECertificateTableT<T> **ppCertificateTable) = 0;
-    virtual error_t LIBPE_CALLTYPE GetRelocationTable(IPERelocationTableT<T> **ppRelocationTable) = 0;
-    virtual error_t LIBPE_CALLTYPE GetDebugInfoTable(IPEDebugInfoTableT<T> **ppDebugInfoTable) = 0;
-    virtual error_t LIBPE_CALLTYPE GetGlobalRegister(IPEGlobalRegisterT<T> **ppGlobalRegister) = 0;
-    virtual error_t LIBPE_CALLTYPE GetTlsTable(IPETlsTableT<T> **ppTlsTable) = 0;
-    virtual error_t LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTableT<T> **ppBoundImportTable) = 0;
-    virtual error_t LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTable) = 0;
-    virtual error_t LIBPE_CALLTYPE GetDelayImportTable(IPEDelayImportTableT<T> **ppDelayImportTable) = 0;
-    virtual error_t LIBPE_CALLTYPE GetCLRHeader(IPECLRHeaderT<T> **ppCLRHeader) = 0;
+    virtual error_t LIBPE_CALLTYPE GetExportTable(IPEExportTable **ppExportTable) = 0;
+    virtual error_t LIBPE_CALLTYPE GetImportTable(IPEImportTable **ppImportTable) = 0;
+    virtual error_t LIBPE_CALLTYPE GetResourceTable(IPEResourceTable **ppResourceTable) = 0;
+    virtual error_t LIBPE_CALLTYPE GetExceptionTable(IPEExceptionTable **ppExceptionTable) = 0;
+    virtual error_t LIBPE_CALLTYPE GetCertificateTable(IPECertificateTable **ppCertificateTable) = 0;
+    virtual error_t LIBPE_CALLTYPE GetRelocationTable(IPERelocationTable **ppRelocationTable) = 0;
+    virtual error_t LIBPE_CALLTYPE GetDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable) = 0;
+    virtual error_t LIBPE_CALLTYPE GetGlobalRegister(IPEGlobalRegister **ppGlobalRegister) = 0;
+    virtual error_t LIBPE_CALLTYPE GetTlsTable(IPETlsTable **ppTlsTable) = 0;
+    virtual error_t LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable) = 0;
+    virtual error_t LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTable **ppImportAddressTable) = 0;
+    virtual error_t LIBPE_CALLTYPE GetDelayImportTable(IPEDelayImportTable **ppDelayImportTable) = 0;
+    virtual error_t LIBPE_CALLTYPE GetCLRHeader(IPECLRHeader **ppCLRHeader) = 0;
 
     virtual error_t LIBPE_CALLTYPE RemoveExportTable() = 0;
     virtual error_t LIBPE_CALLTYPE RemoveImportTable() = 0;
@@ -113,37 +121,32 @@ public:
     virtual error_t LIBPE_CALLTYPE Rebuild(const file_char_t *pFilePath) = 0;
 };
 
-template <class T>
-class IPEElementT : public ILibPEInterface
+class IPEElement : public ILibPEInterface
 {
 public:
     // Using raw memory directly may be dangerous. Because some related data may not be loaded.
     // We can just guarantee only this particular element is loaded.
     virtual void * LIBPE_CALLTYPE GetRawMemory() = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawOffset() = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawSize() = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetRawOffset() = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetRawSize() = 0;
 
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRVA() = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetVA() = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetSizeInMemory() = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetRVA() = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetVA() = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetSizeInMemory() = 0;
 
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetFOA() = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetSizeInFile() = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetFOA() = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetSizeInFile() = 0;
 };
 
-template <class T>
-class IPESectionHeaderT : public IPEElementT<T>
+class IPESectionHeader : public IPEElement
 {
 public:
-    virtual LibPERawSectionHeaderT(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
-    virtual error_t LIBPE_CALLTYPE GetSection(IPESectionT<T> **ppSection) = 0;
+    virtual error_t LIBPE_CALLTYPE GetSection(IPESection **ppSection) = 0;
 };
 
-template <class T>
-class IPESectionT : public IPEElementT<T>
+class IPESection : public IPEElement
 {
 public:
-    virtual void * LIBPE_CALLTYPE GetRawStruct() = 0;
     virtual const char * LIBPE_CALLTYPE GetName() = 0;
     virtual error_t LIBPE_CALLTYPE GetRelocations() = 0;
     virtual error_t LIBPE_CALLTYPE GetLineNumbers() = 0;
@@ -152,89 +155,71 @@ public:
     virtual error_t LIBPE_CALLTYPE SetName(const char *pName) = 0;
 };
 
-template <class T>
-class IPEOverlayT : public IPEElementT<T>
+class IPEOverlay : public IPEElement
 {
 public:
-    virtual void * LIBPE_CALLTYPE GetRawStruct() = 0;
 };
 
-template <class T>
-class IPEExportTableT : public IPEElementT<T>
+class IPEExportTable : public IPEElement
 {
 public:
-    virtual LibPERawExportDirectory(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
     virtual uint32_t LIBPE_CALLTYPE GetFunctionCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetFunctionByIndex(uint32_t nIndex, IPEExportFunctionT<T> **ppFunction) = 0;
-    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEExportFunctionT<T> **ppFunction) = 0;
+    virtual error_t LIBPE_CALLTYPE GetFunctionByIndex(uint32_t nIndex, IPEExportFunction **ppFunction) = 0;
+    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEExportFunction **ppFunction) = 0;
 };
 
-template <class T>
-class IPEExportFunctionT: public IPEElementT<T>
+class IPEExportFunction: public IPEElement
 {
 public:
     virtual const char * LIBPE_CALLTYPE GetName() = 0;
     virtual uint16_t LIBPE_CALLTYPE GetHint() = 0;
 };
 
-template <class T>
-class IPEImportTableT : public IPEElementT<T>
+class IPEImportTable : public IPEElement
 {
 public:
-    virtual LibPERawImportDescriptor(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
     virtual uint32_t LIBPE_CALLTYPE GetModuleCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetModuleByIndex(uint32_t nIndex, IPEImportModuleT<T> **ppImportModule) = 0;
-    virtual error_t LIBPE_CALLTYPE GetModuleByName(const char *pModuleName, IPEImportModuleT<T> **ppImportModule) = 0;
-    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunctionT<T> **ppImportFunction) = 0;
+    virtual error_t LIBPE_CALLTYPE GetModuleByIndex(uint32_t nIndex, IPEImportModule **ppImportModule) = 0;
+    virtual error_t LIBPE_CALLTYPE GetModuleByName(const char *pModuleName, IPEImportModule **ppImportModule) = 0;
+    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunction **ppImportFunction) = 0;
 };
 
-template <class T>
-class IPEImportModuleT: public IPEElementT<T>
+class IPEImportModule: public IPEElement
 {
 public:
-    virtual LibPERawImportDescriptor(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
     virtual bool_t LIBPE_CALLTYPE IsBound() = 0;
     virtual const char * LIBPE_CALLTYPE GetName() = 0;
     virtual uint32_t LIBPE_CALLTYPE GetFunctionCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetFunctionByIndex(uint32_t nFunctionId, IPEImportFunctionT<T> **ppFunction) = 0;
-    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEImportFunctionT<T> **ppFunction) = 0;
-    virtual error_t LIBPE_CALLTYPE GetRelatedImportAddressBlock(IPEImportAddressBlockT<T> **ppBlock) = 0;
+    virtual error_t LIBPE_CALLTYPE GetFunctionByIndex(uint32_t nFunctionId, IPEImportFunction **ppFunction) = 0;
+    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEImportFunction **ppFunction) = 0;
+    virtual error_t LIBPE_CALLTYPE GetRelatedImportAddressBlock(IPEImportAddressBlock **ppBlock) = 0;
 };
 
-template <class T>
-class IPEImportFunctionT: public IPEElementT<T>
+class IPEImportFunction: public IPEElement
 {
 public:
-    virtual LibPERawImportByName(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
-    virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawThunkData() = 0;
+    //virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawThunkData() = 0;
     virtual const char * LIBPE_CALLTYPE GetName() = 0;
     virtual uint16_t LIBPE_CALLTYPE GetHint() = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetEntry() = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetEntry() = 0;
 };
 
-template <class T>
-class IPEResourceTableT : public IPEElementT<T>
+class IPEResourceTable : public IPEElement
 {
 public:
-    virtual LibPERawResourceDirectory(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
-    virtual error_t LIBPE_CALLTYPE GetRootDirectory(IPEResourceDirectoryT<T> **ppDirectory) = 0;
+    virtual error_t LIBPE_CALLTYPE GetRootDirectory(IPEResourceDirectory **ppDirectory) = 0;
 };
 
-template <class T>
-class IPEResourceDirectoryT : public IPEElementT<T>
+class IPEResourceDirectory : public IPEElement
 {
 public:
-    virtual LibPERawResourceDirectory(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
     virtual uint32_t LIBPE_CALLTYPE GetEntryCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetEntryByIndex(uint32_t nIndex, IPEResourceDirectoryEntryT<T> **ppEntry) = 0;
+    virtual error_t LIBPE_CALLTYPE GetEntryByIndex(uint32_t nIndex, IPEResourceDirectoryEntry **ppEntry) = 0;
 };
 
-template <class T>
-class IPEResourceDirectoryEntryT : public IPEElementT<T>
+class IPEResourceDirectoryEntry : public IPEElement
 {
 public:
-    virtual LibPERawResourceDirectoryEntry(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
-
     virtual bool_t LIBPE_CALLTYPE IsNameId() = 0;
     virtual uint16_t LIBPE_CALLTYPE GetId() = 0;
 
@@ -242,111 +227,87 @@ public:
     virtual const wchar_t * LIBPE_CALLTYPE GetName() = 0;
     
     virtual bool_t LIBPE_CALLTYPE IsEntryDirectory() = 0;
-    virtual error_t LIBPE_CALLTYPE GetDirectory(IPEResourceDirectoryT<T> **ppDirectory) = 0;
+    virtual error_t LIBPE_CALLTYPE GetDirectory(IPEResourceDirectory **ppDirectory) = 0;
 
     virtual bool_t LIBPE_CALLTYPE IsEntryDataEntry() = 0;
-    virtual error_t LIBPE_CALLTYPE GetDataEntry(IPEResourceDataEntryT<T> **ppDataEntry) = 0;
+    virtual error_t LIBPE_CALLTYPE GetDataEntry(IPEResourceDataEntry **ppDataEntry) = 0;
 };
 
-template <class T>
-class IPEResourceDataEntryT : public IPEElementT<T>
+class IPEResourceDataEntry : public IPEElement
 {
 public:
-    virtual LibPERawResourceDataEntry(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
-    virtual error_t LIBPE_CALLTYPE GetResource(IPEResourceT<T> **ppResource) = 0;
+    virtual error_t LIBPE_CALLTYPE GetResource(IPEResource **ppResource) = 0;
 };
 
-template <class T>
-class IPEResourceT : public IPEElementT<T>
+class IPEResource : public IPEElement
 {
 public:
-    virtual void * LIBPE_CALLTYPE GetRawStruct() = 0;
 };
 
-template <class T>
-class IPEExceptionTableT : public IPEElementT<T> {};
+class IPEExceptionTable : public IPEElement {};
 
-template <class T>
-class IPECertificateTableT : public IPEElementT<T> {};
+class IPECertificateTable : public IPEElement {};
 
-template <class T>
-class IPERelocationTableT : public IPEElementT<T>
+class IPERelocationTable : public IPEElement
 {
 public:
-    virtual LibPERawBaseRelocation(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
     virtual uint32_t LIBPE_CALLTYPE GetPageCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetPageByIndex(uint32_t nIndex, IPERelocationPageT<T> **ppRelocationPage) = 0;
-    virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(LibPEAddressT(T) nRVA) = 0;
-    virtual error_t LIBPE_CALLTYPE GetItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem) = 0;
+    virtual error_t LIBPE_CALLTYPE GetPageByIndex(uint32_t nIndex, IPERelocationPage **ppRelocationPage) = 0;
+    virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(PEAddress nRVA) = 0;
+    virtual error_t LIBPE_CALLTYPE GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem) = 0;
 };
 
-template <class T>
-class IPERelocationPageT : public IPEElementT<T>
+class IPERelocationPage : public IPEElement
 {
 public:
-    virtual LibPERawBaseRelocation(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetPageRVA() = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetPageRVA() = 0;
     virtual uint32_t LIBPE_CALLTYPE GetItemCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetItemByIndex(uint32_t nIndex, IPERelocationItemT<T> **ppRelocationItem) = 0;
-    virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(LibPEAddressT(T) nRVA) = 0;
-    virtual error_t LIBPE_CALLTYPE GetItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem) = 0;
+    virtual error_t LIBPE_CALLTYPE GetItemByIndex(uint32_t nIndex, IPERelocationItem **ppRelocationItem) = 0;
+    virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(PEAddress nRVA) = 0;
+    virtual error_t LIBPE_CALLTYPE GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem) = 0;
 };
 
-template <class T>
-class IPERelocationItemT : public IPEElementT<T>
+class IPERelocationItem : public IPEElement
 {
 public:
-    virtual void * LIBPE_CALLTYPE GetRawStruct() = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetAddressRVA() = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetAddressContent() = 0;
-    virtual LibPEAddressT(T) * LIBPE_CALLTYPE GetRawAddressContent() = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetAddressRVA() = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetAddressContent() = 0;
+    virtual PEAddress * LIBPE_CALLTYPE GetRawAddressContent() = 0;
 };
 
-template <class T>
-class IPEDebugInfoTableT : public IPEElementT<T> {};
+class IPEDebugInfoTable : public IPEElement {};
 
-template <class T>
-class IPEGlobalRegisterT : public IPEElementT<T> {};
+class IPEGlobalRegister : public IPEElement {};
 
-template <class T>
-class IPETlsTableT : public IPEElementT<T> {};
+class IPETlsTable : public IPEElement {};
 
-template <class T>
-class IPEBoundImportTableT : public IPEElementT<T> {};
+class IPEBoundImportTable : public IPEElement {};
 
-template <class T>
-class IPEImportAddressTableT : public IPEElementT<T>
+class IPEImportAddressTable : public IPEElement
 {
 public:
-    virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
     virtual uint32_t LIBPE_CALLTYPE GetBlockCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetBlockByIndex(uint32_t nIndex, IPEImportAddressBlockT<T> **ppBlock) = 0;
-    virtual bool_t LIBPE_CALLTYPE IsBlockExists(IPEImportAddressBlockT<T> *pBlock) = 0;
-    virtual bool_t LIBPE_CALLTYPE IsItemExist(IPEImportAddressItemT<T> *pItem) = 0;
+    virtual error_t LIBPE_CALLTYPE GetBlockByIndex(uint32_t nIndex, IPEImportAddressBlock **ppBlock) = 0;
+    virtual bool_t LIBPE_CALLTYPE IsBlockExists(IPEImportAddressBlock *pBlock) = 0;
+    virtual bool_t LIBPE_CALLTYPE IsItemExist(IPEImportAddressItem *pItem) = 0;
 };
 
-template <class T>
-class IPEImportAddressBlockT : public IPEElementT<T>
+class IPEImportAddressBlock : public IPEElement
 {
 public:
-    virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
     virtual uint32_t LIBPE_CALLTYPE GetItemCount() = 0;
-    virtual error_t LIBPE_CALLTYPE GetItemByIndex(uint32_t nIndex, IPEImportAddressItemT<T> **ppItem) = 0;
-    virtual bool_t LIBPE_CALLTYPE IsItemExist(IPEImportAddressItemT<T> *pItem) = 0;
+    virtual error_t LIBPE_CALLTYPE GetItemByIndex(uint32_t nIndex, IPEImportAddressItem **ppItem) = 0;
+    virtual bool_t LIBPE_CALLTYPE IsItemExist(IPEImportAddressItem *pItem) = 0;
 };
 
-template <class T>
-class IPEImportAddressItemT : public IPEElementT<T>
+class IPEImportAddressItem : public IPEElement
 {
 public:
-    virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawStruct() = 0;
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetRawAddress() = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetRawAddress() = 0;
 };
 
-template <class T>
-class IPEDelayImportTableT : public IPEElementT<T> {};
+class IPEDelayImportTable : public IPEElement {};
 
-template <class T>
-class IPECLRHeaderT : public IPEElementT<T> {};
+class IPECLRHeader : public IPEElement {};
 
 LIBPE_NAMESPACE_END

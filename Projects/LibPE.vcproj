@@ -384,11 +384,7 @@
 			</File>
 		</Filter>
 		<File
-			RelativePath="..\Source\LibPE32.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\Source\LibPE64.cpp"
+			RelativePath="..\Source\LibPE.cpp"
 			>
 		</File>
 		<File

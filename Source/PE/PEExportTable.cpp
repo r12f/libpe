@@ -12,7 +12,7 @@ PEExportTableT<T>::GetFunctionCount()
 
 template <class T>
 error_t
-PEExportTableT<T>::GetFunctionByIndex(uint32_t nIndex, IPEExportFunctionT<T> **ppFunction)
+PEExportTableT<T>::GetFunctionByIndex(uint32_t nIndex, IPEExportFunction **ppFunction)
 {
     LIBPE_ASSERT_RET(NULL != ppFunction, ERR_POINTER);
 
@@ -31,7 +31,7 @@ PEExportTableT<T>::GetFunctionByIndex(uint32_t nIndex, IPEExportFunctionT<T> **p
 
 template <class T>
 error_t
-PEExportTableT<T>::GetFunctionByName(const char *pFunctionName, IPEExportFunctionT<T> **ppFunction)
+PEExportTableT<T>::GetFunctionByName(const char *pFunctionName, IPEExportFunction **ppFunction)
 {
     return ERR_NOT_IMPL;
 }

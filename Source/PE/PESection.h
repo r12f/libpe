@@ -6,7 +6,7 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 class PESectionHeaderT :
-    public IPESectionHeaderT<T>,
+    public IPESectionHeader,
     public PEElementT<T>
 {
 public:
@@ -16,15 +16,15 @@ public:
     LIBPE_SINGLE_THREAD_OBJECT()
     DECLARE_PE_ELEMENT(LibPERawSectionHeaderT(T))
 
-    virtual error_t LIBPE_CALLTYPE GetSection(IPESectionT<T> **ppSection);
+    virtual error_t LIBPE_CALLTYPE GetSection(IPESection **ppSection);
 
 private:
-    LibPEPtr<IPESectionT<T>>    m_pSection;
+    LibPEPtr<IPESection>    m_pSection;
 };
 
 template <class T>
 class PESectionT :
-    public IPESectionT<T>,
+    public IPESection,
     public PEElementT<T>
 {
 public:
@@ -49,7 +49,7 @@ private:
 
 template <class T>
 class PEOverlayT :
-    public IPEOverlayT<T>,
+    public IPEOverlay,
     public PEElementT<T>
 {
 public:

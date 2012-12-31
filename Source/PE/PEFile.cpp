@@ -5,61 +5,25 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 error_t
-PEFileT<T>::ParsePEFromDiskFile(const file_char_t *pFilePath, IPEFileT<T> **ppFile)
+PEFileT<T>::Create(DataLoader *pLoader, IPEFile **ppFile)
 {
-    LIBPE_ASSERT_RET(NULL != pFilePath && NULL != ppFile, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != pLoader && NULL != ppFile, ERR_POINTER);
 
     *ppFile = NULL;
 
-    LibPEPtr<PEFileT<T>> pRawFile = new PEFileT<T>();
-    if(NULL == pRawFile) {
-        return ERR_NO_MEM;
-    }
+    LibPEPtr<PEFileT<T>> pInnerFile = new PEFileT<T>();
+    LibPEPtr<PEParserT<T>> pParser = PEParserT<T>::Create(pLoader->GetType());
+    LIBPE_ASSERT_RET(NULL != pInnerFile && NULL != pParser, ERR_NO_MEM);
 
-    LibPEPtr<PEParserT<T>> pParser = PEParserT<T>::CreateForDiskFile(pFilePath, pRawFile);
-    if(NULL == pParser) {
-        return ERR_NO_MEM;
-    }
+    pParser->SetPEFile(pInnerFile);
+    pParser->SetDataLoader(pLoader);
 
-    // We need the basic PE head and section info to perform nearly all of the operations.
-    // So we parse them first.
-    pRawFile->Init(pParser);
+    pInnerFile->Init(pParser);
 
-    *ppFile = pRawFile.Detach();
+    *ppFile = pInnerFile.Detach();
 
     return ERR_OK;
 }
-
-template <class T>
-error_t
-PEFileT<T>::ParsePEFromMappedFile(void *pMemory, IPEFileT<T> **ppFile)
-{
-    LIBPE_UNUSED_PARAM(pMemory);
-    LIBPE_UNUSED_PARAM(ppFile);
-    return ERR_NOT_IMPL;
-}
-
-#ifdef LIBPE_WINOS
-
-template <class T>
-error_t
-PEFileT<T>::ParsePEFromMappedResource(HMODULE hModule, IPEFileT<T> **ppFile)
-{
-    LIBPE_UNUSED_PARAM(hModule);
-    LIBPE_UNUSED_PARAM(ppFile);
-    return ERR_NOT_IMPL;
-}
-
-template <class T>
-error_t
-PEFileT<T>::ParsePEFromLoadedModule(HMODULE hModule, IPEFileT<T> **ppFile)
-{
-    LIBPE_UNUSED_PARAM(hModule);
-    LIBPE_UNUSED_PARAM(ppFile);
-    return ERR_NOT_IMPL;
-}
-
-#endif
 
 template <class T>
 PEFileT<T>::PEFileT()
@@ -72,7 +36,7 @@ PEFileT<T>::PEFileT()
 }
 
 template <class T>
-LibPERawDosHeaderT(T) *
+PERawDosHeader *
 PEFileT<T>::GetDosHeader()
 {
     LIBPE_ASSERT_RET(NULL != m_pDosHeader, NULL);
@@ -80,7 +44,15 @@ PEFileT<T>::GetDosHeader()
 }
 
 template <class T>
-LibPERawNtHeadersT(T) *
+bool_t
+PEFileT<T>::IsDosFile()
+{
+    LIBPE_ASSERT_RET(NULL != m_pDosHeader, false);
+    return (NULL == m_pDosHeader->e_lfanew);
+}
+
+template <class T>
+void *
 PEFileT<T>::GetNtHeaders()
 {
     LIBPE_ASSERT_RET(NULL != m_pNtHeaders, NULL);
@@ -88,7 +60,23 @@ PEFileT<T>::GetNtHeaders()
 }
 
 template <class T>
-LibPERawFileHeaderT(T) *
+PERawNtHeaders32 *
+PEFileT<T>::GetNtHeaders32()
+{
+    LIBPE_ASSERT_RET(NULL != m_pNtHeaders, NULL);
+    return (PERawNtHeaders32 *)(Is32Bit() ? m_pNtHeaders : NULL);
+}
+
+template <class T>
+PERawNtHeaders64 *
+PEFileT<T>::GetNtHeaders64()
+{
+    LIBPE_ASSERT_RET(NULL != m_pNtHeaders, NULL);
+    return (PERawNtHeaders64 *)(Is32Bit() ? NULL : m_pNtHeaders);
+}
+
+template <class T>
+PERawFileHeader *
 PEFileT<T>::GetFileHeader()
 {
     LIBPE_ASSERT_RET(NULL != m_pFileHeader, NULL);
@@ -96,7 +84,7 @@ PEFileT<T>::GetFileHeader()
 }
 
 template <class T>
-LibPERawOptionalHeaderT(T) *
+void *
 PEFileT<T>::GetOptionalHeader()
 {
     LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
@@ -104,11 +92,34 @@ PEFileT<T>::GetOptionalHeader()
 }
 
 template <class T>
-LibPEAddressT(T)
+PERawOptionalHeader32 *
+PEFileT<T>::GetOptionalHeader32()
+{
+    LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
+    return (PERawOptionalHeader32 *)(Is32Bit() ? m_pOptionalHeader : NULL);
+}
+
+template <class T>
+PERawOptionalHeader64 *
+PEFileT<T>::GetOptionalHeader64()
+{
+    LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
+    return (PERawOptionalHeader64 *)(Is32Bit() ? m_pOptionalHeader : NULL);
+}
+
+template <class T>
+bool_t
+PEFileT<T>::Is32Bit()
+{
+    return PETrait<T>::Is32Bit;
+}
+
+template <class T>
+PEAddress
 PEFileT<T>::GetImageBase()
 {
     LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
-    return m_pOptionalHeader->ImageBase;
+    return ((LibPERawOptionalHeaderT(T) *)m_pOptionalHeader)->ImageBase;
 }
 
 template <class T>
@@ -116,7 +127,7 @@ uint32_t
 PEFileT<T>::GetImageSize()
 {
     LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
-    return m_pOptionalHeader->SizeOfImage;
+    return ((LibPERawOptionalHeaderT(T) *)m_pOptionalHeader)->SizeOfImage;
 }
 
 template <class T>
@@ -124,7 +135,7 @@ uint32_t
 PEFileT<T>::GetEntryPoint()
 {
     LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
-    return m_pOptionalHeader->AddressOfEntryPoint;
+    return ((LibPERawOptionalHeaderT(T) *)m_pOptionalHeader)->AddressOfEntryPoint;
 }
 
 template <class T>
@@ -136,7 +147,7 @@ PEFileT<T>::GetSectionCount()
 
 template <class T>
 error_t
-PEFileT<T>::GetSectionHeader(uint32_t nIndex, IPESectionHeaderT<T> **ppSectionHeader)
+PEFileT<T>::GetSectionHeader(uint32_t nIndex, IPESectionHeader **ppSectionHeader)
 {
     LIBPE_ASSERT_RET(NULL != ppSectionHeader, ERR_POINTER);
     LIBPE_ASSERT_RET(nIndex < GetSectionCount(), ERR_INVALID_ARG);
@@ -145,7 +156,7 @@ PEFileT<T>::GetSectionHeader(uint32_t nIndex, IPESectionHeaderT<T> **ppSectionHe
 
 template <class T>
 error_t
-PEFileT<T>::GetSection(uint32_t nIndex, IPESectionT<T> **ppSection)
+PEFileT<T>::GetSection(uint32_t nIndex, IPESection **ppSection)
 {
     LIBPE_ASSERT_RET(NULL != ppSection, ERR_POINTER);
     LIBPE_ASSERT_RET(nIndex < GetSectionCount(), ERR_INVALID_ARG);
@@ -155,13 +166,13 @@ PEFileT<T>::GetSection(uint32_t nIndex, IPESectionT<T> **ppSection)
 
 template <class T>
 error_t
-PEFileT<T>::GetSectionByRVA(LibPEAddressT(T) nRVA, IPESectionT<T> **ppSection)
+PEFileT<T>::GetSectionByRVA(PEAddress nRVA, IPESection **ppSection)
 {
     LIBPE_ASSERT_RET(NULL != ppSection, ERR_POINTER);
 
     uint32_t nSectionCount = GetSectionCount();
     for(uint32_t nSectionIndex = 0; nSectionIndex < nSectionCount; ++nSectionIndex) {
-        LibPEPtr<IPESectionT<T>> pSection;
+        LibPEPtr<IPESection> pSection;
         if(ERR_OK == GetSection(nSectionIndex, &pSection) && NULL != pSection) {
             if(pSection->GetRVA() <= nRVA && nRVA <= pSection->GetRVA() + pSection->GetSizeInMemory()) {
                 *ppSection = pSection.Detach();
@@ -175,20 +186,20 @@ PEFileT<T>::GetSectionByRVA(LibPEAddressT(T) nRVA, IPESectionT<T> **ppSection)
 
 template <class T>
 error_t
-PEFileT<T>::GetSectionByVA(LibPEAddressT(T) nVA, IPESectionT<T> **ppSection)
+PEFileT<T>::GetSectionByVA(PEAddress nVA, IPESection **ppSection)
 {
     return GetSectionByRVA(GetRVAFromVA(nVA), ppSection);
 }
 
 template <class T>
 error_t
-PEFileT<T>::GetSectionByFOA(LibPEAddressT(T) nFOA, IPESectionT<T> **ppSection)
+PEFileT<T>::GetSectionByFOA(PEAddress nFOA, IPESection **ppSection)
 {
     LIBPE_ASSERT_RET(NULL != ppSection, ERR_POINTER);
 
     uint32_t nSectionCount = GetSectionCount();
     for(uint32_t nSectionIndex = 0; nSectionIndex < nSectionCount; ++nSectionIndex) {
-        LibPEPtr<IPESectionT<T>> pSection;
+        LibPEPtr<IPESection> pSection;
         if(ERR_OK == GetSection(nSectionIndex, &pSection) && NULL != pSection) {
             if(pSection->GetFOA() <= nFOA && nFOA <= pSection->GetFOA() + pSection->GetSizeInMemory()) {
                 *ppSection = pSection.Detach();
@@ -202,55 +213,55 @@ PEFileT<T>::GetSectionByFOA(LibPEAddressT(T) nFOA, IPESectionT<T> **ppSection)
 
 template <class T>
 error_t
-PEFileT<T>::GetOverlay(IPEOverlayT<T> **ppOverlay)
+PEFileT<T>::GetOverlay(IPEOverlay **ppOverlay)
 {
     LIBPE_ASSERT_RET(NULL != ppOverlay, ERR_POINTER);
     return m_pOverlay.CopyTo(ppOverlay);
 }
 
 template <class T>
-LibPEAddressT(T)
-PEFileT<T>::GetRVAFromVA(LibPEAddressT(T) nVA)
+PEAddress
+PEFileT<T>::GetRVAFromVA(PEAddress nVA)
 {
     LIBPE_ASSERT_RET(NULL != m_pParser, 0);
     return m_pParser->GetRVAFromVA(nVA);
 }
 
 template <class T>
-LibPEAddressT(T)
-PEFileT<T>::GetVAFromRVA(LibPEAddressT(T) nRVA)
+PEAddress
+PEFileT<T>::GetVAFromRVA(PEAddress nRVA)
 {
     LIBPE_ASSERT_RET(NULL != m_pParser, 0);
     return m_pParser->GetVAFromRVA(nRVA);
 }
 
 template <class T>
-LibPEAddressT(T)
-PEFileT<T>::GetRVAFromFOA(LibPEAddressT(T) nFOA)
+PEAddress
+PEFileT<T>::GetRVAFromFOA(PEAddress nFOA)
 {
     LIBPE_ASSERT_RET(NULL != m_pParser, 0);
     return m_pParser->GetRVAFromFOA(nFOA);
 }
 
 template <class T>
-LibPEAddressT(T)
-PEFileT<T>::GetFOAFromRVA(LibPEAddressT(T) nRVA)
+PEAddress
+PEFileT<T>::GetFOAFromRVA(PEAddress nRVA)
 {
     LIBPE_ASSERT_RET(NULL != m_pParser, 0);
     return m_pParser->GetFOAFromRVA(nRVA);
 }
 
 template <class T>
-LibPEAddressT(T)
-PEFileT<T>::GetVAFromFOA(LibPEAddressT(T) nFOA)
+PEAddress
+PEFileT<T>::GetVAFromFOA(PEAddress nFOA)
 {
     LIBPE_ASSERT_RET(NULL != m_pParser, 0);
     return m_pParser->GetVAFromFOA(nFOA);
 }
 
 template <class T>
-LibPEAddressT(T)
-PEFileT<T>::GetFOAFromVA(LibPEAddressT(T) nVA)
+PEAddress
+PEFileT<T>::GetFOAFromVA(PEAddress nVA)
 {
     LIBPE_ASSERT_RET(NULL != m_pParser, 0);
     return m_pParser->GetFOAFromVA(nVA);
@@ -258,7 +269,7 @@ PEFileT<T>::GetFOAFromVA(LibPEAddressT(T) nVA)
 
 template <class T>
 error_t
-PEFileT<T>::GetExportTable(IPEExportTableT<T> **ppExportTable)
+PEFileT<T>::GetExportTable(IPEExportTable **ppExportTable)
 {
     if(NULL == m_pExportTable) {
         LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
@@ -272,7 +283,7 @@ PEFileT<T>::GetExportTable(IPEExportTableT<T> **ppExportTable)
 
 template <class T>
 error_t
-PEFileT<T>::GetImportTable(IPEImportTableT<T> **ppImportTable)
+PEFileT<T>::GetImportTable(IPEImportTable **ppImportTable)
 {
     if(NULL == m_pImportTable) {
         LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
@@ -287,7 +298,7 @@ PEFileT<T>::GetImportTable(IPEImportTableT<T> **ppImportTable)
 
 template <class T>
 error_t
-PEFileT<T>::GetResourceTable(IPEResourceTableT<T> **ppResourceTable)
+PEFileT<T>::GetResourceTable(IPEResourceTable **ppResourceTable)
 {
     if(NULL == m_pResourceTable) {
         LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
@@ -301,21 +312,21 @@ PEFileT<T>::GetResourceTable(IPEResourceTableT<T> **ppResourceTable)
 
 template <class T>
 error_t
-PEFileT<T>::GetExceptionTable(IPEExceptionTableT<T> **ppExceptionTable)
+PEFileT<T>::GetExceptionTable(IPEExceptionTable **ppExceptionTable)
 {
     return ERR_NOT_IMPL;
 }
 
 template <class T>
 error_t
-PEFileT<T>::GetCertificateTable(IPECertificateTableT<T> **ppCertificateTable)
+PEFileT<T>::GetCertificateTable(IPECertificateTable **ppCertificateTable)
 {
     return ERR_NOT_IMPL;
 }
 
 template <class T>
 error_t
-PEFileT<T>::GetRelocationTable(IPERelocationTableT<T> **ppRelocationTable)
+PEFileT<T>::GetRelocationTable(IPERelocationTable **ppRelocationTable)
 {
     if(NULL == m_pRelocationTable) {
         LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
@@ -329,7 +340,7 @@ PEFileT<T>::GetRelocationTable(IPERelocationTableT<T> **ppRelocationTable)
 
 template <class T>
 error_t
-PEFileT<T>::GetImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTable)
+PEFileT<T>::GetImportAddressTable(IPEImportAddressTable **ppImportAddressTable)
 {
     if(NULL == m_pImportAddressTable) {
         LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
@@ -342,11 +353,6 @@ PEFileT<T>::GetImportAddressTable(IPEImportAddressTableT<T> **ppImportAddressTab
 }
 
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEFileT);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFileT, ParsePEFromDiskFile);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFileT, ParsePEFromMappedFile);
-#ifdef LIBPE_WINOS
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFileT, ParsePEFromMappedResource);
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFileT, ParsePEFromLoadedModule);
-#endif
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEFileT, Create);
 
 LIBPE_NAMESPACE_END

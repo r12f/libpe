@@ -12,7 +12,7 @@ PEImportTableT<T>::GetModuleCount()
 
 template <class T>
 error_t
-PEImportTableT<T>::GetModuleByIndex(uint32_t nModuleId, IPEImportModuleT<T> **ppImportModule)
+PEImportTableT<T>::GetModuleByIndex(uint32_t nModuleId, IPEImportModule **ppImportModule)
 {
     LIBPE_ASSERT_RET(NULL != ppImportModule, ERR_POINTER);
 
@@ -32,14 +32,14 @@ PEImportTableT<T>::GetModuleByIndex(uint32_t nModuleId, IPEImportModuleT<T> **pp
 
 template <class T>
 error_t
-PEImportTableT<T>::GetModuleByName(const char *pModuleName, IPEImportModuleT<T> **ppImportModule)
+PEImportTableT<T>::GetModuleByName(const char *pModuleName, IPEImportModule **ppImportModule)
 {
     return ERR_NOT_IMPL;
 }
 
 template <class T>
 error_t
-PEImportTableT<T>::GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunctionT<T> **ppImportFunction)
+PEImportTableT<T>::GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunction **ppImportFunction)
 {
     return ERR_NOT_IMPL;
 }
@@ -56,7 +56,7 @@ PEImportModuleT<T>::IsBound()
 
 template <class T>
 error_t
-PEImportModuleT<T>::GetFunctionByIndex(uint32_t nIndex, IPEImportFunctionT<T> **ppFunction)
+PEImportModuleT<T>::GetFunctionByIndex(uint32_t nIndex, IPEImportFunction **ppFunction)
 {
     LIBPE_ASSERT_RET(NULL != ppFunction, ERR_POINTER);
 
@@ -76,14 +76,14 @@ PEImportModuleT<T>::GetFunctionByIndex(uint32_t nIndex, IPEImportFunctionT<T> **
 
 template <class T>
 error_t
-PEImportModuleT<T>::GetFunctionByName(const char *pFunctionName, IPEImportFunctionT<T> **ppFunction)
+PEImportModuleT<T>::GetFunctionByName(const char *pFunctionName, IPEImportFunction **ppFunction)
 {
     return ERR_NOT_IMPL;
 }
 
 template <class T>
 error_t
-PEImportModuleT<T>::GetRelatedImportAddressBlock(IPEImportAddressBlockT<T> **ppBlock)
+PEImportModuleT<T>::GetRelatedImportAddressBlock(IPEImportAddressBlock **ppBlock)
 {
     LIBPE_ASSERT_RET(NULL != ppBlock, ERR_POINTER);
 
@@ -94,9 +94,9 @@ PEImportModuleT<T>::GetRelatedImportAddressBlock(IPEImportAddressBlockT<T> **ppB
         LibPERawImportDescriptor(T) *pImportDescriptor = GetRawStruct();
         LIBPE_ASSERT_RET(NULL != pImportDescriptor, ERR_FAIL);
 
-        LibPEAddressT(T) nImportAddressBlockRVA = pImportDescriptor->FirstThunk;
+        PEAddress nImportAddressBlockRVA = pImportDescriptor->FirstThunk;
         if(0 != nImportAddressBlockRVA) {
-            LibPEAddressT(T) nImportAddressBlockFOA = m_pParser->GetFOAFromRVA(nImportAddressBlockRVA);
+            PEAddress nImportAddressBlockFOA = m_pParser->GetFOAFromRVA(nImportAddressBlockRVA);
             if(ERR_OK != m_pParser->ParseImportAddressBlock(NULL, nImportAddressBlockRVA, nImportAddressBlockFOA, &m_pRelatedIABlock) || NULL == m_pRelatedIABlock) {
                 return ERR_FAIL;
             }
@@ -132,7 +132,7 @@ PEImportFunctionT<T>::GetHint()
 }
 
 template <class T>
-LibPEAddressT(T)  
+PEAddress  
 PEImportFunctionT<T>::GetEntry()
 {
     return NULL;

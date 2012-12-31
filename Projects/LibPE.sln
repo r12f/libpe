@@ -4,8 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{9E9032C9-65B3-488A-8CC7-1E4B93E381C3}"
 	ProjectSection(SolutionItems) = preProject
 		..\Include\LibPE.h = ..\Include\LibPE.h
-		..\Include\LibPE32.h = ..\Include\LibPE32.h
-		..\Include\LibPE64.h = ..\Include\LibPE64.h
 		..\Include\LibPEBase.h = ..\Include\LibPEBase.h
 		..\Include\LibPEError.h = ..\Include\LibPEError.h
 		..\Include\LibPEInterface.h = ..\Include\LibPEInterface.h

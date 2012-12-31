@@ -6,10 +6,10 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 class PERelocationTableT :
-    public IPERelocationTableT<T>,
+    public IPERelocationTable,
     public PEElementT<T>
 {
-    typedef std::vector<LibPEPtr<IPERelocationPageT<T>>> RelocationPageList;
+    typedef std::vector<LibPEPtr<IPERelocationPage>> RelocationPageList;
 
 public:
     PERelocationTableT() {}
@@ -18,15 +18,15 @@ public:
     DECLARE_PE_ELEMENT(LibPERawBaseRelocation(T))
     LIBPE_SINGLE_THREAD_OBJECT()
 
-    void InnerAddRelocationPage(IPERelocationPageT<T> *pPage) {
+    void InnerAddRelocationPage(IPERelocationPage *pPage) {
         LIBPE_ASSERT_RET_VOID(NULL != pPage);
         m_vPages.push_back(pPage);
     }
 
     virtual uint32_t LIBPE_CALLTYPE GetPageCount();
-    virtual error_t LIBPE_CALLTYPE GetPageByIndex(uint32_t nIndex, IPERelocationPageT<T> **ppRelocationPage);
-    virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(LibPEAddressT(T) nRVA);
-    virtual error_t LIBPE_CALLTYPE GetItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem);
+    virtual error_t LIBPE_CALLTYPE GetPageByIndex(uint32_t nIndex, IPERelocationPage **ppRelocationPage);
+    virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(PEAddress nRVA);
+    virtual error_t LIBPE_CALLTYPE GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem);
 
 private:
     RelocationPageList m_vPages;
@@ -34,10 +34,10 @@ private:
 
 template <class T>
 class PERelocationPageT :
-    public IPERelocationPageT<T>,
+    public IPERelocationPage,
     public PEElementT<T>
 {
-    typedef std::vector<LibPEPtr<IPERelocationItemT<T>>> RelocationItemList;
+    typedef std::vector<LibPEPtr<IPERelocationItem>> RelocationItemList;
 
 public:
     PERelocationPageT() {}
@@ -46,16 +46,16 @@ public:
     DECLARE_PE_ELEMENT(LibPERawBaseRelocation(T))
     LIBPE_SINGLE_THREAD_OBJECT()
 
-    void InnerAddRelocationItem(IPERelocationItemT<T> *pItem) {
+    void InnerAddRelocationItem(IPERelocationItem *pItem) {
         LIBPE_ASSERT_RET_VOID(NULL != pItem);
         m_vItems.push_back(pItem);
     }
 
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetPageRVA();
+    virtual PEAddress LIBPE_CALLTYPE GetPageRVA();
     virtual uint32_t LIBPE_CALLTYPE GetItemCount();
-    virtual error_t LIBPE_CALLTYPE GetItemByIndex(uint32_t nIndex, IPERelocationItemT<T> **ppRelocationItem);
-    virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(LibPEAddressT(T) nRVA);
-    virtual error_t LIBPE_CALLTYPE GetItemByRVA(LibPEAddressT(T) nRVA, IPERelocationItemT<T> **ppRelocationItem);
+    virtual error_t LIBPE_CALLTYPE GetItemByIndex(uint32_t nIndex, IPERelocationItem **ppRelocationItem);
+    virtual bool_t LIBPE_CALLTYPE IsRVANeedRelocation(PEAddress nRVA);
+    virtual error_t LIBPE_CALLTYPE GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem);
 
 private:
     RelocationItemList m_vItems;
@@ -63,7 +63,7 @@ private:
 
 template <class T>
 class PERelocationItemT :
-    public IPERelocationItemT<T>,
+    public IPERelocationItem,
     public PEElementT<T>
 {
 public:
@@ -74,16 +74,16 @@ public:
     LIBPE_SINGLE_THREAD_OBJECT()
 
     void InnerSetRelocateFlag(uint16_t nRelocateFlag) { m_nRelocateFlag = nRelocateFlag; }
-    void InnerSetAddressRVA(LibPEAddressT(T) nRVA) { m_nAddressRVA = nRVA; }
+    void InnerSetAddressRVA(PEAddress nRVA) { m_nAddressRVA = nRVA; }
 
     virtual uint16_t LIBPE_CALLTYPE GetFlag();
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetAddressRVA();
-    virtual LibPEAddressT(T) LIBPE_CALLTYPE GetAddressContent();
-    virtual LibPEAddressT(T) * LIBPE_CALLTYPE GetRawAddressContent();
+    virtual PEAddress LIBPE_CALLTYPE GetAddressRVA();
+    virtual PEAddress LIBPE_CALLTYPE GetAddressContent();
+    virtual PEAddress * LIBPE_CALLTYPE GetRawAddressContent();
 
 private:
-    uint16_t                        m_nRelocateFlag;
-    LibPEAddressT(T)                m_nAddressRVA;
+    uint16_t    m_nRelocateFlag;
+    PEAddress   m_nAddressRVA;
 };
 
 typedef PERelocationTableT<PE32> PERelocationTable32;

@@ -12,7 +12,7 @@ PEImportAddressTableT<T>::GetBlockCount()
 
 template <class T>
 error_t
-PEImportAddressTableT<T>::GetBlockByIndex(uint32_t nIndex, IPEImportAddressBlockT<T> **ppBlock)
+PEImportAddressTableT<T>::GetBlockByIndex(uint32_t nIndex, IPEImportAddressBlock **ppBlock)
 {
     LIBPE_ASSERT_RET(NULL != ppBlock, ERR_POINTER);
     
@@ -24,16 +24,16 @@ PEImportAddressTableT<T>::GetBlockByIndex(uint32_t nIndex, IPEImportAddressBlock
 
 template <class T>
 bool_t
-PEImportAddressTableT<T>::IsBlockExists(IPEImportAddressBlockT<T> *pBlock)
+PEImportAddressTableT<T>::IsBlockExists(IPEImportAddressBlock *pBlock)
 {
     LIBPE_ASSERT_RET(NULL != pBlock, false);
 
-    LibPERawThunkData(T) *pArgRawBlock = pBlock->GetRawStruct();
+    void *pArgRawBlock = pBlock->GetRawMemory();
     LIBPE_ASSERT_RET(NULL != pArgRawBlock, false);
 
     BlockList::iterator oBlockIt;
     for(oBlockIt = m_vBlocks.begin(); oBlockIt != m_vBlocks.end(); ++oBlockIt) {
-        if((*oBlockIt)->GetRawStruct() == pArgRawBlock) {
+        if((*oBlockIt)->GetRawMemory() == pArgRawBlock) {
             return true;
         }
     }
@@ -43,7 +43,7 @@ PEImportAddressTableT<T>::IsBlockExists(IPEImportAddressBlockT<T> *pBlock)
 
 template <class T>
 bool_t
-PEImportAddressTableT<T>::IsItemExist(IPEImportAddressItemT<T> *pItem)
+PEImportAddressTableT<T>::IsItemExist(IPEImportAddressItem *pItem)
 {
     LIBPE_ASSERT_RET(NULL != pItem, false);
 
@@ -66,7 +66,7 @@ PEImportAddressBlockT<T>::GetItemCount()
 
 template <class T>
 error_t
-PEImportAddressBlockT<T>::GetItemByIndex(uint32_t nIndex, IPEImportAddressItemT<T> **ppItem)
+PEImportAddressBlockT<T>::GetItemByIndex(uint32_t nIndex, IPEImportAddressItem **ppItem)
 {
     LIBPE_ASSERT_RET(NULL != ppItem, ERR_POINTER);
     
@@ -78,16 +78,16 @@ PEImportAddressBlockT<T>::GetItemByIndex(uint32_t nIndex, IPEImportAddressItemT<
 
 template <class T>
 bool_t
-PEImportAddressBlockT<T>::IsItemExist(IPEImportAddressItemT<T> *pItem)
+PEImportAddressBlockT<T>::IsItemExist(IPEImportAddressItem *pItem)
 {
     LIBPE_ASSERT_RET(NULL != pItem, false);
 
-    LibPERawThunkData(T) *pArgRawItem = pItem->GetRawStruct();
+    void *pArgRawItem = pItem->GetRawMemory();
     LIBPE_ASSERT_RET(NULL != pArgRawItem, false);
 
     ItemList::iterator oItemIt;
     for(oItemIt = m_vItems.begin(); oItemIt != m_vItems.end(); ++oItemIt) {
-        if((*oItemIt)->GetRawStruct() == pArgRawItem) {
+        if((*oItemIt)->GetRawMemory() == pArgRawItem) {
             return true;
         }
     }
@@ -96,7 +96,7 @@ PEImportAddressBlockT<T>::IsItemExist(IPEImportAddressItemT<T> *pItem)
 }
 
 template <class T>
-LibPEAddressT(T)
+PEAddress
 PEImportAddressItemT<T>::GetRawAddress()
 {
     LibPERawThunkData(T) *pRawStruct = GetRawStruct();

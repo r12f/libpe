@@ -5,7 +5,7 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 error_t
-PESectionHeaderT<T>::GetSection(IPESectionT<T> **ppSection)
+PESectionHeaderT<T>::GetSection(IPESection **ppSection)
 {
     if(NULL == m_pSection) {
         LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);

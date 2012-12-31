@@ -27,7 +27,8 @@ template <class T> struct PETrait {};
 
 template <>
 struct PETrait<PE32> : PETraitBase {
-    typedef uint32_t                            Address;
+    static const bool_t                         Is32Bit = true;
+    typedef uint32_t                            RawAddress;
     typedef IMAGE_NT_HEADERS32                  RawNtHeaders;
     typedef IMAGE_OPTIONAL_HEADER32             RawOptionalHeader;
     typedef IMAGE_THUNK_DATA32                  RawThunkData;
@@ -35,15 +36,14 @@ struct PETrait<PE32> : PETraitBase {
 
 template <>
 struct PETrait<PE64> : PETraitBase {
-    typedef uint64_t                            Address;
+    static const bool_t                         Is32Bit = false;
+    typedef uint64_t                            RawAddress;
     typedef IMAGE_NT_HEADERS64                  RawNtHeaders;
     typedef IMAGE_OPTIONAL_HEADER64             RawOptionalHeader;
     typedef IMAGE_THUNK_DATA64                  RawThunkData;
 };
 
-#define LibPEAddressT(T)                        typename PETrait<T>::Address
-#define LibPERawResourceString(T)               typename PETrait<T>::RawResourceString
-#define LibPERawResourceStringU(T)              typename PETrait<T>::RawResourceStringU
+#define LibPERawAddressT(T)                     typename PETrait<T>::RawAddress
 #define LibPERawDosHeaderT(T)                   typename PETrait<T>::RawDosHeader
 #define LibPERawFileHeaderT(T)                  typename PETrait<T>::RawFileHeader
 #define LibPERawNtHeadersT(T)                   typename PETrait<T>::RawNtHeaders
@@ -58,6 +58,10 @@ struct PETrait<PE64> : PETraitBase {
 #define LibPERawResourceDirectory(T)            typename PETrait<T>::RawResourceDirectory
 #define LibPERawResourceDirectoryEntry(T)       typename PETrait<T>::RawResourceDirectoryEntry
 #define LibPERawResourceDataEntry(T)            typename PETrait<T>::RawResourceDataEntry
+#define LibPERawResourceString(T)               typename PETrait<T>::RawResourceString
+#define LibPERawResourceStringU(T)              typename PETrait<T>::RawResourceStringU
+
+typedef uint64_t                                PEAddress;
 
 typedef PETraitBase::RawDosHeader               PERawDosHeader;
 typedef PETraitBase::RawFileHeader              PERawFileHeader;
@@ -73,12 +77,10 @@ typedef PETraitBase::RawResourceDataEntry       PERawResourceDataEntry;
 typedef PETraitBase::RawResourceString          PERawResourceString;
 typedef PETraitBase::RawResourceStringU         PERawResourceStringU;
 
-typedef PETrait<PE32>::Address                  PEAddress32;
 typedef PETrait<PE32>::RawNtHeaders             PERawNtHeaders32;
 typedef PETrait<PE32>::RawOptionalHeader        PERawOptionalHeader32;
 typedef PETrait<PE32>::RawThunkData             PERawThunkData32;
 
-typedef PETrait<PE64>::Address                  PEAddress64;
 typedef PETrait<PE64>::RawNtHeaders             PERawNtHeaders64;
 typedef PETrait<PE64>::RawOptionalHeader        PERawOptionalHeader64;
 typedef PETrait<PE64>::RawThunkData             PERawThunkData64;
