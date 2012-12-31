@@ -5,6 +5,24 @@
 LIBPE_NAMESPACE_BEGIN
 
 template <class T>
+class PESectionHeaderT :
+    public IPESectionHeaderT<T>,
+    public PEElementT<T>
+{
+public:
+    PESectionHeaderT() {}
+    virtual ~PESectionHeaderT() {}
+
+    LIBPE_SINGLE_THREAD_OBJECT()
+    DECLARE_PE_ELEMENT(LibPERawSectionHeaderT(T))
+
+    virtual error_t LIBPE_CALLTYPE GetSection(IPESectionT<T> **ppSection);
+
+private:
+    LibPEPtr<IPESectionT<T>>    m_pSection;
+};
+
+template <class T>
 class PESectionT :
     public IPESectionT<T>,
     public PEElementT<T>
@@ -42,10 +60,12 @@ public:
     DECLARE_PE_ELEMENT(void)
 };
 
-typedef PESectionT<PE32>    PESection32;
-typedef PEOverlayT<PE32>    PEOverlay32;
+typedef PESectionHeaderT<PE32>  PESectionHeader32;
+typedef PESectionT<PE32>        PESection32;
+typedef PEOverlayT<PE32>        PEOverlay32;
 
-typedef PESectionT<PE64>    PESection64;
-typedef PEOverlayT<PE64>    PEOverlay64;
+typedef PESectionHeaderT<PE64>  PESectionHeader64;
+typedef PESectionT<PE64>        PESection64;
+typedef PEOverlayT<PE64>        PEOverlay64;
 
 LIBPE_NAMESPACE_END

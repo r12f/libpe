@@ -382,14 +382,6 @@
 				RelativePath="..\Source\PE\PESection.h"
 				>
 			</File>
-			<File
-				RelativePath="..\Source\PE\PESectionHeader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PESectionHeader.h"
-				>
-			</File>
 		</Filter>
 		<File
 			RelativePath="..\Source\LibPE32.cpp"

@@ -2,7 +2,6 @@
 #include "Parser/PEParser.h"
 #include "Parser/PEParserImpl.h"
 #include "PE/PEFile.h"
-#include "PE/PESectionHeader.h"
 #include "PE/PESection.h"
 #include "PE/PEExportTable.h"
 #include "PE/PEImportTable.h"
@@ -71,14 +70,6 @@ PEParserT<T>::CreateForLoadedModule(HMODULE hModule, PEFileT<T> *pFile)
 }
 
 #endif
-
-template <class T>
-void *
-PEParserT<T>::GetRawMemory(uint64_t nOffset, uint64_t nSize)
-{
-    LIBPE_ASSERT_RET(NULL != m_pLoader, NULL);
-    return m_pLoader->GetBuffer(nOffset, nSize);
-}
 
 template <class T>
 LibPEAddressT(T)
@@ -172,11 +163,27 @@ PEParserT<T>::GetFOAFromVA(LibPEAddressT(T) nVA)
 }
 
 template <class T>
+void *
+PEParserT<T>::GetRawMemory(uint64_t nOffset, uint64_t nSize)
+{
+    LIBPE_ASSERT_RET(NULL != m_pLoader, NULL);
+    return m_pLoader->GetBuffer(nOffset, nSize);
+}
+
+template <class T>
 const char *
 PEParserT<T>::ParseAnsiString(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, uint64_t &nSize)
 {
     LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, NULL);
     return m_pLoader->GetAnsiString(GetRawOffset(nRVA, nFOA), nSize);
+}
+
+template <class T>
+const wchar_t *
+PEParserT<T>::ParseUnicodeString(LibPEAddressT(T) nRVA, LibPEAddressT(T) nFOA, uint64_t &nSize)
+{
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, NULL);
+    return m_pLoader->GetUnicodeString(GetRawOffset(nRVA, nFOA), nSize);
 }
 
 template <class T>
