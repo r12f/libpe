@@ -4,6 +4,6 @@
 
 LIBPE_NAMESPACE_BEGIN
 
-uint64_t GetPreferredPELoaderIOBlockSize(uint64_t nFileSize);
+UINT64 GetPreferredPELoaderIOBlockSize(UINT64 nFileSize);
 
 LIBPE_NAMESPACE_END

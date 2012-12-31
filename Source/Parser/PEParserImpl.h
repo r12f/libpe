@@ -13,7 +13,7 @@ public:
     virtual ~PEParserDiskFileT() {}
 
     virtual PEParserType GetType() { return PE_PARSER_TYPE_DISK_FILE; }
-    virtual bool_t IsRawAddressVA() { return false; }
+    virtual BOOL IsRawAddressVA() { return false; }
 
 protected:
     virtual PEAddress GetRawOffsetFromAddressField(PEAddress nAddress) { return GetFOAFromRVA(nAddress); }

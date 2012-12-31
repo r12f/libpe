@@ -54,8 +54,8 @@ public:
     RefCountPersistent() {}
     ~RefCountPersistent() {}
 
-    uint32_t AddRef(void) { return 1; }
-    uint32_t Release(void) { return 1; }
+    UINT32 AddRef(void) { return 1; }
+    UINT32 Release(void) { return 1; }
 };
 
 class RefCount
@@ -64,11 +64,11 @@ public:
     RefCount() : m_nRefCount(0) {}
     ~RefCount() {}
 
-    uint32_t AddRef(void) { return ++m_nRefCount; }
-    uint32_t Release(void) { return --m_nRefCount; }
+    UINT32 AddRef(void) { return ++m_nRefCount; }
+    UINT32 Release(void) { return --m_nRefCount; }
 
 private:
-    uint32_t m_nRefCount;
+    UINT32 m_nRefCount;
 };
 
 class RefCountThreadSafe
@@ -77,23 +77,23 @@ public:
     RefCountThreadSafe() : m_nRefCount(0) {}
     ~RefCountThreadSafe() {}
 
-    uint32_t AddRef(void) { return (uint32_t)::InterlockedIncrement((volatile LONG *)&m_nRefCount); }
-    uint32_t Release(void) { return (uint32_t)::InterlockedDecrement((volatile LONG *)&m_nRefCount); }
+    UINT32 AddRef(void) { return (UINT32)::InterlockedIncrement((volatile LONG *)&m_nRefCount); }
+    UINT32 Release(void) { return (UINT32)::InterlockedDecrement((volatile LONG *)&m_nRefCount); }
 
 private:
-    uint32_t m_nRefCount;
+    UINT32 m_nRefCount;
 };
 
 #define LIBPE_INTERFACE_IMPL()                                              \
     public:                                                                 \
-        LIBPE_METHOD_(uint32_t, AddRef)()                                   \
+        LIBPE_METHOD_(UINT32, AddRef)()                                   \
         {                                                                   \
             return m_oRefCount.AddRef();                                    \
         }                                                                   \
                                                                             \
-        LIBPE_METHOD_(uint32_t, Release)()                                  \
+        LIBPE_METHOD_(UINT32, Release)()                                  \
         {                                                                   \
-            uint32_t nRefCount = m_oRefCount.Release();                     \
+            UINT32 nRefCount = m_oRefCount.Release();                     \
                                                                             \
             if (nRefCount == 0) {                                           \
                 delete this;                                                \

@@ -19,7 +19,7 @@ DataLoaderDiskFile::~DataLoaderDiskFile()
     Reset();
 }
 
-bool_t
+BOOL
 DataLoaderDiskFile::LoadFile(const file_t &strPath)
 {
     m_hFile = ::CreateFile(strPath.c_str(), FILE_GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -29,18 +29,18 @@ DataLoaderDiskFile::LoadFile(const file_t &strPath)
 
     LONG nFileSizeHigh = 0;
     DWORD nFileSizeLow = ::SetFilePointer(m_hFile, 0, &nFileSizeHigh, FILE_END);
-    m_nFileSize = ((uint64_t)nFileSizeHigh) << 32 | nFileSizeLow;
+    m_nFileSize = ((UINT64)nFileSizeHigh) << 32 | nFileSizeLow;
     m_nBlockSize = GetPreferredPELoaderIOBlockSize(m_nFileSize);
 
-    m_pFileBuffer = new int8_t[(int32_t)m_nFileSize];
+    m_pFileBuffer = new INT8[(INT32)m_nFileSize];
     LIBPE_ASSERT_RET(0 != m_nBlockSize, false);
 
     nFileSizeHigh = 0;
     ::SetFilePointer(m_hFile, 0, &nFileSizeHigh, FILE_BEGIN);
 
-    m_nBlockStatusCount = (int32_t)(m_nFileSize / m_nBlockSize + ((m_nFileSize & (m_nBlockSize - 1)) > 0 ? 1 : 0));
-    m_pBlockStatus = new bool_t[m_nBlockStatusCount];
-    memset(m_pBlockStatus, 0, m_nBlockStatusCount * sizeof(bool_t));
+    m_nBlockStatusCount = (INT32)(m_nFileSize / m_nBlockSize + ((m_nFileSize & (m_nBlockSize - 1)) > 0 ? 1 : 0));
+    m_pBlockStatus = new BOOL[m_nBlockStatusCount];
+    memset(m_pBlockStatus, 0, m_nBlockStatusCount * sizeof(BOOL));
 
     if(NULL == m_pFileBuffer || NULL == m_pBlockStatus) {
         Reset();
@@ -51,13 +51,13 @@ DataLoaderDiskFile::LoadFile(const file_t &strPath)
 }
 
 void *
-DataLoaderDiskFile::GetBuffer(uint64_t nOffset, uint64_t nSize)
+DataLoaderDiskFile::GetBuffer(UINT64 nOffset, UINT64 nSize)
 {
     if(NULL == m_pFileBuffer || NULL == m_pBlockStatus) {
         return NULL;
     }
 
-    int32_t nStartBlockId = GetBlockId(nOffset), nEndBlockId = GetBlockId(nOffset + nSize);
+    INT32 nStartBlockId = GetBlockId(nOffset), nEndBlockId = GetBlockId(nOffset + nSize);
     if(0 > nStartBlockId || 0 > nEndBlockId) {
         return NULL;
     }
@@ -72,18 +72,18 @@ DataLoaderDiskFile::GetBuffer(uint64_t nOffset, uint64_t nSize)
 }
 
 const char *
-DataLoaderDiskFile::GetAnsiString(uint64_t nOffset, uint64_t &nSize)
+DataLoaderDiskFile::GetAnsiString(UINT64 nOffset, UINT64 &nSize)
 {
     if(nOffset >= m_nFileSize) {
         return NULL;
     }
 
-    int32_t nStartBlockId = GetBlockId(nOffset), nReadyBlockId = -1;
+    INT32 nStartBlockId = GetBlockId(nOffset), nReadyBlockId = -1;
     if(0 > nStartBlockId) {
         return NULL;
     }
 
-    uint64_t nCurOffset = nOffset, nBlockEnd = 0;
+    UINT64 nCurOffset = nOffset, nBlockEnd = 0;
     for(;;) {
         if(nReadyBlockId != nStartBlockId) {
             if(!ReadBlock(nStartBlockId)) {
@@ -96,7 +96,7 @@ DataLoaderDiskFile::GetAnsiString(uint64_t nOffset, uint64_t &nSize)
         while(nCurOffset < nBlockEnd) {
             if(0 == m_pFileBuffer[nCurOffset]) {
                 nSize = nCurOffset - nOffset + 1;
-                return &(m_pFileBuffer[nOffset]);
+                return (const char *)&(m_pFileBuffer[nOffset]);
             }
             ++nCurOffset;
         }
@@ -108,18 +108,18 @@ DataLoaderDiskFile::GetAnsiString(uint64_t nOffset, uint64_t &nSize)
 }
 
 const wchar_t *
-DataLoaderDiskFile::GetUnicodeString(uint64_t nOffset, uint64_t &nSize)
+DataLoaderDiskFile::GetUnicodeString(UINT64 nOffset, UINT64 &nSize)
 {
     if(nOffset >= m_nFileSize) {
         return NULL;
     }
 
-    int32_t nStartBlockId = GetBlockId(nOffset), nReadyBlockId = -1;
+    INT32 nStartBlockId = GetBlockId(nOffset), nReadyBlockId = -1;
     if(0 > nStartBlockId) {
         return NULL;
     }
 
-    uint64_t nCurOffset = nOffset, nBlockEnd = 0;
+    UINT64 nCurOffset = nOffset, nBlockEnd = 0;
     for(;;) {
         if(nReadyBlockId != nStartBlockId) {
             if(!ReadBlock(nStartBlockId)) {
@@ -165,18 +165,18 @@ DataLoaderDiskFile::Reset()
     m_nBlockStatusCount = 0;
 }
 
-int32_t
-DataLoaderDiskFile::GetBlockId(uint64_t nOffset)
+INT32
+DataLoaderDiskFile::GetBlockId(UINT64 nOffset)
 {
     if(nOffset >= m_nFileSize) {
         return -1;
     }
 
-    return (int32_t)(nOffset / m_nBlockSize);
+    return (INT32)(nOffset / m_nBlockSize);
 }
 
-bool_t
-DataLoaderDiskFile::ReadBlock(int32_t nBlockId)
+BOOL
+DataLoaderDiskFile::ReadBlock(INT32 nBlockId)
 {
     if(0 > nBlockId || nBlockId >= m_nBlockStatusCount) {
         return false;
@@ -186,7 +186,7 @@ DataLoaderDiskFile::ReadBlock(int32_t nBlockId)
         return true;
     }
 
-    uint64_t nReadBegin = nBlockId * m_nBlockSize;
+    UINT64 nReadBegin = nBlockId * m_nBlockSize;
     LONG nReadBeginHigh = ((nReadBegin >> 32) & 0xFFFFFFFF);
     LONG nReadBeginLow = (nReadBegin & 0xFFFFFFFF);
     DWORD nNeedSize = (DWORD)m_nBlockSize;

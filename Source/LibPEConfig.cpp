@@ -8,22 +8,22 @@ enum {
     DEFAULT_IO_COUNT           = 3,
 };
 
-uint64_t s_nPELoaderMinBlockSize = 0;
-uint64_t s_nPELoaderMaxBlockSize = 0;
+UINT64 s_nPELoaderMinBlockSize = 0;
+UINT64 s_nPELoaderMaxBlockSize = 0;
 
 void LIBPE_CALLTYPE
-SetPELoaderIOBlockSize(uint64_t nMinBlockSize, uint64_t nMaxBlockSize)
+SetPELoaderIOBlockSize(UINT64 nMinBlockSize, UINT64 nMaxBlockSize)
 {
     s_nPELoaderMinBlockSize = nMinBlockSize;
     s_nPELoaderMaxBlockSize = nMaxBlockSize;
 }
 
-uint64_t
-GetPreferredPELoaderIOBlockSize(uint64_t nFileSize)
+UINT64
+GetPreferredPELoaderIOBlockSize(UINT64 nFileSize)
 {
-    uint64_t nMinBlockSize = (s_nPELoaderMaxBlockSize == 0) ? DEFAULT_IO_MIN_BLOCK_SIZE : s_nPELoaderMinBlockSize;
-    uint64_t nMaxBlockSize = (s_nPELoaderMaxBlockSize == 0) ? DEFAULT_IO_MAX_BLOCK_SIZE : s_nPELoaderMaxBlockSize;
-    uint64_t nBlockSize = nFileSize / DEFAULT_IO_COUNT;
+    UINT64 nMinBlockSize = (s_nPELoaderMaxBlockSize == 0) ? DEFAULT_IO_MIN_BLOCK_SIZE : s_nPELoaderMinBlockSize;
+    UINT64 nMaxBlockSize = (s_nPELoaderMaxBlockSize == 0) ? DEFAULT_IO_MAX_BLOCK_SIZE : s_nPELoaderMaxBlockSize;
+    UINT64 nBlockSize = nFileSize / DEFAULT_IO_COUNT;
     if(nBlockSize < nMinBlockSize) { return nBlockSize; }
     if(nBlockSize > nMaxBlockSize) { return nMaxBlockSize; }
     return (((nBlockSize & 0x3FFF) != 0) ? ((nBlockSize | 0x3FFF) + 1) : nBlockSize);

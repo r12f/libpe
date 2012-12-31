@@ -5,7 +5,24 @@
 
 LIBPE_NAMESPACE_BEGIN
 
-error_t
+static HRESULT
+ParsePEFromDataLoader(DataLoader *pDataLoader, IPEFile **ppFile)
+{
+    LIBPE_ASSERT_RET(NULL != pDataLoader && NULL != ppFile, E_POINTER);
+
+    if(SUCCEEDED(PEFile32::Create(pDataLoader, ppFile)) && NULL != *ppFile) {
+        return S_OK;
+    }
+
+    if(SUCCEEDED(PEFile64::Create(pDataLoader, ppFile)) && NULL != *ppFile) {
+        return S_OK;
+    }
+
+    return E_FAIL;
+}
+
+
+HRESULT
 ParsePEFromDiskFile(const file_char_t *pFilePath, IPEFile **ppFile)
 {
     LibPEPtr<DataLoader> pDataLoader = new DataLoaderDiskFile;
@@ -14,34 +31,26 @@ ParsePEFromDiskFile(const file_char_t *pFilePath, IPEFile **ppFile)
     DataLoaderDiskFile *pRawDataLoader = (DataLoaderDiskFile *)pDataLoader.p;
     LIBPE_ASSERT_RET(pRawDataLoader->LoadFile(pFilePath), NULL);
 
-    if(ERR_OK == PEFile32::Create(pDataLoader, ppFile) && NULL != *ppFile) {
-        return ERR_OK;
-    }
-
-    if(ERR_OK == PEFile64::Create(pDataLoader, ppFile) && NULL != *ppFile) {
-        return ERR_OK;
-    }
-
-    return ERR_FAIL;
+    return ParsePEFromDataLoader(pDataLoader, ppFile);
 }
 
-error_t
+HRESULT
 ParsePEFromMappedFile(void *pMemory, IPEFile **ppFile)
 {
-    return ERR_NOT_IMPL;
+    return E_NOTIMPL;
 }
 
 #ifdef LIBPE_WINOS
-error_t
+HRESULT
 ParsePEFromMappedResource(HMODULE hModule, IPEFile **ppFile)
 {
-    return ERR_NOT_IMPL;
+    return E_NOTIMPL;
 }
 
-error_t
+HRESULT
 ParsePEFromLoadedModule(HMODULE hModule, IPEFile **ppFile)
 {
-    return ERR_NOT_IMPL;
+    return E_NOTIMPL;
 }
 #endif
 

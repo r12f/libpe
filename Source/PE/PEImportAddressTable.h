@@ -15,7 +15,6 @@ public:
     PEImportAddressTableT() {}
     virtual ~PEImportAddressTableT() {}
 
-    LIBPE_SINGLE_THREAD_OBJECT()
     DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
     void InnerAddImportAddressBlock(IPEImportAddressBlock *pBlock) {
@@ -23,10 +22,10 @@ public:
         m_vBlocks.push_back(pBlock);
     }
 
-    virtual uint32_t LIBPE_CALLTYPE GetBlockCount();
-    virtual error_t LIBPE_CALLTYPE GetBlockByIndex(uint32_t nIndex, IPEImportAddressBlock **ppBlock);
-    virtual bool_t LIBPE_CALLTYPE IsBlockExists(IPEImportAddressBlock *pBlock);
-    virtual bool_t LIBPE_CALLTYPE IsItemExist(IPEImportAddressItem *pItem);
+    virtual UINT32 LIBPE_CALLTYPE GetBlockCount();
+    virtual HRESULT LIBPE_CALLTYPE GetBlockByIndex(UINT32 nIndex, IPEImportAddressBlock **ppBlock);
+    virtual BOOL LIBPE_CALLTYPE IsBlockExists(IPEImportAddressBlock *pBlock);
+    virtual BOOL LIBPE_CALLTYPE IsItemExist(IPEImportAddressItem *pItem);
 
 private:
     BlockList   m_vBlocks;
@@ -43,7 +42,6 @@ public:
     PEImportAddressBlockT() {}
     virtual ~PEImportAddressBlockT() {}
 
-    LIBPE_SINGLE_THREAD_OBJECT()
     DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
     void InnerAddImportAddressItem(IPEImportAddressItem *pItem) {
@@ -51,9 +49,9 @@ public:
         m_vItems.push_back(pItem);
     }
 
-    virtual uint32_t LIBPE_CALLTYPE GetItemCount();
-    virtual error_t LIBPE_CALLTYPE GetItemByIndex(uint32_t nIndex, IPEImportAddressItem **ppItem);
-    virtual bool_t LIBPE_CALLTYPE IsItemExist(IPEImportAddressItem *pItem);
+    virtual UINT32 LIBPE_CALLTYPE GetItemCount();
+    virtual HRESULT LIBPE_CALLTYPE GetItemByIndex(UINT32 nIndex, IPEImportAddressItem **ppItem);
+    virtual BOOL LIBPE_CALLTYPE IsItemExist(IPEImportAddressItem *pItem);
 
 private:
     ItemList    m_vItems;
@@ -68,7 +66,6 @@ public:
     PEImportAddressItemT() {}
     virtual ~PEImportAddressItemT() {}
 
-    LIBPE_SINGLE_THREAD_OBJECT()
     DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
     virtual PEAddress LIBPE_CALLTYPE GetRawAddress();

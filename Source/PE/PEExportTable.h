@@ -16,32 +16,31 @@ public:
     virtual ~PEExportTableT() {}
 
     DECLARE_PE_ELEMENT(LibPERawExportDirectory(T))
-    LIBPE_SINGLE_THREAD_OBJECT()
 
-    void InnerSetFunctionList(uint32_t *pFunctionList) { m_pFunctionList = pFunctionList; }
-    void InnerSetNameList(uint32_t *pNameList) { m_pNameList = pNameList; }
-    void InnerSetNameOrdinalList(uint16_t *pNameOrdinalList) { m_pNameOrdinalList = pNameOrdinalList; }
+    void InnerSetFunctionList(UINT32 *pFunctionList) { m_pFunctionList = pFunctionList; }
+    void InnerSetNameList(UINT32 *pNameList) { m_pNameList = pNameList; }
+    void InnerSetNameOrdinalList(UINT16 *pNameOrdinalList) { m_pNameOrdinalList = pNameOrdinalList; }
 
-    uint32_t * GetRawFunctionList() { return m_pFunctionList; }
-    uint32_t * GetRawNameList() { return m_pNameList; }
-    uint16_t * GetRawNameOrdinalList() { return m_pNameOrdinalList; }
+    UINT32 * GetRawFunctionList() { return m_pFunctionList; }
+    UINT32 * GetRawNameList() { return m_pNameList; }
+    UINT16 * GetRawNameOrdinalList() { return m_pNameOrdinalList; }
 
-    bool_t PrepareForUsing() {
+    BOOL PrepareForUsing() {
         LibPERawExportDirectory(T) *pExportDirectory = GetRawStruct();
         LIBPE_ASSERT_RET(NULL != pExportDirectory, false);
         m_vExportFunctions.resize(pExportDirectory->NumberOfFunctions, NULL);
         return true;
     }
 
-    virtual uint32_t LIBPE_CALLTYPE GetFunctionCount();
-    virtual error_t LIBPE_CALLTYPE GetFunctionByIndex(uint32_t nIndex, IPEExportFunction **ppFunction);
-    virtual error_t LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEExportFunction **ppFunction);
+    virtual UINT32 LIBPE_CALLTYPE GetFunctionCount();
+    virtual HRESULT LIBPE_CALLTYPE GetFunctionByIndex(UINT32 nIndex, IPEExportFunction **ppFunction);
+    virtual HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEExportFunction **ppFunction);
 
 private:
     FunctionList        m_vExportFunctions;
-    uint32_t            *m_pFunctionList;
-    uint32_t            *m_pNameList;
-    uint16_t            *m_pNameOrdinalList;
+    UINT32            *m_pFunctionList;
+    UINT32            *m_pNameList;
+    UINT16            *m_pNameOrdinalList;
 };
 
 template <class T>
@@ -54,17 +53,16 @@ public:
     virtual ~PEExportFunctionT() {}
 
     DECLARE_PE_ELEMENT(void)
-    LIBPE_SINGLE_THREAD_OBJECT()
 
     void InnerSetName(const char *pName) { m_pName = pName; }
-    void InnerSetHint(uint16_t nHint) { m_nHint = nHint; }
+    void InnerSetHint(UINT16 nHint) { m_nHint = nHint; }
 
     virtual const char * LIBPE_CALLTYPE GetName();
-    virtual uint16_t LIBPE_CALLTYPE GetHint();
+    virtual UINT16 LIBPE_CALLTYPE GetHint();
 
 private:
     const char *    m_pName;
-    uint16_t        m_nHint;
+    UINT16          m_nHint;
 };
 
 typedef PEExportTableT<PE32> PEExportTable32;

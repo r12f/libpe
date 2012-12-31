@@ -13,10 +13,9 @@ public:
     PESectionHeaderT() {}
     virtual ~PESectionHeaderT() {}
 
-    LIBPE_SINGLE_THREAD_OBJECT()
     DECLARE_PE_ELEMENT(LibPERawSectionHeaderT(T))
 
-    virtual error_t LIBPE_CALLTYPE GetSection(IPESection **ppSection);
+    virtual HRESULT LIBPE_CALLTYPE GetSection(IPESection **ppSection);
 
 private:
     LibPEPtr<IPESection>    m_pSection;
@@ -31,17 +30,16 @@ public:
     PESectionT() : m_pSectionHeader(NULL) {}
     virtual ~PESectionT() {}
 
-    LIBPE_SINGLE_THREAD_OBJECT()
     DECLARE_PE_ELEMENT(void)
 
     void InnerSetSectionHeader(typename PETrait<T>::RawSectionHeader *pSectionHeader) { m_pSectionHeader = pSectionHeader; }
 
     virtual const char * LIBPE_CALLTYPE GetName();
-    virtual error_t LIBPE_CALLTYPE GetRelocations();
-    virtual error_t LIBPE_CALLTYPE GetLineNumbers();
-    virtual uint32_t LIBPE_CALLTYPE GetCharacteristics();
+    virtual HRESULT LIBPE_CALLTYPE GetRelocations();
+    virtual HRESULT LIBPE_CALLTYPE GetLineNumbers();
+    virtual UINT32 LIBPE_CALLTYPE GetCharacteristics();
 
-    virtual error_t LIBPE_CALLTYPE SetName(const char *pName);
+    virtual HRESULT LIBPE_CALLTYPE SetName(const char *pName);
 
 private:
     LibPERawSectionHeaderT(T) *m_pSectionHeader;
@@ -56,7 +54,6 @@ public:
     PEOverlayT() {}
     virtual ~PEOverlayT() {}
 
-    LIBPE_SINGLE_THREAD_OBJECT()
     DECLARE_PE_ELEMENT(void)
 };
 

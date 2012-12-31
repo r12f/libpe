@@ -4,26 +4,26 @@
 LIBPE_NAMESPACE_BEGIN
 
 template <class T>
-uint32_t
+UINT32
 PEImportAddressTableT<T>::GetBlockCount()
 {
-    return (uint32_t)m_vBlocks.size();
+    return (UINT32)m_vBlocks.size();
 }
 
 template <class T>
-error_t
-PEImportAddressTableT<T>::GetBlockByIndex(uint32_t nIndex, IPEImportAddressBlock **ppBlock)
+HRESULT
+PEImportAddressTableT<T>::GetBlockByIndex(UINT32 nIndex, IPEImportAddressBlock **ppBlock)
 {
-    LIBPE_ASSERT_RET(NULL != ppBlock, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != ppBlock, E_POINTER);
     
-    uint32_t nBlockCount = GetBlockCount();
-    LIBPE_ASSERT_RET(nIndex < nBlockCount, ERR_INVALID_ARG);
+    UINT32 nBlockCount = GetBlockCount();
+    LIBPE_ASSERT_RET(nIndex < nBlockCount, E_INVALIDARG);
 
     return m_vBlocks[nIndex].CopyTo(ppBlock);
 }
 
 template <class T>
-bool_t
+BOOL
 PEImportAddressTableT<T>::IsBlockExists(IPEImportAddressBlock *pBlock)
 {
     LIBPE_ASSERT_RET(NULL != pBlock, false);
@@ -42,7 +42,7 @@ PEImportAddressTableT<T>::IsBlockExists(IPEImportAddressBlock *pBlock)
 }
 
 template <class T>
-bool_t
+BOOL
 PEImportAddressTableT<T>::IsItemExist(IPEImportAddressItem *pItem)
 {
     LIBPE_ASSERT_RET(NULL != pItem, false);
@@ -58,26 +58,26 @@ PEImportAddressTableT<T>::IsItemExist(IPEImportAddressItem *pItem)
 }
 
 template <class T>
-uint32_t
+UINT32
 PEImportAddressBlockT<T>::GetItemCount()
 {
-    return (uint32_t)m_vItems.size();
+    return (UINT32)m_vItems.size();
 }
 
 template <class T>
-error_t
-PEImportAddressBlockT<T>::GetItemByIndex(uint32_t nIndex, IPEImportAddressItem **ppItem)
+HRESULT
+PEImportAddressBlockT<T>::GetItemByIndex(UINT32 nIndex, IPEImportAddressItem **ppItem)
 {
-    LIBPE_ASSERT_RET(NULL != ppItem, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != ppItem, E_POINTER);
     
-    uint32_t nItemCount = GetItemCount();
-    LIBPE_ASSERT_RET(nIndex < nItemCount, ERR_INVALID_ARG);
+    UINT32 nItemCount = GetItemCount();
+    LIBPE_ASSERT_RET(nIndex < nItemCount, E_INVALIDARG);
 
     return m_vItems[nIndex].CopyTo(ppItem);
 }
 
 template <class T>
-bool_t
+BOOL
 PEImportAddressBlockT<T>::IsItemExist(IPEImportAddressItem *pItem)
 {
     LIBPE_ASSERT_RET(NULL != pItem, false);

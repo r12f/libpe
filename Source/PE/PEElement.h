@@ -68,6 +68,8 @@ typedef PEElementT<PE32> PEElement32;
 typedef PEElementT<PE64> PEElement64;
 
 #define DECLARE_PE_ELEMENT(struct_type)                                                                 \
+    LIBPE_SINGLE_THREAD_OBJECT()                                                                        \
+                                                                                                        \
     virtual void * LIBPE_CALLTYPE GetRawMemory() { return PEElementT<T>::GetRawMemory(); }              \
     virtual PEAddress LIBPE_CALLTYPE GetRawOffset() { return PEElementT<T>::GetRawOffset(); }           \
     virtual PEAddress LIBPE_CALLTYPE GetRawSize() { return PEElementT<T>::GetRawSize(); }               \
@@ -76,6 +78,7 @@ typedef PEElementT<PE64> PEElement64;
     virtual PEAddress LIBPE_CALLTYPE GetSizeInMemory() { return PEElementT<T>::GetSizeInMemory(); }     \
     virtual PEAddress LIBPE_CALLTYPE GetFOA() { return PEElementT<T>::GetFOA(); }                       \
     virtual PEAddress LIBPE_CALLTYPE GetSizeInFile(){ return PEElementT<T>::GetSizeInFile(); }          \
+                                                                                                        \
     struct_type * GetRawStruct() { return (struct_type *)PEElementT<T>::GetRawMemory(); }
 
 LIBPE_NAMESPACE_END

@@ -4,25 +4,25 @@
 LIBPE_NAMESPACE_BEGIN
 
 template <class T>
-uint32_t
+UINT32
 PEExportTableT<T>::GetFunctionCount()
 {
-    return (uint32_t)m_vExportFunctions.size();
+    return (UINT32)m_vExportFunctions.size();
 }
 
 template <class T>
-error_t
-PEExportTableT<T>::GetFunctionByIndex(uint32_t nIndex, IPEExportFunction **ppFunction)
+HRESULT
+PEExportTableT<T>::GetFunctionByIndex(UINT32 nIndex, IPEExportFunction **ppFunction)
 {
-    LIBPE_ASSERT_RET(NULL != ppFunction, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != ppFunction, E_POINTER);
 
-    uint32_t nFunctionCount = GetFunctionCount();
-    LIBPE_ASSERT_RET(nIndex < nFunctionCount, ERR_INVALID_ARG);
+    UINT32 nFunctionCount = GetFunctionCount();
+    LIBPE_ASSERT_RET(nIndex < nFunctionCount, E_INVALIDARG);
 
     if(NULL == m_vExportFunctions[nIndex]) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
-        if(ERR_OK != m_pParser->ParseExportFunction(this, nIndex, &m_vExportFunctions[nIndex]) || NULL == m_vExportFunctions[nIndex]) {
-            return ERR_FAIL;
+        LIBPE_ASSERT_RET(NULL != m_pParser, E_FAIL);
+        if(FAILED(m_pParser->ParseExportFunction(this, nIndex, &m_vExportFunctions[nIndex])) || NULL == m_vExportFunctions[nIndex]) {
+            return E_FAIL;
         }
     }
 
@@ -30,10 +30,10 @@ PEExportTableT<T>::GetFunctionByIndex(uint32_t nIndex, IPEExportFunction **ppFun
 }
 
 template <class T>
-error_t
+HRESULT
 PEExportTableT<T>::GetFunctionByName(const char *pFunctionName, IPEExportFunction **ppFunction)
 {
-    return ERR_NOT_IMPL;
+    return E_NOTIMPL;
 }
 
 template <class T>
@@ -44,7 +44,7 @@ PEExportFunctionT<T>::GetName()
 }
 
 template <class T>
-uint16_t
+UINT16
 PEExportFunctionT<T>::GetHint()
 {
     return m_nHint;

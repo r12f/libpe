@@ -27,8 +27,8 @@ template <class T> struct PETrait {};
 
 template <>
 struct PETrait<PE32> : PETraitBase {
-    static const bool_t                         Is32Bit = true;
-    typedef uint32_t                            RawAddress;
+    static const BOOL                           Is32Bit = true;
+    typedef UINT32                              RawAddress;
     typedef IMAGE_NT_HEADERS32                  RawNtHeaders;
     typedef IMAGE_OPTIONAL_HEADER32             RawOptionalHeader;
     typedef IMAGE_THUNK_DATA32                  RawThunkData;
@@ -36,8 +36,8 @@ struct PETrait<PE32> : PETraitBase {
 
 template <>
 struct PETrait<PE64> : PETraitBase {
-    static const bool_t                         Is32Bit = false;
-    typedef uint64_t                            RawAddress;
+    static const BOOL                           Is32Bit = false;
+    typedef UINT64                              RawAddress;
     typedef IMAGE_NT_HEADERS64                  RawNtHeaders;
     typedef IMAGE_OPTIONAL_HEADER64             RawOptionalHeader;
     typedef IMAGE_THUNK_DATA64                  RawThunkData;
@@ -61,7 +61,7 @@ struct PETrait<PE64> : PETraitBase {
 #define LibPERawResourceString(T)               typename PETrait<T>::RawResourceString
 #define LibPERawResourceStringU(T)              typename PETrait<T>::RawResourceStringU
 
-typedef uint64_t                                PEAddress;
+typedef UINT64                                  PEAddress;
 
 typedef PETraitBase::RawDosHeader               PERawDosHeader;
 typedef PETraitBase::RawFileHeader              PERawFileHeader;

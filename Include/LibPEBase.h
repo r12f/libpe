@@ -17,28 +17,23 @@
 
 #include <string>
 
-LIBPE_NAMESPACE_BEGIN
-
 // Basic types
-typedef bool                bool_t;
-
 #ifdef LIBPE_WINOS
-typedef char                int8_t;
-typedef unsigned char       uint8_t;
-typedef short               int16_t;
-typedef unsigned short      uint16_t;
-typedef int                 int32_t;
-typedef unsigned            uint32_t;
-typedef __int64             int64_t;
-typedef unsigned __int64    uint64_t;
+#include <basetsd.h>
 typedef wchar_t             file_char_t;
 typedef std::wstring        file_t;
 #else
-#include <inttype.h>
+typedef bool                BOOL;
+typedef char                INT8;
+typedef unsigned char       UINT8;
+typedef short               INT16;
+typedef unsigned short      UINT16;
+typedef int                 INT32;
+typedef unsigned            UINT32;
+typedef __int64             INT64;
+typedef unsigned __int64    UINT64;
 typedef char                file_char_t;
 typedef std::string         file_t;
 #endif
 
 #define LIBPE_UNUSED_PARAM(x)       (x)
-
-LIBPE_NAMESPACE_END

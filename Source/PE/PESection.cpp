@@ -4,13 +4,13 @@
 LIBPE_NAMESPACE_BEGIN
 
 template <class T>
-error_t
+HRESULT
 PESectionHeaderT<T>::GetSection(IPESection **ppSection)
 {
     if(NULL == m_pSection) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
-        if(ERR_OK != m_pParser->ParseSection(GetRawStruct(), &m_pSection) || NULL == m_pSection) {
-            return ERR_FAIL;
+        LIBPE_ASSERT_RET(NULL != m_pParser, E_FAIL);
+        if(FAILED(m_pParser->ParseSection(GetRawStruct(), &m_pSection)) || NULL == m_pSection) {
+            return E_FAIL;
         }
     }
 
@@ -26,21 +26,21 @@ PESectionT<T>::GetName()
 }
 
 template <class T>
-error_t
+HRESULT
 PESectionT<T>::GetRelocations()
 {
-    return ERR_NOT_IMPL;
+    return E_NOTIMPL;
 }
 
 template <class T>
-error_t
+HRESULT
 PESectionT<T>::GetLineNumbers()
 {
-    return ERR_NOT_IMPL;
+    return E_NOTIMPL;
 }
 
 template <class T>
-uint32_t
+UINT32
 PESectionT<T>::GetCharacteristics()
 {
     LIBPE_ASSERT_RET(NULL != m_pSectionHeader, 0);
@@ -48,10 +48,10 @@ PESectionT<T>::GetCharacteristics()
 }
 
 template <class T>
-error_t
+HRESULT
 PESectionT<T>::SetName(const char *pName)
 {
-    return ERR_OK;
+    return S_OK;
 }
 
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PESectionHeaderT);

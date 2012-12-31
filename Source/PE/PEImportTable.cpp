@@ -4,26 +4,26 @@
 LIBPE_NAMESPACE_BEGIN
 
 template <class T>
-uint32_t
+UINT32
 PEImportTableT<T>::GetModuleCount()
 {
-    return (uint32_t)m_vModules.size();
+    return (UINT32)m_vModules.size();
 }
 
 template <class T>
-error_t
-PEImportTableT<T>::GetModuleByIndex(uint32_t nModuleId, IPEImportModule **ppImportModule)
+HRESULT
+PEImportTableT<T>::GetModuleByIndex(UINT32 nModuleId, IPEImportModule **ppImportModule)
 {
-    LIBPE_ASSERT_RET(NULL != ppImportModule, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != ppImportModule, E_POINTER);
 
-    uint32_t nModuleCount = GetModuleCount();
-    LIBPE_ASSERT_RET(nModuleId < nModuleCount, ERR_INVALID_ARG);
+    UINT32 nModuleCount = GetModuleCount();
+    LIBPE_ASSERT_RET(nModuleId < nModuleCount, E_INVALIDARG);
 
     ModuleInfo &oInfo = m_vModules[nModuleId];
     if(NULL == oInfo.m_pImportModule) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
-        if(ERR_OK != m_pParser->ParseImportModule(oInfo.m_nImportDescRVA, oInfo.m_nImportDescFOA, oInfo.m_pImportDesc, &oInfo.m_pImportModule) || NULL == oInfo.m_pImportModule) {
-            return ERR_FAIL;
+        LIBPE_ASSERT_RET(NULL != m_pParser, E_FAIL);
+        if(FAILED(m_pParser->ParseImportModule(oInfo.m_nImportDescRVA, oInfo.m_nImportDescFOA, oInfo.m_pImportDesc, &oInfo.m_pImportModule)) || NULL == oInfo.m_pImportModule) {
+            return E_FAIL;
         }
     }
 
@@ -31,21 +31,21 @@ PEImportTableT<T>::GetModuleByIndex(uint32_t nModuleId, IPEImportModule **ppImpo
 }
 
 template <class T>
-error_t
+HRESULT
 PEImportTableT<T>::GetModuleByName(const char *pModuleName, IPEImportModule **ppImportModule)
 {
-    return ERR_NOT_IMPL;
+    return E_NOTIMPL;
 }
 
 template <class T>
-error_t
+HRESULT
 PEImportTableT<T>::GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunction **ppImportFunction)
 {
-    return ERR_NOT_IMPL;
+    return E_NOTIMPL;
 }
 
 template <class T>
-bool_t
+BOOL
 PEImportModuleT<T>::IsBound()
 {
     LibPERawImportDescriptor(T) *pImportDesc = GetRawStruct();
@@ -55,19 +55,19 @@ PEImportModuleT<T>::IsBound()
 
 
 template <class T>
-error_t
-PEImportModuleT<T>::GetFunctionByIndex(uint32_t nIndex, IPEImportFunction **ppFunction)
+HRESULT
+PEImportModuleT<T>::GetFunctionByIndex(UINT32 nIndex, IPEImportFunction **ppFunction)
 {
-    LIBPE_ASSERT_RET(NULL != ppFunction, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != ppFunction, E_POINTER);
 
-    uint32_t nFunctionCount = GetFunctionCount();
-    LIBPE_ASSERT_RET(nIndex < nFunctionCount, ERR_INVALID_ARG);
+    UINT32 nFunctionCount = GetFunctionCount();
+    LIBPE_ASSERT_RET(nIndex < nFunctionCount, E_INVALIDARG);
 
     FunctionInfo &oInfo = m_vFunctions[nIndex];
     if(NULL == oInfo.m_pFunction) {
-        LIBPE_ASSERT_RET(NULL != m_pParser && NULL != m_pFile && NULL != oInfo.m_pThunkData, ERR_FAIL);
-        if(ERR_OK != m_pParser->ParseImportFunction(GetRawStruct(), oInfo.m_pThunkData, &oInfo.m_pFunction) || NULL == oInfo.m_pFunction) {
-            return ERR_FAIL;
+        LIBPE_ASSERT_RET(NULL != m_pParser && NULL != m_pFile && NULL != oInfo.m_pThunkData, E_FAIL);
+        if(FAILED(m_pParser->ParseImportFunction(GetRawStruct(), oInfo.m_pThunkData, &oInfo.m_pFunction)) || NULL == oInfo.m_pFunction) {
+            return E_FAIL;
         }
     }
 
@@ -75,30 +75,30 @@ PEImportModuleT<T>::GetFunctionByIndex(uint32_t nIndex, IPEImportFunction **ppFu
 }
 
 template <class T>
-error_t
+HRESULT
 PEImportModuleT<T>::GetFunctionByName(const char *pFunctionName, IPEImportFunction **ppFunction)
 {
-    return ERR_NOT_IMPL;
+    return E_NOTIMPL;
 }
 
 template <class T>
-error_t
+HRESULT
 PEImportModuleT<T>::GetRelatedImportAddressBlock(IPEImportAddressBlock **ppBlock)
 {
-    LIBPE_ASSERT_RET(NULL != ppBlock, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != ppBlock, E_POINTER);
 
     // However, we should parse the related IAT block here. Very useful for bounded module.
     if(NULL == m_pRelatedIABlock) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
+        LIBPE_ASSERT_RET(NULL != m_pParser, E_FAIL);
 
         LibPERawImportDescriptor(T) *pImportDescriptor = GetRawStruct();
-        LIBPE_ASSERT_RET(NULL != pImportDescriptor, ERR_FAIL);
+        LIBPE_ASSERT_RET(NULL != pImportDescriptor, E_FAIL);
 
         PEAddress nImportAddressBlockRVA = pImportDescriptor->FirstThunk;
         if(0 != nImportAddressBlockRVA) {
             PEAddress nImportAddressBlockFOA = m_pParser->GetFOAFromRVA(nImportAddressBlockRVA);
-            if(ERR_OK != m_pParser->ParseImportAddressBlock(NULL, nImportAddressBlockRVA, nImportAddressBlockFOA, &m_pRelatedIABlock) || NULL == m_pRelatedIABlock) {
-                return ERR_FAIL;
+            if(FAILED(m_pParser->ParseImportAddressBlock(NULL, nImportAddressBlockRVA, nImportAddressBlockFOA, &m_pRelatedIABlock)) || NULL == m_pRelatedIABlock) {
+                return E_FAIL;
             }
         }
     }
@@ -123,7 +123,7 @@ PEImportFunctionT<T>::GetName()
 }
 
 template <class T>
-uint16_t  
+UINT16  
 PEImportFunctionT<T>::GetHint()
 {
     LibPERawImportByName(T) *pImportByName = GetRawStruct();

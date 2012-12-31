@@ -10,10 +10,10 @@ class DataLoader :
 public:
     LIBPE_SINGLE_THREAD_OBJECT();
     virtual PEParserType GetType() = 0;
-    virtual uint64_t GetSize() = 0;
-    virtual void * GetBuffer(uint64_t nOffset, uint64_t nSize) = 0;
-    virtual const char * GetAnsiString(uint64_t nOffset, uint64_t &nSize) = 0;
-    virtual const wchar_t * GetUnicodeString(uint64_t nOffset, uint64_t &nSize) = 0;
+    virtual UINT64 GetSize() = 0;
+    virtual void * GetBuffer(UINT64 nOffset, UINT64 nSize) = 0;
+    virtual const char * GetAnsiString(UINT64 nOffset, UINT64 &nSize) = 0;
+    virtual const wchar_t * GetUnicodeString(UINT64 nOffset, UINT64 &nSize) = 0;
 };
 
 class DataLoaderDiskFile :
@@ -29,27 +29,27 @@ public:
     DataLoaderDiskFile();
     virtual ~DataLoaderDiskFile();
 
-    bool_t LoadFile(const file_t &strPath);
+    BOOL LoadFile(const file_t &strPath);
 
     // Override PELoader
     virtual PEParserType GetType() { return PE_PARSER_TYPE_DISK_FILE; }
-    virtual uint64_t GetSize() { return m_nFileSize; }
-    virtual void * GetBuffer(uint64_t nOffset, uint64_t nSize);
-    virtual const char * GetAnsiString(uint64_t nOffset, uint64_t &nSize);
-    virtual const wchar_t * GetUnicodeString(uint64_t nOffset, uint64_t &nSize);
+    virtual UINT64 GetSize() { return m_nFileSize; }
+    virtual void * GetBuffer(UINT64 nOffset, UINT64 nSize);
+    virtual const char * GetAnsiString(UINT64 nOffset, UINT64 &nSize);
+    virtual const wchar_t * GetUnicodeString(UINT64 nOffset, UINT64 &nSize);
 
 protected:
     void Reset();
-    int32_t GetBlockId(uint64_t nOffset);
-    bool_t ReadBlock(int32_t nBlockId);
+    INT32 GetBlockId(UINT64 nOffset);
+    BOOL ReadBlock(INT32 nBlockId);
 
 private:
     FileHandle  m_hFile;
-    int8_t      *m_pFileBuffer;
-    uint64_t    m_nFileSize;
-    bool_t      *m_pBlockStatus;
-    int32_t     m_nBlockStatusCount;
-    uint64_t    m_nBlockSize;
+    INT8        *m_pFileBuffer;
+    UINT64      m_nFileSize;
+    BOOL        *m_pBlockStatus;
+    INT32       m_nBlockStatusCount;
+    UINT64      m_nBlockSize;
 };
 
 LIBPE_NAMESPACE_END

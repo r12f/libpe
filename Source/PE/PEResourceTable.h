@@ -14,7 +14,6 @@ public:
     virtual ~PEResourceTableT() {}
 
     DECLARE_PE_ELEMENT(LibPERawResourceDirectory(T))
-    LIBPE_SINGLE_THREAD_OBJECT()
 
     void InnerSetRootDirectory(IPEResourceDirectory *pRootDirectory)
     {
@@ -22,7 +21,7 @@ public:
         m_pRootDirectory = pRootDirectory;
     }
 
-    virtual error_t LIBPE_CALLTYPE GetRootDirectory(IPEResourceDirectory **ppDirectory);
+    virtual HRESULT LIBPE_CALLTYPE GetRootDirectory(IPEResourceDirectory **ppDirectory);
 
 private:
     LibPEPtr<IPEResourceDirectory>  m_pRootDirectory;
@@ -40,15 +39,14 @@ public:
     virtual ~PEResourceDirectoryT() {}
 
     DECLARE_PE_ELEMENT(LibPERawResourceDirectory(T))
-    LIBPE_SINGLE_THREAD_OBJECT()
 
-    void InnerReserveEntry(uint32_t nCount)
+    void InnerReserveEntry(UINT32 nCount)
     {
         m_vEntries.resize(nCount);
     }
 
-    virtual uint32_t LIBPE_CALLTYPE GetEntryCount();
-    virtual error_t LIBPE_CALLTYPE GetEntryByIndex(uint32_t nIndex, IPEResourceDirectoryEntry **ppEntry);
+    virtual UINT32 LIBPE_CALLTYPE GetEntryCount();
+    virtual HRESULT LIBPE_CALLTYPE GetEntryByIndex(UINT32 nIndex, IPEResourceDirectoryEntry **ppEntry);
 
 private:
     EntryList   m_vEntries;
@@ -64,19 +62,18 @@ public:
     virtual ~PEResourceDirectoryEntryT() {}
 
     DECLARE_PE_ELEMENT(LibPERawResourceDirectoryEntry(T))
-    LIBPE_SINGLE_THREAD_OBJECT()
 
-    virtual bool_t LIBPE_CALLTYPE IsNameId();
-    virtual uint16_t LIBPE_CALLTYPE GetId();
+    virtual BOOL LIBPE_CALLTYPE IsNameId();
+    virtual UINT16 LIBPE_CALLTYPE GetId();
 
-    virtual bool_t LIBPE_CALLTYPE IsNameString();
+    virtual BOOL LIBPE_CALLTYPE IsNameString();
     virtual const wchar_t * LIBPE_CALLTYPE GetName();
     
-    virtual bool_t LIBPE_CALLTYPE IsEntryDirectory();
-    virtual error_t LIBPE_CALLTYPE GetDirectory(IPEResourceDirectory **ppDirectory);
+    virtual BOOL LIBPE_CALLTYPE IsEntryDirectory();
+    virtual HRESULT LIBPE_CALLTYPE GetDirectory(IPEResourceDirectory **ppDirectory);
 
-    virtual bool_t LIBPE_CALLTYPE IsEntryDataEntry();
-    virtual error_t LIBPE_CALLTYPE GetDataEntry(IPEResourceDataEntry **ppDataEntry);
+    virtual BOOL LIBPE_CALLTYPE IsEntryDataEntry();
+    virtual HRESULT LIBPE_CALLTYPE GetDataEntry(IPEResourceDataEntry **ppDataEntry);
 };
 
 template <class T>
@@ -89,9 +86,8 @@ public:
     virtual ~PEResourceDataEntryT() {}
 
     DECLARE_PE_ELEMENT(LibPERawResourceDataEntry(T))
-    LIBPE_SINGLE_THREAD_OBJECT()
 
-    virtual error_t LIBPE_CALLTYPE GetResource(IPEResource **ppResource);
+    virtual HRESULT LIBPE_CALLTYPE GetResource(IPEResource **ppResource);
 
 private:
     LibPEPtr<IPEResource> m_pResource;
@@ -107,7 +103,6 @@ public:
     virtual ~PEResourceT() {}
 
     DECLARE_PE_ELEMENT(void)
-    LIBPE_SINGLE_THREAD_OBJECT()
 };
 
 LIBPE_NAMESPACE_END

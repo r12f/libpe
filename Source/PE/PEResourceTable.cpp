@@ -4,46 +4,46 @@
 LIBPE_NAMESPACE_BEGIN
 
 template <class T>
-error_t
+HRESULT
 PEResourceTableT<T>::GetRootDirectory(IPEResourceDirectory **ppDirectory)
 {
-    LIBPE_ASSERT_RET(NULL != ppDirectory, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != ppDirectory, E_POINTER);
     return m_pRootDirectory.CopyTo(ppDirectory);
 }
 
 template <class T>
-uint32_t
+UINT32
 PEResourceDirectoryT<T>::GetEntryCount()
 {
-    return (uint32_t)m_vEntries.size();
+    return (UINT32)m_vEntries.size();
 }
 
 template <class T>
-error_t
-PEResourceDirectoryT<T>::GetEntryByIndex(uint32_t nIndex, IPEResourceDirectoryEntry **ppEntry)
+HRESULT
+PEResourceDirectoryT<T>::GetEntryByIndex(UINT32 nIndex, IPEResourceDirectoryEntry **ppEntry)
 {
-    LIBPE_ASSERT_RET(NULL != ppEntry, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != ppEntry, E_POINTER);
 
-    uint32_t nEntryCount = GetEntryCount();
-    LIBPE_ASSERT_RET(nIndex < nEntryCount, ERR_INVALID_ARG);
+    UINT32 nEntryCount = GetEntryCount();
+    LIBPE_ASSERT_RET(nIndex < nEntryCount, E_INVALIDARG);
 
     if(NULL == m_vEntries[nIndex]) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, ERR_FAIL);
-        error_t nRetCode = m_pParser->ParseResourceDirectoryEntry(this, nIndex, &m_vEntries[nIndex]);
-        if(ERR_OK != nRetCode) {
-            return nRetCode;
+        LIBPE_ASSERT_RET(NULL != m_pParser, E_FAIL);
+        HRESULT hr = m_pParser->ParseResourceDirectoryEntry(this, nIndex, &m_vEntries[nIndex]);
+        if(FAILED(hr)) {
+            return hr;
         }
     }
 
     if(NULL == m_vEntries[nIndex]) {
-        return ERR_NO_MEM;
+        return E_OUTOFMEMORY;
     }
 
     return m_vEntries[nIndex].CopyTo(ppEntry);
 }
 
 template <class T>
-bool_t
+BOOL
 PEResourceDirectoryEntryT<T>::IsNameId()
 {
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
@@ -55,7 +55,7 @@ PEResourceDirectoryEntryT<T>::IsNameId()
 }
 
 template <class T>
-uint16_t
+UINT16
 PEResourceDirectoryEntryT<T>::GetId()
 {
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
@@ -67,7 +67,7 @@ PEResourceDirectoryEntryT<T>::GetId()
 }
 
 template <class T>
-bool_t
+BOOL
 PEResourceDirectoryEntryT<T>::IsNameString()
 {
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
@@ -90,11 +90,11 @@ PEResourceDirectoryEntryT<T>::GetName()
     }
 
     LibPEPtr<IPEResourceTable> pTable;
-    if(ERR_OK != m_pFile->GetResourceTable(&pTable) || NULL == pTable) {
+    if(FAILED(m_pFile->GetResourceTable(&pTable)) || NULL == pTable) {
         return NULL;
     }
 
-    uint64_t nNameSize = 0;
+    UINT64 nNameSize = 0;
     LibPERawResourceStringU(T) *pResourceString = m_pParser->ParseResourceStringU(0, pTable->GetFOA() + pRawEntry->NameOffset, nNameSize);
     if(NULL == pResourceString) {
         return NULL;
@@ -104,7 +104,7 @@ PEResourceDirectoryEntryT<T>::GetName()
 }
 
 template <class T>
-bool_t
+BOOL
 PEResourceDirectoryEntryT<T>::IsEntryDirectory()
 {
     LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
@@ -118,36 +118,36 @@ PEResourceDirectoryEntryT<T>::IsEntryDirectory()
 }
 
 template <class T>
-error_t
+HRESULT
 PEResourceDirectoryEntryT<T>::GetDirectory(IPEResourceDirectory **ppDirectory)
 {
-    LIBPE_ASSERT_RET(NULL != ppDirectory, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != ppDirectory, E_POINTER);
     LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
 
     *ppDirectory = NULL;
 
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
     if(NULL == pRawEntry) {
-        return ERR_NO_MEM;
+        return E_OUTOFMEMORY;
     }
 
     LibPEPtr<IPEResourceTable> pTable;
-    if(ERR_OK != m_pFile->GetResourceTable(&pTable) || NULL == pTable) {
+    if(FAILED(m_pFile->GetResourceTable(&pTable)) || NULL == pTable) {
         return NULL;
     }
 
     LibPEPtr<IPEResourceDirectory> pDirectory;
-    if(ERR_OK != m_pParser->ParseResourceDirectory(0, pTable->GetFOA() + pRawEntry->OffsetToDirectory, &pDirectory) || NULL == pDirectory) {
-        return ERR_NO_MEM;
+    if(FAILED(m_pParser->ParseResourceDirectory(0, pTable->GetFOA() + pRawEntry->OffsetToDirectory, &pDirectory)) || NULL == pDirectory) {
+        return E_OUTOFMEMORY;
     }
 
     *ppDirectory = pDirectory.Detach();
 
-    return ERR_OK;
+    return S_OK;
 }
 
 template <class T>
-bool_t
+BOOL
 PEResourceDirectoryEntryT<T>::IsEntryDataEntry()
 {
     LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
@@ -161,39 +161,39 @@ PEResourceDirectoryEntryT<T>::IsEntryDataEntry()
 }
 
 template <class T>
-error_t
+HRESULT
 PEResourceDirectoryEntryT<T>::GetDataEntry(IPEResourceDataEntry **ppDataEntry)
 {
-    LIBPE_ASSERT_RET(NULL != ppDataEntry, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != ppDataEntry, E_POINTER);
     LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
 
     *ppDataEntry = NULL;
 
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
     if(NULL == pRawEntry) {
-        return ERR_NO_MEM;
+        return E_OUTOFMEMORY;
     }
 
     LibPEPtr<IPEResourceTable> pTable;
-    if(ERR_OK != m_pFile->GetResourceTable(&pTable) || NULL == pTable) {
+    if(FAILED(m_pFile->GetResourceTable(&pTable)) || NULL == pTable) {
         return NULL;
     }
 
     LibPEPtr<IPEResourceDataEntry> pDataEntry;
-    if(ERR_OK != m_pParser->ParseResourceDataEntry(0, pTable->GetFOA() + pRawEntry->OffsetToData, &pDataEntry) || NULL == pDataEntry) {
-        return ERR_NO_MEM;
+    if(FAILED(m_pParser->ParseResourceDataEntry(0, pTable->GetFOA() + pRawEntry->OffsetToData, &pDataEntry)) || NULL == pDataEntry) {
+        return E_OUTOFMEMORY;
     }
 
     *ppDataEntry = pDataEntry.Detach();
 
-    return ERR_OK;
+    return S_OK;
 }
 
 template <class T>
-error_t
+HRESULT
 PEResourceDataEntryT<T>::GetResource(IPEResource **ppResource)
 {
-    LIBPE_ASSERT_RET(NULL != ppResource, ERR_POINTER);
+    LIBPE_ASSERT_RET(NULL != ppResource, E_POINTER);
     LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
 
     *ppResource = NULL;
@@ -204,16 +204,16 @@ PEResourceDataEntryT<T>::GetResource(IPEResource **ppResource)
 
     LibPERawResourceDataEntry(T) *pRawEntry = GetRawStruct();
     if(NULL == pRawEntry) {
-        return ERR_NO_MEM;
+        return E_OUTOFMEMORY;
     }
 
     LibPEPtr<IPEResourceTable> pTable;
-    if(ERR_OK != m_pFile->GetResourceTable(&pTable) || NULL == pTable) {
+    if(FAILED(m_pFile->GetResourceTable(&pTable)) || NULL == pTable) {
         return NULL;
     }
 
-    if(ERR_OK != m_pParser->ParseResource(this, &m_pResource) || NULL == m_pResource) {
-        return ERR_NO_MEM;
+    if(FAILED(m_pParser->ParseResource(this, &m_pResource)) || NULL == m_pResource) {
+        return E_OUTOFMEMORY;
     }
 
     return m_pResource.CopyTo(ppResource);
