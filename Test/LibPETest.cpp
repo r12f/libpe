@@ -4,11 +4,11 @@ using namespace LibPE;
 
 void TestBasicInfo(IPEFile *pFile)
 {
-    IMAGE_DOS_HEADER *pDosHeader = pFile->GetDosHeader();
+    IMAGE_DOS_HEADER *pDosHeader = pFile->GetRawDosHeader();
     printf("DosHeader: 0x%08x\n", pDosHeader);
-    printf("NtHeaders: 0x%08x\n", pFile->GetNtHeaders());
-    printf("FileHeader: 0x%08x\n", pFile->GetFileHeader());
-    printf("OptionalHeader: 0x%08x\n", pFile->GetOptionalHeader());
+    printf("NtHeaders: 0x%08x\n", pFile->GetRawNtHeaders());
+    printf("FileHeader: 0x%08x\n", pFile->GetRawFileHeader());
+    printf("OptionalHeader: 0x%08x\n", pFile->GetRawOptionalHeader());
 }
 
 void TestSection(IPEFile *pFile)

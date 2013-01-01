@@ -81,4 +81,31 @@ typedef PEElementT<PE64> PEElement64;
                                                                                                         \
     struct_type * GetRawStruct() { return (struct_type *)PEElementT<T>::GetRawMemory(); }
 
+
+#define LIBPE_FIELD_ACCESSOR_EX(FieldType, FuncName, FieldName)     \
+    virtual FieldType LIBPE_CALLTYPE Get ## FuncName() {            \
+        LIBPE_ASSERT_RET(NULL == GetRawStruct(), 0);                \
+        return GetRawStruct()->FieldName;                           \
+    }
+
+#define LIBPE_FIELD_ACCESSOR(FieldType, FieldName)  LIBPE_FIELD_ACCESSOR_EX(FieldType, FieldName, FieldName)
+
+#define LIBPE_ARRAY_FIELD_ACCESSOR_EX(FieldType, FuncName, FieldName, FieldSize)    \
+    virtual FieldType * LIBPE_CALLTYPE Get ## FuncName ## Buffer() {                \
+        LIBPE_ASSERT_RET(NULL == GetRawStruct(), 0);                                \
+        return GetRawStruct()->FieldName;                                           \
+    }                                                                               \
+                                                                                    \
+    virtual UINT32 LIBPE_CALLTYPE Get ## FuncName ## ElementCount() {               \
+        return FieldSize;                                                           \
+    }                                                                               \
+                                                                                    \
+    virtual FieldType LIBPE_CALLTYPE Get ## FuncName(UINT32 nIndex) {               \
+        LIBPE_ASSERT_RET(NULL == GetRawStruct(), 0);                                \
+        LIBPE_ASSERT_RET(nIndex < FieldSize, 0);                                    \
+        return GetRawStruct()->FieldName[nIndex];                                   \
+    }
+
+#define LIBPE_ARRAY_FIELD_ACCESSOR(FieldType, FieldName, FieldSize)  LIBPE_ARRAY_FIELD_ACCESSOR_EX(FieldType, FieldName, FieldName, FieldSize)
+
 LIBPE_NAMESPACE_END

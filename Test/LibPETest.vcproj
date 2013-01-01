@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="LibPE"
-	ProjectGUID="{28692735-9677-476B-91F3-684977E5823A}"
-	RootNamespace="LibPE"
+	Name="LibPETest"
+	ProjectGUID="{3A32D3CE-03B8-472B-AFF6-9EF916E9E8E8}"
+	RootNamespace="LibPETest"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="0"
 	>
@@ -23,7 +23,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -44,14 +44,13 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;&quot;$(SolutionDir)..\Source&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
-				WarningLevel="4"
-				WarnAsError="true"
+				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -64,11 +63,17 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName).lib"
+				Name="VCLinkerTool"
+				LinkIncremental="2"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -80,6 +85,84 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				LinkIncremental="1"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -87,7 +170,7 @@
 			Name="Debug|x64"
 			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -109,14 +192,13 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;&quot;$(SolutionDir)..\Source&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_WIN64"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_WIN64"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
-				WarningLevel="4"
-				WarnAsError="true"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -129,11 +211,17 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName).lib"
+				Name="VCLinkerTool"
+				LinkIncremental="2"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -145,69 +233,7 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
-			CharacterSet="1"
-			WholeProgramOptimization="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;&quot;$(SolutionDir)..\Source&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="2"
-				WarningLevel="4"
-				WarnAsError="true"
-				DebugInformationFormat="3"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName).lib"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
+				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -217,7 +243,7 @@
 			Name="Release|x64"
 			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -241,13 +267,12 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;&quot;$(SolutionDir)..\Source&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_WIN64"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_WIN64"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
-				WarningLevel="4"
-				WarnAsError="true"
+				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -260,11 +285,19 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName).lib"
+				Name="VCLinkerTool"
+				LinkIncremental="1"
+				GenerateDebugInformation="true"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="17"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -276,6 +309,9 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -283,128 +319,12 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="Parser"
-			>
-			<File
-				RelativePath="..\Source\Parser\DataLoader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\Parser\DataLoader.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\Parser\PEParser.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\Parser\PEParser.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\Parser\PEParserCommon.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\Parser\PEParserImpl.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\Parser\PEParserImpl.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="PE"
-			>
-			<File
-				RelativePath="..\Source\PE\PEElement.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEElement.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEExportTable.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEExportTable.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEFile.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEFile.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEImportAddressTable.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEImportAddressTable.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEImportTable.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEImportTable.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PERelocationTable.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PERelocationTable.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEResourceTable.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PEResourceTable.h"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PESection.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\Source\PE\PESection.h"
-				>
-			</File>
-		</Filter>
 		<File
-			RelativePath="..\Source\LibPE.cpp"
+			RelativePath=".\LibPETest.cpp"
 			>
 		</File>
 		<File
-			RelativePath="..\Source\LibPEConfig.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\Source\LibPEConfig.h"
-			>
-		</File>
-		<File
-			RelativePath="..\Source\LibPEInternal.h"
-			>
-		</File>
-		<File
-			RelativePath="..\Source\LibPEObject.h"
-			>
-		</File>
-		<File
-			RelativePath="..\Source\stdafx.cpp"
+			RelativePath=".\stdafx.cpp"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
@@ -415,7 +335,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Debug|x64"
+				Name="Release|Win32"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -423,7 +343,7 @@
 				/>
 			</FileConfiguration>
 			<FileConfiguration
-				Name="Release|Win32"
+				Name="Debug|x64"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -440,7 +360,7 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="..\Source\stdafx.h"
+			RelativePath=".\stdafx.h"
 			>
 		</File>
 	</Files>

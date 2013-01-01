@@ -11,14 +11,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{9E90
 		..\Include\LibPETrait.h = ..\Include\LibPETrait.h
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibPE", "LibPE.vcproj", "{28692735-9677-476B-91F3-684977E5823A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{8AD18879-6291-427A-8838-AA21110D2757}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibPETest", "LibPETest.vcproj", "{3A32D3CE-03B8-472B-AFF6-9EF916E9E8E8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibPE", "..\Source\LibPE.vcproj", "{28692735-9677-476B-91F3-684977E5823A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibPETest", "..\Test\LibPETest.vcproj", "{3A32D3CE-03B8-472B-AFF6-9EF916E9E8E8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{28692735-9677-476B-91F3-684977E5823A} = {28692735-9677-476B-91F3-684977E5823A}
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{8AD18879-6291-427A-8838-AA21110D2757}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

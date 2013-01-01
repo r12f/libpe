@@ -18,7 +18,9 @@ PEFileT<T>::Create(DataLoader *pLoader, IPEFile **ppFile)
     pParser->SetPEFile(pInnerFile);
     pParser->SetDataLoader(pLoader);
 
-    pInnerFile->Init(pParser);
+    if(FAILED(pInnerFile->Init(pParser))) {
+        return E_FAIL;
+    }
 
     *ppFile = pInnerFile.Detach();
 
@@ -37,10 +39,93 @@ PEFileT<T>::PEFileT()
 
 template <class T>
 PERawDosHeader *
-PEFileT<T>::GetDosHeader()
+PEFileT<T>::GetRawDosHeader()
 {
     LIBPE_ASSERT_RET(NULL != m_pDosHeader, NULL);
-    return m_pDosHeader;
+    return (PERawDosHeader *)m_pDosHeader->GetRawMemory();
+}
+
+template <class T>
+void *
+PEFileT<T>::GetRawNtHeaders()
+{
+    LIBPE_ASSERT_RET(NULL != m_pNtHeaders, NULL);
+    return m_pNtHeaders->GetRawMemory();
+}
+
+template <class T>
+PERawNtHeaders32 *
+PEFileT<T>::GetRawNtHeaders32()
+{
+    return (PERawNtHeaders32 *)(Is32Bit() ? GetRawNtHeaders() : NULL);
+}
+
+template <class T>
+PERawNtHeaders64 *
+PEFileT<T>::GetRawNtHeaders64()
+{
+    LIBPE_ASSERT_RET(NULL != m_pNtHeaders, NULL);
+    return (PERawNtHeaders64 *)(Is32Bit() ? NULL : GetRawNtHeaders());
+}
+
+template <class T>
+PERawFileHeader *
+PEFileT<T>::GetRawFileHeader()
+{
+    LIBPE_ASSERT_RET(NULL != m_pFileHeader, NULL);
+    return (PERawFileHeader *)m_pFileHeader->GetRawMemory();
+}
+
+template <class T>
+void *
+PEFileT<T>::GetRawOptionalHeader()
+{
+    LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
+    return m_pOptionalHeader->GetRawMemory();
+}
+
+template <class T>
+PERawOptionalHeader32 *
+PEFileT<T>::GetRawOptionalHeader32()
+{
+    return (PERawOptionalHeader32 *)(Is32Bit() ? GetRawOptionalHeader() : NULL);
+}
+
+template <class T>
+PERawOptionalHeader64 *
+PEFileT<T>::GetRawOptionalHeader64()
+{
+    return (PERawOptionalHeader64 *)(Is32Bit() ? GetRawOptionalHeader() : NULL);
+}
+
+template <class T>
+HRESULT
+PEFileT<T>::GetDosHeader(IPEDosHeader **ppDosHeader)
+{
+    return m_pDosHeader.CopyTo(ppDosHeader);
+}
+
+template <class T>
+HRESULT
+PEFileT<T>::GetNtHeaders(IPENtHeaders **ppNtHeaders)
+{
+    return m_pNtHeaders.CopyTo(ppNtHeaders);
+}
+
+template <class T>
+HRESULT
+PEFileT<T>::GetFileHeader(IPEFileHeader **ppFileHeader)
+{
+    LIBPE_ASSERT_RET(NULL != m_pNtHeaders, NULL);
+    return m_pNtHeaders->GetFileHeader(ppFileHeader);
+}
+
+template <class T>
+HRESULT
+PEFileT<T>::GetOptionalHeader(IPEOptionalHeader **ppOptionalHeader)
+{
+    LIBPE_ASSERT_RET(NULL != m_pNtHeaders, NULL);
+    return m_pNtHeaders->GetOptionalHeader(ppOptionalHeader);
 }
 
 template <class T>
@@ -48,63 +133,7 @@ BOOL
 PEFileT<T>::IsDosFile()
 {
     LIBPE_ASSERT_RET(NULL != m_pDosHeader, false);
-    return (NULL == m_pDosHeader->e_lfanew);
-}
-
-template <class T>
-void *
-PEFileT<T>::GetNtHeaders()
-{
-    LIBPE_ASSERT_RET(NULL != m_pNtHeaders, NULL);
-    return m_pNtHeaders;
-}
-
-template <class T>
-PERawNtHeaders32 *
-PEFileT<T>::GetNtHeaders32()
-{
-    LIBPE_ASSERT_RET(NULL != m_pNtHeaders, NULL);
-    return (PERawNtHeaders32 *)(Is32Bit() ? m_pNtHeaders : NULL);
-}
-
-template <class T>
-PERawNtHeaders64 *
-PEFileT<T>::GetNtHeaders64()
-{
-    LIBPE_ASSERT_RET(NULL != m_pNtHeaders, NULL);
-    return (PERawNtHeaders64 *)(Is32Bit() ? NULL : m_pNtHeaders);
-}
-
-template <class T>
-PERawFileHeader *
-PEFileT<T>::GetFileHeader()
-{
-    LIBPE_ASSERT_RET(NULL != m_pFileHeader, NULL);
-    return m_pFileHeader;
-}
-
-template <class T>
-void *
-PEFileT<T>::GetOptionalHeader()
-{
-    LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
-    return m_pOptionalHeader;
-}
-
-template <class T>
-PERawOptionalHeader32 *
-PEFileT<T>::GetOptionalHeader32()
-{
-    LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
-    return (PERawOptionalHeader32 *)(Is32Bit() ? m_pOptionalHeader : NULL);
-}
-
-template <class T>
-PERawOptionalHeader64 *
-PEFileT<T>::GetOptionalHeader64()
-{
-    LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
-    return (PERawOptionalHeader64 *)(Is32Bit() ? m_pOptionalHeader : NULL);
+    return (NULL == m_pDosHeader->GetLfanew());
 }
 
 template <class T>
@@ -119,23 +148,23 @@ PEAddress
 PEFileT<T>::GetImageBase()
 {
     LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
-    return ((LibPERawOptionalHeaderT(T) *)m_pOptionalHeader)->ImageBase;
+    return m_pOptionalHeader->GetImageBase();
 }
 
 template <class T>
 UINT32 
 PEFileT<T>::GetImageSize()
 {
-    LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
-    return ((LibPERawOptionalHeaderT(T) *)m_pOptionalHeader)->SizeOfImage;
+    LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, 0);
+    return m_pOptionalHeader->GetSizeOfImage();
 }
 
 template <class T>
 UINT32 
 PEFileT<T>::GetEntryPoint()
 {
-    LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
-    return ((LibPERawOptionalHeaderT(T) *)m_pOptionalHeader)->AddressOfEntryPoint;
+    LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, 0);
+    return m_pOptionalHeader->GetAddressOfEntryPoint();
 }
 
 template <class T>

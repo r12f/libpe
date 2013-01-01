@@ -19,6 +19,10 @@ public:
 
 class IPEFile;
 class IPEElement;
+class IPEDosHeader;
+class IPENtHeaders;
+class IPEFileHeader;
+class IPEOptionalHeader;
 class IPESectionHeader;
 class IPESection;
 class IPEOverlay;
@@ -47,22 +51,34 @@ class IPEImportAddressItem;
 class IPEDelayImportTable;
 class IPECLRHeader;
 
+#define LIBPE_DEFINE_FIELD_ACCESSOR(FieldType, FuncName)                                    \
+    virtual FieldType LIBPE_CALLTYPE Get ## FuncName() = 0
+
+#define LIBPE_DEFINE_ARRAY_FIELD_ACCESSOR(FieldType, FuncName)                              \
+    virtual FieldType * LIBPE_CALLTYPE Get ## FuncName ## Buffer()  = 0;                    \
+    virtual UINT32 LIBPE_CALLTYPE Get ## FuncName ## ElementCount()  = 0;                   \
+    virtual FieldType LIBPE_CALLTYPE Get ## FuncName(UINT32 nIndex)  = 0
+
 class IPEFile : public ILibPEInterface
 {
 public:
-    // Get raw PE header now. But it is not a final solution.
-    // Dos header
-    virtual PERawDosHeader * LIBPE_CALLTYPE GetDosHeader() = 0;
-    virtual BOOL LIBPE_CALLTYPE IsDosFile() = 0;
+    // Raw PE Header
+    virtual PERawDosHeader * LIBPE_CALLTYPE GetRawDosHeader() = 0;
+    virtual void * LIBPE_CALLTYPE GetRawNtHeaders() = 0;
+    virtual PERawNtHeaders32 * LIBPE_CALLTYPE GetRawNtHeaders32() = 0;
+    virtual PERawNtHeaders64 * LIBPE_CALLTYPE GetRawNtHeaders64() = 0;
+    virtual PERawFileHeader * LIBPE_CALLTYPE GetRawFileHeader() = 0;
+    virtual void * LIBPE_CALLTYPE GetRawOptionalHeader() = 0;
+    virtual PERawOptionalHeader32 * LIBPE_CALLTYPE GetRawOptionalHeader32() = 0;
+    virtual PERawOptionalHeader64 * LIBPE_CALLTYPE GetRawOptionalHeader64() = 0;
 
-    // PE Header
-    virtual void * LIBPE_CALLTYPE GetNtHeaders() = 0;
-    virtual PERawNtHeaders32 * LIBPE_CALLTYPE GetNtHeaders32() = 0;
-    virtual PERawNtHeaders64 * LIBPE_CALLTYPE GetNtHeaders64() = 0;
-    virtual PERawFileHeader * LIBPE_CALLTYPE GetFileHeader() = 0;
-    virtual void * LIBPE_CALLTYPE GetOptionalHeader() = 0;
-    virtual PERawOptionalHeader32 * LIBPE_CALLTYPE GetOptionalHeader32() = 0;
-    virtual PERawOptionalHeader64 * LIBPE_CALLTYPE GetOptionalHeader64() = 0;
+    // PE header
+    virtual HRESULT LIBPE_CALLTYPE GetDosHeader(IPEDosHeader **ppDosHeader) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetNtHeaders(IPENtHeaders **ppNtHeaders) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetFileHeader(IPEFileHeader **ppFileHeader) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetOptionalHeader(IPEOptionalHeader **ppOptionalHeader) = 0;
+
+    virtual BOOL LIBPE_CALLTYPE IsDosFile() = 0;
     virtual BOOL LIBPE_CALLTYPE Is32Bit() = 0;
     virtual PEAddress LIBPE_CALLTYPE GetImageBase() = 0;
     virtual UINT32 LIBPE_CALLTYPE GetImageSize() = 0;
@@ -136,6 +152,84 @@ public:
 
     virtual PEAddress LIBPE_CALLTYPE GetFOA() = 0;
     virtual PEAddress LIBPE_CALLTYPE GetSizeInFile() = 0;
+};
+
+class IPEDosHeader : public IPEElement
+{
+public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Magic);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Cblp);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Cp);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Crlc);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Cparhdr);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Minalloc);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Maxalloc);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Ss);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Sp);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Csum);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Ip);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Cs);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Lfarlc);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Ovno);
+    LIBPE_DEFINE_ARRAY_FIELD_ACCESSOR(UINT16, Res);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Oemid);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Oeminfo);
+    LIBPE_DEFINE_ARRAY_FIELD_ACCESSOR(UINT16, Res2);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Lfanew);
+};
+
+class IPENtHeaders : public IPEElement
+{
+public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Signature);
+    virtual HRESULT LIBPE_CALLTYPE GetFileHeader(IPEFileHeader **ppFileHeader) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetOptionalHeader(IPEOptionalHeader **ppOptionalHeader) = 0;
+};
+
+class IPEFileHeader : public IPEElement
+{
+public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Machine);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, NumberOfSections);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, TimeDateStamp);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, PointerToSymbolTable);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, NumberOfSymbols);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, SizeOfOptionalHeader);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Characteristics);
+};
+
+class IPEOptionalHeader : public IPEElement
+{
+public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Magic);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT8, MajorLinkerVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT8, MinorLinkerVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, SizeOfCode);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, SizeOfInitializedData);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, SizeOfUninitializedData);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, AddressOfEntryPoint);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, BaseOfCode);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, ImageBase);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, SectionAlignment);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, FileAlignment);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, MajorOperatingSystemVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, MinorOperatingSystemVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, MajorImageVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, MinorImageVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, MajorSubsystemVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, MinorSubsystemVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Win32VersionValue);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, SizeOfImage);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, SizeOfHeaders);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, CheckSum);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Subsystem);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, DllCharacteristics);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, SizeOfStackReserve);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, SizeOfStackCommit);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, SizeOfHeapReserve);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, SizeOfHeapCommit);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, LoaderFlags);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, NumberOfRvaAndSizes);
 };
 
 class IPESectionHeader : public IPEElement

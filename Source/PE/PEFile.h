@@ -19,28 +19,41 @@ public:
 
     LIBPE_SINGLE_THREAD_OBJECT();
 
-    void Init(PEParserT<T> *pParser) {
-        LIBPE_ASSERT_RET_VOID(NULL != pParser);
+    HRESULT Init(PEParserT<T> *pParser) {
+        LIBPE_ASSERT_RET(NULL != pParser, E_POINTER);
+
         m_pParser = pParser;
-        if(SUCCEEDED(pParser->ParseBasicInfo(&m_pDosHeader, &m_pNtHeaders, &m_vSectionHeaders, &m_pOverlay)) && NULL != m_pDosHeader && NULL != m_pNtHeaders) {
-            m_pFileHeader = &(((LibPERawNtHeadersT(T) *)m_pNtHeaders)->FileHeader);
-            m_pOptionalHeader = &(((LibPERawNtHeadersT(T) *)m_pNtHeaders)->OptionalHeader);
+
+        HRESULT hr = pParser->ParseBasicInfo(&m_pDosHeader, &m_pNtHeaders, &m_vSectionHeaders, &m_pOverlay);
+        if(FAILED(hr) || NULL == m_pDosHeader || NULL == m_pNtHeaders) {
+            return E_FAIL;
         }
+
+        m_pNtHeaders->GetFileHeader(&m_pFileHeader);
+        m_pNtHeaders->GetOptionalHeader(&m_pOptionalHeader);
+
+        return S_OK;
     }
 
     // Override IPEFile
-    // Dos header
-    virtual PERawDosHeader * LIBPE_CALLTYPE GetDosHeader();
-    virtual BOOL LIBPE_CALLTYPE IsDosFile();
+    // Raw PE Header
+    virtual PERawDosHeader * LIBPE_CALLTYPE GetRawDosHeader();
+    virtual void * LIBPE_CALLTYPE GetRawNtHeaders();
+    virtual PERawNtHeaders32 * LIBPE_CALLTYPE GetRawNtHeaders32();
+    virtual PERawNtHeaders64 * LIBPE_CALLTYPE GetRawNtHeaders64();
+    virtual PERawFileHeader * LIBPE_CALLTYPE GetRawFileHeader();
+    virtual void * LIBPE_CALLTYPE GetRawOptionalHeader();
+    virtual PERawOptionalHeader32 * LIBPE_CALLTYPE GetRawOptionalHeader32();
+    virtual PERawOptionalHeader64 * LIBPE_CALLTYPE GetRawOptionalHeader64();
 
     // PE Header
-    virtual void * LIBPE_CALLTYPE GetNtHeaders();
-    virtual PERawNtHeaders32 * LIBPE_CALLTYPE GetNtHeaders32();
-    virtual PERawNtHeaders64 * LIBPE_CALLTYPE GetNtHeaders64();
-    virtual PERawFileHeader * LIBPE_CALLTYPE GetFileHeader();
-    virtual void * LIBPE_CALLTYPE GetOptionalHeader();
-    virtual PERawOptionalHeader32 * LIBPE_CALLTYPE GetOptionalHeader32();
-    virtual PERawOptionalHeader64 * LIBPE_CALLTYPE GetOptionalHeader64();
+    virtual HRESULT LIBPE_CALLTYPE GetDosHeader(IPEDosHeader **ppDosHeader);
+    virtual HRESULT LIBPE_CALLTYPE GetNtHeaders(IPENtHeaders **ppNtHeaders);
+    virtual HRESULT LIBPE_CALLTYPE GetFileHeader(IPEFileHeader **ppFileHeader);
+    virtual HRESULT LIBPE_CALLTYPE GetOptionalHeader(IPEOptionalHeader **ppOptionalHeader);
+
+    // PE Header utilities
+    virtual BOOL LIBPE_CALLTYPE IsDosFile();
     virtual BOOL LIBPE_CALLTYPE Is32Bit();
     virtual PEAddress LIBPE_CALLTYPE GetImageBase();
     virtual UINT32 LIBPE_CALLTYPE GetImageSize();
@@ -100,10 +113,10 @@ public:
 
 private:
     LibPEPtr<PEParserT<T>>                  m_pParser;
-    PERawDosHeader                          *m_pDosHeader;
-    void                                    *m_pNtHeaders;
-    PERawFileHeader                         *m_pFileHeader;
-    void                                    *m_pOptionalHeader;
+    LibPEPtr<IPEDosHeader>                  m_pDosHeader;
+    LibPEPtr<IPENtHeaders>                  m_pNtHeaders;
+    LibPEPtr<IPEFileHeader>                 m_pFileHeader;
+    LibPEPtr<IPEOptionalHeader>             m_pOptionalHeader;
     SectionHeaderList                       m_vSectionHeaders;
     LibPEPtr<IPEOverlay>                    m_pOverlay;
     LibPEPtr<IPEExportTable>                m_pExportTable;

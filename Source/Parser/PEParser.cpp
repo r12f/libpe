@@ -2,6 +2,7 @@
 #include "Parser/PEParser.h"
 #include "Parser/PEParserImpl.h"
 #include "PE/PEFile.h"
+#include "PE/PEHeader.h"
 #include "PE/PESection.h"
 #include "PE/PEExportTable.h"
 #include "PE/PEImportTable.h"
@@ -28,7 +29,7 @@ PEAddress
 PEParserT<T>::GetRVAFromVA(PEAddress nVA)
 {
     LIBPE_ASSERT_RET(NULL != m_pFile, 0);
-    LibPERawOptionalHeaderT(T) *pOptinalHeader = (LibPERawOptionalHeaderT(T) *)m_pFile->GetOptionalHeader();
+    LibPERawOptionalHeaderT(T) *pOptinalHeader = (LibPERawOptionalHeaderT(T) *)m_pFile->GetRawOptionalHeader();
     LIBPE_ASSERT_RET(NULL != pOptinalHeader, NULL);
     if(nVA < pOptinalHeader->ImageBase) {
         return 0;
@@ -41,7 +42,7 @@ PEAddress
 PEParserT<T>::GetVAFromRVA(PEAddress nRVA)
 {
     LIBPE_ASSERT_RET(NULL != m_pFile, 0);
-    LibPERawOptionalHeaderT(T) *pOptinalHeader = (LibPERawOptionalHeaderT(T) *)m_pFile->GetOptionalHeader();
+    LibPERawOptionalHeaderT(T) *pOptinalHeader = (LibPERawOptionalHeaderT(T) *)m_pFile->GetRawOptionalHeader();
     LIBPE_ASSERT_RET(NULL != pOptinalHeader, NULL);
     return pOptinalHeader->ImageBase + nRVA;
 }
@@ -140,32 +141,62 @@ PEParserT<T>::ParseUnicodeString(PEAddress nRVA, PEAddress nFOA, UINT64 &nSize)
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseBasicInfo(LibPERawDosHeaderT(T) **ppDosHeader, void **ppNtHeaders, SectionHeaderList *pSectionHeaders, IPEOverlay **ppOverlay)
+PEParserT<T>::ParseBasicInfo(IPEDosHeader **ppDosHeader, IPENtHeaders **ppNtHeaders, SectionHeaderList *pSectionHeaders, IPEOverlay **ppOverlay)
 {
     LIBPE_ASSERT_RET(NULL != ppDosHeader && NULL != ppNtHeaders && NULL != pSectionHeaders && NULL != ppOverlay, E_POINTER);
     LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
-    // Parse PE header
-    LibPERawDosHeaderT(T) *pDosHeader = (LibPERawDosHeaderT(T) *)m_pLoader->GetBuffer(0, sizeof(LibPERawDosHeaderT(T)));
-    LIBPE_ASSERT_RET(NULL != pDosHeader, E_OUTOFMEMORY);
-    LIBPE_ASSERT_RET(IMAGE_DOS_SIGNATURE == pDosHeader->e_magic, E_FAIL);
+    // Parse dos header
+    LibPEPtr<PEDosHeaderT<T>> pInnerDosHeader = new PEDosHeaderT<T>();
+    LIBPE_ASSERT_RET(NULL != pInnerDosHeader, E_OUTOFMEMORY);
+    pInnerDosHeader->InnerSetBase(m_pFile, this);
+    pInnerDosHeader->InnerSetMemoryInfo(0, 0, sizeof(LibPERawDosHeaderT(T)));
+    pInnerDosHeader->InnerSetFileInfo(0, sizeof(LibPERawDosHeaderT(T)));
 
-    LibPERawNtHeadersT(T) *pNtHeaders = (LibPERawNtHeadersT(T) *)m_pLoader->GetBuffer(pDosHeader->e_lfanew, sizeof(LibPERawNtHeadersT(T)));
-    LIBPE_ASSERT_RET(NULL != pNtHeaders, E_OUTOFMEMORY);
-    LIBPE_ASSERT_RET(IMAGE_NT_SIGNATURE == pNtHeaders->Signature, E_FAIL);
+    LibPERawDosHeaderT(T) *pRawDosHeader = pInnerDosHeader->GetRawStruct();
+    LIBPE_ASSERT_RET(NULL != pRawDosHeader, E_OUTOFMEMORY);
+    LIBPE_ASSERT_RET(IMAGE_DOS_SIGNATURE == pRawDosHeader->e_magic, E_FAIL);
 
-    if(pNtHeaders->FileHeader.SizeOfOptionalHeader == sizeof(PERawOptionalHeader32) && !PETrait<T>::Is32Bit) {
-        return E_FAIL;
+    // Parse nt headers
+    LibPEPtr<PENtHeadersT<T>> pInnerNtHeaders = new PENtHeadersT<T>();
+    LIBPE_ASSERT_RET(NULL != pInnerNtHeaders, E_OUTOFMEMORY);
+    pInnerNtHeaders->InnerSetBase(m_pFile, this);
+    pInnerNtHeaders->InnerSetMemoryInfo(pRawDosHeader->e_lfanew, 0, sizeof(LibPERawNtHeadersT(T)));
+    pInnerNtHeaders->InnerSetFileInfo(pRawDosHeader->e_lfanew, sizeof(LibPERawNtHeadersT(T)));
+
+    LibPERawNtHeadersT(T) *pRawNtHeaders = pInnerNtHeaders->GetRawStruct();
+    LIBPE_ASSERT_RET(NULL != pRawNtHeaders, E_OUTOFMEMORY);
+    LIBPE_ASSERT_RET(IMAGE_NT_SIGNATURE == pRawNtHeaders->Signature, E_FAIL);
+
+    if(PETrait<T>::Is32Bit) {
+        if(pRawNtHeaders->FileHeader.SizeOfOptionalHeader != sizeof(PERawOptionalHeader32)) {
+            return E_FAIL;
+        }
     }
 
-    *ppDosHeader = pDosHeader;
-    *ppNtHeaders = pNtHeaders;
+    // Parse file header
+    LibPEPtr<PEFileHeaderT<T>> pInnerFileHeader = new PEFileHeaderT<T>();
+    LIBPE_ASSERT_RET(NULL != pInnerFileHeader, E_OUTOFMEMORY);
+    pInnerFileHeader->InnerSetBase(m_pFile, this);
+    pInnerFileHeader->InnerSetMemoryInfo(pRawDosHeader->e_lfanew + sizeof(UINT32), 0, sizeof(LibPERawFileHeaderT(T)));
+    pInnerFileHeader->InnerSetFileInfo(pRawDosHeader->e_lfanew + sizeof(UINT32), sizeof(LibPERawFileHeaderT(T)));
+    pInnerNtHeaders->InnerSetFileHeader(pInnerFileHeader.p);
+
+    LibPEPtr<PEOptionalHeaderT<T>> pInnerOptionalHeader = new PEOptionalHeaderT<T>();
+    LIBPE_ASSERT_RET(NULL != pInnerOptionalHeader, E_OUTOFMEMORY);
+    pInnerOptionalHeader->InnerSetBase(m_pFile, this);
+    pInnerOptionalHeader->InnerSetMemoryInfo(pRawDosHeader->e_lfanew + sizeof(UINT32) + sizeof(LibPERawFileHeaderT(T)), 0, sizeof(LibPERawOptionalHeaderT(T)));
+    pInnerOptionalHeader->InnerSetFileInfo(pRawDosHeader->e_lfanew + sizeof(UINT32) + sizeof(LibPERawFileHeaderT(T)), sizeof(LibPERawOptionalHeaderT(T)));
+    pInnerNtHeaders->InnerSetOptionalHeader(pInnerOptionalHeader.p);
+
+    *ppDosHeader = pInnerDosHeader.Detach();
+    *ppNtHeaders = pInnerNtHeaders.Detach();
 
     // Parse section headers
-    UINT32 nStartSectionHeaderOffset = pDosHeader->e_lfanew + sizeof(DWORD) + sizeof(LibPERawFileHeaderT(T)) + pNtHeaders->FileHeader.SizeOfOptionalHeader;
+    UINT32 nStartSectionHeaderOffset = pRawDosHeader->e_lfanew + sizeof(DWORD) + sizeof(LibPERawFileHeaderT(T)) + pRawNtHeaders->FileHeader.SizeOfOptionalHeader;
     UINT32 nSectionHeaderOffset = nStartSectionHeaderOffset;
     LibPEPtr<PESectionHeaderT<T>> pSectionHeader;
-    for(UINT16 nSectionId = 0; nSectionId < pNtHeaders->FileHeader.NumberOfSections; ++nSectionId) {
+    for(UINT16 nSectionId = 0; nSectionId < pRawNtHeaders->FileHeader.NumberOfSections; ++nSectionId) {
         nSectionHeaderOffset = nStartSectionHeaderOffset + nSectionId * sizeof(LibPERawSectionHeaderT(T));
 
         pSectionHeader = new PESectionHeaderT<T>();
