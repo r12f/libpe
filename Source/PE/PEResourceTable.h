@@ -45,6 +45,13 @@ public:
         m_vEntries.resize(nCount);
     }
 
+    LIBPE_FIELD_ACCESSOR(UINT32, Characteristics)
+    LIBPE_FIELD_ACCESSOR(UINT32, TimeDateStamp)
+    LIBPE_FIELD_ACCESSOR(UINT16, MajorVersion)
+    LIBPE_FIELD_ACCESSOR(UINT16, MinorVersion)
+    LIBPE_FIELD_ACCESSOR(UINT16, NumberOfNamedEntries)
+    LIBPE_FIELD_ACCESSOR(UINT16, NumberOfIdEntries)
+
     virtual UINT32 LIBPE_CALLTYPE GetEntryCount();
     virtual HRESULT LIBPE_CALLTYPE GetEntryByIndex(UINT32 nIndex, IPEResourceDirectoryEntry **ppEntry);
 
@@ -62,6 +69,14 @@ public:
     virtual ~PEResourceDirectoryEntryT() {}
 
     DECLARE_PE_ELEMENT(LibPERawResourceDirectoryEntry(T))
+
+    LIBPE_FIELD_ACCESSOR(UINT32, NameOffset)
+    LIBPE_FIELD_ACCESSOR(UINT32, NameIsString)
+    LIBPE_FIELD_ACCESSOR(UINT32, Name)
+    LIBPE_FIELD_ACCESSOR(UINT16, Id)
+    LIBPE_FIELD_ACCESSOR(UINT32, OffsetToData)
+    LIBPE_FIELD_ACCESSOR(UINT32, OffsetToDirectory)
+    LIBPE_FIELD_ACCESSOR(UINT32, DataIsDirectory)
 
     virtual BOOL LIBPE_CALLTYPE IsNameId();
     virtual UINT16 LIBPE_CALLTYPE GetId();
@@ -86,6 +101,11 @@ public:
     virtual ~PEResourceDataEntryT() {}
 
     DECLARE_PE_ELEMENT(LibPERawResourceDataEntry(T))
+
+    LIBPE_FIELD_ACCESSOR(UINT32, OffsetToData)
+    LIBPE_FIELD_ACCESSOR(UINT32, Size)
+    LIBPE_FIELD_ACCESSOR(UINT32, CodePage)
+    LIBPE_FIELD_ACCESSOR(UINT32, Reserved)
 
     virtual HRESULT LIBPE_CALLTYPE GetResource(IPEResource **ppResource);
 

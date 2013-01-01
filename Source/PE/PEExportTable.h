@@ -32,6 +32,18 @@ public:
         return true;
     }
 
+    LIBPE_FIELD_ACCESSOR(UINT32, Characteristics)
+    LIBPE_FIELD_ACCESSOR(UINT32, TimeDateStamp)
+    LIBPE_FIELD_ACCESSOR(UINT16, MajorVersion)
+    LIBPE_FIELD_ACCESSOR(UINT16, MinorVersion)
+    LIBPE_FIELD_ACCESSOR(UINT32, Name)
+    LIBPE_FIELD_ACCESSOR(UINT32, Base)
+    LIBPE_FIELD_ACCESSOR(UINT32, NumberOfFunctions)
+    LIBPE_FIELD_ACCESSOR(UINT32, NumberOfNames)
+    LIBPE_FIELD_ACCESSOR(UINT32, AddressOfFunctions)
+    LIBPE_FIELD_ACCESSOR(UINT32, AddressOfNames)
+    LIBPE_FIELD_ACCESSOR(UINT32, AddressOfNameOrdinals)
+
     virtual UINT32 LIBPE_CALLTYPE GetFunctionCount();
     virtual HRESULT LIBPE_CALLTYPE GetFunctionByIndex(UINT32 nIndex, IPEExportFunction **ppFunction);
     virtual HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEExportFunction **ppFunction);

@@ -68,7 +68,10 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
-    virtual PEAddress LIBPE_CALLTYPE GetRawAddress();
+    LIBPE_FIELD_ACCESSOR_EX(PEAddress, ForwarderString, u1.ForwarderString)
+    LIBPE_FIELD_ACCESSOR_EX(PEAddress, Function, u1.Function)
+    LIBPE_FIELD_ACCESSOR_EX(PEAddress, Ordinal, u1.Ordinal)
+    LIBPE_FIELD_ACCESSOR_EX(PEAddress, AddressOfData, u1.AddressOfData)
 };
 
 typedef PEImportAddressTableT<PE32> PEImportAddressTable32;

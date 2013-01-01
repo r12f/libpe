@@ -95,15 +95,6 @@ PEImportAddressBlockT<T>::IsItemExist(IPEImportAddressItem *pItem)
     return false;
 }
 
-template <class T>
-PEAddress
-PEImportAddressItemT<T>::GetRawAddress()
-{
-    LibPERawThunkData(T) *pRawStruct = GetRawStruct();
-    LIBPE_ASSERT_RET(NULL != pRawStruct, 0);
-    return pRawStruct->u1.Function;
-}
-
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEImportAddressTableT);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEImportAddressBlockT);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEImportAddressItemT);

@@ -15,6 +15,17 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawSectionHeaderT(T))
 
+    LIBPE_FIELD_ACCESSOR_EX(UINT32, PhysicalAddress, Misc.PhysicalAddress)
+    LIBPE_FIELD_ACCESSOR_EX(UINT32, VirtualSize, Misc.VirtualSize)
+    LIBPE_FIELD_ACCESSOR(UINT32, VirtualAddress)
+    LIBPE_FIELD_ACCESSOR(UINT32, SizeOfRawData)
+    LIBPE_FIELD_ACCESSOR(UINT32, PointerToRawData)
+    LIBPE_FIELD_ACCESSOR(UINT32, PointerToRelocations)
+    LIBPE_FIELD_ACCESSOR(UINT32, PointerToLinenumbers)
+    LIBPE_FIELD_ACCESSOR(UINT16, NumberOfRelocations)
+    LIBPE_FIELD_ACCESSOR(UINT16, NumberOfLinenumbers)
+    LIBPE_FIELD_ACCESSOR(UINT32, Characteristics)
+
     virtual HRESULT LIBPE_CALLTYPE GetSection(IPESection **ppSection);
 
 private:

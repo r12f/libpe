@@ -52,12 +52,12 @@ class IPEDelayImportTable;
 class IPECLRHeader;
 
 #define LIBPE_DEFINE_FIELD_ACCESSOR(FieldType, FuncName)                                    \
-    virtual FieldType LIBPE_CALLTYPE Get ## FuncName() = 0
+    virtual FieldType LIBPE_CALLTYPE GetField ## FuncName() = 0
 
 #define LIBPE_DEFINE_ARRAY_FIELD_ACCESSOR(FieldType, FuncName)                              \
-    virtual FieldType * LIBPE_CALLTYPE Get ## FuncName ## Buffer()  = 0;                    \
-    virtual UINT32 LIBPE_CALLTYPE Get ## FuncName ## ElementCount()  = 0;                   \
-    virtual FieldType LIBPE_CALLTYPE Get ## FuncName(UINT32 nIndex)  = 0
+    virtual FieldType * LIBPE_CALLTYPE GetField ## FuncName ## Buffer()  = 0;               \
+    virtual UINT32 LIBPE_CALLTYPE GetField ## FuncName ## ElementCount()  = 0;              \
+    virtual FieldType LIBPE_CALLTYPE GetField ## FuncName(UINT32 nIndex)  = 0
 
 class IPEFile : public ILibPEInterface
 {
@@ -235,6 +235,17 @@ public:
 class IPESectionHeader : public IPEElement
 {
 public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, PhysicalAddress);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, VirtualSize);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, VirtualAddress);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, SizeOfRawData);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, PointerToRawData);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, PointerToRelocations);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, PointerToLinenumbers);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, NumberOfRelocations);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, NumberOfLinenumbers);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Characteristics);
+
     virtual HRESULT LIBPE_CALLTYPE GetSection(IPESection **ppSection) = 0;
 };
 
@@ -257,6 +268,18 @@ public:
 class IPEExportTable : public IPEElement
 {
 public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Characteristics);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, TimeDateStamp);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, MajorVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, MinorVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Name);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Base);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, NumberOfFunctions);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, NumberOfNames);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, AddressOfFunctions);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, AddressOfNames);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, AddressOfNameOrdinals);
+
     virtual UINT32 LIBPE_CALLTYPE GetFunctionCount() = 0;
     virtual HRESULT LIBPE_CALLTYPE GetFunctionByIndex(UINT32 nIndex, IPEExportFunction **ppFunction) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEExportFunction **ppFunction) = 0;
@@ -281,6 +304,13 @@ public:
 class IPEImportModule: public IPEElement
 {
 public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Characteristics);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, OriginalFirstThunk);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, TimeDateStamp);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, ForwarderChain);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Name);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, FirstThunk);
+
     virtual BOOL LIBPE_CALLTYPE IsBound() = 0;
     virtual const char * LIBPE_CALLTYPE GetName() = 0;
     virtual UINT32 LIBPE_CALLTYPE GetFunctionCount() = 0;
@@ -293,8 +323,9 @@ class IPEImportFunction: public IPEElement
 {
 public:
     //virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawThunkData() = 0;
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Hint);
+
     virtual const char * LIBPE_CALLTYPE GetName() = 0;
-    virtual UINT16 LIBPE_CALLTYPE GetHint() = 0;
     virtual PEAddress LIBPE_CALLTYPE GetEntry() = 0;
 };
 
@@ -307,6 +338,13 @@ public:
 class IPEResourceDirectory : public IPEElement
 {
 public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Characteristics);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, TimeDateStamp);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, MajorVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, MinorVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, NumberOfNamedEntries);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, NumberOfIdEntries);
+
     virtual UINT32 LIBPE_CALLTYPE GetEntryCount() = 0;
     virtual HRESULT LIBPE_CALLTYPE GetEntryByIndex(UINT32 nIndex, IPEResourceDirectoryEntry **ppEntry) = 0;
 };
@@ -314,6 +352,14 @@ public:
 class IPEResourceDirectoryEntry : public IPEElement
 {
 public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, NameOffset);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, NameIsString);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Name);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Id);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, OffsetToData);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, OffsetToDirectory);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, DataIsDirectory);
+
     virtual BOOL LIBPE_CALLTYPE IsNameId() = 0;
     virtual UINT16 LIBPE_CALLTYPE GetId() = 0;
 
@@ -330,6 +376,11 @@ public:
 class IPEResourceDataEntry : public IPEElement
 {
 public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, OffsetToData);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Size);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, CodePage);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Reserved);
+
     virtual HRESULT LIBPE_CALLTYPE GetResource(IPEResource **ppResource) = 0;
 };
 
@@ -354,6 +405,9 @@ public:
 class IPERelocationPage : public IPEElement
 {
 public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, VirtualAddress);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, SizeOfBlock);
+
     virtual PEAddress LIBPE_CALLTYPE GetPageRVA() = 0;
     virtual UINT32 LIBPE_CALLTYPE GetItemCount() = 0;
     virtual HRESULT LIBPE_CALLTYPE GetItemByIndex(UINT32 nIndex, IPERelocationItem **ppRelocationItem) = 0;
@@ -397,7 +451,10 @@ public:
 class IPEImportAddressItem : public IPEElement
 {
 public:
-    virtual PEAddress LIBPE_CALLTYPE GetRawAddress() = 0;
+    LIBPE_DEFINE_FIELD_ACCESSOR(PEAddress, ForwarderString);
+    LIBPE_DEFINE_FIELD_ACCESSOR(PEAddress, Function);
+    LIBPE_DEFINE_FIELD_ACCESSOR(PEAddress, Ordinal);
+    LIBPE_DEFINE_FIELD_ACCESSOR(PEAddress, AddressOfData);
 };
 
 class IPEDelayImportTable : public IPEElement {};

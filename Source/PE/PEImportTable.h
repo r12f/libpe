@@ -67,6 +67,13 @@ public:
 
     void InnerSetName(const char *pName) { m_pName = pName; }
 
+    LIBPE_FIELD_ACCESSOR(UINT32, Characteristics)
+    LIBPE_FIELD_ACCESSOR(UINT32, OriginalFirstThunk)
+    LIBPE_FIELD_ACCESSOR(UINT32, TimeDateStamp)
+    LIBPE_FIELD_ACCESSOR(UINT32, ForwarderChain)
+    LIBPE_FIELD_ACCESSOR(UINT32, Name)
+    LIBPE_FIELD_ACCESSOR(UINT32, FirstThunk)
+
     virtual BOOL LIBPE_CALLTYPE IsBound();
     virtual const char * LIBPE_CALLTYPE GetName() { return m_pName; }
     virtual UINT32 LIBPE_CALLTYPE GetFunctionCount() { return (UINT32)m_vFunctions.size(); }
@@ -94,9 +101,10 @@ public:
     void InnerSetThunkData(LibPERawThunkData(T) *pThunkData) { m_pThunkData = pThunkData; }
     void InnerSetOrdinal(UINT16 nOrdinal) { m_nOrdinal = nOrdinal; }
 
+    LIBPE_FIELD_ACCESSOR(UINT16, Hint)
+
     virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawThunkData();
     virtual const char * LIBPE_CALLTYPE GetName();
-    virtual UINT16 LIBPE_CALLTYPE GetHint();
     virtual PEAddress LIBPE_CALLTYPE GetEntry();
 
 private:

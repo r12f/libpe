@@ -133,7 +133,7 @@ BOOL
 PEFileT<T>::IsDosFile()
 {
     LIBPE_ASSERT_RET(NULL != m_pDosHeader, false);
-    return (NULL == m_pDosHeader->GetLfanew());
+    return (NULL == m_pDosHeader->GetFieldLfanew());
 }
 
 template <class T>
@@ -148,7 +148,7 @@ PEAddress
 PEFileT<T>::GetImageBase()
 {
     LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, NULL);
-    return m_pOptionalHeader->GetImageBase();
+    return m_pOptionalHeader->GetFieldImageBase();
 }
 
 template <class T>
@@ -156,7 +156,7 @@ UINT32
 PEFileT<T>::GetImageSize()
 {
     LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, 0);
-    return m_pOptionalHeader->GetSizeOfImage();
+    return m_pOptionalHeader->GetFieldSizeOfImage();
 }
 
 template <class T>
@@ -164,7 +164,7 @@ UINT32
 PEFileT<T>::GetEntryPoint()
 {
     LIBPE_ASSERT_RET(NULL != m_pOptionalHeader, 0);
-    return m_pOptionalHeader->GetAddressOfEntryPoint();
+    return m_pOptionalHeader->GetFieldAddressOfEntryPoint();
 }
 
 template <class T>

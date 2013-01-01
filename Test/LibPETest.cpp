@@ -4,11 +4,11 @@ using namespace LibPE;
 
 void TestBasicInfo(IPEFile *pFile)
 {
-    IMAGE_DOS_HEADER *pDosHeader = pFile->GetRawDosHeader();
-    printf("DosHeader: 0x%08x\n", pDosHeader);
+    printf("DosHeader: 0x%08x\n", pFile->GetRawDosHeader());
     printf("NtHeaders: 0x%08x\n", pFile->GetRawNtHeaders());
     printf("FileHeader: 0x%08x\n", pFile->GetRawFileHeader());
     printf("OptionalHeader: 0x%08x\n", pFile->GetRawOptionalHeader());
+    printf("IsX86File: %s\n", pFile->Is32Bit() ? "YES" : "NO");
 }
 
 void TestSection(IPEFile *pFile)
@@ -176,7 +176,7 @@ void TestImportAddressTable(IPEFile *pFile)
         for(UINT32 nItemIndex = 0; nItemIndex < nImportAddressItemCount; ++nItemIndex) {
             LibPEPtr<IPEImportAddressItem> pImportAddressItem;
             pImportAddressBlock->GetItemByIndex(nItemIndex, &pImportAddressItem);
-            printf("Import Address Item: RVA = 0x%08x, Address = 0x%08x\n", pImportAddressItem->GetRVA(), pImportAddressItem->GetRawAddress());
+            printf("Import Address Item: RVA = 0x%08x, Address = 0x%08x\n", pImportAddressItem->GetRVA(), pImportAddressItem->GetFieldAddressOfData());
         }
 
         printf("\n");
@@ -192,12 +192,12 @@ int wmain(int argc, wchar_t* argv[])
     printf("Release: %d\n", pFile->Release());
 
     TestBasicInfo(pFile);
-    TestSection(pFile);
-    TestExportTable(pFile);
-    TestImportTable(pFile);
-    TestResourceTable(pFile);
-    TestRelocationTable(pFile);
-    TestImportAddressTable(pFile);
+    //TestSection(pFile);
+    //TestExportTable(pFile);
+    //TestImportTable(pFile);
+    //TestResourceTable(pFile);
+    //TestRelocationTable(pFile);
+    //TestImportAddressTable(pFile);
 
     return 0;
 }

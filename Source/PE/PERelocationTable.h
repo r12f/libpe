@@ -49,6 +49,9 @@ public:
         m_vItems.push_back(pItem);
     }
 
+    LIBPE_FIELD_ACCESSOR(UINT32, VirtualAddress)
+    LIBPE_FIELD_ACCESSOR(UINT32, SizeOfBlock)
+
     virtual PEAddress LIBPE_CALLTYPE GetPageRVA();
     virtual UINT32 LIBPE_CALLTYPE GetItemCount();
     virtual HRESULT LIBPE_CALLTYPE GetItemByIndex(UINT32 nIndex, IPERelocationItem **ppRelocationItem);

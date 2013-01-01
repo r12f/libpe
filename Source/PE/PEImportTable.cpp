@@ -123,15 +123,6 @@ PEImportFunctionT<T>::GetName()
 }
 
 template <class T>
-UINT16  
-PEImportFunctionT<T>::GetHint()
-{
-    LibPERawImportByName(T) *pImportByName = GetRawStruct();
-    LIBPE_ASSERT_RET(NULL != pImportByName, 0);
-    return pImportByName->Hint;
-}
-
-template <class T>
 PEAddress  
 PEImportFunctionT<T>::GetEntry()
 {
