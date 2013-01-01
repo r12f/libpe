@@ -5,7 +5,22 @@
 
 LIBPE_NAMESPACE_BEGIN
 
+#ifdef LIBPE_WINOS
 #define LIBPE_CALLTYPE      __stdcall
+#else
+#define LIBPE_CALLTYPE
+#endif
+
+#if defined(LIBPE_WINOS) && defined(LIBPE_DLL)
+#ifdef LIBPEDLL_EXPORTS
+#define LIBPE_API           __declspec(dllexport) LIBPE_CALLTYPE
+#else
+#define LIBPE_API           __declspec(dllimport) LIBPE_CALLTYPE
+#endif
+#else
+#define LIBPE_API           LIBPE_CALLTYPE
+#endif
+
 
 class ILibPEInterface
 {

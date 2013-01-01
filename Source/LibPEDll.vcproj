@@ -2,11 +2,11 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="LibPETest"
-	ProjectGUID="{3A32D3CE-03B8-472B-AFF6-9EF916E9E8E8}"
-	RootNamespace="LibPETest"
+	Name="LibPEDll"
+	ProjectGUID="{48F71FA7-6FAA-4FAE-828C-370F677463FD}"
+	RootNamespace="LibPEDll"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="0"
+	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
 		<Platform
@@ -23,7 +23,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			>
 			<Tool
@@ -44,12 +44,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;&quot;$(SolutionDir)..\Source&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBPEDLL_EXPORTS;LIBPE_DLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
+				ObjectFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
+				ProgramDataBaseFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\vc90.pdb"
+				XMLDocumentationFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
 				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
@@ -64,10 +67,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName).exe"
+				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\LibPE.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
+				ImportLibrary="$(TargetDir)$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -96,7 +100,7 @@
 			Name="Debug|x64"
 			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			>
 			<Tool
@@ -118,8 +122,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_WIN64"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;&quot;$(SolutionDir)..\Source&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBPEDLL_EXPORTS;LIBPE_DLL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -138,10 +142,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName).exe"
+				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\LibPE.dll"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
+				ImportLibrary="$(TargetDir)$(ProjectName).lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -170,7 +175,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -193,8 +198,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;&quot;$(SolutionDir)..\Source&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBPEDLL_EXPORTS;LIBPE_DLL"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
@@ -212,12 +217,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName).exe"
+				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\LibPE.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				ImportLibrary="$(TargetDir)$(ProjectName).lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -246,7 +252,7 @@
 			Name="Release|x64"
 			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -270,8 +276,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_WIN64"
+				AdditionalIncludeDirectories="&quot;$(SolutionDir)..\Include&quot;;&quot;$(SolutionDir)..\Source&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBPEDLL_EXPORTS;LIBPE_DLL"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
@@ -289,12 +295,13 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName).exe"
+				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\LibPE.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				ImportLibrary="$(TargetDir)$(ProjectName).lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -323,8 +330,136 @@
 	<References>
 	</References>
 	<Files>
+		<Filter
+			Name="Parser"
+			>
+			<File
+				RelativePath=".\Parser\DataLoader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Parser\DataLoader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Parser\PEParser.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Parser\PEParser.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Parser\PEParserCommon.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Parser\PEParserImpl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Parser\PEParserImpl.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="PE"
+			>
+			<File
+				RelativePath=".\PE\PEElement.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PEElement.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PEExportTable.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PEExportTable.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PEFile.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PEFile.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PEHeader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PEHeader.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PEImportAddressTable.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PEImportAddressTable.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PEImportTable.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PEImportTable.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PERelocationTable.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PERelocationTable.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PEResourceTable.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PEResourceTable.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PESection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PE\PESection.h"
+				>
+			</File>
+		</Filter>
 		<File
-			RelativePath=".\LibPETest.cpp"
+			RelativePath=".\dllmain.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\LibPE.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\LibPEConfig.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\LibPEConfig.h"
+			>
+		</File>
+		<File
+			RelativePath=".\LibPEInternal.h"
+			>
+		</File>
+		<File
+			RelativePath=".\LibPEObject.h"
 			>
 		</File>
 		<File

@@ -3,6 +3,8 @@
 // Macro List:
 // LIBPE_POSIX
 // LIBPE_NO_NAMESPACE
+// LIBPE_DLL
+
 #ifdef WIN32
 #define LIBPE_WINOS
 #endif

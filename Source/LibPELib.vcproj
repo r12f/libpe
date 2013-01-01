@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="LibPE"
+	Name="LibPELib"
 	ProjectGUID="{28692735-9677-476B-91F3-684977E5823A}"
 	RootNamespace="LibPE"
 	Keyword="Win32Proj"
@@ -50,6 +50,9 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
+				ObjectFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
+				ProgramDataBaseFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\vc90.pdb"
+				XMLDocumentationFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
 				WarningLevel="4"
 				WarnAsError="true"
 				DebugInformationFormat="4"
@@ -65,7 +68,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName).lib"
+				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\LibPE.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -115,6 +118,9 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
+				ObjectFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
+				ProgramDataBaseFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\vc90.pdb"
+				XMLDocumentationFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
 				WarningLevel="4"
 				WarnAsError="true"
 				DebugInformationFormat="3"
@@ -130,7 +136,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName).lib"
+				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\LibPE.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -180,6 +186,9 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
+				ObjectFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
+				ProgramDataBaseFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\vc90.pdb"
+				XMLDocumentationFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
 				WarningLevel="4"
 				WarnAsError="true"
 				DebugInformationFormat="3"
@@ -195,7 +204,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName).lib"
+				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\LibPE.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -246,6 +255,9 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
+				ObjectFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
+				ProgramDataBaseFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\vc90.pdb"
+				XMLDocumentationFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
 				WarningLevel="4"
 				WarnAsError="true"
 				DebugInformationFormat="3"
@@ -261,7 +273,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName).lib"
+				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\LibPE.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"

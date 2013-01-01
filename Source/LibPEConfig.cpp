@@ -11,7 +11,7 @@ enum {
 UINT64 s_nPELoaderMinBlockSize = 0;
 UINT64 s_nPELoaderMaxBlockSize = 0;
 
-void LIBPE_CALLTYPE
+void LIBPE_API
 SetPELoaderIOBlockSize(UINT64 nMinBlockSize, UINT64 nMaxBlockSize)
 {
     s_nPELoaderMinBlockSize = nMinBlockSize;

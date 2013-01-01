@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "LibPE.h"
 #include "Parser/DataLoader.h"
 #include "PE/PEFile.h"
 
@@ -22,7 +21,7 @@ ParsePEFromDataLoader(DataLoader *pDataLoader, IPEFile **ppFile)
 }
 
 
-HRESULT
+HRESULT LIBPE_API
 ParsePEFromDiskFile(const file_char_t *pFilePath, IPEFile **ppFile)
 {
     LibPEPtr<DataLoader> pDataLoader = new DataLoaderDiskFile;
@@ -34,20 +33,20 @@ ParsePEFromDiskFile(const file_char_t *pFilePath, IPEFile **ppFile)
     return ParsePEFromDataLoader(pDataLoader, ppFile);
 }
 
-HRESULT
+HRESULT LIBPE_API
 ParsePEFromMappedFile(void *pMemory, IPEFile **ppFile)
 {
     return E_NOTIMPL;
 }
 
 #ifdef LIBPE_WINOS
-HRESULT
+HRESULT LIBPE_API
 ParsePEFromMappedResource(HMODULE hModule, IPEFile **ppFile)
 {
     return E_NOTIMPL;
 }
 
-HRESULT
+HRESULT LIBPE_API
 ParsePEFromLoadedModule(HMODULE hModule, IPEFile **ppFile)
 {
     return E_NOTIMPL;

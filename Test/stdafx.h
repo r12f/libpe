@@ -31,4 +31,5 @@
 #include <windows.h>
 #include <WinNT.h>
 
+#define LIBPE_DLL
 #include "LibPE.h"
