@@ -192,12 +192,12 @@ int wmain(int argc, wchar_t* argv[])
     printf("Release: %d\n", pFile->Release());
 
     TestBasicInfo(pFile);
-    //TestSection(pFile);
-    //TestExportTable(pFile);
-    //TestImportTable(pFile);
-    //TestResourceTable(pFile);
-    //TestRelocationTable(pFile);
-    //TestImportAddressTable(pFile);
+    TestSection(pFile);
+    TestExportTable(pFile);
+    TestImportTable(pFile);
+    TestResourceTable(pFile);
+    TestRelocationTable(pFile);
+    TestImportAddressTable(pFile);
 
     return 0;
 }
