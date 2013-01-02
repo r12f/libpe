@@ -1,5 +1,5 @@
 # LibPE
-LibPE is a simple parser for PE file format.
+LibPE is a simple parser for PE file format under [The BSD 2-Clause License](http://opensource.org/licenses/BSD-2-Clause).
 
 ## Design principles (May be not achieved)
 ### Easy-To-Use
@@ -23,3 +23,6 @@ LibPE is a simple parser for PE file format.
 * Why using COM-like interface: We use COM-like interface to avoid the use-after-free crashes and to solve the cross-dll problems. But we do not need QueryInterface due to the simple class hierarchy. And we do not support COM, so that your code won't be complex.
 * Why no boost: Boost is a very powerful tool. But you need checkout lots of code before you use LibPE. And of course, you should learn boost first before you see the code.
 * Why so many template: When you need a new type of PE parser, define your own PETrait and change the LIBPE_FORCE_TEMPLATE_REDUCTION_XXX macro. And wala! 
+
+## Copyright
+Copyright (c) 2012-2013, Jiang Jinzhou. See [LICENSE](https://github.com/r1f/libpe/blob/master/LICENSE) for details.
