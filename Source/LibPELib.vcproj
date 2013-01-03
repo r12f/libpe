@@ -50,9 +50,9 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
-				ObjectFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
-				ProgramDataBaseFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\vc90.pdb"
-				XMLDocumentationFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
+				ObjectFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\$(ProjectName)\"
+				ProgramDataBaseFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\$(ProjectName)\vc90.pdb"
+				XMLDocumentationFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\$(ProjectName)\"
 				WarningLevel="4"
 				WarnAsError="true"
 				DebugInformationFormat="4"
@@ -68,7 +68,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\LibPE.lib"
+				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\LibPE.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -118,9 +118,9 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
-				ObjectFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
-				ProgramDataBaseFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\vc90.pdb"
-				XMLDocumentationFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
+				ObjectFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\$(ProjectName)\"
+				ProgramDataBaseFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\$(ProjectName)\vc90.pdb"
+				XMLDocumentationFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\$(ProjectName)\"
 				WarningLevel="4"
 				WarnAsError="true"
 				DebugInformationFormat="3"
@@ -136,7 +136,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\LibPE.lib"
+				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\LibPE.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -186,9 +186,9 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
-				ObjectFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
-				ProgramDataBaseFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\vc90.pdb"
-				XMLDocumentationFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
+				ObjectFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\$(ProjectName)\"
+				ProgramDataBaseFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\$(ProjectName)\vc90.pdb"
+				XMLDocumentationFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\$(ProjectName)\"
 				WarningLevel="4"
 				WarnAsError="true"
 				DebugInformationFormat="3"
@@ -204,7 +204,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\LibPE.lib"
+				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\LibPE.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -255,9 +255,9 @@
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
-				ObjectFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
-				ProgramDataBaseFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\vc90.pdb"
-				XMLDocumentationFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(ProjectName)\"
+				ObjectFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\$(ProjectName)\"
+				ProgramDataBaseFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\$(ProjectName)\vc90.pdb"
+				XMLDocumentationFileName="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\$(ProjectName)\"
 				WarningLevel="4"
 				WarnAsError="true"
 				DebugInformationFormat="3"
@@ -273,7 +273,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\LibPE.lib"
+				OutputFile="$(SolutionDir)..\Output\$(ConfigurationName)\$(PlatformName)\LibPE.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
