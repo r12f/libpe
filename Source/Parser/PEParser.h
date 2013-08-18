@@ -55,7 +55,8 @@ public:
     // Import table related functions
     virtual HRESULT ParseImportTable(IPEImportTable **ppImportTable);
     virtual HRESULT ParseImportModule(PEAddress nImportDescRVA, PEAddress nImportDescFOA, LibPERawImportDescriptor(T) *pImportDescriptor, IPEImportModule **ppImportModule);
-    virtual HRESULT ParseImportFunction(LibPERawImportDescriptor(T) *pImportDescriptor, LibPERawThunkData(T) *pThunkData, IPEImportFunction **ppFunction);
+    virtual HRESULT ParseImportFunctionsInModule(IPEImportModule *pImportModule);
+    virtual HRESULT ParseImportFunction(IPEImportFunction *pFunction);
 
     // Resource table related functions
     virtual HRESULT ParseResourceTable(IPEResourceTable **ppResourceTable);

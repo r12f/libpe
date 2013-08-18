@@ -337,11 +337,14 @@ public:
 class IPEImportFunction: public IPEElement
 {
 public:
-    //virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawThunkData() = 0;
-    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Hint);
+    LIBPE_DEFINE_FIELD_ACCESSOR(PEAddress, ForwarderString);
+    LIBPE_DEFINE_FIELD_ACCESSOR(PEAddress, Function);
+    LIBPE_DEFINE_FIELD_ACCESSOR(PEAddress, Ordinal);
+    LIBPE_DEFINE_FIELD_ACCESSOR(PEAddress, AddressOfData);
 
-    virtual const char * LIBPE_CALLTYPE GetName() = 0;
-    virtual PEAddress LIBPE_CALLTYPE GetEntry() = 0;
+    virtual PERawImportByName * GetRawImportByName() = 0;
+    virtual const char * GetName() = 0;
+    virtual UINT16 GetOrdinal() = 0;
 };
 
 class IPEResourceTable : public IPEElement

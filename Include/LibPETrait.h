@@ -32,6 +32,7 @@ struct PETrait<PE32> : PETraitBase {
     typedef IMAGE_NT_HEADERS32                  RawNtHeaders;
     typedef IMAGE_OPTIONAL_HEADER32             RawOptionalHeader;
     typedef IMAGE_THUNK_DATA32                  RawThunkData;
+    static const UINT32                         ImageOrdinalFlag = 0x80000000;
 };
 
 template <>
@@ -41,6 +42,7 @@ struct PETrait<PE64> : PETraitBase {
     typedef IMAGE_NT_HEADERS64                  RawNtHeaders;
     typedef IMAGE_OPTIONAL_HEADER64             RawOptionalHeader;
     typedef IMAGE_THUNK_DATA64                  RawThunkData;
+    static const UINT64                         ImageOrdinalFlag = 0x8000000000000000;
 };
 
 #define LibPERawAddressT(T)                     typename PETrait<T>::RawAddress
@@ -62,6 +64,7 @@ struct PETrait<PE64> : PETraitBase {
 #define LibPERawResourceStringU(T)              typename PETrait<T>::RawResourceStringU
 
 typedef UINT64                                  PEAddress;
+#define LIBPE_INVALID_ADDRESS                   0
 
 typedef PETraitBase::RawDosHeader               PERawDosHeader;
 typedef PETraitBase::RawFileHeader              PERawFileHeader;

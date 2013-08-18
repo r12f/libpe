@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Parser">
+      <UniqueIdentifier>{d502ae0e-4b1f-4206-abb5-b57d86b17428}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PE">
+      <UniqueIdentifier>{7b01b351-c3ef-41c9-9d08-408afae7d939}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Parser\DataLoader.cpp">
+      <Filter>Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser\PEParser.cpp">
+      <Filter>Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser\PEParserImpl.cpp">
+      <Filter>Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PEElement.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PEExportTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PEFile.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PEHeader.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PEImportAddressTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PEImportTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PERelocationTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PEResourceTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PESection.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="LibPE.cpp" />
+    <ClCompile Include="LibPEConfig.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Parser\DataLoader.h">
+      <Filter>Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\PEParser.h">
+      <Filter>Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\PEParserCommon.h">
+      <Filter>Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\PEParserImpl.h">
+      <Filter>Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PEElement.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PEExportTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PEFile.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PEHeader.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PEImportAddressTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PEImportTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PERelocationTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PEResourceTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PESection.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="LibPEConfig.h" />
+    <ClInclude Include="LibPEInternal.h" />
+    <ClInclude Include="LibPEObject.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+</Project>

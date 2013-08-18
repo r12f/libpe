@@ -23,7 +23,7 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawImportDescriptor(T))
 
-    void AddImportDescriptor(PEAddress nImportDescRVA, PEAddress nImportDescFOA, LibPERawImportDescriptor(T) *pImportDesc) {
+    void InnerAddImportDescriptor(PEAddress nImportDescRVA, PEAddress nImportDescFOA, LibPERawImportDescriptor(T) *pImportDesc) {
         LIBPE_ASSERT_RET_VOID(0 != nImportDescRVA && 0 != nImportDescFOA && NULL != pImportDesc);
         ModuleInfo oInfo;
         oInfo.m_nImportDescRVA = nImportDescRVA;
@@ -47,22 +47,17 @@ class PEImportModuleT :
     public IPEImportModule,
     public PEElementT<T>
 {
-    struct FunctionInfo {
-        LibPERawThunkData(T)            *m_pThunkData;
-        LibPEPtr<IPEImportFunction> m_pFunction;
-    };
-    typedef std::vector<FunctionInfo> FunctionList;
+    typedef std::vector<LibPEPtr<IPEImportFunction>> FunctionList;
 
 public:
-    PEImportModuleT() {}
+    PEImportModuleT() : m_pName(NULL), m_bIsFunctionParsed(false) {}
     virtual ~PEImportModuleT() {}
 
     DECLARE_PE_ELEMENT(LibPERawImportDescriptor(T))
 
-    void AddImportFunctionThunk(LibPERawThunkData(T) *pThunk) {
-        FunctionInfo oInfo;
-        oInfo.m_pThunkData = pThunk;
-        m_vFunctions.push_back(oInfo);
+    void InnerAddImportFunction(IPEImportFunction *pFunction) {
+        LIBPE_ASSERT_RET_VOID(NULL != pFunction);
+        m_vFunctions.push_back(pFunction);
     }
 
     void InnerSetName(const char *pName) { m_pName = pName; }
@@ -76,13 +71,29 @@ public:
 
     virtual BOOL LIBPE_CALLTYPE IsBound();
     virtual const char * LIBPE_CALLTYPE GetName() { return m_pName; }
-    virtual UINT32 LIBPE_CALLTYPE GetFunctionCount() { return (UINT32)m_vFunctions.size(); }
+    virtual UINT32 LIBPE_CALLTYPE GetFunctionCount();
     virtual HRESULT LIBPE_CALLTYPE GetFunctionByIndex(UINT32 nIndex, IPEImportFunction **ppFunction);
     virtual HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEImportFunction **ppFunction);
     virtual HRESULT LIBPE_CALLTYPE GetRelatedImportAddressBlock(IPEImportAddressBlock **ppBlock);
 
+protected:
+    HRESULT EnsureFunctionParsed() {
+        if (m_bIsFunctionParsed) {
+            return S_OK;
+        }
+
+        // If failed, do not parse twice.
+        m_bIsFunctionParsed = true;
+
+        LIBPE_ASSERT_RET(NULL != m_pParser && NULL != m_pFile, E_FAIL);
+        LIBPE_ASSERT_RET(SUCCEEDED(m_pParser->ParseImportFunctionsInModule(this)), E_FAIL);
+
+        return S_OK;
+    }
+
 private:
     const char                          *m_pName;
+    bool                                m_bIsFunctionParsed;
     FunctionList                        m_vFunctions;
     LibPEPtr<IPEImportAddressBlock>     m_pRelatedIABlock;
 };
@@ -93,22 +104,52 @@ class PEImportFunctionT :
     public PEElementT<T>
 {
 public:
-    PEImportFunctionT() : m_pThunkData(NULL) {}
+    PEImportFunctionT() : m_bIsImportByNameParsed(false), m_pImportByName(NULL), m_nImportByNameRVA(0), m_nImportByNameFOA(0), m_nImportByNameSize(0) {}
     virtual ~PEImportFunctionT() {}
 
-    DECLARE_PE_ELEMENT(LibPERawImportByName(T))
+    DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
-    void InnerSetThunkData(LibPERawThunkData(T) *pThunkData) { m_pThunkData = pThunkData; }
-    void InnerSetOrdinal(UINT16 nOrdinal) { m_nOrdinal = nOrdinal; }
+    void InnerSetRawImportByName(LibPERawImportByName(T) *pImportByName, PEAddress nRVA, PEAddress nFOA, PEAddress nSize) {
+        m_pImportByName = pImportByName;
+        m_nImportByNameRVA = nRVA;
+        m_nImportByNameFOA = nFOA;
+        m_nImportByNameSize = nSize;
+    }
 
-    LIBPE_FIELD_ACCESSOR(UINT16, Hint)
+    LIBPE_FIELD_ACCESSOR_EX(PEAddress, ForwarderString, u1.ForwarderString)
+    LIBPE_FIELD_ACCESSOR_EX(PEAddress, Function, u1.Function)
+    LIBPE_FIELD_ACCESSOR_EX(PEAddress, Ordinal, u1.Ordinal)
+    LIBPE_FIELD_ACCESSOR_EX(PEAddress, AddressOfData, u1.AddressOfData)
 
-    virtual LibPERawThunkData(T) * LIBPE_CALLTYPE GetRawThunkData();
-    virtual const char * LIBPE_CALLTYPE GetName();
-    virtual PEAddress LIBPE_CALLTYPE GetEntry();
+    virtual PERawImportByName * GetRawImportByName();
+    virtual PEAddress GetRawImportByNameRVA();
+    virtual PEAddress GetRawImportByNameFOA();
+    virtual PEAddress GetRawImportByNameSize();
+
+    virtual const char * GetName();
+    virtual UINT16 GetOrdinal();
+    
+protected:
+    HRESULT EnsureImportByNameParsed() {
+        if (m_bIsImportByNameParsed) {
+            return S_OK;
+        }
+
+        // If failed, do not parse twice.
+        m_bIsImportByNameParsed = true;
+
+        LIBPE_ASSERT_RET(NULL != m_pParser && NULL != m_pFile, E_FAIL);
+        LIBPE_ASSERT_RET(SUCCEEDED(m_pParser->ParseImportFunction(this)), E_FAIL);
+
+        return S_OK;
+    }
 
 private:
-    LibPERawThunkData(T) *m_pThunkData;
+    bool m_bIsImportByNameParsed;
+    LibPERawImportByName(T) *m_pImportByName;
+    PEAddress m_nImportByNameRVA;
+    PEAddress m_nImportByNameFOA;
+    PEAddress m_nImportByNameSize;
 };
 
 typedef PEImportTableT<PE32> PEImportTable32;

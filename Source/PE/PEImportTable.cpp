@@ -53,6 +53,13 @@ PEImportModuleT<T>::IsBound()
     return (0 != pImportDesc->TimeDateStamp);
 }
 
+template <class T>
+UINT32
+PEImportModuleT<T>::GetFunctionCount()
+{
+    LIBPE_ASSERT_RET(SUCCEEDED(EnsureFunctionParsed()), 0);
+    return (UINT32)m_vFunctions.size();
+}
 
 template <class T>
 HRESULT
@@ -60,24 +67,19 @@ PEImportModuleT<T>::GetFunctionByIndex(UINT32 nIndex, IPEImportFunction **ppFunc
 {
     LIBPE_ASSERT_RET(NULL != ppFunction, E_POINTER);
 
+    LIBPE_ASSERT_RET(SUCCEEDED(EnsureFunctionParsed()), E_FAIL);
+
     UINT32 nFunctionCount = GetFunctionCount();
     LIBPE_ASSERT_RET(nIndex < nFunctionCount, E_INVALIDARG);
 
-    FunctionInfo &oInfo = m_vFunctions[nIndex];
-    if(NULL == oInfo.m_pFunction) {
-        LIBPE_ASSERT_RET(NULL != m_pParser && NULL != m_pFile && NULL != oInfo.m_pThunkData, E_FAIL);
-        if(FAILED(m_pParser->ParseImportFunction(GetRawStruct(), oInfo.m_pThunkData, &oInfo.m_pFunction)) || NULL == oInfo.m_pFunction) {
-            return E_FAIL;
-        }
-    }
-
-    return oInfo.m_pFunction.CopyTo(ppFunction);
+    return m_vFunctions[nIndex].CopyTo(ppFunction);
 }
 
 template <class T>
 HRESULT
 PEImportModuleT<T>::GetFunctionByName(const char *pFunctionName, IPEImportFunction **ppFunction)
 {
+    LIBPE_ASSERT_RET(SUCCEEDED(EnsureFunctionParsed()), E_FAIL);
     return E_NOTIMPL;
 }
 
@@ -107,26 +109,69 @@ PEImportModuleT<T>::GetRelatedImportAddressBlock(IPEImportAddressBlock **ppBlock
 }
 
 template <class T>
-LibPERawThunkData(T) *  
-PEImportFunctionT<T>::GetRawThunkData()
+PERawImportByName *
+PEImportFunctionT<T>::GetRawImportByName()
 {
-    return m_pThunkData;
+    LIBPE_ASSERT_RET(SUCCEEDED(EnsureImportByNameParsed()), NULL);
+    return m_pImportByName;
 }
 
 template <class T>
-const char *  
+PEAddress
+PEImportFunctionT<T>::GetRawImportByNameRVA()
+{
+    LIBPE_ASSERT_RET(SUCCEEDED(EnsureImportByNameParsed()), LIBPE_INVALID_ADDRESS);
+    return m_nImportByNameRVA;
+}
+
+template <class T>
+PEAddress
+PEImportFunctionT<T>::GetRawImportByNameFOA()
+{
+    LIBPE_ASSERT_RET(SUCCEEDED(EnsureImportByNameParsed()), LIBPE_INVALID_ADDRESS);
+    return m_nImportByNameFOA;
+}
+
+template <class T>
+PEAddress
+PEImportFunctionT<T>::GetRawImportByNameSize()
+{
+    LIBPE_ASSERT_RET(SUCCEEDED(EnsureImportByNameParsed()), LIBPE_INVALID_ADDRESS);
+    return m_nImportByNameSize;
+}
+
+
+template <class T>
+const char *
 PEImportFunctionT<T>::GetName()
 {
-    LibPERawImportByName(T) *pImportByName = GetRawStruct();
-    LIBPE_ASSERT_RET(NULL != pImportByName, 0);
-    return (const char *)pImportByName->Name;
+    LIBPE_ASSERT_RET(SUCCEEDED(EnsureImportByNameParsed()), NULL);
+
+    if (NULL == m_pImportByName) {
+        return NULL;
+    }
+
+    return m_pImportByName->Name;
 }
 
 template <class T>
-PEAddress  
-PEImportFunctionT<T>::GetEntry()
+UINT16
+PEImportFunctionT<T>::GetOrdinal()
 {
-    return NULL;
+    LIBPE_ASSERT_RET(SUCCEEDED(EnsureImportByNameParsed()), 0);
+
+    if (NULL != m_pImportByName) {
+        return m_pImportByName->Hint;
+    }
+
+    LibPERawThunkData(T) *pThunkData = GetRawStruct();
+    LIBPE_ASSERT_RET(NULL != pThunkData, 0);
+    
+    if ((PETrait<T>::ImageOrdinalFlag & pThunkData->u1.Ordinal) == 0) {
+        return 0;
+    }
+
+    return (UINT16)(pThunkData->u1.Ordinal & 0xFFFF);
 }
 
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEImportTableT);

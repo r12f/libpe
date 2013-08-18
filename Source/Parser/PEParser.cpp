@@ -385,7 +385,7 @@ PEParserT<T>::ParseImportTable(IPEImportTable **ppImportTable)
 
     PEAddress nImportDescRVA = nImportTableRVA, nImportDescFOA = nImportTableFOA;
     while(0 != pImportDesc->Characteristics && 0 != pImportDesc->Name) {
-        pImportTable->AddImportDescriptor(nImportDescRVA, nImportDescFOA, pImportDesc);
+        pImportTable->InnerAddImportDescriptor(nImportDescRVA, nImportDescFOA, pImportDesc);
         ++pImportDesc;
         nImportDescRVA += sizeof(LibPERawImportDescriptor(T));
         nImportDescFOA += sizeof(LibPERawImportDescriptor(T));
@@ -420,29 +420,6 @@ PEParserT<T>::ParseImportModule(PEAddress nImportDescRVA, PEAddress nImportDescF
     pImportModule->InnerSetFileInfo(nImportDescFOA, sizeof(IMAGE_IMPORT_BY_NAME));
     pImportModule->InnerSetName(pImportName);
 
-    // By default, we use the first bridge to IMAGE_IMPORT_BY_NAME. But in some cases, the first bridge is NULL.
-    // Compilers use the second bridge only. So we should fix the thunk entry at that time.
-    PEAddress nImportThunkRVA = pImportDescriptor->OriginalFirstThunk;
-    if(0 == pImportDescriptor->OriginalFirstThunk) {
-        nImportThunkRVA = pImportDescriptor->FirstThunk;
-    }
-    LIBPE_ASSERT_RET(0 != nImportThunkRVA, E_FAIL);
-
-    PEAddress nImportThunkFOA = GetFOAFromRVA(nImportThunkRVA);
-    if(0 == nImportThunkFOA) {
-        return E_FAIL;
-    }
-
-    for(;;) {
-        LibPERawThunkData(T) *pThunkData = (LibPERawThunkData(T) *)m_pLoader->GetBuffer(nImportThunkFOA, sizeof(LibPERawThunkData(T)));
-        if(NULL == pThunkData || 0 == pThunkData->u1.AddressOfData) {
-            break;
-        }
-        pImportModule->AddImportFunctionThunk(pThunkData);
-        nImportThunkRVA += sizeof(LibPERawThunkData(T));
-        nImportThunkFOA += sizeof(LibPERawThunkData(T));
-    }
-
     *ppImportModule = pImportModule.Detach();
 
     return S_OK;
@@ -450,36 +427,88 @@ PEParserT<T>::ParseImportModule(PEAddress nImportDescRVA, PEAddress nImportDescF
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseImportFunction(LibPERawImportDescriptor(T) *pImportDescriptor, LibPERawThunkData(T) *pThunkData, IPEImportFunction **ppFunction)
+PEParserT<T>::ParseImportFunctionsInModule(IPEImportModule *pImportModule)
 {
-    LIBPE_ASSERT_RET(NULL != pImportDescriptor && NULL != pThunkData && NULL != ppFunction, E_POINTER);
+    LIBPE_ASSERT_RET(NULL != pImportModule, E_UNEXPECTED);
 
-    *ppFunction = NULL;
+    PEImportModuleT<T> *pInnerImportModule = (PEImportModuleT<T> *)pImportModule;
 
-    PEAddress nRawImportFunctionRVA = pThunkData->u1.AddressOfData;
-    PEAddress nRawImportFunctionFOA = GetFOAFromRVA(nRawImportFunctionRVA);
-    if(0 == nRawImportFunctionFOA) {
+    LibPERawImportDescriptor(T) *pImportDescriptor = pInnerImportModule->GetRawStruct();
+    LIBPE_ASSERT_RET(NULL != pImportDescriptor, E_FAIL);
+
+    // By default, we use the first bridge to IMAGE_IMPORT_BY_NAME. But in some cases, the first bridge is NULL.
+    // Compilers use the second bridge only. So we should fix the thunk entry at that time.
+    PEAddress nThunkDataRVA = pImportDescriptor->OriginalFirstThunk;
+    if(0 == pImportDescriptor->OriginalFirstThunk) {
+        nThunkDataRVA = pImportDescriptor->FirstThunk;
+    }
+    LIBPE_ASSERT_RET(0 != nThunkDataRVA, E_FAIL);
+
+    PEAddress nThunkDataFOA = GetFOAFromRVA(nThunkDataRVA);
+    if(0 == nThunkDataFOA) {
         return E_FAIL;
     }
 
+    for(;;) {
+        LibPERawThunkData(T) *pThunkData = (LibPERawThunkData(T) *)m_pLoader->GetBuffer(nThunkDataFOA, sizeof(LibPERawThunkData(T)));
+        if(NULL == pThunkData || 0 == pThunkData->u1.AddressOfData) {
+            break;
+        }
+
+        LibPEPtr<PEImportFunctionT<T>> pFunction = new PEImportFunctionT<T>();
+        if(NULL == pFunction) {
+            return E_OUTOFMEMORY;
+        }
+
+        pFunction->InnerSetBase(m_pFile, this);
+        pFunction->InnerSetMemoryInfo(nThunkDataRVA, 0, sizeof(LibPERawThunkData(T)));
+        pFunction->InnerSetFileInfo(nThunkDataFOA, sizeof(LibPERawThunkData(T)));
+
+        pInnerImportModule->InnerAddImportFunction(pFunction);
+
+        nThunkDataRVA += sizeof(LibPERawThunkData(T));
+        nThunkDataFOA += sizeof(LibPERawThunkData(T));
+    }
+
+    return S_OK;
+}
+
+template <class T>
+HRESULT
+PEParserT<T>::ParseImportFunction(IPEImportFunction *pFunction)
+{
+    LIBPE_ASSERT_RET(NULL != pFunction, E_UNEXPECTED);
+
+    PEImportFunctionT<T> *pInnerFunction = (PEImportFunctionT<T> *)pFunction;
+
+    LibPERawThunkData(T) *pThunkData = (LibPERawThunkData(T) *)pFunction->GetRawMemory();
+    LIBPE_ASSERT_RET(NULL != pThunkData, E_FAIL);
+
+    // No IMAGE_IMPORT_BY_NAME structure if the function is imported by ordinal
+    if (0 != (pThunkData->u1.Ordinal & PETrait<T>::ImageOrdinalFlag)) {
+        return S_OK;
+    }
+
+    // Parse the function imported by IMAGE_IMPORT_BY_NAME
+    PEAddress nRawImportByNameRVA = pThunkData->u1.AddressOfData;
+    PEAddress nRawImportByNameFOA = GetFOAFromRVA(nRawImportByNameRVA);
+    if(LIBPE_INVALID_ADDRESS == nRawImportByNameFOA) {
+        return E_FAIL;
+    }
+
+    LibPERawImportByName(T) *pImportByName = (LibPERawImportByName(T) *)m_pLoader->GetBuffer(nRawImportByNameFOA, sizeof(LibPERawImportByName(T)));
+    if (NULL == pImportByName) {
+        return E_OUTOFMEMORY;
+    }
+    
     UINT64 nNameBufferSize = 0; 
-    if(NULL == m_pLoader->GetAnsiString(nRawImportFunctionFOA + sizeof(UINT16), nNameBufferSize)) {
+    if(NULL == m_pLoader->GetAnsiString(nRawImportByNameFOA + sizeof(UINT16), nNameBufferSize)) {
         return E_OUTOFMEMORY;
     }
 
-    PEAddress nRawImportFunctionSize = (PEAddress)(sizeof(UINT16) + nNameBufferSize);
+    PEAddress nRawImportByNameSize = (PEAddress)(sizeof(UINT16) + nNameBufferSize);
 
-    LibPEPtr<PEImportFunctionT<T>> pFunction = new PEImportFunctionT<T>();
-    if(NULL == pFunction) {
-        return E_OUTOFMEMORY;
-    }
-
-    pFunction->InnerSetBase(m_pFile, this);
-    pFunction->InnerSetMemoryInfo(nRawImportFunctionRVA, 0, nRawImportFunctionSize);
-    pFunction->InnerSetFileInfo(nRawImportFunctionFOA, nRawImportFunctionSize);
-    pFunction->InnerSetThunkData(pThunkData);
-
-    *ppFunction = pFunction.Detach();
+    pInnerFunction->InnerSetRawImportByName(pImportByName, nRawImportByNameRVA, nRawImportByNameFOA, nRawImportByNameSize);
 
     return S_OK;
 }

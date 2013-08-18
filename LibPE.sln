@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.20623.1 VSUPREVIEW
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{9E9032C9-65B3-488A-8CC7-1E4B93E381C3}"
+	ProjectSection(SolutionItems) = preProject
+		Include\LibPE.h = Include\LibPE.h
+		Include\LibPEBase.h = Include\LibPEBase.h
+		Include\LibPEError.h = Include\LibPEError.h
+		Include\LibPEInterface.h = Include\LibPEInterface.h
+		Include\LibPEPtr.h = Include\LibPEPtr.h
+		Include\LibPETrait.h = Include\LibPETrait.h
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibPEDll", "Source\LibPEDll.vcxproj", "{48F71FA7-6FAA-4FAE-828C-370F677463FD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LibPELib", "Source\LibPELib.vcxproj", "{28692735-9677-476B-91F3-684977E5823A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{F36BE0D3-BF98-4B62-9F14-F26B6E3F56A5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageInfoExporter", "Examples\ImageInfoExporter\ImageInfoExporter.vcxproj", "{C227D2BA-4516-463F-852A-BB0C0D86B147}"
+	ProjectSection(ProjectDependencies) = postProject
+		{28692735-9677-476B-91F3-684977E5823A} = {28692735-9677-476B-91F3-684977E5823A}
+		{48F71FA7-6FAA-4FAE-828C-370F677463FD} = {48F71FA7-6FAA-4FAE-828C-370F677463FD}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48F71FA7-6FAA-4FAE-828C-370F677463FD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{48F71FA7-6FAA-4FAE-828C-370F677463FD}.Debug|Win32.Build.0 = Debug|Win32
+		{48F71FA7-6FAA-4FAE-828C-370F677463FD}.Debug|x64.ActiveCfg = Debug|x64
+		{48F71FA7-6FAA-4FAE-828C-370F677463FD}.Debug|x64.Build.0 = Debug|x64
+		{48F71FA7-6FAA-4FAE-828C-370F677463FD}.Release|Win32.ActiveCfg = Release|Win32
+		{48F71FA7-6FAA-4FAE-828C-370F677463FD}.Release|Win32.Build.0 = Release|Win32
+		{48F71FA7-6FAA-4FAE-828C-370F677463FD}.Release|x64.ActiveCfg = Release|x64
+		{48F71FA7-6FAA-4FAE-828C-370F677463FD}.Release|x64.Build.0 = Release|x64
+		{28692735-9677-476B-91F3-684977E5823A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{28692735-9677-476B-91F3-684977E5823A}.Debug|Win32.Build.0 = Debug|Win32
+		{28692735-9677-476B-91F3-684977E5823A}.Debug|x64.ActiveCfg = Debug|x64
+		{28692735-9677-476B-91F3-684977E5823A}.Debug|x64.Build.0 = Debug|x64
+		{28692735-9677-476B-91F3-684977E5823A}.Release|Win32.ActiveCfg = Release|Win32
+		{28692735-9677-476B-91F3-684977E5823A}.Release|Win32.Build.0 = Release|Win32
+		{28692735-9677-476B-91F3-684977E5823A}.Release|x64.ActiveCfg = Release|x64
+		{28692735-9677-476B-91F3-684977E5823A}.Release|x64.Build.0 = Release|x64
+		{C227D2BA-4516-463F-852A-BB0C0D86B147}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C227D2BA-4516-463F-852A-BB0C0D86B147}.Debug|Win32.Build.0 = Debug|Win32
+		{C227D2BA-4516-463F-852A-BB0C0D86B147}.Debug|x64.ActiveCfg = Debug|x64
+		{C227D2BA-4516-463F-852A-BB0C0D86B147}.Debug|x64.Build.0 = Debug|x64
+		{C227D2BA-4516-463F-852A-BB0C0D86B147}.Release|Win32.ActiveCfg = Release|Win32
+		{C227D2BA-4516-463F-852A-BB0C0D86B147}.Release|Win32.Build.0 = Release|Win32
+		{C227D2BA-4516-463F-852A-BB0C0D86B147}.Release|x64.ActiveCfg = Release|x64
+		{C227D2BA-4516-463F-852A-BB0C0D86B147}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C227D2BA-4516-463F-852A-BB0C0D86B147} = {F36BE0D3-BF98-4B62-9F14-F26B6E3F56A5}
+	EndGlobalSection
+EndGlobal
