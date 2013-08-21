@@ -68,7 +68,7 @@ class PERelocationItemT :
     public PEElementT<T>
 {
 public:
-    PERelocationItemT() : m_nAddressRVA(0) {}
+    PERelocationItemT() : m_nAddressRVA(LIBPE_INVALID_ADDRESS) {}
     virtual ~PERelocationItemT() {}
 
     DECLARE_PE_ELEMENT(void)

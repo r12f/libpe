@@ -56,7 +56,7 @@ PERelocationPageT<T>::GetPageRVA()
 {
     LibPERawBaseRelocation(T) *pRawStruct = GetRawStruct();
     if(NULL == pRawStruct) {
-        return 0;
+        return LIBPE_INVALID_ADDRESS;
     }
 
     return pRawStruct->VirtualAddress;
@@ -131,7 +131,7 @@ PERelocationItemT<T>::GetAddressContent()
 {
     PEAddress *pAddressContent = GetRawAddressContent();
     if(NULL == pAddressContent) {
-        return 0;
+        return LIBPE_INVALID_ADDRESS;
     }
     
     return *pAddressContent;

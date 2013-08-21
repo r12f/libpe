@@ -28,16 +28,6 @@ PEFileT<T>::Create(DataLoader *pLoader, IPEFile **ppFile)
 }
 
 template <class T>
-PEFileT<T>::PEFileT()
-    : m_pDosHeader(NULL)
-    , m_pFileHeader(NULL)
-    , m_pNtHeaders(NULL)
-    , m_pOptionalHeader(NULL)
-{
-
-}
-
-template <class T>
 PERawDosHeader *
 PEFileT<T>::GetRawDosHeader()
 {
@@ -197,6 +187,7 @@ template <class T>
 HRESULT
 PEFileT<T>::GetSectionByRVA(PEAddress nRVA, IPESection **ppSection)
 {
+    LIBPE_ASSERT_RET(LIBPE_INVALID_ADDRESS != nRVA, E_INVALIDARG);
     LIBPE_ASSERT_RET(NULL != ppSection, E_POINTER);
 
     UINT32 nSectionCount = GetSectionCount();
@@ -224,6 +215,7 @@ template <class T>
 HRESULT
 PEFileT<T>::GetSectionByFOA(PEAddress nFOA, IPESection **ppSection)
 {
+    LIBPE_ASSERT_RET(LIBPE_INVALID_ADDRESS != nFOA, E_INVALIDARG);
     LIBPE_ASSERT_RET(NULL != ppSection, E_POINTER);
 
     UINT32 nSectionCount = GetSectionCount();
@@ -252,7 +244,7 @@ template <class T>
 PEAddress
 PEFileT<T>::GetRVAFromVA(PEAddress nVA)
 {
-    LIBPE_ASSERT_RET(NULL != m_pParser, 0);
+    LIBPE_ASSERT_RET(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
     return m_pParser->GetRVAFromVA(nVA);
 }
 
@@ -260,7 +252,7 @@ template <class T>
 PEAddress
 PEFileT<T>::GetVAFromRVA(PEAddress nRVA)
 {
-    LIBPE_ASSERT_RET(NULL != m_pParser, 0);
+    LIBPE_ASSERT_RET(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
     return m_pParser->GetVAFromRVA(nRVA);
 }
 
@@ -268,7 +260,7 @@ template <class T>
 PEAddress
 PEFileT<T>::GetRVAFromFOA(PEAddress nFOA)
 {
-    LIBPE_ASSERT_RET(NULL != m_pParser, 0);
+    LIBPE_ASSERT_RET(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
     return m_pParser->GetRVAFromFOA(nFOA);
 }
 
@@ -276,7 +268,7 @@ template <class T>
 PEAddress
 PEFileT<T>::GetFOAFromRVA(PEAddress nRVA)
 {
-    LIBPE_ASSERT_RET(NULL != m_pParser, 0);
+    LIBPE_ASSERT_RET(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
     return m_pParser->GetFOAFromRVA(nRVA);
 }
 
@@ -284,7 +276,7 @@ template <class T>
 PEAddress
 PEFileT<T>::GetVAFromFOA(PEAddress nFOA)
 {
-    LIBPE_ASSERT_RET(NULL != m_pParser, 0);
+    LIBPE_ASSERT_RET(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
     return m_pParser->GetVAFromFOA(nFOA);
 }
 
@@ -292,7 +284,7 @@ template <class T>
 PEAddress
 PEFileT<T>::GetFOAFromVA(PEAddress nVA)
 {
-    LIBPE_ASSERT_RET(NULL != m_pParser, 0);
+    LIBPE_ASSERT_RET(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
     return m_pParser->GetFOAFromVA(nVA);
 }
 

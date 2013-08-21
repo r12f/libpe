@@ -6,3 +6,5 @@ Release
 .svn
 ipch
 Output
+*.sdf
+*.opensdf

@@ -4,10 +4,10 @@ using namespace LibPE;
 
 void ExportBasicInfo(IPEFile *pFile)
 {
-    printf("DosHeader: 0x%08x\n", pFile->GetRawDosHeader());
-    printf("NtHeaders: 0x%08x\n", pFile->GetRawNtHeaders());
-    printf("FileHeader: 0x%08x\n", pFile->GetRawFileHeader());
-    printf("OptionalHeader: 0x%08x\n", pFile->GetRawOptionalHeader());
+    printf("DosHeader: 0x%p\n", pFile->GetRawDosHeader());
+    printf("NtHeaders: 0x%p\n", pFile->GetRawNtHeaders());
+    printf("FileHeader: 0x%p\n", pFile->GetRawFileHeader());
+    printf("OptionalHeader: 0x%p\n", pFile->GetRawOptionalHeader());
     printf("IsX86File: %s\n", pFile->Is32Bit() ? "YES" : "NO");
 }
 
@@ -19,7 +19,7 @@ void ExportSection(IPEFile *pFile)
     for(UINT32 nSectionIndex = 0; nSectionIndex < nSectionCount; ++nSectionIndex) {
         LibPEPtr<IPESection> pSection;
         pFile->GetSection(nSectionIndex, &pSection);
-        printf("Section #%lu: Name = %s, RVA = 0x%08x, SizeInMemory = 0x%08x, FOA = 0x%08x, SizeInFile = 0x%08x\n",
+        printf("Section #%lu: Name = %s, RVA = 0x%016I64x, SizeInMemory = %I64u, FOA = 0x%016I64x, SizeInFile = %I64u\n",
             nSectionIndex, pSection->GetName(), pSection->GetRVA(), pSection->GetSizeInMemory(),
             pSection->GetFOA(), pSection->GetSizeInFile());
     }
@@ -47,7 +47,7 @@ void ExportExportTable(IPEFile *pFile)
     for(UINT32 nExportFunctionIndex = 0; nExportFunctionIndex < nExportFunctionCount; ++nExportFunctionIndex) {
         LibPEPtr<IPEExportFunction> pExportFunction;
         pExportTable->GetFunctionByIndex(nExportFunctionIndex, &pExportFunction);
-        printf("Export Function: Name = %s, Hint = %d, RVA = 0x%08x\n", pExportFunction->GetName(), pExportFunction->GetHint(), pExportFunction->GetRVA());
+        printf("Export Function: Name = %s, Ordinal = %d, RVA = 0x%016I64x\n", pExportFunction->GetName(), pExportFunction->GetOrdinal(), pExportFunction->GetRVA());
     }
 
     printf("\n");
@@ -68,7 +68,7 @@ void ExportImportTable(IPEFile *pFile)
         LibPEPtr<IPEImportAddressBlock> pRelatedIABlock;
         pImportModule->GetRelatedImportAddressBlock(&pRelatedIABlock);
 
-        printf("Import Module: %s (Bound: %s, IABlock: %08x)\n", pImportModule->GetName(), pImportModule->IsBound() ? "true" : "false", pRelatedIABlock->GetRVA());
+        printf("Import Module: %s (Bound: %s, IABlock: %016I64x)\n", pImportModule->GetName(), pImportModule->IsBound() ? "true" : "false", pRelatedIABlock->GetRVA());
 
         for(UINT32 nImportFunctionIndex = 0; nImportFunctionIndex < pImportModule->GetFunctionCount(); ++nImportFunctionIndex) {
             LibPEPtr<IPEImportFunction> pImportFunction;
@@ -84,7 +84,7 @@ void ExportResourceDataEntry(IPEResourceDataEntry *pDataEntry)
 {
     LibPEPtr<IPEResource> pResource;
     pDataEntry->GetResource(&pResource);
-    printf("Resource: RVA = 0x%08x, FOA = 0x%08x, Size = %lu", pResource->GetRVA(), pResource->GetFOA(), pResource->GetSizeInMemory());
+    printf("Resource: RVA = 0x%016I64x, FOA = 0x%016I64x, Size = %I64u", pResource->GetRVA(), pResource->GetFOA(), pResource->GetSizeInMemory());
 }
 
 void ExportResourceDirectory(IPEResourceDirectory *pDirectory);
@@ -100,12 +100,12 @@ void ExportResourceDirectoryEntry(IPEResourceDirectoryEntry *pDirectoryEntry)
     if(pDirectoryEntry->IsEntryDirectory()) {
         LibPEPtr<IPEResourceDirectory> pChildDirectory;
         pDirectoryEntry->GetDirectory(&pChildDirectory);
-        printf("DirectoryRVA = %lu\n", pChildDirectory->GetRVA());
+        printf("DirectoryRVA = 0x%016I64x\n", pChildDirectory->GetRVA());
         ExportResourceDirectory(pChildDirectory);
     } else {
         LibPEPtr<IPEResourceDataEntry> pChildEntry;
         pDirectoryEntry->GetDataEntry(&pChildEntry);
-        printf("DataEntryRVA = %lu\n", pChildEntry->GetRVA());
+        printf("DataEntryRVA = 0x%016I64x\n", pChildEntry->GetRVA());
         ExportResourceDataEntry(pChildEntry);
     }
 }
@@ -153,7 +153,7 @@ void ExportRelocationTable(IPEFile *pFile)
         for(UINT32 nItemIndex = 0; nItemIndex < nRelocationItemCount; ++nItemIndex) {
             LibPEPtr<IPERelocationItem> pRelocationItem;
             pRelocationPage->GetItemByIndex(nItemIndex, &pRelocationItem);
-            printf("Relocation Item: RVA = 0x%08x, Address = 0x%08x\n", pRelocationItem->GetAddressRVA(), pRelocationItem->GetRawAddressContent());
+            printf("Relocation Item: RVA = 0x%016I64x, Address = 0x%016I64x\n", pRelocationItem->GetAddressRVA(), pRelocationItem->GetRawAddressContent());
         }
 
         printf("\n");
@@ -170,13 +170,13 @@ void ExportImportAddressTable(IPEFile *pFile)
     for(UINT32 nBlockIndex = 0; nBlockIndex < nImportAddressBlockCount; ++nBlockIndex) {
         LibPEPtr<IPEImportAddressBlock> pImportAddressBlock;
         pImportAddressTable->GetBlockByIndex(nBlockIndex, &pImportAddressBlock);
-        printf("Import Address Block: RVA = 0x%08x\n", pImportAddressBlock->GetRVA());
+        printf("Import Address Block: RVA = 0x%016I64x\n", pImportAddressBlock->GetRVA());
 
         UINT32 nImportAddressItemCount = pImportAddressBlock->GetItemCount();
         for(UINT32 nItemIndex = 0; nItemIndex < nImportAddressItemCount; ++nItemIndex) {
             LibPEPtr<IPEImportAddressItem> pImportAddressItem;
             pImportAddressBlock->GetItemByIndex(nItemIndex, &pImportAddressItem);
-            printf("Import Address Item: RVA = 0x%08x, Address = 0x%08x\n", pImportAddressItem->GetRVA(), pImportAddressItem->GetFieldAddressOfData());
+            printf("Import Address Item: RVA = 0x%016I64x, Address = 0x%016I64x\n", pImportAddressItem->GetRVA(), pImportAddressItem->GetFieldAddressOfData());
         }
 
         printf("\n");
@@ -196,8 +196,8 @@ int wmain(int /*argc*/, wchar_t* /*argv*/[])
     ExportExportTable(pFile);
     ExportImportTable(pFile);
     ExportResourceTable(pFile);
-    ExportRelocationTable(pFile);
-    ExportImportAddressTable(pFile);
+    //ExportRelocationTable(pFile);
+    //ExportImportAddressTable(pFile);
 
     return 0;
 }

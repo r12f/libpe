@@ -26,35 +26,35 @@ template <class T>
 BOOL
 PEImportAddressTableT<T>::IsBlockExists(IPEImportAddressBlock *pBlock)
 {
-    LIBPE_ASSERT_RET(NULL != pBlock, false);
+    LIBPE_ASSERT_RET(NULL != pBlock, FALSE);
 
     void *pArgRawBlock = pBlock->GetRawMemory();
-    LIBPE_ASSERT_RET(NULL != pArgRawBlock, false);
+    LIBPE_ASSERT_RET(NULL != pArgRawBlock, FALSE);
 
     BlockList::iterator oBlockIt;
     for(oBlockIt = m_vBlocks.begin(); oBlockIt != m_vBlocks.end(); ++oBlockIt) {
         if((*oBlockIt)->GetRawMemory() == pArgRawBlock) {
-            return true;
+            return TRUE;
         }
     }
 
-    return false;
+    return FALSE;
 }
 
 template <class T>
 BOOL
 PEImportAddressTableT<T>::IsItemExist(IPEImportAddressItem *pItem)
 {
-    LIBPE_ASSERT_RET(NULL != pItem, false);
+    LIBPE_ASSERT_RET(NULL != pItem, FALSE);
 
     BlockList::iterator oBlockIt;
     for(oBlockIt = m_vBlocks.begin(); oBlockIt != m_vBlocks.end(); ++oBlockIt) {
         if((*oBlockIt)->IsItemExist(pItem)) {
-            return true;
+            return TRUE;
         }
     }
 
-    return false;
+    return FALSE;
 }
 
 template <class T>
@@ -80,19 +80,19 @@ template <class T>
 BOOL
 PEImportAddressBlockT<T>::IsItemExist(IPEImportAddressItem *pItem)
 {
-    LIBPE_ASSERT_RET(NULL != pItem, false);
+    LIBPE_ASSERT_RET(NULL != pItem, FALSE);
 
     void *pArgRawItem = pItem->GetRawMemory();
-    LIBPE_ASSERT_RET(NULL != pArgRawItem, false);
+    LIBPE_ASSERT_RET(NULL != pArgRawItem, FALSE);
 
     ItemList::iterator oItemIt;
     for(oItemIt = m_vItems.begin(); oItemIt != m_vItems.end(); ++oItemIt) {
         if((*oItemIt)->GetRawMemory() == pArgRawItem) {
-            return true;
+            return TRUE;
         }
     }
 
-    return false;
+    return FALSE;
 }
 
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEImportAddressTableT);

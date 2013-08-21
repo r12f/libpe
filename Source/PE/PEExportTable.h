@@ -49,7 +49,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEExportFunction **ppFunction);
 
 private:
-    FunctionList        m_vExportFunctions;
+    FunctionList      m_vExportFunctions;
     UINT32            *m_pFunctionList;
     UINT32            *m_pNameList;
     UINT16            *m_pNameOrdinalList;
@@ -61,20 +61,20 @@ class PEExportFunctionT :
     public PEElementT<T>
 {
 public:
-    PEExportFunctionT() : m_pName(NULL), m_nHint(0) {}
+    PEExportFunctionT() : m_pName(NULL), m_nOrdinal(0) {}
     virtual ~PEExportFunctionT() {}
 
     DECLARE_PE_ELEMENT(void)
 
     void InnerSetName(const char *pName) { m_pName = pName; }
-    void InnerSetHint(UINT16 nHint) { m_nHint = nHint; }
+    void InnerSetOrdinal(UINT16 nOrdinal) { m_nOrdinal = nOrdinal; }
 
     virtual const char * LIBPE_CALLTYPE GetName();
-    virtual UINT16 LIBPE_CALLTYPE GetHint();
+    virtual UINT16 LIBPE_CALLTYPE GetOrdinal();
 
 private:
-    const char *    m_pName;
-    UINT16          m_nHint;
+    const char      *m_pName;
+    UINT16          m_nOrdinal;
 };
 
 typedef PEExportTableT<PE32> PEExportTable32;

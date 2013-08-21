@@ -49,8 +49,8 @@ BOOL
 PEImportModuleT<T>::IsBound()
 {
     LibPERawImportDescriptor(T) *pImportDesc = GetRawStruct();
-    LIBPE_ASSERT_RET(NULL != pImportDesc, 0);
-    return (0 != pImportDesc->TimeDateStamp);
+    LIBPE_ASSERT_RET(NULL != pImportDesc, FALSE);
+    return (TRUE != pImportDesc->TimeDateStamp);
 }
 
 template <class T>
@@ -136,7 +136,7 @@ template <class T>
 PEAddress
 PEImportFunctionT<T>::GetRawImportByNameSize()
 {
-    LIBPE_ASSERT_RET(SUCCEEDED(EnsureImportByNameParsed()), LIBPE_INVALID_ADDRESS);
+    LIBPE_ASSERT_RET(SUCCEEDED(EnsureImportByNameParsed()), LIBPE_INVALID_SIZE);
     return m_nImportByNameSize;
 }
 

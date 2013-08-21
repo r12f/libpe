@@ -24,7 +24,7 @@ public:
     DECLARE_PE_ELEMENT(LibPERawImportDescriptor(T))
 
     void InnerAddImportDescriptor(PEAddress nImportDescRVA, PEAddress nImportDescFOA, LibPERawImportDescriptor(T) *pImportDesc) {
-        LIBPE_ASSERT_RET_VOID(0 != nImportDescRVA && 0 != nImportDescFOA && NULL != pImportDesc);
+        LIBPE_ASSERT_RET_VOID(LIBPE_INVALID_ADDRESS != nImportDescRVA && LIBPE_INVALID_ADDRESS != nImportDescFOA && NULL != pImportDesc);
         ModuleInfo oInfo;
         oInfo.m_nImportDescRVA = nImportDescRVA;
         oInfo.m_nImportDescFOA = nImportDescFOA;
@@ -104,12 +104,20 @@ class PEImportFunctionT :
     public PEElementT<T>
 {
 public:
-    PEImportFunctionT() : m_bIsImportByNameParsed(false), m_pImportByName(NULL), m_nImportByNameRVA(0), m_nImportByNameFOA(0), m_nImportByNameSize(0) {}
+    PEImportFunctionT()
+        : m_bIsImportByNameParsed(false)
+        , m_pImportByName(NULL)
+        , m_nImportByNameRVA(LIBPE_INVALID_ADDRESS)
+        , m_nImportByNameFOA(LIBPE_INVALID_ADDRESS)
+        , m_nImportByNameSize(LIBPE_INVALID_SIZE)
+    {}
     virtual ~PEImportFunctionT() {}
 
     DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
     void InnerSetRawImportByName(LibPERawImportByName(T) *pImportByName, PEAddress nRVA, PEAddress nFOA, PEAddress nSize) {
+        LIBPE_ASSERT_RET_VOID(NULL != pImportByName && LIBPE_INVALID_ADDRESS != nRVA && LIBPE_INVALID_ADDRESS != nFOA && LIBPE_INVALID_SIZE != nSize);
+
         m_pImportByName = pImportByName;
         m_nImportByNameRVA = nRVA;
         m_nImportByNameFOA = nFOA;

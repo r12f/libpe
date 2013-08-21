@@ -45,9 +45,9 @@ PEExportFunctionT<T>::GetName()
 
 template <class T>
 UINT16
-PEExportFunctionT<T>::GetHint()
+PEExportFunctionT<T>::GetOrdinal()
 {
-    return m_nHint;
+    return m_nOrdinal;
 }
 
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEExportTableT);

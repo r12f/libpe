@@ -12,31 +12,33 @@ class PEElementT :
 {
 public:
     PEElementT()
-        : m_pFile(NULL), m_pRawBuffer(NULL), m_nRVA(0), m_nVA(0), m_nSizeInMemory(0), m_nFOA(0), m_nSizeInFile(0)
+        : m_pFile(NULL)
+        , m_pRawBuffer(NULL)
+        , m_nRVA(LIBPE_INVALID_ADDRESS)
+        , m_nVA(LIBPE_INVALID_ADDRESS)
+        , m_nSizeInMemory(LIBPE_INVALID_SIZE)
+        , m_nFOA(LIBPE_INVALID_ADDRESS)
+        , m_nSizeInFile(LIBPE_INVALID_SIZE)
     {}
 
     virtual ~PEElementT() {}
 
-    void InnerSetBase(PEFileT<T> *pFile, PEParserT<T> *pParser)
-    {
+    void InnerSetBase(PEFileT<T> *pFile, PEParserT<T> *pParser) {
         m_pFile = pFile;
         m_pParser = pParser;
     }
 
-    void InnerSetRawMemory(void *pRawBuffer)
-    {
+    void InnerSetRawMemory(void *pRawBuffer) {
         m_pRawBuffer = pRawBuffer;
     }
     
-    void InnerSetMemoryInfo(PEAddress nRVA, PEAddress nVA, PEAddress nSizeInMemory)
-    {
+    void InnerSetMemoryInfo(PEAddress nRVA, PEAddress nVA, PEAddress nSizeInMemory) {
         m_nRVA = nRVA;
         m_nVA = nVA;
         m_nSizeInMemory = nSizeInMemory;
     }
 
-    void InnerSetFileInfo(PEAddress nFOA, PEAddress nSizeInFile)
-    {
+    void InnerSetFileInfo(PEAddress nFOA, PEAddress nSizeInFile) {
         m_nFOA = nFOA;
         m_nSizeInFile = nSizeInFile;
     }
@@ -92,7 +94,7 @@ typedef PEElementT<PE64> PEElement64;
 
 #define LIBPE_ARRAY_FIELD_ACCESSOR_EX(FieldType, FuncName, FieldName, FieldSize)    \
     virtual FieldType * LIBPE_CALLTYPE GetField ## FuncName ## Buffer() {           \
-        LIBPE_ASSERT_RET(NULL != GetRawStruct(), 0);                                \
+        LIBPE_ASSERT_RET(NULL != GetRawStruct(), NULL);                             \
         return GetRawStruct()->FieldName;                                           \
     }                                                                               \
                                                                                     \

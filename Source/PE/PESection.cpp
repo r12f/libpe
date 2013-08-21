@@ -21,7 +21,7 @@ template <class T>
 const char *
 PESectionT<T>::GetName()
 {
-    LIBPE_ASSERT_RET(NULL != m_pSectionHeader, "");
+    LIBPE_ASSERT_RET(NULL != m_pSectionHeader, NULL);
     return (const char *)m_pSectionHeader->Name;
 }
 

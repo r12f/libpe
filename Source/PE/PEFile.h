@@ -14,7 +14,7 @@ public:
     static HRESULT Create(DataLoader *pLoader, IPEFile **ppFile);
 
 public:
-    PEFileT();
+    PEFileT() {}
     virtual ~PEFileT() {}
 
     LIBPE_SINGLE_THREAD_OBJECT();

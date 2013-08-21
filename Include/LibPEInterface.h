@@ -304,7 +304,7 @@ class IPEExportFunction: public IPEElement
 {
 public:
     virtual const char * LIBPE_CALLTYPE GetName() = 0;
-    virtual UINT16 LIBPE_CALLTYPE GetHint() = 0;
+    virtual UINT16 LIBPE_CALLTYPE GetOrdinal() = 0;
 };
 
 class IPEImportTable : public IPEElement

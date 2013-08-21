@@ -64,7 +64,8 @@ struct PETrait<PE64> : PETraitBase {
 #define LibPERawResourceStringU(T)              typename PETrait<T>::RawResourceStringU
 
 typedef UINT64                                  PEAddress;
-#define LIBPE_INVALID_ADDRESS                   0
+#define LIBPE_INVALID_ADDRESS                   ((UINT64)(-1))
+#define LIBPE_INVALID_SIZE                      0
 
 typedef PETraitBase::RawDosHeader               PERawDosHeader;
 typedef PETraitBase::RawFileHeader              PERawFileHeader;

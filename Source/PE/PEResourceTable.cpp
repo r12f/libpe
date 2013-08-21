@@ -48,7 +48,7 @@ PEResourceDirectoryEntryT<T>::IsNameId()
 {
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
     if(NULL == pRawEntry) {
-        return false;
+        return FALSE;
     }
 
     return (pRawEntry->NameIsString == 0);
@@ -72,7 +72,7 @@ PEResourceDirectoryEntryT<T>::IsNameString()
 {
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
     if(NULL == pRawEntry) {
-        return false;
+        return FALSE;
     }
 
     return (pRawEntry->NameIsString != 0);
@@ -122,7 +122,7 @@ HRESULT
 PEResourceDirectoryEntryT<T>::GetDirectory(IPEResourceDirectory **ppDirectory)
 {
     LIBPE_ASSERT_RET(NULL != ppDirectory, E_POINTER);
-    LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
+    LIBPE_ASSERT_RET(NULL != m_pParser, E_FAIL);
 
     *ppDirectory = NULL;
 
@@ -133,7 +133,7 @@ PEResourceDirectoryEntryT<T>::GetDirectory(IPEResourceDirectory **ppDirectory)
 
     LibPEPtr<IPEResourceTable> pTable;
     if(FAILED(m_pFile->GetResourceTable(&pTable)) || NULL == pTable) {
-        return NULL;
+        return E_FAIL;
     }
 
     LibPEPtr<IPEResourceDirectory> pDirectory;
@@ -150,11 +150,11 @@ template <class T>
 BOOL
 PEResourceDirectoryEntryT<T>::IsEntryDataEntry()
 {
-    LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
+    LIBPE_ASSERT_RET(NULL != m_pParser, FALSE);
 
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
     if(NULL == pRawEntry) {
-        return false;
+        return FALSE;
     }
 
     return !(pRawEntry->DataIsDirectory);
@@ -194,7 +194,7 @@ HRESULT
 PEResourceDataEntryT<T>::GetResource(IPEResource **ppResource)
 {
     LIBPE_ASSERT_RET(NULL != ppResource, E_POINTER);
-    LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
+    LIBPE_ASSERT_RET(NULL != m_pParser, E_FAIL);
 
     *ppResource = NULL;
 
@@ -209,7 +209,7 @@ PEResourceDataEntryT<T>::GetResource(IPEResource **ppResource)
 
     LibPEPtr<IPEResourceTable> pTable;
     if(FAILED(m_pFile->GetResourceTable(&pTable)) || NULL == pTable) {
-        return NULL;
+        return E_FAIL;
     }
 
     if(FAILED(m_pParser->ParseResource(this, &m_pResource)) || NULL == m_pResource) {

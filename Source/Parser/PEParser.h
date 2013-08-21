@@ -98,16 +98,16 @@ protected:
 
     PEAddress GetRawOffset(PEAddress nRVA, PEAddress nFOA)
     {
-        LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, NULL);
-        return (0 != nRVA) ? GetRawOffsetFromRVA(nRVA) : GetRawOffsetFromFOA(nFOA);
+        LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, LIBPE_INVALID_ADDRESS);
+        return (LIBPE_INVALID_ADDRESS != nRVA) ? GetRawOffsetFromRVA(nRVA) : GetRawOffsetFromFOA(nFOA);
     }
 
     HRESULT GetDataDirectoryEntry(INT32 nDataDirectoryEntryIndex, PEAddress &nRVA, PEAddress &nFOA, PEAddress &nSize)
     {
-        LIBPE_ASSERT_RET(NULL != m_pFile, NULL);
+        LIBPE_ASSERT_RET(NULL != m_pFile, E_FAIL);
         LibPERawOptionalHeaderT(T) *pOptionalHeader = (LibPERawOptionalHeaderT(T) *)m_pFile->GetRawOptionalHeader();
         if(NULL == pOptionalHeader) {
-            return NULL;
+            return E_FAIL;
         }
 
         LibPERawDataDirectoryT(T) *pDataDirectory = &(pOptionalHeader->DataDirectory[nDataDirectoryEntryIndex]);
@@ -116,11 +116,16 @@ protected:
         }
 
         nRVA = GetRVAFromAddressField(pDataDirectory->VirtualAddress);
-        nSize = pDataDirectory->Size;
-        nFOA = GetFOAFromRVA(nRVA);
-        if(0 == nFOA) {
+        if(LIBPE_INVALID_ADDRESS == nRVA) {
             return E_FAIL;
         }
+
+        nFOA = GetFOAFromRVA(nRVA);
+        if(LIBPE_INVALID_ADDRESS == nFOA) {
+            return E_FAIL;
+        }
+
+        nSize = pDataDirectory->Size;
 
         return S_OK;
     }
