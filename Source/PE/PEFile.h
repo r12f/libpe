@@ -86,6 +86,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE GetDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable) { return E_NOTIMPL; }
     virtual HRESULT LIBPE_CALLTYPE GetGlobalRegister(IPEGlobalRegister **ppGlobalRegister) { return E_NOTIMPL; }
     virtual HRESULT LIBPE_CALLTYPE GetTlsTable(IPETlsTable **ppTlsTable) { return E_NOTIMPL; }
+    virtual HRESULT LIBPE_CALLTYPE GetLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable);
     virtual HRESULT LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable) { return E_NOTIMPL; }
     virtual HRESULT LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTable **ppImportAddressTable);
     virtual HRESULT LIBPE_CALLTYPE GetDelayImportTable(IPEDelayImportTable **ppDelayImportTable) { return E_NOTIMPL; }
@@ -122,7 +123,9 @@ private:
     LibPEPtr<IPEExportTable>                m_pExportTable;
     LibPEPtr<IPEImportTable>                m_pImportTable;
     LibPEPtr<IPEResourceTable>              m_pResourceTable;
+    LibPEPtr<IPECertificateTable>           m_pCertificateTable;
     LibPEPtr<IPERelocationTable>            m_pRelocationTable;
+    LibPEPtr<IPELoadConfigTable>            m_pLoadConfigTable;
     LibPEPtr<IPEImportAddressTable>         m_pImportAddressTable;
 };
 

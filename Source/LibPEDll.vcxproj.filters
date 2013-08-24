@@ -49,6 +49,12 @@
     <ClCompile Include="LibPE.cpp" />
     <ClCompile Include="LibPEConfig.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="PE\PELoadConfigTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PECertificateTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parser\DataLoader.h">
@@ -94,5 +100,11 @@
     <ClInclude Include="LibPEInternal.h" />
     <ClInclude Include="LibPEObject.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="PE\PELoadConfigTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PECertificateTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

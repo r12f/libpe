@@ -32,38 +32,78 @@ public:
 #define LIBPE_METHOD_(ret_type, f)      virtual ret_type LIBPE_CALLTYPE f
 #define LIBPE_METHOD(f)                 LIBPE_METHOD_(HRESULT, f)
 
+// PE file
 class IPEFile;
+
+// Base class for all the PE elements
 class IPEElement;
+
+// Header
 class IPEDosHeader;
 class IPENtHeaders;
 class IPEFileHeader;
 class IPEOptionalHeader;
+
+// Sections
 class IPESectionHeader;
 class IPESection;
 class IPEOverlay;
+
+// DD0: Export table
 class IPEExportTable;
 class IPEExportFunction;
+
+// DD1: Import table
 class IPEImportTable;
 class IPEImportModule;
 class IPEImportFunction;
+
+// DD2: Resource table
 class IPEResourceTable;
 class IPEResourceDirectory;
 class IPEResourceDirectoryEntry;
 class IPEResourceDataEntry;
 class IPEResource;
+
+// DD3: Exception table
 class IPEExceptionTable;
+
+// DD4: Security table
 class IPECertificateTable;
+class IPECertificate;
+
+// DD5: Base relocation table
 class IPERelocationTable;
 class IPERelocationPage;
 class IPERelocationItem;
+
+// DD6: Debug info table
 class IPEDebugInfoTable;
+
+// DD7: Architecture Specific Data
+class IPEArchitectureDataTable;
+
+// DD8: Global pointer
 class IPEGlobalRegister;
+
+// DD9: TLS table
 class IPETlsTable;
+
+// DD10: Load config
+class IPELoadConfigTable;
+
+// DD11: Bound import table
 class IPEBoundImportTable;
+
+// DD12: IAT
 class IPEImportAddressTable;
 class IPEImportAddressBlock;
 class IPEImportAddressItem;
+
+// DD13: Delay import table
 class IPEDelayImportTable;
+
+// DD14: CLR table
 class IPECLRHeader;
 
 #define LIBPE_DEFINE_FIELD_ACCESSOR(FieldType, FuncName)                                    \
@@ -108,7 +148,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE GetSectionByFOA(PEAddress nFOA, IPESection **ppSection) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetOverlay(IPEOverlay **ppOverlay) = 0;
 
-    // PEAddress<T> convert tools
+    // PEAddress convert tools
     virtual PEAddress LIBPE_CALLTYPE GetRVAFromVA(PEAddress nVA) = 0;
     virtual PEAddress LIBPE_CALLTYPE GetVAFromRVA(PEAddress nRVA) = 0;
     virtual PEAddress LIBPE_CALLTYPE GetRVAFromFOA(PEAddress nFOA) = 0;
@@ -126,6 +166,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE GetDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetGlobalRegister(IPEGlobalRegister **ppGlobalRegister) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetTlsTable(IPETlsTable **ppTlsTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTable **ppImportAddressTable) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetDelayImportTable(IPEDelayImportTable **ppDelayImportTable) = 0;
@@ -407,9 +448,25 @@ class IPEResource : public IPEElement
 public:
 };
 
-class IPEExceptionTable : public IPEElement {};
+class IPEExceptionTable : public IPEElement
+{
+};
 
-class IPECertificateTable : public IPEElement {};
+class IPECertificateTable : public IPEElement
+{
+public:
+    virtual UINT32 LIBPE_CALLTYPE GetCertificateCount() = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetCertificateByIndex(UINT32 nIndex, IPECertificate **ppCertificate) = 0;
+};
+
+class IPECertificate : public IPEElement
+{
+public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Length);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Revision);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, CertificateType);
+    LIBPE_DEFINE_FIELD_ACCESSOR(BYTE *, Certificate);
+};
 
 class IPERelocationTable : public IPEElement
 {
@@ -443,9 +500,41 @@ public:
 
 class IPEDebugInfoTable : public IPEElement {};
 
+class IPEArchitectureDataTable : public IPEElement {};
+
 class IPEGlobalRegister : public IPEElement {};
 
 class IPETlsTable : public IPEElement {};
+
+class IPELoadConfigTable : public IPEElement
+{
+public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Size);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, TimeDateStamp);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, MajorVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, MinorVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, GlobalFlagsClear);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, GlobalFlagsSet);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, CriticalSectionDefaultTimeout);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, DeCommitFreeBlockThreshold);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, DeCommitTotalFreeThreshold);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, LockPrefixTable);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, MaximumAllocationSize);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, VirtualMemoryThreshold);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, ProcessAffinityMask);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, ProcessHeapFlags);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, CSDVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Reserved1);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, EditList);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, SecurityCookie);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, SEHandlerTable);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, SEHandlerCount);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, GuardCFCheckFunctionPointer);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, Reserved2);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, GuardCFFunctionTable);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, GuardCFFunctionCount);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, GuardFlags);
+};
 
 class IPEBoundImportTable : public IPEElement {};
 

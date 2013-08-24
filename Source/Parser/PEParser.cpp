@@ -7,7 +7,9 @@
 #include "PE/PEExportTable.h"
 #include "PE/PEImportTable.h"
 #include "PE/PEResourceTable.h"
+#include "PE/PECertificateTable.h"
 #include "PE/PERelocationTable.h"
+#include "PE/PELoadConfigTable.h"
 #include "PE/PEImportAddressTable.h"
 
 LIBPE_NAMESPACE_BEGIN
@@ -74,6 +76,15 @@ PEParserT<T>::GetRVAFromFOA(PEAddress nFOA)
         pLastSection.Attach(pSection.Detach());
     }
 
+    if (nSectionId == nSectionCount) {
+        LibPEPtr<IPEOverlay> pOverlay;
+        if (SUCCEEDED(m_pFile->GetOverlay(&pOverlay)) && NULL != pOverlay) {
+            if (nFOA >= pOverlay->GetFOA()) {
+                return pOverlay->GetRVA() + nFOA - pOverlay->GetFOA();
+            }
+        }
+    }
+
     if(NULL == pLastSection) {
         return nFOA;
     }
@@ -100,6 +111,15 @@ PEParserT<T>::GetFOAFromRVA(PEAddress nRVA)
         }
 
         pLastSection.Attach(pSection.Detach());
+    }
+
+    if (nSectionId == nSectionCount) {
+        LibPEPtr<IPEOverlay> pOverlay;
+        if (SUCCEEDED(m_pFile->GetOverlay(&pOverlay)) && NULL != pOverlay) {
+            if (nRVA >= pOverlay->GetRVA()) {
+                return pOverlay->GetFOA() + nRVA - pOverlay->GetRVA();
+            }
+        }
     }
 
     if(NULL == pLastSection) {
@@ -737,7 +757,72 @@ template <class T>
 HRESULT
 PEParserT<T>::ParseCertificateTable(IPECertificateTable **ppCertificateTable)
 {
-    return E_NOTIMPL;
+    LIBPE_ASSERT_RET(NULL != ppCertificateTable, E_POINTER);
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
+
+    *ppCertificateTable = NULL;
+
+    PEAddress nCertificateTableRVA = LIBPE_INVALID_ADDRESS, nCertificateTableFOA = LIBPE_INVALID_ADDRESS, nCertificateTableSize = LIBPE_INVALID_SIZE;
+    if(FAILED(GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_SECURITY, nCertificateTableRVA, nCertificateTableFOA, nCertificateTableSize))) {
+        return E_FAIL;
+    }
+
+    LibPEPtr<PECertificateTableT<T>> pCertificateTable = new PECertificateTableT<T>();
+    if (NULL == pCertificateTable) {
+        return E_OUTOFMEMORY;
+    }
+
+    pCertificateTable->InnerSetBase(m_pFile, this);
+    pCertificateTable->InnerSetMemoryInfo(nCertificateTableRVA, LIBPE_INVALID_ADDRESS, nCertificateTableSize);
+    pCertificateTable->InnerSetFileInfo(nCertificateTableFOA, nCertificateTableSize);
+
+    *ppCertificateTable = pCertificateTable.Detach();
+
+    return S_OK;
+}
+
+template <class T>
+HRESULT
+PEParserT<T>::ParseCertificates(IPECertificateTable *pCertificateTable)
+{
+    LIBPE_ASSERT_RET(NULL != pCertificateTable, E_UNEXPECTED);
+
+    PECertificateTableT<T> *pInnerCertificateTable = (PECertificateTableT<T> *)pCertificateTable;
+
+    HRESULT hr = S_OK;
+    LIBPE_HR_TRY_BEGIN(hr)
+    {
+        LibPERawWinCertificate(T) *pRawWinCertificate = pInnerCertificateTable->GetRawStruct();
+        LIBPE_ASSERT_RET(NULL != pRawWinCertificate, E_OUTOFMEMORY);
+
+        PEAddress nCertificateRVA = pInnerCertificateTable->GetRVA();
+        PEAddress nCertificateFOA = pInnerCertificateTable->GetFOA();
+        PEAddress nCertificateListEndFOA = nCertificateFOA + pInnerCertificateTable->GetSizeInFile();
+
+        UINT32 nCertificateSize = 0;
+        while (nCertificateFOA < nCertificateListEndFOA) {
+            // Round certificate size to 8 types, according to the PECoff v83 standard
+            nCertificateSize = pRawWinCertificate->dwLength;
+            if ((nCertificateSize & 0xFF) != 0) {
+                nCertificateSize |= 0xFF;
+                ++nCertificateSize;
+            }
+
+            LibPEPtr<PECertificateT<T>> pCertificate = new PECertificateT<T>();
+            pCertificate->InnerSetBase(m_pFile, this);
+            pCertificate->InnerSetMemoryInfo(nCertificateRVA, LIBPE_INVALID_ADDRESS, pRawWinCertificate->dwLength);
+            pCertificate->InnerSetFileInfo(nCertificateFOA, pRawWinCertificate->dwLength);
+
+            pInnerCertificateTable->InnerAddCertificate(pCertificate);
+
+            nCertificateRVA += nCertificateSize;
+            nCertificateFOA += nCertificateSize;
+            pRawWinCertificate = (LibPERawWinCertificate(T) *)(((UINT8 *)pRawWinCertificate) + nCertificateSize);
+        }
+    }
+    LIBPE_HR_TRY_END_RET()
+
+    return S_OK;
 }
 
 template <class T>
@@ -837,6 +922,34 @@ HRESULT
 PEParserT<T>::ParseTlsTable(IPETlsTable **ppTlsTable)
 {
     return E_NOTIMPL;
+}
+
+template <class T>
+HRESULT
+PEParserT<T>::ParseLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable)
+{
+    LIBPE_ASSERT_RET(NULL != ppLoadConfigTable, E_POINTER);
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
+
+    *ppLoadConfigTable = NULL;
+
+    PEAddress nLoadConfigTableRVA = LIBPE_INVALID_ADDRESS, nLoadConfigTableFOA = LIBPE_INVALID_ADDRESS, nLoadConfigTableSize = LIBPE_INVALID_SIZE;
+    if(FAILED(GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG, nLoadConfigTableRVA, nLoadConfigTableFOA, nLoadConfigTableSize))) {
+        return E_FAIL;
+    }
+
+    LibPEPtr<PELoadConfigTableT<T>> pLoadConfigTable = new PELoadConfigTableT<T>();
+    if (NULL == pLoadConfigTable) {
+        return E_OUTOFMEMORY;
+    }
+
+    pLoadConfigTable->InnerSetBase(m_pFile, this);
+    pLoadConfigTable->InnerSetMemoryInfo(nLoadConfigTableRVA, LIBPE_INVALID_ADDRESS, nLoadConfigTableSize);
+    pLoadConfigTable->InnerSetFileInfo(nLoadConfigTableFOA, nLoadConfigTableSize);
+
+    *ppLoadConfigTable = pLoadConfigTable.Detach();
+
+    return S_OK;
 }
 
 template <class T>

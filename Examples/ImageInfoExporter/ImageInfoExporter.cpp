@@ -183,6 +183,81 @@ void ExportImportAddressTable(IPEFile *pFile)
     }
 }
 
+void ExportLoadConfigTable(IPEFile *pFile)
+{
+    LibPEPtr<IPELoadConfigTable> pLoadConfigTable;
+    pFile->GetLoadConfigTable(&pLoadConfigTable);
+
+    printf("Load config table: ");
+    if (NULL == pLoadConfigTable) {
+        printf("NULL\n\n");
+        return;
+    }
+
+    printf("\n");
+    printf("Size = %lu\n", pLoadConfigTable->GetFieldSize());
+    printf("TimeDateStamp = %lu\n", pLoadConfigTable->GetFieldTimeDateStamp());
+    printf("MajorVersion = %u\n", pLoadConfigTable->GetFieldMajorVersion());
+    printf("MinorVersion = %u\n", pLoadConfigTable->GetFieldMinorVersion());
+    printf("GlobalFlagsClear = %lu\n", pLoadConfigTable->GetFieldGlobalFlagsClear());
+    printf("GlobalFlagsSet = %lu\n", pLoadConfigTable->GetFieldGlobalFlagsSet());
+    printf("CriticalSectionDefaultTimeout = %lu\n", pLoadConfigTable->GetFieldCriticalSectionDefaultTimeout());
+    printf("DeCommitFreeBlockThreshold = %I64u\n", pLoadConfigTable->GetFieldDeCommitFreeBlockThreshold());
+    printf("DeCommitTotalFreeThreshold = %I64u\n", pLoadConfigTable->GetFieldDeCommitTotalFreeThreshold());
+    printf("LockPrefixTable = %I64u\n", pLoadConfigTable->GetFieldLockPrefixTable());
+    printf("MaximumAllocationSize = %I64u\n", pLoadConfigTable->GetFieldMaximumAllocationSize());
+    printf("VirtualMemoryThreshold = %I64u\n", pLoadConfigTable->GetFieldVirtualMemoryThreshold());
+    printf("ProcessAffinityMask = %I64u\n", pLoadConfigTable->GetFieldProcessAffinityMask());
+    printf("ProcessHeapFlags = %lu\n", pLoadConfigTable->GetFieldProcessHeapFlags());
+    printf("CSDVersion = %u\n", pLoadConfigTable->GetFieldCSDVersion());
+    printf("Reserved1 = %u\n", pLoadConfigTable->GetFieldReserved1());
+    printf("EditList = %I64u\n", pLoadConfigTable->GetFieldEditList());
+    printf("SecurityCookie = %I64u\n", pLoadConfigTable->GetFieldSecurityCookie());
+    printf("SEHandlerTable = %I64u\n", pLoadConfigTable->GetFieldSEHandlerTable());
+    printf("SEHandlerCount = %I64u\n", pLoadConfigTable->GetFieldSEHandlerCount());
+    printf("GuardCFCheckFunctionPointer = %I64u\n", pLoadConfigTable->GetFieldGuardCFCheckFunctionPointer());
+    printf("Reserved2 = %I64u\n", pLoadConfigTable->GetFieldReserved2());
+    printf("GuardCFFunctionTable = %I64u\n", pLoadConfigTable->GetFieldGuardCFFunctionTable());
+    printf("GuardCFFunctionCount = %I64u\n", pLoadConfigTable->GetFieldGuardCFFunctionCount());
+    printf("GuardFlags = %lu\n", pLoadConfigTable->GetFieldGuardFlags());
+
+    printf("\n");
+}
+
+void ExportCertificateTable(IPEFile *pFile)
+{
+    LibPEPtr<IPECertificateTable> pCertificateTable;
+    pFile->GetCertificateTable(&pCertificateTable);
+
+    printf("Certificate Table: ");
+    if (NULL == pCertificateTable) {
+        printf("NULL\n\n");
+        return;
+    }
+
+    printf("\n");
+
+    UINT32 nCertificateIndex = 0, nCertificateCount = pCertificateTable->GetCertificateCount();
+    for (nCertificateIndex = 0; nCertificateIndex < nCertificateCount; ++nCertificateIndex) {
+        printf("Certificate #%lu: ", nCertificateIndex);
+
+        LibPEPtr<IPECertificate> pCertificate;
+        pCertificateTable->GetCertificateByIndex(nCertificateIndex, &pCertificate);
+
+        if (NULL == pCertificate) {
+            printf("NULL\n");
+            continue;
+        }
+
+        printf("Revision = %u, Type = %u, Length = %lu\n",
+            pCertificate->GetFieldRevision(),
+            pCertificate->GetFieldCertificateType(),
+            pCertificate->GetFieldLength());
+    }
+
+    printf("\n");
+}
+
 int wmain(int /*argc*/, wchar_t* /*argv*/[])
 {
     LibPEPtr<IPEFile> pFile;
@@ -193,10 +268,12 @@ int wmain(int /*argc*/, wchar_t* /*argv*/[])
 
     ExportBasicInfo(pFile);
     ExportSection(pFile);
-    ExportExportTable(pFile);
-    ExportImportTable(pFile);
-    ExportResourceTable(pFile);
+    //ExportExportTable(pFile);
+    //ExportImportTable(pFile);
+    //ExportResourceTable(pFile);
     //ExportRelocationTable(pFile);
+    //ExportLoadConfigTable(pFile);
+    //ExportCertificateTable(pFile);
     //ExportImportAddressTable(pFile);
 
     return 0;

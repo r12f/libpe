@@ -67,18 +67,23 @@ public:
     virtual LibPERawResourceString(T) * ParseResourceString(PEAddress nRVA, PEAddress nFOA, UINT64 &nSize);
     virtual LibPERawResourceStringU(T) * ParseResourceStringU(PEAddress nRVA, PEAddress nFOA, UINT64 &nSize);
 
+    // Exception table related functions
     virtual HRESULT ParseExceptionTable(IPEExceptionTable **ppExceptionTable);
-    virtual HRESULT ParseCertificateTable(IPECertificateTable **ppCertificateTable);
 
-    // Relocation table related functions.
+    // Certificate table related functions
+    virtual HRESULT ParseCertificateTable(IPECertificateTable **ppCertificateTable);
+    virtual HRESULT ParseCertificates(IPECertificateTable *pCertificateTable);
+
+    // Relocation table related functions
     virtual HRESULT ParseRelocationTable(IPERelocationTable **ppRelocationTable);
 
     virtual HRESULT ParseDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable);
     virtual HRESULT ParseGlobalRegister(IPEGlobalRegister **ppGlobalRegister);
     virtual HRESULT ParseTlsTable(IPETlsTable **ppTlsTable);
+    virtual HRESULT ParseLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable);
     virtual HRESULT ParseBoundImportTable(IPEBoundImportTable **ppBoundImportTable);
 
-    // Import Address table related functions.
+    // Import Address table related functions
     virtual HRESULT ParseImportAddressTable(IPEImportAddressTable **ppImportAddressTable);
     virtual HRESULT ParseImportAddressTableContent(IPEImportAddressTable *pImportAddressTable);
     virtual HRESULT ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, PEAddress nBlockRVA, PEAddress nBlockFOA, IPEImportAddressBlock **ppBlock);
@@ -105,6 +110,7 @@ protected:
     HRESULT GetDataDirectoryEntry(INT32 nDataDirectoryEntryIndex, PEAddress &nRVA, PEAddress &nFOA, PEAddress &nSize)
     {
         LIBPE_ASSERT_RET(NULL != m_pFile, E_FAIL);
+
         LibPERawOptionalHeaderT(T) *pOptionalHeader = (LibPERawOptionalHeaderT(T) *)m_pFile->GetRawOptionalHeader();
         if(NULL == pOptionalHeader) {
             return E_FAIL;
@@ -115,13 +121,19 @@ protected:
             return E_FAIL;
         }
 
-        nRVA = GetRVAFromAddressField(pDataDirectory->VirtualAddress);
-        if(LIBPE_INVALID_ADDRESS == nRVA) {
-            return E_FAIL;
+        switch (nDataDirectoryEntryIndex) {
+        case IMAGE_DIRECTORY_ENTRY_SECURITY:
+            nFOA = pDataDirectory->VirtualAddress;
+            nRVA = GetRVAFromFOA(nFOA);
+            break;
+        default:
+            nRVA = GetRVAFromAddressField(pDataDirectory->VirtualAddress);
+            if(LIBPE_INVALID_ADDRESS != nRVA) {
+                nFOA = GetFOAFromRVA(nRVA);
+            }
         }
 
-        nFOA = GetFOAFromRVA(nRVA);
-        if(LIBPE_INVALID_ADDRESS == nFOA) {
+        if (LIBPE_INVALID_ADDRESS == nRVA || LIBPE_INVALID_ADDRESS == nFOA) {
             return E_FAIL;
         }
 

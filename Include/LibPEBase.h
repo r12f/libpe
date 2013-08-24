@@ -39,3 +39,8 @@ typedef std::string         file_t;
 #endif
 
 #define LIBPE_UNUSED_PARAM(x)       (x)
+
+#ifdef LIBPE_WINOS
+#include <windows.h>
+#include <ImageHlp.h>
+#endif

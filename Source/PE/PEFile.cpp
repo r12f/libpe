@@ -342,7 +342,14 @@ template <class T>
 HRESULT
 PEFileT<T>::GetCertificateTable(IPECertificateTable **ppCertificateTable)
 {
-    return E_NOTIMPL;
+    if(NULL == m_pCertificateTable) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, E_FAIL);
+        if(FAILED(m_pParser->ParseCertificateTable(&m_pCertificateTable)) || NULL == m_pCertificateTable) {
+            return E_FAIL;
+        }
+    }
+
+    return m_pCertificateTable.CopyTo(ppCertificateTable);
 }
 
 template <class T>
@@ -357,6 +364,20 @@ PEFileT<T>::GetRelocationTable(IPERelocationTable **ppRelocationTable)
     }
 
     return m_pRelocationTable.CopyTo(ppRelocationTable);
+}
+
+template <class T>
+HRESULT
+PEFileT<T>::GetLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable)
+{
+    if(NULL == m_pLoadConfigTable) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, E_FAIL);
+        if(FAILED(m_pParser->ParseLoadConfigTable(&m_pLoadConfigTable)) || NULL == m_pLoadConfigTable) {
+            return E_FAIL;
+        }
+    }
+
+    return m_pLoadConfigTable.CopyTo(ppLoadConfigTable);
 }
 
 template <class T>

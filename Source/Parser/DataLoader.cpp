@@ -57,7 +57,7 @@ DataLoaderDiskFile::GetBuffer(UINT64 nOffset, UINT64 nSize)
         return NULL;
     }
 
-    INT32 nStartBlockId = GetBlockId(nOffset), nEndBlockId = GetBlockId(nOffset + nSize);
+    INT32 nStartBlockId = GetBlockId(nOffset), nEndBlockId = GetBlockId(nOffset + nSize - 1);
     if(0 > nStartBlockId || 0 > nEndBlockId) {
         return NULL;
     }
