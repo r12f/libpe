@@ -9,6 +9,7 @@
 #include "PE/PEResourceTable.h"
 #include "PE/PECertificateTable.h"
 #include "PE/PERelocationTable.h"
+#include "PE/PETlsTable.h"
 #include "PE/PELoadConfigTable.h"
 #include "PE/PEImportAddressTable.h"
 
@@ -206,7 +207,7 @@ PEParserT<T>::ParseBasicInfo(IPEDosHeader **ppDosHeader, IPENtHeaders **ppNtHead
     LIBPE_ASSERT_RET(NULL != pRawNtHeaders, E_OUTOFMEMORY);
     LIBPE_ASSERT_RET(IMAGE_NT_SIGNATURE == pRawNtHeaders->Signature, E_FAIL);
 
-    if(PETrait<T>::Is32Bit) {
+    if(PETrait<T>::PointerSize == 4) {
         if(pRawNtHeaders->FileHeader.SizeOfOptionalHeader != sizeof(PERawOptionalHeader32)) {
             return E_FAIL;
         }
@@ -820,7 +821,7 @@ PEParserT<T>::ParseCertificates(IPECertificateTable *pCertificateTable)
             pRawWinCertificate = (LibPERawWinCertificate(T) *)(((UINT8 *)pRawWinCertificate) + nCertificateSize);
         }
     }
-    LIBPE_HR_TRY_END_RET()
+    LIBPE_HR_TRY_END_RET();
 
     return S_OK;
 }
@@ -921,7 +922,68 @@ template <class T>
 HRESULT
 PEParserT<T>::ParseTlsTable(IPETlsTable **ppTlsTable)
 {
-    return E_NOTIMPL;
+    LIBPE_ASSERT_RET(NULL != ppTlsTable, E_POINTER);
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
+
+    *ppTlsTable = NULL;
+
+    PEAddress nTlsTableRVA = LIBPE_INVALID_ADDRESS, nTlsTableFOA = LIBPE_INVALID_ADDRESS, nTlsTableSize = LIBPE_INVALID_SIZE;
+    if(FAILED(GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_TLS, nTlsTableRVA, nTlsTableFOA, nTlsTableSize))) {
+        return E_FAIL;
+    }
+
+    LibPEPtr<PETlsTableT<T>> pTlsTable = new PETlsTableT<T>();
+    if (NULL == pTlsTable) {
+        return E_OUTOFMEMORY;
+    }
+
+    pTlsTable->InnerSetBase(m_pFile, this);
+    pTlsTable->InnerSetMemoryInfo(nTlsTableRVA, LIBPE_INVALID_ADDRESS, nTlsTableSize);
+    pTlsTable->InnerSetFileInfo(nTlsTableFOA, nTlsTableSize);
+
+    *ppTlsTable = pTlsTable.Detach();
+
+    return S_OK;
+}
+
+template <class T>
+HRESULT
+PEParserT<T>::ParseTlsCallbacks(IPETlsTable *pTlsTable)
+{
+    LIBPE_ASSERT_RET(NULL != pTlsTable, E_INVALIDARG);
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
+
+    PETlsTableT<T> *pInnerTlsTable = (PETlsTableT<T> *)pTlsTable;
+
+    LibPERawTlsDirectory(T) *pRawTlsDirectory = pInnerTlsTable->GetRawStruct();
+    LIBPE_ASSERT_RET(NULL != pRawTlsDirectory, E_OUTOFMEMORY);
+    LIBPE_ASSERT_RET(NULL != pRawTlsDirectory->AddressOfCallBacks && pRawTlsDirectory->AddressOfCallBacks >= m_pFile->GetImageBase(), E_UNEXPECTED);
+
+    PEAddress nCallbackEntryRVA = pRawTlsDirectory->AddressOfCallBacks - m_pFile->GetImageBase();
+    PEAddress nCallbackEntryFOA = GetFOAFromRVA(nCallbackEntryRVA);
+    LIBPE_ASSERT_RET(LIBPE_INVALID_ADDRESS != nCallbackEntryFOA, E_UNEXPECTED);
+
+    PEAddress nCallbackAddress = 0, nCallbackRVA = 0;
+    for (;;) {
+        void *pPointerToCallback = m_pLoader->GetBuffer(nCallbackEntryFOA, PETrait<T>::PointerSize);
+        LIBPE_ASSERT_RET(NULL != pPointerToCallback, E_OUTOFMEMORY);
+
+        nCallbackAddress = 0;
+        memcpy_s(&nCallbackAddress, sizeof(PEAddress), pPointerToCallback, PETrait<T>::PointerSize);
+
+        if (0 == nCallbackAddress) {
+            break;
+        }
+
+        nCallbackRVA = GetRVAFromAddressField(nCallbackAddress);
+        LIBPE_ASSERT_RET(LIBPE_INVALID_ADDRESS != nCallbackRVA, E_UNEXPECTED);
+
+        LIBPE_ASSERT_RET(SUCCEEDED(pInnerTlsTable->InnerAddCallbackRVA(nCallbackRVA)), E_OUTOFMEMORY);
+
+        nCallbackEntryFOA += PETrait<T>::PointerSize;
+    }
+
+    return S_OK;
 }
 
 template <class T>
@@ -1123,6 +1185,52 @@ PEParserT<T>::ParseCLRHeader(IPECLRHeader **ppCLRHeader)
 {
     return E_NOTIMPL;
 }
+
+template <class T>
+PEAddress
+PEParserT<T>::GetRawOffset(PEAddress nRVA, PEAddress nFOA)
+{
+    LIBPE_ASSERT_RET(NULL != m_pLoader && NULL != m_pFile, LIBPE_INVALID_ADDRESS);
+    return (LIBPE_INVALID_ADDRESS != nRVA) ? GetRawOffsetFromRVA(nRVA) : GetRawOffsetFromFOA(nFOA);
+}
+
+template <class T>
+HRESULT
+PEParserT<T>::GetDataDirectoryEntry(INT32 nDataDirectoryEntryIndex, PEAddress &nRVA, PEAddress &nFOA, PEAddress &nSize)
+{
+    LIBPE_ASSERT_RET(NULL != m_pFile, E_FAIL);
+
+    LibPERawOptionalHeaderT(T) *pOptionalHeader = (LibPERawOptionalHeaderT(T) *)m_pFile->GetRawOptionalHeader();
+    if(NULL == pOptionalHeader) {
+        return E_FAIL;
+    }
+
+    LibPERawDataDirectoryT(T) *pDataDirectory = &(pOptionalHeader->DataDirectory[nDataDirectoryEntryIndex]);
+    if(NULL == pDataDirectory || 0 == pDataDirectory->VirtualAddress || 0 == pDataDirectory->Size) {
+        return E_FAIL;
+    }
+
+    switch (nDataDirectoryEntryIndex) {
+    case IMAGE_DIRECTORY_ENTRY_SECURITY:
+        nFOA = pDataDirectory->VirtualAddress;
+        nRVA = GetRVAFromFOA(nFOA);
+        break;
+    default:
+        nRVA = GetRVAFromAddressField(pDataDirectory->VirtualAddress);
+        if(LIBPE_INVALID_ADDRESS != nRVA) {
+            nFOA = GetFOAFromRVA(nRVA);
+        }
+    }
+
+    if (LIBPE_INVALID_ADDRESS == nRVA || LIBPE_INVALID_ADDRESS == nFOA) {
+        return E_FAIL;
+    }
+
+    nSize = pDataDirectory->Size;
+
+    return S_OK;
+}
+
 
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEParserT);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParserT, Create);

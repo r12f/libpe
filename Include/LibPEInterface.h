@@ -504,7 +504,22 @@ class IPEArchitectureDataTable : public IPEElement {};
 
 class IPEGlobalRegister : public IPEElement {};
 
-class IPETlsTable : public IPEElement {};
+class IPETlsTable : public IPEElement
+{
+public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, StartAddressOfRawData);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, EndAddressOfRawData);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, AddressOfIndex);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT64, AddressOfCallBacks);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, SizeOfZeroFill);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Characteristics);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Reserved0);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Alignment);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Reserved1);
+
+    virtual UINT32 LIBPE_CALLTYPE GetCallbackCount() = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetCallbackRVAByIndex(UINT32 nIndex) = 0;
+};
 
 class IPELoadConfigTable : public IPEElement
 {

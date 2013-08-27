@@ -193,6 +193,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="LibPE.cpp" />
     <ClCompile Include="LibPEConfig.cpp" />
+    <ClCompile Include="PE\PETlsTable.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -219,6 +220,7 @@
     <ClInclude Include="LibPEConfig.h" />
     <ClInclude Include="LibPEInternal.h" />
     <ClInclude Include="LibPEObject.h" />
+    <ClInclude Include="PE\PETlsTable.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

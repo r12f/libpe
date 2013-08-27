@@ -55,6 +55,9 @@
     <ClCompile Include="PE\PECertificateTable.cpp">
       <Filter>PE</Filter>
     </ClCompile>
+    <ClCompile Include="PE\PETlsTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parser\DataLoader.h">
@@ -104,6 +107,9 @@
       <Filter>PE</Filter>
     </ClInclude>
     <ClInclude Include="PE\PECertificateTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PETlsTable.h">
       <Filter>PE</Filter>
     </ClInclude>
   </ItemGroup>

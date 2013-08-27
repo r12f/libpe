@@ -5,6 +5,25 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 HRESULT
+PEFileT<T>::Init(PEParserT<T> *pParser)
+{
+    LIBPE_ASSERT_RET(NULL != pParser, E_POINTER);
+
+    m_pParser = pParser;
+
+    HRESULT hr = pParser->ParseBasicInfo(&m_pDosHeader, &m_pNtHeaders, &m_vSectionHeaders, &m_pOverlay);
+    if(FAILED(hr) || NULL == m_pDosHeader || NULL == m_pNtHeaders) {
+        return E_FAIL;
+    }
+
+    m_pNtHeaders->GetFileHeader(&m_pFileHeader);
+    m_pNtHeaders->GetOptionalHeader(&m_pOptionalHeader);
+
+    return S_OK;
+}
+
+template <class T>
+HRESULT
 PEFileT<T>::Create(DataLoader *pLoader, IPEFile **ppFile)
 {
     LIBPE_ASSERT_RET(NULL != pLoader && NULL != ppFile, E_POINTER);
@@ -130,7 +149,7 @@ template <class T>
 BOOL
 PEFileT<T>::Is32Bit()
 {
-    return PETrait<T>::Is32Bit;
+    return PETrait<T>::PointerSize == 4;
 }
 
 template <class T>
@@ -365,6 +384,21 @@ PEFileT<T>::GetRelocationTable(IPERelocationTable **ppRelocationTable)
 
     return m_pRelocationTable.CopyTo(ppRelocationTable);
 }
+
+template <class T>
+HRESULT
+PEFileT<T>::GetTlsTable(IPETlsTable **ppTlsTable)
+{
+    if(NULL == m_pTlsTable) {
+        LIBPE_ASSERT_RET(NULL != m_pParser, E_FAIL);
+        if(FAILED(m_pParser->ParseTlsTable(&m_pTlsTable)) || NULL == m_pTlsTable) {
+            return E_FAIL;
+        }
+    }
+
+    return m_pTlsTable.CopyTo(ppTlsTable);
+}
+
 
 template <class T>
 HRESULT

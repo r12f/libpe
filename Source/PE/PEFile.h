@@ -19,21 +19,7 @@ public:
 
     LIBPE_SINGLE_THREAD_OBJECT();
 
-    HRESULT Init(PEParserT<T> *pParser) {
-        LIBPE_ASSERT_RET(NULL != pParser, E_POINTER);
-
-        m_pParser = pParser;
-
-        HRESULT hr = pParser->ParseBasicInfo(&m_pDosHeader, &m_pNtHeaders, &m_vSectionHeaders, &m_pOverlay);
-        if(FAILED(hr) || NULL == m_pDosHeader || NULL == m_pNtHeaders) {
-            return E_FAIL;
-        }
-
-        m_pNtHeaders->GetFileHeader(&m_pFileHeader);
-        m_pNtHeaders->GetOptionalHeader(&m_pOptionalHeader);
-
-        return S_OK;
-    }
+    HRESULT Init(PEParserT<T> *pParser);
 
     // Override IPEFile
     // Raw PE Header
@@ -85,7 +71,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE GetRelocationTable(IPERelocationTable **ppRelocationTable);
     virtual HRESULT LIBPE_CALLTYPE GetDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable) { return E_NOTIMPL; }
     virtual HRESULT LIBPE_CALLTYPE GetGlobalRegister(IPEGlobalRegister **ppGlobalRegister) { return E_NOTIMPL; }
-    virtual HRESULT LIBPE_CALLTYPE GetTlsTable(IPETlsTable **ppTlsTable) { return E_NOTIMPL; }
+    virtual HRESULT LIBPE_CALLTYPE GetTlsTable(IPETlsTable **ppTlsTable);
     virtual HRESULT LIBPE_CALLTYPE GetLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable);
     virtual HRESULT LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable) { return E_NOTIMPL; }
     virtual HRESULT LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTable **ppImportAddressTable);
@@ -125,6 +111,7 @@ private:
     LibPEPtr<IPEResourceTable>              m_pResourceTable;
     LibPEPtr<IPECertificateTable>           m_pCertificateTable;
     LibPEPtr<IPERelocationTable>            m_pRelocationTable;
+    LibPEPtr<IPETlsTable>                   m_pTlsTable;
     LibPEPtr<IPELoadConfigTable>            m_pLoadConfigTable;
     LibPEPtr<IPEImportAddressTable>         m_pImportAddressTable;
 };

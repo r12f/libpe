@@ -23,18 +23,16 @@ LIBPE_NAMESPACE_BEGIN
 
 #define LIBPE_HR_TRY_END()              \
         LIBPE_HR_CATCH()                \
-    } while (0);
+    } while (0)
 
 #define LIBPE_HR_TRY_END_RET()          \
         LIBPE_HR_CATCH()                \
         if (FAILED(__try_hr)) { return __try_hr; }  \
-    } while (0);
+    } while (0)
 
 #define LIBPE_FORCE_TEMPLATE_REDUCTION_FUNCTION_T(f, trait)              static void *__dummy_function_## f ## _ ## trait = (void *)&f<trait>
 #define LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION_T(t, f, trait)     static void *__dummy_class_function_## t ## _ ## f ## _ ## trait = (void *)&t<trait>::f
-#define LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_T(t, trait)                               \
-    static void __dummy_function_## t ## _ ## trait(t<trait> *dummy) { dummy->t<trait>::~t(); }             \
-    static void *__dummy_function_ref_ ## t ## _ ## trait= &__dummy_function_## t ## _ ## trait
+#define LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_T(t, trait)                 template class t<trait>;
 
 #define LIBPE_FORCE_TEMPLATE_REDUCTION_FUNCTION(f)                              \
     LIBPE_FORCE_TEMPLATE_REDUCTION_FUNCTION_T(f, PE32);                         \

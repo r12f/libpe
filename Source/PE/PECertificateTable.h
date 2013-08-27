@@ -17,34 +17,13 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawWinCertificate(T))
 
-    HRESULT InnerAddCertificate(IPECertificate *pCertificate) {
-        LIBPE_ASSERT_RET(NULL != pCertificate, E_INVALIDARG);
-
-        HRESULT hr = S_OK;
-
-        LIBPE_HR_TRY_BEGIN(hr) {
-            m_vCertificates.push_back(pCertificate);
-        } LIBPE_HR_TRY_END()
-
-        return hr;
-    }
+    HRESULT InnerAddCertificate(IPECertificate *pCertificate);
 
     virtual UINT32 LIBPE_CALLTYPE GetCertificateCount();
     virtual HRESULT LIBPE_CALLTYPE GetCertificateByIndex(UINT32 nIndex, IPECertificate **ppCertificate);
 
 protected:
-    HRESULT EnsureCertificatesParsed() {
-        if (m_bIsCertificatesParsed) {
-            return S_OK;
-        }
-
-        m_bIsCertificatesParsed = true;
-
-        LIBPE_ASSERT_RET(NULL != m_pParser, E_UNEXPECTED);
-        LIBPE_ASSERT_RET(SUCCEEDED(m_pParser->ParseCertificates(this)), E_FAIL);
-
-        return S_OK;
-    }
+    HRESULT EnsureCertificatesParsed();
 
 private:
     bool m_bIsCertificatesParsed;

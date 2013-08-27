@@ -28,23 +28,25 @@ template <class T> struct PETrait {};
 
 template <>
 struct PETrait<PE32> : PETraitBase {
-    static const BOOL                           Is32Bit = true;
+    static const UINT32                         PointerSize = 4;
     typedef UINT32                              RawAddress;
     typedef IMAGE_NT_HEADERS32                  RawNtHeaders;
     typedef IMAGE_OPTIONAL_HEADER32             RawOptionalHeader;
     typedef IMAGE_THUNK_DATA32                  RawThunkData;
     static const UINT32                         ImageOrdinalFlag = 0x80000000;
+    typedef IMAGE_TLS_DIRECTORY32               RawTlsDirectory;
     typedef IMAGE_LOAD_CONFIG_DIRECTORY32       RawLoadConfigDirectory;
 };
 
 template <>
 struct PETrait<PE64> : PETraitBase {
-    static const BOOL                           Is32Bit = false;
+    static const UINT32                         PointerSize = 8;
     typedef UINT64                              RawAddress;
     typedef IMAGE_NT_HEADERS64                  RawNtHeaders;
     typedef IMAGE_OPTIONAL_HEADER64             RawOptionalHeader;
     typedef IMAGE_THUNK_DATA64                  RawThunkData;
     static const UINT64                         ImageOrdinalFlag = 0x8000000000000000;
+    typedef IMAGE_TLS_DIRECTORY64               RawTlsDirectory;
     typedef IMAGE_LOAD_CONFIG_DIRECTORY64       RawLoadConfigDirectory;
 };
 
@@ -65,6 +67,7 @@ struct PETrait<PE64> : PETraitBase {
 #define LibPERawResourceDataEntry(T)            typename PETrait<T>::RawResourceDataEntry
 #define LibPERawResourceString(T)               typename PETrait<T>::RawResourceString
 #define LibPERawResourceStringU(T)              typename PETrait<T>::RawResourceStringU
+#define LibPERawTlsDirectory(T)                 typename PETrait<T>::RawTlsDirectory
 #define LibPERawLoadConfigDirectory(T)          typename PETrait<T>::RawLoadConfigDirectory
 #define LibPERawWinCertificate(T)               typename PETrait<T>::RawWinCertificate
 
@@ -90,11 +93,13 @@ typedef PETraitBase::RawWinCertificate          PERawWinCertificate;
 typedef PETrait<PE32>::RawNtHeaders             PERawNtHeaders32;
 typedef PETrait<PE32>::RawOptionalHeader        PERawOptionalHeader32;
 typedef PETrait<PE32>::RawThunkData             PERawThunkData32;
+typedef PETrait<PE32>::RawTlsDirectory          PERawTlsDirectory32;
 typedef PETrait<PE32>::RawLoadConfigDirectory   PERawLoadConfigDirectory32;
 
 typedef PETrait<PE64>::RawNtHeaders             PERawNtHeaders64;
 typedef PETrait<PE64>::RawOptionalHeader        PERawOptionalHeader64;
 typedef PETrait<PE64>::RawThunkData             PERawThunkData64;
+typedef PETrait<PE64>::RawTlsDirectory          PERawTlsDirectory64;
 typedef PETrait<PE64>::RawLoadConfigDirectory   PERawLoadConfigDirectory64;
 
 LIBPE_NAMESPACE_END

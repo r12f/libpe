@@ -183,6 +183,38 @@ void ExportImportAddressTable(IPEFile *pFile)
     }
 }
 
+void ExportTlsTable(IPEFile *pFile)
+{
+    LibPEPtr<IPETlsTable> pTlsTable;
+    pFile->GetTlsTable(&pTlsTable);
+
+    printf("Tls table: ");
+    if (NULL == pTlsTable) {
+        printf("NULL\n\n");
+        return;
+    }
+
+    printf("\n");
+    printf("StartAddressOfRawData = 0x016%I64x\n", pTlsTable->GetFieldStartAddressOfRawData());
+    printf("EndAddressOfRawData = 0x016%I64x\n", pTlsTable->GetFieldEndAddressOfRawData());
+    printf("AddressOfIndex = 0x016%I64x\n", pTlsTable->GetFieldAddressOfIndex());
+    printf("AddressOfCallBacks = 0x016%I64x\n", pTlsTable->GetFieldAddressOfCallBacks());
+    printf("SizeOfZeroFill = %lu\n", pTlsTable->GetFieldSizeOfZeroFill());
+    printf("Characteristics = %lu\n", pTlsTable->GetFieldCharacteristics());
+    printf("Reserved0 = %lu\n", pTlsTable->GetFieldReserved0());
+    printf("Alignment = %lu\n", pTlsTable->GetFieldAlignment());
+    printf("Reserved1 = %lu\n", pTlsTable->GetFieldReserved1());
+
+    UINT32 nCallbackCount = pTlsTable->GetCallbackCount();
+    printf("Callback: Count = %lu\n", nCallbackCount);
+
+    for (UINT32 nCallbackIndex = 0; nCallbackIndex < nCallbackCount; ++nCallbackIndex) {
+        printf("Callback #%lu: RVA = 0x%016I64x\n", nCallbackIndex, pTlsTable->GetCallbackRVAByIndex(nCallbackIndex));
+    }
+
+    printf("\n");
+}
+
 void ExportLoadConfigTable(IPEFile *pFile)
 {
     LibPEPtr<IPELoadConfigTable> pLoadConfigTable;
@@ -263,6 +295,7 @@ int wmain(int /*argc*/, wchar_t* /*argv*/[])
     LibPEPtr<IPEFile> pFile;
     ParsePEFromDiskFile(L"C:\\Windows\\system32\\kernel32.dll", &pFile);
 
+
     printf("AddRef: %d\n", pFile->AddRef());
     printf("Release: %d\n", pFile->Release());
 
@@ -275,6 +308,7 @@ int wmain(int /*argc*/, wchar_t* /*argv*/[])
     //ExportLoadConfigTable(pFile);
     //ExportCertificateTable(pFile);
     //ExportImportAddressTable(pFile);
+    ExportTlsTable(pFile);
 
     return 0;
 }
