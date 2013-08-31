@@ -152,9 +152,14 @@ protected:
     template <class ITable, class TableClass>
     HRESULT ParseSimpleDataDirectoryToInterface(INT32 nDataDirectoryEntryIndex, ITable **ppTable)
     {
+        LIBPE_CHK(NULL != ppTable, E_POINTER);
+
         LibPEPtr<TableClass> pTable;
-        LIBPE_CHK_HR(ParseSimpleDataDirectory(nDataDirectoryEntryIndex, ppTable));
-        return pTable.CopyTo(ppTable);
+        LIBPE_CHK_HR(ParseSimpleDataDirectory<TableClass>(nDataDirectoryEntryIndex, &pTable));
+
+        *ppTable = pTable.Detach();
+
+        return S_OK;
     }
 
 protected:

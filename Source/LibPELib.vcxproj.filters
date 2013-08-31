@@ -18,9 +18,9 @@
     <ClCompile Include="Parser\PEParserImpl.cpp">
       <Filter>Parser</Filter>
     </ClCompile>
-    <ClCompile Include="PE\PEElement.cpp">
-      <Filter>PE</Filter>
-    </ClCompile>
+    <ClCompile Include="LibPE.cpp" />
+    <ClCompile Include="LibPEConfig.cpp" />
+    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="PE\PEExportTable.cpp">
       <Filter>PE</Filter>
     </ClCompile>
@@ -36,6 +36,9 @@
     <ClCompile Include="PE\PEImportTable.cpp">
       <Filter>PE</Filter>
     </ClCompile>
+    <ClCompile Include="PE\PELoadConfigTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
     <ClCompile Include="PE\PERelocationTable.cpp">
       <Filter>PE</Filter>
     </ClCompile>
@@ -45,9 +48,21 @@
     <ClCompile Include="PE\PESection.cpp">
       <Filter>PE</Filter>
     </ClCompile>
-    <ClCompile Include="LibPE.cpp" />
-    <ClCompile Include="LibPEConfig.cpp" />
-    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="PE\PETlsTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PECertificateTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PEDebugInfoTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PEElement.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PEExceptionTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parser\DataLoader.h">
@@ -62,7 +77,11 @@
     <ClInclude Include="Parser\PEParserImpl.h">
       <Filter>Parser</Filter>
     </ClInclude>
-    <ClInclude Include="PE\PEElement.h">
+    <ClInclude Include="LibPEConfig.h" />
+    <ClInclude Include="LibPEInternal.h" />
+    <ClInclude Include="LibPEObject.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="PE\PEExceptionTable.h">
       <Filter>PE</Filter>
     </ClInclude>
     <ClInclude Include="PE\PEExportTable.h">
@@ -80,6 +99,9 @@
     <ClInclude Include="PE\PEImportTable.h">
       <Filter>PE</Filter>
     </ClInclude>
+    <ClInclude Include="PE\PELoadConfigTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
     <ClInclude Include="PE\PERelocationTable.h">
       <Filter>PE</Filter>
     </ClInclude>
@@ -89,9 +111,17 @@
     <ClInclude Include="PE\PESection.h">
       <Filter>PE</Filter>
     </ClInclude>
-    <ClInclude Include="LibPEConfig.h" />
-    <ClInclude Include="LibPEInternal.h" />
-    <ClInclude Include="LibPEObject.h" />
-    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="PE\PETlsTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PECertificateTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PEDebugInfoTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PEElement.h">
+      <Filter>PE</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

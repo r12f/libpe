@@ -375,16 +375,16 @@ int wmain(int /*argc*/, wchar_t* /*argv*/[])
 
     ExportBasicInfo(pFile);
     ExportSection(pFile);
-    //ExportExportTable(pFile);
-    //ExportImportTable(pFile);
-    //ExportResourceTable(pFile);
+    ExportExportTable(pFile);
+    ExportImportTable(pFile);
+    ExportResourceTable(pFile);
     ExportExceptionTable(pFile);
-    //ExportRelocationTable(pFile);
-    //ExportDebugInfoTable(pFile);
-    //ExportLoadConfigTable(pFile);
-    //ExportCertificateTable(pFile);
-    //ExportImportAddressTable(pFile);
-    //ExportTlsTable(pFile);
+    ExportRelocationTable(pFile);
+    ExportDebugInfoTable(pFile);
+    ExportLoadConfigTable(pFile);
+    ExportCertificateTable(pFile);
+    ExportImportAddressTable(pFile);
+    ExportTlsTable(pFile);
 
     return 0;
 }

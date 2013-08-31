@@ -7,6 +7,7 @@
 #include "PE/PEExportTable.h"
 #include "PE/PEImportTable.h"
 #include "PE/PEResourceTable.h"
+#include "PE/PEExceptionTable.h"
 #include "PE/PECertificateTable.h"
 #include "PE/PERelocationTable.h"
 #include "PE/PEDebugInfoTable.h"
@@ -760,9 +761,11 @@ PEParserT<T>::ParseExceptionTable(IPEExceptionTable **ppExceptionTable)
     LIBPE_CHK_HR(ParseSimpleDataDirectory<PEExceptionTableT<T>>(IMAGE_DIRECTORY_ENTRY_EXCEPTION, &pExceptionTable));
     LIBPE_CHK(NULL != pExceptionTable, E_OUTOFMEMORY);
 
-    pExceptionTable->InnerSetExceptionHandlerCount(pExceptionTable->GetSizeInFile() / sizeof(LibPERawRuntimeFunctionEntry(T)));
+    pExceptionTable->InnerSetExceptionHandlerCount((UINT32)(pExceptionTable->GetSizeInFile() / sizeof(LibPERawRuntimeFunctionEntry(T))));
 
-    return pExceptionTable.CopyTo(ppExceptionTable);
+    *ppExceptionTable = pExceptionTable.Detach();
+
+    return S_OK;
 }
 
 template <class T>
@@ -977,7 +980,7 @@ template <class T>
 HRESULT
 PEParserT<T>::ParseDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable)
 {
-    return ParseSimpleDataDirectoryToInterface()<IPEDebugInfoTable, PEDebugInfoTableT<T>>(IMAGE_DIRECTORY_ENTRY_DEBUG, ppDebugInfoTable);
+    return ParseSimpleDataDirectoryToInterface<IPEDebugInfoTable, PEDebugInfoTableT<T>>(IMAGE_DIRECTORY_ENTRY_DEBUG, ppDebugInfoTable);
 }
 
 template <class T>
