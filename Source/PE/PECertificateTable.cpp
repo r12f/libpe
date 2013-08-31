@@ -7,7 +7,7 @@ template <class T>
 HRESULT
 PECertificateTableT<T>::InnerAddCertificate(IPECertificate *pCertificate)
 {
-    LIBPE_ASSERT_RET(NULL != pCertificate, E_INVALIDARG);
+    LIBPE_CHK(NULL != pCertificate, E_INVALIDARG);
 
     HRESULT hr = S_OK;
 
@@ -22,7 +22,7 @@ template <class T>
 UINT32
 PECertificateTableT<T>::GetCertificateCount()
 {
-    LIBPE_ASSERT_RET(SUCCEEDED(EnsureCertificatesParsed()), 0);
+    LIBPE_CHK_HR_RET(EnsureCertificatesParsed(), 0);
     return (UINT32) m_vCertificates.size();
 }
 
@@ -30,11 +30,11 @@ template <class T>
 HRESULT
 PECertificateTableT<T>::GetCertificateByIndex(UINT32 nIndex, IPECertificate **ppCertificate)
 {
-    LIBPE_ASSERT_RET(NULL != ppCertificate, E_POINTER);
-    LIBPE_ASSERT_RET(SUCCEEDED(EnsureCertificatesParsed()), E_FAIL);
+    LIBPE_CHK(NULL != ppCertificate, E_POINTER);
+    LIBPE_CHK_HR(EnsureCertificatesParsed());
 
     UINT32 nCertificateCount = GetCertificateCount();
-    LIBPE_ASSERT_RET(nIndex < nCertificateCount, E_INVALIDARG);
+    LIBPE_CHK(nIndex < nCertificateCount, E_INVALIDARG);
 
     return m_vCertificates[nIndex].CopyTo(ppCertificate);
 }
@@ -49,8 +49,8 @@ PECertificateTableT<T>::EnsureCertificatesParsed()
 
     m_bIsCertificatesParsed = true;
 
-    LIBPE_ASSERT_RET(NULL != m_pParser, E_UNEXPECTED);
-    LIBPE_ASSERT_RET(SUCCEEDED(m_pParser->ParseCertificates(this)), E_FAIL);
+    LIBPE_CHK(NULL != m_pParser, E_UNEXPECTED);
+    LIBPE_CHK_HR(m_pParser->ParseCertificates(this));
 
     return S_OK;
 }

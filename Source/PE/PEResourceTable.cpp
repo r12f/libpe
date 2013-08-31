@@ -7,7 +7,7 @@ template <class T>
 HRESULT
 PEResourceTableT<T>::GetRootDirectory(IPEResourceDirectory **ppDirectory)
 {
-    LIBPE_ASSERT_RET(NULL != ppDirectory, E_POINTER);
+    LIBPE_CHK(NULL != ppDirectory, E_POINTER);
     return m_pRootDirectory.CopyTo(ppDirectory);
 }
 
@@ -22,13 +22,13 @@ template <class T>
 HRESULT
 PEResourceDirectoryT<T>::GetEntryByIndex(UINT32 nIndex, IPEResourceDirectoryEntry **ppEntry)
 {
-    LIBPE_ASSERT_RET(NULL != ppEntry, E_POINTER);
+    LIBPE_CHK(NULL != ppEntry, E_POINTER);
 
     UINT32 nEntryCount = GetEntryCount();
-    LIBPE_ASSERT_RET(nIndex < nEntryCount, E_INVALIDARG);
+    LIBPE_CHK(nIndex < nEntryCount, E_INVALIDARG);
 
     if(NULL == m_vEntries[nIndex]) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, E_FAIL);
+        LIBPE_CHK(NULL != m_pParser, E_FAIL);
         HRESULT hr = m_pParser->ParseResourceDirectoryEntry(this, nIndex, &m_vEntries[nIndex]);
         if(FAILED(hr)) {
             return hr;
@@ -82,7 +82,7 @@ template <class T>
 const wchar_t *
 PEResourceDirectoryEntryT<T>::GetName()
 {
-    LIBPE_ASSERT_RET(NULL != m_pParser && NULL != m_pFile, NULL);
+    LIBPE_CHK(NULL != m_pParser && NULL != m_pFile, NULL);
 
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
     if(NULL == pRawEntry) {
@@ -107,7 +107,7 @@ template <class T>
 BOOL
 PEResourceDirectoryEntryT<T>::IsEntryDirectory()
 {
-    LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
+    LIBPE_CHK(NULL != m_pParser, NULL);
 
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
     if(NULL == pRawEntry) {
@@ -121,8 +121,8 @@ template <class T>
 HRESULT
 PEResourceDirectoryEntryT<T>::GetDirectory(IPEResourceDirectory **ppDirectory)
 {
-    LIBPE_ASSERT_RET(NULL != ppDirectory, E_POINTER);
-    LIBPE_ASSERT_RET(NULL != m_pParser, E_FAIL);
+    LIBPE_CHK(NULL != ppDirectory, E_POINTER);
+    LIBPE_CHK(NULL != m_pParser, E_FAIL);
 
     *ppDirectory = NULL;
 
@@ -150,7 +150,7 @@ template <class T>
 BOOL
 PEResourceDirectoryEntryT<T>::IsEntryDataEntry()
 {
-    LIBPE_ASSERT_RET(NULL != m_pParser, FALSE);
+    LIBPE_CHK(NULL != m_pParser, FALSE);
 
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
     if(NULL == pRawEntry) {
@@ -164,8 +164,8 @@ template <class T>
 HRESULT
 PEResourceDirectoryEntryT<T>::GetDataEntry(IPEResourceDataEntry **ppDataEntry)
 {
-    LIBPE_ASSERT_RET(NULL != ppDataEntry, E_POINTER);
-    LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
+    LIBPE_CHK(NULL != ppDataEntry, E_POINTER);
+    LIBPE_CHK(NULL != m_pParser, NULL);
 
     *ppDataEntry = NULL;
 
@@ -193,8 +193,8 @@ template <class T>
 HRESULT
 PEResourceDataEntryT<T>::GetResource(IPEResource **ppResource)
 {
-    LIBPE_ASSERT_RET(NULL != ppResource, E_POINTER);
-    LIBPE_ASSERT_RET(NULL != m_pParser, E_FAIL);
+    LIBPE_CHK(NULL != ppResource, E_POINTER);
+    LIBPE_CHK(NULL != m_pParser, E_FAIL);
 
     *ppResource = NULL;
 

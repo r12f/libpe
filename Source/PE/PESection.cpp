@@ -8,7 +8,7 @@ HRESULT
 PESectionHeaderT<T>::GetSection(IPESection **ppSection)
 {
     if(NULL == m_pSection) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, E_FAIL);
+        LIBPE_CHK(NULL != m_pParser, E_FAIL);
         if(FAILED(m_pParser->ParseSection(GetRawStruct(), &m_pSection)) || NULL == m_pSection) {
             return E_FAIL;
         }
@@ -21,7 +21,7 @@ template <class T>
 const char *
 PESectionT<T>::GetName()
 {
-    LIBPE_ASSERT_RET(NULL != m_pSectionHeader, NULL);
+    LIBPE_CHK(NULL != m_pSectionHeader, NULL);
     return (const char *)m_pSectionHeader->Name;
 }
 
@@ -43,7 +43,7 @@ template <class T>
 UINT32
 PESectionT<T>::GetCharacteristics()
 {
-    LIBPE_ASSERT_RET(NULL != m_pSectionHeader, 0);
+    LIBPE_CHK(NULL != m_pSectionHeader, 0);
     return m_pSectionHeader->Characteristics;
 }
 

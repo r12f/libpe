@@ -27,7 +27,7 @@ public:
 
     BOOL PrepareForUsing() {
         LibPERawExportDirectory(T) *pExportDirectory = GetRawStruct();
-        LIBPE_ASSERT_RET(NULL != pExportDirectory, false);
+        LIBPE_CHK(NULL != pExportDirectory, false);
         m_vExportFunctions.resize(pExportDirectory->NumberOfFunctions, NULL);
         return true;
     }

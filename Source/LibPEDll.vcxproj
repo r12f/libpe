@@ -180,6 +180,7 @@
     <ClCompile Include="Parser\PEParser.cpp" />
     <ClCompile Include="Parser\PEParserImpl.cpp" />
     <ClCompile Include="PE\PECertificateTable.cpp" />
+    <ClCompile Include="PE\PEDebugInfoTable.cpp" />
     <ClCompile Include="PE\PEElement.cpp" />
     <ClCompile Include="PE\PEExportTable.cpp" />
     <ClCompile Include="PE\PEFile.cpp" />
@@ -207,6 +208,7 @@
     <ClInclude Include="Parser\PEParserCommon.h" />
     <ClInclude Include="Parser\PEParserImpl.h" />
     <ClInclude Include="PE\PECertificateTable.h" />
+    <ClInclude Include="PE\PEDebugInfoTable.h" />
     <ClInclude Include="PE\PEElement.h" />
     <ClInclude Include="PE\PEExportTable.h" />
     <ClInclude Include="PE\PEFile.h" />

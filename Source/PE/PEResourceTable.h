@@ -16,7 +16,7 @@ public:
     DECLARE_PE_ELEMENT(LibPERawResourceDirectory(T))
 
     void InnerSetRootDirectory(IPEResourceDirectory *pRootDirectory) {
-        LIBPE_ASSERT_RET_VOID(NULL != pRootDirectory);
+        LIBPE_CHK_RET_VOID(NULL != pRootDirectory);
         m_pRootDirectory = pRootDirectory;
     }
 

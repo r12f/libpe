@@ -7,7 +7,7 @@ LIBPE_NAMESPACE_BEGIN
 static HRESULT
 ParsePEFromDataLoader(DataLoader *pDataLoader, IPEFile **ppFile)
 {
-    LIBPE_ASSERT_RET(NULL != pDataLoader && NULL != ppFile, E_POINTER);
+    LIBPE_CHK(NULL != pDataLoader && NULL != ppFile, E_POINTER);
 
     if(SUCCEEDED(PEFile32::Create(pDataLoader, ppFile)) && NULL != *ppFile) {
         return S_OK;
@@ -25,10 +25,10 @@ HRESULT LIBPE_API
 ParsePEFromDiskFile(const file_char_t *pFilePath, IPEFile **ppFile)
 {
     LibPEPtr<DataLoader> pDataLoader = new DataLoaderDiskFile;
-    LIBPE_ASSERT_RET(NULL != pDataLoader, NULL);
+    LIBPE_CHK(NULL != pDataLoader, NULL);
 
     DataLoaderDiskFile *pRawDataLoader = (DataLoaderDiskFile *)pDataLoader.p;
-    LIBPE_ASSERT_RET(pRawDataLoader->LoadFile(pFilePath), NULL);
+    LIBPE_CHK(pRawDataLoader->LoadFile(pFilePath), NULL);
 
     return ParsePEFromDataLoader(pDataLoader, ppFile);
 }

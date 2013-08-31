@@ -22,6 +22,7 @@ struct PETraitBase {
     typedef IMAGE_RESOURCE_DIRECTORY_STRING     RawResourceString;
     typedef IMAGE_RESOURCE_DIR_STRING_U         RawResourceStringU;
     typedef WIN_CERTIFICATE                     RawWinCertificate;
+    typedef IMAGE_DEBUG_DIRECTORY               RawDebugDirectory;
 };
 
 template <class T> struct PETrait {};
@@ -70,6 +71,7 @@ struct PETrait<PE64> : PETraitBase {
 #define LibPERawTlsDirectory(T)                 typename PETrait<T>::RawTlsDirectory
 #define LibPERawLoadConfigDirectory(T)          typename PETrait<T>::RawLoadConfigDirectory
 #define LibPERawWinCertificate(T)               typename PETrait<T>::RawWinCertificate
+#define LibPERawDebugDirectory(T)               typename PETrait<T>::RawDebugDirectory
 
 typedef UINT64                                  PEAddress;
 #define LIBPE_INVALID_ADDRESS                   ((UINT64)(-1))
@@ -89,6 +91,7 @@ typedef PETraitBase::RawResourceDataEntry       PERawResourceDataEntry;
 typedef PETraitBase::RawResourceString          PERawResourceString;
 typedef PETraitBase::RawResourceStringU         PERawResourceStringU;
 typedef PETraitBase::RawWinCertificate          PERawWinCertificate;
+typedef PETraitBase::RawDebugDirectory          PERawDebugDirectory;
 
 typedef PETrait<PE32>::RawNtHeaders             PERawNtHeaders32;
 typedef PETrait<PE32>::RawOptionalHeader        PERawOptionalHeader32;

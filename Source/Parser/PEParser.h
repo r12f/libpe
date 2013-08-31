@@ -116,6 +116,36 @@ protected:
 
     PEAddress GetRawOffset(PEAddress nRVA, PEAddress nFOA);
     HRESULT GetDataDirectoryEntry(INT32 nDataDirectoryEntryIndex, PEAddress &nRVA, PEAddress &nFOA, PEAddress &nSize);
+    
+    template <class ITable, class Table>
+    HRESULT ParseSimpleDataDirectory(INT32 nDataDirectoryEntryIndex, ITable **ppTable)
+    {
+        LIBPE_CHK(NULL != ppTable, E_POINTER);
+        LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
+
+        *ppTable = NULL;
+
+        PEAddress nTableRVA = LIBPE_INVALID_ADDRESS, nTableFOA = LIBPE_INVALID_ADDRESS, nTableSize = LIBPE_INVALID_SIZE;
+        if(FAILED(GetDataDirectoryEntry(nDataDirectoryEntryIndex, nTableRVA, nTableFOA, nTableSize))) {
+            return E_FAIL;
+        }
+
+        HRESULT hr = S_OK;
+
+        LIBPE_HR_TRY_BEGIN(hr)
+        {
+            LibPEPtr<Table> pTable = new Table();
+
+            pTable->InnerSetBase(m_pFile, this);
+            pTable->InnerSetMemoryInfo(nTableRVA, LIBPE_INVALID_ADDRESS, nTableSize);
+            pTable->InnerSetFileInfo(nTableFOA, nTableSize);
+
+            *ppTable = pTable.Detach();
+        }
+        LIBPE_HR_TRY_END();
+
+        return hr;
+    }
 
 protected:
     LibPEPtr<DataLoader>    m_pLoader;

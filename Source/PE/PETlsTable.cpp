@@ -20,7 +20,7 @@ template <class T>
 UINT32
 PETlsTableT<T>::GetCallbackCount()
 {
-    LIBPE_ASSERT_RET(SUCCEEDED(EnsureTlsCallbacksParsed()), 0);
+    LIBPE_CHK_HR_RET(EnsureTlsCallbacksParsed(), 0);
     return (UINT32)m_vCallbackRVAs.size();
 }
 
@@ -28,10 +28,10 @@ template <class T>
 PEAddress
 PETlsTableT<T>::GetCallbackRVAByIndex(UINT32 nIndex)
 {
-    LIBPE_ASSERT_RET(SUCCEEDED(EnsureTlsCallbacksParsed()), LIBPE_INVALID_ADDRESS);
+    LIBPE_CHK_HR_RET(EnsureTlsCallbacksParsed(), LIBPE_INVALID_ADDRESS);
 
     UINT32 nCallbackCount = GetCallbackCount();
-    LIBPE_ASSERT_RET(nIndex < nCallbackCount, LIBPE_INVALID_ADDRESS);
+    LIBPE_CHK(nIndex < nCallbackCount, LIBPE_INVALID_ADDRESS);
 
     return m_vCallbackRVAs[nIndex];
 }
@@ -46,8 +46,8 @@ PETlsTableT<T>::EnsureTlsCallbacksParsed()
 
     m_bIsTlsCallbacksParsed = true;
 
-    LIBPE_ASSERT_RET(NULL != m_pParser, E_UNEXPECTED);
-    LIBPE_ASSERT_RET(SUCCEEDED(m_pParser->ParseTlsCallbacks(this)), E_FAIL);
+    LIBPE_CHK(NULL != m_pParser, E_UNEXPECTED);
+    LIBPE_CHK_HR(m_pParser->ParseTlsCallbacks(this));
 
     return S_OK;
 }

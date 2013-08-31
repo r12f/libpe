@@ -18,7 +18,7 @@ public:
     DECLARE_PE_ELEMENT(LibPERawBaseRelocation(T))
 
     void InnerAddRelocationPage(IPERelocationPage *pPage) {
-        LIBPE_ASSERT_RET_VOID(NULL != pPage);
+        LIBPE_CHK_RET_VOID(NULL != pPage);
         m_vPages.push_back(pPage);
     }
 
@@ -45,7 +45,7 @@ public:
     DECLARE_PE_ELEMENT(LibPERawBaseRelocation(T))
 
     void InnerAddRelocationItem(IPERelocationItem *pItem) {
-        LIBPE_ASSERT_RET_VOID(NULL != pItem);
+        LIBPE_CHK_RET_VOID(NULL != pItem);
         m_vItems.push_back(pItem);
     }
 

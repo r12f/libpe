@@ -18,7 +18,7 @@ public:
     DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
     void InnerAddImportAddressBlock(IPEImportAddressBlock *pBlock) {
-        LIBPE_ASSERT_RET_VOID(NULL != pBlock);
+        LIBPE_CHK_RET_VOID(NULL != pBlock);
         m_vBlocks.push_back(pBlock);
     }
 
@@ -45,7 +45,7 @@ public:
     DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
     void InnerAddImportAddressItem(IPEImportAddressItem *pItem) {
-        LIBPE_ASSERT_RET_VOID(NULL != pItem);
+        LIBPE_CHK_RET_VOID(NULL != pItem);
         m_vItems.push_back(pItem);
     }
 

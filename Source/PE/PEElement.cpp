@@ -8,7 +8,7 @@ void *
 PEElementT<T>::GetRawMemory()
 {
     if(NULL == m_pRawBuffer) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, NULL);
+        LIBPE_CHK(NULL != m_pParser, NULL);
         m_pRawBuffer = m_pParser->GetRawMemory(GetRawOffset(), GetRawSize());
     }
 
@@ -19,7 +19,7 @@ template <class T>
 PEAddress
 PEElementT<T>::GetRawOffset()
 {
-    LIBPE_ASSERT_RET(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
+    LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
     return m_pParser->IsRawAddressVA() ? GetRVA() : GetFOA();
 }
 
@@ -27,7 +27,7 @@ template <class T>
 PEAddress
 PEElementT<T>::GetRawSize()
 {
-    LIBPE_ASSERT_RET(NULL != m_pParser, LIBPE_INVALID_SIZE);
+    LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_SIZE);
     return m_pParser->IsRawAddressVA() ? GetSizeInMemory() : GetSizeInFile();
 }
 
@@ -36,7 +36,7 @@ PEAddress
 PEElementT<T>::GetRVA()
 {
     if(LIBPE_INVALID_ADDRESS == m_nRVA) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
+        LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
         m_nRVA = m_pParser->GetRVAFromFOA(m_nFOA);
     }
     return m_nRVA;
@@ -47,7 +47,7 @@ PEAddress
 PEElementT<T>::GetVA()
 {
     if(LIBPE_INVALID_ADDRESS == m_nVA) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
+        LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
         m_nVA = m_pParser->GetVAFromRVA(m_nRVA);
     }
     return m_nVA;
@@ -58,7 +58,7 @@ PEAddress
 PEElementT<T>::GetFOA()
 {
     if(LIBPE_INVALID_ADDRESS == m_nFOA) {
-        LIBPE_ASSERT_RET(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
+        LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
         m_nFOA = m_pParser->GetFOAFromRVA(m_nRVA);
     }
     return m_nFOA;

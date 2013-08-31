@@ -58,6 +58,9 @@
     <ClCompile Include="PE\PETlsTable.cpp">
       <Filter>PE</Filter>
     </ClCompile>
+    <ClCompile Include="PE\PEDebugInfoTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parser\DataLoader.h">
@@ -110,6 +113,9 @@
       <Filter>PE</Filter>
     </ClInclude>
     <ClInclude Include="PE\PETlsTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PEDebugInfoTable.h">
       <Filter>PE</Filter>
     </ClInclude>
   </ItemGroup>

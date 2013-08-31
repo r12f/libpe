@@ -14,10 +14,10 @@ template <class T>
 HRESULT
 PERelocationTableT<T>::GetPageByIndex(UINT32 nIndex, IPERelocationPage **ppRelocationPage)
 {
-    LIBPE_ASSERT_RET(NULL != ppRelocationPage, E_POINTER);
+    LIBPE_CHK(NULL != ppRelocationPage, E_POINTER);
 
     UINT32 nPageCount = GetPageCount();
-    LIBPE_ASSERT_RET(nIndex < nPageCount, E_FAIL);
+    LIBPE_CHK(nIndex < nPageCount, E_FAIL);
 
     return m_vPages[nIndex].CopyTo(ppRelocationPage);
 }
@@ -34,7 +34,7 @@ template <class T>
 HRESULT
 PERelocationTableT<T>::GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem)
 {
-    LIBPE_ASSERT_RET(NULL != ppRelocationItem, E_POINTER);
+    LIBPE_CHK(NULL != ppRelocationItem, E_POINTER);
     *ppRelocationItem = NULL;
 
     UINT32 nPageCount = GetPageCount();
@@ -73,10 +73,10 @@ template <class T>
 HRESULT
 PERelocationPageT<T>::GetItemByIndex(UINT32 nIndex, IPERelocationItem **ppRelocationItem)
 {
-    LIBPE_ASSERT_RET(NULL != ppRelocationItem, E_POINTER);
+    LIBPE_CHK(NULL != ppRelocationItem, E_POINTER);
 
     UINT32 nItemCount = GetItemCount();
-    LIBPE_ASSERT_RET(nIndex < nItemCount, E_FAIL);
+    LIBPE_CHK(nIndex < nItemCount, E_FAIL);
 
     return m_vItems[nIndex].CopyTo(ppRelocationItem);
 }
@@ -93,7 +93,7 @@ template <class T>
 HRESULT
 PERelocationPageT<T>::GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem)
 {
-    LIBPE_ASSERT_RET(NULL != ppRelocationItem, E_POINTER);
+    LIBPE_CHK(NULL != ppRelocationItem, E_POINTER);
     *ppRelocationItem = NULL;
 
     PEAddress nRVABase = (nRVA & 0xFFFF0000);
@@ -141,7 +141,7 @@ template <class T>
 PEAddress *
 PERelocationItemT<T>::GetRawAddressContent()
 {
-    LIBPE_ASSERT_RET(NULL != m_pParser, 0);
+    LIBPE_CHK(NULL != m_pParser, 0);
     PEAddress nAddressFOA = m_pParser->GetFOAFromRVA(m_nAddressRVA);
     return (PEAddress *)m_pParser->GetRawMemory(nAddressFOA, sizeof(UINT16));
 }

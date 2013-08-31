@@ -160,6 +160,31 @@ void ExportRelocationTable(IPEFile *pFile)
     }
 }
 
+void ExportDebugInfoTable(IPEFile *pFile)
+{
+    LibPEPtr<IPEDebugInfoTable> pDebugInfoTable;
+    pFile->GetDebugInfoTable(&pDebugInfoTable);
+
+    printf("Debug info table: ");
+    if (NULL == pDebugInfoTable) {
+        printf("NULL\n\n");
+        return;
+    }
+
+    printf("\n");
+
+    printf("Characteristics = %lu\n", pDebugInfoTable->GetFieldCharacteristics());
+    printf("TimeDateStamp = %lu\n", pDebugInfoTable->GetFieldTimeDateStamp());
+    printf("MajorVersion = %u\n", pDebugInfoTable->GetFieldMajorVersion());
+    printf("MinorVersion = %u\n", pDebugInfoTable->GetFieldMinorVersion());
+    printf("Type = %lu\n", pDebugInfoTable->GetFieldType());
+    printf("SizeOfData = %lu\n", pDebugInfoTable->GetFieldSizeOfData());
+    printf("AddressOfRawData = 0x%08x\n", pDebugInfoTable->GetFieldAddressOfRawData());
+    printf("PointerToRawData = 0x%08x\n", pDebugInfoTable->GetFieldPointerToRawData());
+
+    printf("\n");
+}
+
 void ExportImportAddressTable(IPEFile *pFile)
 {
     LibPEPtr<IPEImportAddressTable> pImportAddressTable;
@@ -305,10 +330,11 @@ int wmain(int /*argc*/, wchar_t* /*argv*/[])
     //ExportImportTable(pFile);
     //ExportResourceTable(pFile);
     //ExportRelocationTable(pFile);
+    ExportDebugInfoTable(pFile);
     //ExportLoadConfigTable(pFile);
     //ExportCertificateTable(pFile);
     //ExportImportAddressTable(pFile);
-    ExportTlsTable(pFile);
+    //ExportTlsTable(pFile);
 
     return 0;
 }

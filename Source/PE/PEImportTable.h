@@ -24,7 +24,7 @@ public:
     DECLARE_PE_ELEMENT(LibPERawImportDescriptor(T))
 
     void InnerAddImportDescriptor(PEAddress nImportDescRVA, PEAddress nImportDescFOA, LibPERawImportDescriptor(T) *pImportDesc) {
-        LIBPE_ASSERT_RET_VOID(LIBPE_INVALID_ADDRESS != nImportDescRVA && LIBPE_INVALID_ADDRESS != nImportDescFOA && NULL != pImportDesc);
+        LIBPE_CHK_RET_VOID(LIBPE_INVALID_ADDRESS != nImportDescRVA && LIBPE_INVALID_ADDRESS != nImportDescFOA && NULL != pImportDesc);
         ModuleInfo oInfo;
         oInfo.m_nImportDescRVA = nImportDescRVA;
         oInfo.m_nImportDescFOA = nImportDescFOA;
@@ -56,7 +56,7 @@ public:
     DECLARE_PE_ELEMENT(LibPERawImportDescriptor(T))
 
     void InnerAddImportFunction(IPEImportFunction *pFunction) {
-        LIBPE_ASSERT_RET_VOID(NULL != pFunction);
+        LIBPE_CHK_RET_VOID(NULL != pFunction);
         m_vFunctions.push_back(pFunction);
     }
 
@@ -85,8 +85,8 @@ protected:
         // If failed, do not parse twice.
         m_bIsFunctionParsed = true;
 
-        LIBPE_ASSERT_RET(NULL != m_pParser && NULL != m_pFile, E_FAIL);
-        LIBPE_ASSERT_RET(SUCCEEDED(m_pParser->ParseImportFunctionsInModule(this)), E_FAIL);
+        LIBPE_CHK(NULL != m_pParser && NULL != m_pFile, E_FAIL);
+        LIBPE_CHK_HR(m_pParser->ParseImportFunctionsInModule(this));
 
         return S_OK;
     }
@@ -116,7 +116,7 @@ public:
     DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
     void InnerSetRawImportByName(LibPERawImportByName(T) *pImportByName, PEAddress nRVA, PEAddress nFOA, PEAddress nSize) {
-        LIBPE_ASSERT_RET_VOID(NULL != pImportByName && LIBPE_INVALID_ADDRESS != nRVA && LIBPE_INVALID_ADDRESS != nFOA && LIBPE_INVALID_SIZE != nSize);
+        LIBPE_CHK_RET_VOID(NULL != pImportByName && LIBPE_INVALID_ADDRESS != nRVA && LIBPE_INVALID_ADDRESS != nFOA && LIBPE_INVALID_SIZE != nSize);
 
         m_pImportByName = pImportByName;
         m_nImportByNameRVA = nRVA;
@@ -146,8 +146,8 @@ protected:
         // If failed, do not parse twice.
         m_bIsImportByNameParsed = true;
 
-        LIBPE_ASSERT_RET(NULL != m_pParser && NULL != m_pFile, E_FAIL);
-        LIBPE_ASSERT_RET(SUCCEEDED(m_pParser->ParseImportFunction(this)), E_FAIL);
+        LIBPE_CHK(NULL != m_pParser && NULL != m_pFile, E_FAIL);
+        LIBPE_CHK_HR(m_pParser->ParseImportFunction(this));
 
         return S_OK;
     }

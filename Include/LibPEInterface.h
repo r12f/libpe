@@ -164,6 +164,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE GetCertificateTable(IPECertificateTable **ppCertificateTable) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetRelocationTable(IPERelocationTable **ppRelocationTable) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetArchitectureDataTable(IPEArchitectureDataTable **ppArchitectureDataTable) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetGlobalRegister(IPEGlobalRegister **ppGlobalRegister) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetTlsTable(IPETlsTable **ppTlsTable) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable) = 0;
@@ -498,7 +499,18 @@ public:
     virtual PEAddress * LIBPE_CALLTYPE GetRawAddressContent() = 0;
 };
 
-class IPEDebugInfoTable : public IPEElement {};
+class IPEDebugInfoTable : public IPEElement
+{
+public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Characteristics);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, TimeDateStamp);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, MajorVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, MinorVersion);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Type);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, SizeOfData);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, AddressOfRawData);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, PointerToRawData);
+};
 
 class IPEArchitectureDataTable : public IPEElement {};
 
