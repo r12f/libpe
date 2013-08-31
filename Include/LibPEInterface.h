@@ -67,6 +67,8 @@ class IPEResource;
 
 // DD3: Exception table
 class IPEExceptionTable;
+class IPEExceptionHandlerEntry;
+class IPEExceptionHandler;
 
 // DD4: Security table
 class IPECertificateTable;
@@ -451,6 +453,21 @@ public:
 
 class IPEExceptionTable : public IPEElement
 {
+public:
+    virtual UINT32 LIBPE_CALLTYPE GetExceptionHandlerCount() = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetExceptionHandlerEntryByIndex(UINT32 nIndex, IPEExceptionHandlerEntry **ppExceptionHandlerEntry) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetExceptionHandlerByIndex(UINT32 nIndex, IPEExceptionHandler **ppExceptionHandler) = 0;
+};
+
+class IPEExceptionHandlerEntry : public IPEElement
+{
+public:
+    virtual HRESULT LIBPE_CALLTYPE GetExceptionHandler(IPEExceptionHandler **ppExceptionHandler) = 0;
+};
+
+class IPEExceptionHandler : public IPEElement
+{
+public:
 };
 
 class IPECertificateTable : public IPEElement

@@ -21,6 +21,7 @@ struct PETraitBase {
     typedef IMAGE_RESOURCE_DATA_ENTRY           RawResourceDataEntry;
     typedef IMAGE_RESOURCE_DIRECTORY_STRING     RawResourceString;
     typedef IMAGE_RESOURCE_DIR_STRING_U         RawResourceStringU;
+    typedef IMAGE_RUNTIME_FUNCTION_ENTRY        RawRuntimeFunctionEntry;
     typedef WIN_CERTIFICATE                     RawWinCertificate;
     typedef IMAGE_DEBUG_DIRECTORY               RawDebugDirectory;
 };
@@ -68,6 +69,7 @@ struct PETrait<PE64> : PETraitBase {
 #define LibPERawResourceDataEntry(T)            typename PETrait<T>::RawResourceDataEntry
 #define LibPERawResourceString(T)               typename PETrait<T>::RawResourceString
 #define LibPERawResourceStringU(T)              typename PETrait<T>::RawResourceStringU
+#define LibPERawRuntimeFunctionEntry(T)         typename PETrait<T>::RawRuntimeFunctionEntry
 #define LibPERawTlsDirectory(T)                 typename PETrait<T>::RawTlsDirectory
 #define LibPERawLoadConfigDirectory(T)          typename PETrait<T>::RawLoadConfigDirectory
 #define LibPERawWinCertificate(T)               typename PETrait<T>::RawWinCertificate
@@ -90,6 +92,7 @@ typedef PETraitBase::RawResourceDirectoryEntry  PERawResourceDirectoryEntry;
 typedef PETraitBase::RawResourceDataEntry       PERawResourceDataEntry;
 typedef PETraitBase::RawResourceString          PERawResourceString;
 typedef PETraitBase::RawResourceStringU         PERawResourceStringU;
+typedef PETraitBase::RawRuntimeFunctionEntry    PERawRuntimeFunctionEntry;
 typedef PETraitBase::RawWinCertificate          PERawWinCertificate;
 typedef PETraitBase::RawDebugDirectory          PERawDebugDirectory;
 

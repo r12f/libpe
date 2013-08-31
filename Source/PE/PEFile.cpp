@@ -354,7 +354,14 @@ template <class T>
 HRESULT
 PEFileT<T>::GetExceptionTable(IPEExceptionTable **ppExceptionTable)
 {
-    return E_NOTIMPL;
+    if(NULL == m_pExceptionTable) {
+        LIBPE_CHK(NULL != m_pParser, E_FAIL);
+        if(FAILED(m_pParser->ParseExceptionTable(&m_pExceptionTable)) || NULL == m_pExceptionTable) {
+            return E_FAIL;
+        }
+    }
+
+    return m_pExceptionTable.CopyTo(ppExceptionTable);
 }
 
 template <class T>

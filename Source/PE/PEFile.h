@@ -110,6 +110,7 @@ private:
     LibPEPtr<IPEExportTable>                m_pExportTable;
     LibPEPtr<IPEImportTable>                m_pImportTable;
     LibPEPtr<IPEResourceTable>              m_pResourceTable;
+    LibPEPtr<IPEExceptionTable>             m_pExceptionTable;
     LibPEPtr<IPECertificateTable>           m_pCertificateTable;
     LibPEPtr<IPERelocationTable>            m_pRelocationTable;
     LibPEPtr<IPEDebugInfoTable>             m_pDebugInfoTable;

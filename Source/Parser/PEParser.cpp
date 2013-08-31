@@ -752,7 +752,75 @@ template <class T>
 HRESULT
 PEParserT<T>::ParseExceptionTable(IPEExceptionTable **ppExceptionTable)
 {
-    return E_NOTIMPL;
+    LIBPE_CHK(NULL != ppExceptionTable, E_POINTER);
+
+    *ppExceptionTable = NULL;
+
+    LibPEPtr<PEExceptionTableT<T>> pExceptionTable;
+    LIBPE_CHK_HR(ParseSimpleDataDirectory<PEExceptionTableT<T>>(IMAGE_DIRECTORY_ENTRY_EXCEPTION, &pExceptionTable));
+    LIBPE_CHK(NULL != pExceptionTable, E_OUTOFMEMORY);
+
+    pExceptionTable->InnerSetExceptionHandlerCount(pExceptionTable->GetSizeInFile() / sizeof(LibPERawRuntimeFunctionEntry(T)));
+
+    return pExceptionTable.CopyTo(ppExceptionTable);
+}
+
+template <class T>
+HRESULT
+PEParserT<T>::ParseExceptionHandlerEntry(IPEExceptionTable *pExceptionTable, UINT32 nHandlerIndex, IPEExceptionHandlerEntry **ppExceptionHandlerEntry)
+{
+    LIBPE_CHK(NULL != pExceptionTable, E_UNEXPECTED);
+    LIBPE_CHK(NULL != ppExceptionHandlerEntry, E_POINTER);
+
+    *ppExceptionHandlerEntry = NULL;
+
+    PEAddress nExceptionHandlerEntryRVA = pExceptionTable->GetRVA() + sizeof(LibPERawRuntimeFunctionEntry(T)) * nHandlerIndex;
+    PEAddress nExceptionHandlerEntryFOA = pExceptionTable->GetFOA() + sizeof(LibPERawRuntimeFunctionEntry(T)) * nHandlerIndex;
+
+    HRESULT hr = S_OK;
+
+    LIBPE_HR_TRY_BEGIN(hr)
+    {
+        LibPEPtr<PEExceptionHandlerEntryT<T>> pExceptionHandlerEntry = new PEExceptionHandlerEntryT<T>();
+
+        pExceptionHandlerEntry->InnerSetBase(m_pFile, this);
+        pExceptionHandlerEntry->InnerSetMemoryInfo(nExceptionHandlerEntryRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawRuntimeFunctionEntry(T)));
+        pExceptionHandlerEntry->InnerSetFileInfo(nExceptionHandlerEntryFOA, sizeof(LibPERawRuntimeFunctionEntry(T)));
+
+        *ppExceptionHandlerEntry = pExceptionHandlerEntry.Detach();
+    }
+    LIBPE_HR_TRY_END();
+
+    return S_OK;
+}
+
+template <class T>
+HRESULT
+PEParserT<T>::ParseExceptionHandler(IPEExceptionHandlerEntry *pExceptionHandlerEntry, IPEExceptionHandler **ppExceptionHandler)
+{
+    LIBPE_CHK(NULL != pExceptionHandlerEntry, E_UNEXPECTED);
+    LIBPE_CHK(NULL != ppExceptionHandler, E_POINTER);
+
+    HRESULT hr = S_OK;
+    LIBPE_HR_TRY_BEGIN(hr)
+    {
+        PEExceptionHandlerEntryT<T> *pInnerExceptionHandlerEntry = (PEExceptionHandlerEntryT<T> *)pExceptionHandlerEntry;
+
+        LibPERawRuntimeFunctionEntry(T) *pRawRuntimeFunctionEntry = pInnerExceptionHandlerEntry->GetRawStruct();
+        PEAddress nExceptionHandlerRVA = pRawRuntimeFunctionEntry->BeginAddress;
+        PEAddress nExceptionHandlerSize = pRawRuntimeFunctionEntry->EndAddress - pRawRuntimeFunctionEntry->BeginAddress;
+
+        LibPEPtr<PEExceptionHandlerT<T>> pExceptionHandler = new PEExceptionHandlerT<T>();
+
+        pExceptionHandler->InnerSetBase(m_pFile, this);
+        pExceptionHandler->InnerSetMemoryInfo(nExceptionHandlerRVA, LIBPE_INVALID_ADDRESS, nExceptionHandlerSize);
+        pExceptionHandler->InnerSetFileInfo(LIBPE_INVALID_ADDRESS, nExceptionHandlerSize);
+
+        *ppExceptionHandler = pExceptionHandler.Detach();
+    }
+    LIBPE_HR_TRY_END();
+
+    return S_OK;
 }
 
 template <class T>
@@ -909,7 +977,7 @@ template <class T>
 HRESULT
 PEParserT<T>::ParseDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable)
 {
-    return ParseSimpleDataDirectory<IPEDebugInfoTable, PEDebugInfoTableT<T>>(IMAGE_DIRECTORY_ENTRY_DEBUG, ppDebugInfoTable);
+    return ParseSimpleDataDirectoryToInterface()<IPEDebugInfoTable, PEDebugInfoTableT<T>>(IMAGE_DIRECTORY_ENTRY_DEBUG, ppDebugInfoTable);
 }
 
 template <class T>

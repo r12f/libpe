@@ -69,6 +69,8 @@ public:
 
     // Exception table related functions
     HRESULT ParseExceptionTable(IPEExceptionTable **ppExceptionTable);
+    HRESULT ParseExceptionHandlerEntry(IPEExceptionTable *pExceptionTable, UINT32 nHandlerIndex, IPEExceptionHandlerEntry **ppExceptionHandlerEntry);
+    HRESULT ParseExceptionHandler(IPEExceptionHandlerEntry *pExceptionHandlerEntry, IPEExceptionHandler **ppExceptionHandler);
 
     // Certificate table related functions
     HRESULT ParseCertificateTable(IPECertificateTable **ppCertificateTable);
@@ -117,8 +119,8 @@ protected:
     PEAddress GetRawOffset(PEAddress nRVA, PEAddress nFOA);
     HRESULT GetDataDirectoryEntry(INT32 nDataDirectoryEntryIndex, PEAddress &nRVA, PEAddress &nFOA, PEAddress &nSize);
     
-    template <class ITable, class Table>
-    HRESULT ParseSimpleDataDirectory(INT32 nDataDirectoryEntryIndex, ITable **ppTable)
+    template <class TableClass>
+    HRESULT ParseSimpleDataDirectory(INT32 nDataDirectoryEntryIndex, TableClass **ppTable)
     {
         LIBPE_CHK(NULL != ppTable, E_POINTER);
         LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
@@ -134,7 +136,7 @@ protected:
 
         LIBPE_HR_TRY_BEGIN(hr)
         {
-            LibPEPtr<Table> pTable = new Table();
+            LibPEPtr<TableClass> pTable = new TableClass();
 
             pTable->InnerSetBase(m_pFile, this);
             pTable->InnerSetMemoryInfo(nTableRVA, LIBPE_INVALID_ADDRESS, nTableSize);
@@ -145,6 +147,14 @@ protected:
         LIBPE_HR_TRY_END();
 
         return hr;
+    }
+
+    template <class ITable, class TableClass>
+    HRESULT ParseSimpleDataDirectoryToInterface(INT32 nDataDirectoryEntryIndex, ITable **ppTable)
+    {
+        LibPEPtr<TableClass> pTable;
+        LIBPE_CHK_HR(ParseSimpleDataDirectory(nDataDirectoryEntryIndex, ppTable));
+        return pTable.CopyTo(ppTable);
     }
 
 protected:

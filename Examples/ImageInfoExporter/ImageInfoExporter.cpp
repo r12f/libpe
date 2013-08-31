@@ -137,6 +137,55 @@ void ExportResourceTable(IPEFile *pFile)
     return;
 }
 
+void ExportExceptionTable(IPEFile *pFile)
+{
+    LibPEPtr<IPEExceptionTable> pExceptionTable;
+    pFile->GetExceptionTable(&pExceptionTable);
+
+    printf("Exception table: ");
+    if (NULL == pExceptionTable) {
+        printf("NULL\n\n");
+        return;
+    }
+
+    printf("\n");
+
+    UINT32 nExceptionHandlerCount = pExceptionTable->GetExceptionHandlerCount();
+    printf("Exception Handler Count = %lu\n", nExceptionHandlerCount);
+
+    for (UINT32 nExceptionHandlerIndex = 0; nExceptionHandlerIndex < nExceptionHandlerCount; ++nExceptionHandlerIndex) {
+        printf("Exception Handler #%lu: ", nExceptionHandlerIndex);
+
+        LibPEPtr<IPEExceptionHandlerEntry> pExceptionHandlerEntry;
+        if(FAILED(pExceptionTable->GetExceptionHandlerEntryByIndex(nExceptionHandlerIndex, &pExceptionHandlerEntry)) || NULL == pExceptionHandlerEntry) {
+            printf("Entry = NULL\n");
+            continue;
+        }
+
+        printf("EntryRVA = 0x%016I64x, EntryFOA = 0x%016I64x, EntrySize = %lu",
+            pExceptionHandlerEntry->GetRVA(),
+            pExceptionHandlerEntry->GetFOA(),
+            pExceptionHandlerEntry->GetSizeInFile());
+
+        printf(", ");
+
+        LibPEPtr<IPEExceptionHandler> pExceptionHandler;
+        if(FAILED(pExceptionHandlerEntry->GetExceptionHandler(&pExceptionHandler)) || NULL == pExceptionHandler) {
+            printf("Handler = NULL\n");
+            continue;
+        }
+
+        printf("HandlerRVA = 0x%016I64x, HandlerFOA = 0x%016I64x, HandlerSize = %lu",
+            pExceptionHandler->GetRVA(),
+            pExceptionHandler->GetFOA(),
+            pExceptionHandler->GetSizeInFile());
+
+        printf("\n");
+    }
+
+    printf("\n");
+}
+
 void ExportRelocationTable(IPEFile *pFile)
 {
     LibPEPtr<IPERelocationTable> pRelocationTable;
@@ -329,8 +378,9 @@ int wmain(int /*argc*/, wchar_t* /*argv*/[])
     //ExportExportTable(pFile);
     //ExportImportTable(pFile);
     //ExportResourceTable(pFile);
+    ExportExceptionTable(pFile);
     //ExportRelocationTable(pFile);
-    ExportDebugInfoTable(pFile);
+    //ExportDebugInfoTable(pFile);
     //ExportLoadConfigTable(pFile);
     //ExportCertificateTable(pFile);
     //ExportImportAddressTable(pFile);
