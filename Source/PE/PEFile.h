@@ -71,7 +71,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE GetRelocationTable(IPERelocationTable **ppRelocationTable);
     virtual HRESULT LIBPE_CALLTYPE GetDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable);
     virtual HRESULT LIBPE_CALLTYPE GetArchitectureDataTable(IPEArchitectureDataTable **ppArchitectureDataTable);
-    virtual HRESULT LIBPE_CALLTYPE GetGlobalRegister(IPEGlobalRegister **ppGlobalRegister) { return E_NOTIMPL; }
+    virtual HRESULT LIBPE_CALLTYPE GetGlobalPointerTable(IPEGlobalPointerTable **ppGlobalPointerTable);
     virtual HRESULT LIBPE_CALLTYPE GetTlsTable(IPETlsTable **ppTlsTable);
     virtual HRESULT LIBPE_CALLTYPE GetLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable);
     virtual HRESULT LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable) { return E_NOTIMPL; }
@@ -86,7 +86,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE RemoveCertificateTable() { return E_NOTIMPL; };
     virtual HRESULT LIBPE_CALLTYPE RemoveRelocationTable() { return E_NOTIMPL; };
     virtual HRESULT LIBPE_CALLTYPE RemoveDebugInfoTable() { return E_NOTIMPL; };
-    virtual HRESULT LIBPE_CALLTYPE RemoveGlobalRegister() { return E_NOTIMPL; };
+    virtual HRESULT LIBPE_CALLTYPE RemoveGlobalPointerTable() { return E_NOTIMPL; };
     virtual HRESULT LIBPE_CALLTYPE RemoveTlsTable() { return E_NOTIMPL; };
     virtual HRESULT LIBPE_CALLTYPE RemoveBoundImportTable() { return E_NOTIMPL; };
     virtual HRESULT LIBPE_CALLTYPE RemoveImportAddressTable() { return E_NOTIMPL; };
@@ -114,6 +114,7 @@ private:
     LibPEPtr<IPECertificateTable>           m_pCertificateTable;
     LibPEPtr<IPERelocationTable>            m_pRelocationTable;
     LibPEPtr<IPEDebugInfoTable>             m_pDebugInfoTable;
+    LibPEPtr<IPEGlobalPointerTable>             m_pGlobalPointerTable;
     LibPEPtr<IPETlsTable>                   m_pTlsTable;
     LibPEPtr<IPELoadConfigTable>            m_pLoadConfigTable;
     LibPEPtr<IPEImportAddressTable>         m_pImportAddressTable;

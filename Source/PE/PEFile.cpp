@@ -421,6 +421,20 @@ PEFileT<T>::GetArchitectureDataTable(IPEArchitectureDataTable **ppArchitectureDa
 }
 
 template <class T>
+HRESULT 
+PEFileT<T>::GetGlobalPointerTable(IPEGlobalPointerTable **ppGlobalPointerTable)
+{
+    if(NULL == m_pGlobalPointerTable) {
+        LIBPE_CHK(NULL != m_pParser, E_FAIL);
+        if(FAILED(m_pParser->ParseGlobalPointerTable(&m_pGlobalPointerTable)) || NULL == m_pGlobalPointerTable) {
+            return E_FAIL;
+        }
+    }
+
+    return m_pGlobalPointerTable.CopyTo(ppGlobalPointerTable);
+}
+
+template <class T>
 HRESULT
 PEFileT<T>::GetTlsTable(IPETlsTable **ppTlsTable)
 {

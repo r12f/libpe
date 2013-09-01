@@ -83,7 +83,7 @@ public:
     HRESULT ParseDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable);
 
     // Global register table related functions
-    HRESULT ParseGlobalRegister(IPEGlobalRegister **ppGlobalRegister);
+    HRESULT ParseGlobalPointerTable(IPEGlobalPointerTable **ppGlobalPointerTable);
 
     // Tls table related functions
     HRESULT ParseTlsTable(IPETlsTable **ppTlsTable);

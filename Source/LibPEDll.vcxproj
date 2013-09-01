@@ -185,6 +185,7 @@
     <ClCompile Include="PE\PEExceptionTable.cpp" />
     <ClCompile Include="PE\PEExportTable.cpp" />
     <ClCompile Include="PE\PEFile.cpp" />
+    <ClCompile Include="PE\PEGlobalPointerTable.cpp" />
     <ClCompile Include="PE\PEHeader.cpp" />
     <ClCompile Include="PE\PEImportAddressTable.cpp" />
     <ClCompile Include="PE\PEImportTable.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="PE\PEExceptionTable.h" />
     <ClInclude Include="PE\PEExportTable.h" />
     <ClInclude Include="PE\PEFile.h" />
+    <ClInclude Include="PE\PEGlobalPointerTable.h" />
     <ClInclude Include="PE\PEHeader.h" />
     <ClInclude Include="PE\PEImportAddressTable.h" />
     <ClInclude Include="PE\PEImportTable.h" />

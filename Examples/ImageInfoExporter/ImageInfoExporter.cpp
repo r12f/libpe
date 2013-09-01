@@ -234,6 +234,31 @@ void ExportDebugInfoTable(IPEFile *pFile)
     printf("\n");
 }
 
+void ExportGlobalPointerTable(IPEFile *pFile)
+{
+    LibPEPtr<IPEGlobalPointerTable> pGlobalPointerTable;
+    pFile->GetGlobalPointerTable(&pGlobalPointerTable);
+
+    printf("Global Pointer Table: ");
+    if (NULL == pGlobalPointerTable) {
+        printf("NULL\n\n");
+        return;
+    }
+
+    printf("GPRVA = 0x%016I64x\n", pGlobalPointerTable->GetFieldGlobalPointerRVA());
+
+    printf("Related Section: ");
+    LibPEPtr<IPESection> pGPRelatedSection;
+    if (FAILED(pGlobalPointerTable->GetRelatedSection(&pGPRelatedSection)) || NULL == pGPRelatedSection) {
+        printf("NULL\n\n");
+        return;
+    }
+
+    printf("Name = %s, RVA = 0x%016I64x\n", pGPRelatedSection->GetName(), pGPRelatedSection->GetRVA());
+
+    printf("\n");
+}
+
 void ExportImportAddressTable(IPEFile *pFile)
 {
     LibPEPtr<IPEImportAddressTable> pImportAddressTable;
@@ -369,22 +394,22 @@ int wmain(int /*argc*/, wchar_t* /*argv*/[])
     LibPEPtr<IPEFile> pFile;
     ParsePEFromDiskFile(L"C:\\Windows\\system32\\kernel32.dll", &pFile);
 
-
     printf("AddRef: %d\n", pFile->AddRef());
     printf("Release: %d\n", pFile->Release());
 
     ExportBasicInfo(pFile);
     ExportSection(pFile);
-    ExportExportTable(pFile);
-    ExportImportTable(pFile);
-    ExportResourceTable(pFile);
-    ExportExceptionTable(pFile);
-    ExportRelocationTable(pFile);
-    ExportDebugInfoTable(pFile);
-    ExportLoadConfigTable(pFile);
-    ExportCertificateTable(pFile);
-    ExportImportAddressTable(pFile);
-    ExportTlsTable(pFile);
+    //ExportExportTable(pFile);
+    //ExportImportTable(pFile);
+    //ExportResourceTable(pFile);
+    //ExportExceptionTable(pFile);
+    //ExportRelocationTable(pFile);
+    //ExportDebugInfoTable(pFile);
+    ExportGlobalPointerTable(pFile);
+    //ExportTlsTable(pFile);
+    //ExportLoadConfigTable(pFile);
+    //ExportCertificateTable(pFile);
+    //ExportImportAddressTable(pFile);
 
     return 0;
 }

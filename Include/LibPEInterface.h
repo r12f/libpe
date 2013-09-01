@@ -86,7 +86,7 @@ class IPEDebugInfoTable;
 class IPEArchitectureDataTable;
 
 // DD8: Global pointer
-class IPEGlobalRegister;
+class IPEGlobalPointerTable;
 
 // DD9: TLS table
 class IPETlsTable;
@@ -167,7 +167,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE GetRelocationTable(IPERelocationTable **ppRelocationTable) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetArchitectureDataTable(IPEArchitectureDataTable **ppArchitectureDataTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetGlobalRegister(IPEGlobalRegister **ppGlobalRegister) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetGlobalPointerTable(IPEGlobalPointerTable **ppGlobalPointerTable) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetTlsTable(IPETlsTable **ppTlsTable) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable) = 0;
@@ -182,7 +182,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE RemoveCertificateTable() = 0;
     virtual HRESULT LIBPE_CALLTYPE RemoveRelocationTable() = 0;
     virtual HRESULT LIBPE_CALLTYPE RemoveDebugInfoTable() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveGlobalRegister() = 0;
+    virtual HRESULT LIBPE_CALLTYPE RemoveGlobalPointerTable() = 0;
     virtual HRESULT LIBPE_CALLTYPE RemoveTlsTable() = 0;
     virtual HRESULT LIBPE_CALLTYPE RemoveBoundImportTable() = 0;
     virtual HRESULT LIBPE_CALLTYPE RemoveImportAddressTable() = 0;
@@ -465,10 +465,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE GetExceptionHandler(IPEExceptionHandler **ppExceptionHandler) = 0;
 };
 
-class IPEExceptionHandler : public IPEElement
-{
-public:
-};
+class IPEExceptionHandler : public IPEElement {};
 
 class IPECertificateTable : public IPEElement
 {
@@ -531,7 +528,13 @@ public:
 
 class IPEArchitectureDataTable : public IPEElement {};
 
-class IPEGlobalRegister : public IPEElement {};
+class IPEGlobalPointerTable : public IPEElement
+{
+public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(PEAddress, GlobalPointerRVA);
+
+    virtual HRESULT LIBPE_CALLTYPE GetRelatedSection(IPESection **ppSection) = 0;
+};
 
 class IPETlsTable : public IPEElement
 {

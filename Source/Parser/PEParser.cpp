@@ -11,6 +11,7 @@
 #include "PE/PECertificateTable.h"
 #include "PE/PERelocationTable.h"
 #include "PE/PEDebugInfoTable.h"
+#include "PE/PEGlobalPointerTable.h"
 #include "PE/PETlsTable.h"
 #include "PE/PELoadConfigTable.h"
 #include "PE/PEImportAddressTable.h"
@@ -985,9 +986,34 @@ PEParserT<T>::ParseDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable)
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseGlobalRegister(IPEGlobalRegister **ppGlobalRegister)
+PEParserT<T>::ParseGlobalPointerTable(IPEGlobalPointerTable **ppGlobalPointerTable)
 {
-    return E_NOTIMPL;
+    // The global pointer(GP) is stored in the VirtualAddress field in the data directory, so the data directory is returned,
+    // according to PE and COFF specification 8.3.
+    LIBPE_CHK(NULL != ppGlobalPointerTable, E_POINTER);
+    LIBPE_CHK(NULL != m_pFile, E_FAIL);
+
+    LibPEPtr<IPEOptionalHeader> pOptionHeader;
+    LIBPE_CHK_HR(m_pFile->GetOptionalHeader(&pOptionHeader));
+
+    PEAddress nGlobalPointerTableDataDirectoryRVA = pOptionHeader->GetRVA() + FIELD_OFFSET(LibPERawOptionalHeaderT(T), DataDirectory[IMAGE_DIRECTORY_ENTRY_GLOBALPTR]);
+    PEAddress nGlobalPointerTableDataDirectoryFOA = pOptionHeader->GetFOA() + FIELD_OFFSET(LibPERawOptionalHeaderT(T), DataDirectory[IMAGE_DIRECTORY_ENTRY_GLOBALPTR]);
+
+    HRESULT hr = S_OK;
+
+    LIBPE_HR_TRY_BEGIN(hr)
+    {
+        LibPEPtr<PEGlobalPointerTableT<T>> pGlobalPointerTable = new PEGlobalPointerTableT<T>();
+
+        pGlobalPointerTable->InnerSetBase(m_pFile, this);
+        pGlobalPointerTable->InnerSetMemoryInfo(nGlobalPointerTableDataDirectoryRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawDataDirectoryT(T)));
+        pGlobalPointerTable->InnerSetFileInfo(nGlobalPointerTableDataDirectoryFOA, sizeof(LibPERawDataDirectoryT(T)));
+
+        *ppGlobalPointerTable = pGlobalPointerTable.Detach();
+    }
+    LIBPE_HR_TRY_END();
+
+    return S_OK;
 }
 
 template <class T>
