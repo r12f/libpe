@@ -74,10 +74,10 @@ public:
     virtual HRESULT LIBPE_CALLTYPE GetGlobalPointerTable(IPEGlobalPointerTable **ppGlobalPointerTable);
     virtual HRESULT LIBPE_CALLTYPE GetTlsTable(IPETlsTable **ppTlsTable);
     virtual HRESULT LIBPE_CALLTYPE GetLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable);
-    virtual HRESULT LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable) { return E_NOTIMPL; }
+    virtual HRESULT LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable);
     virtual HRESULT LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTable **ppImportAddressTable);
-    virtual HRESULT LIBPE_CALLTYPE GetDelayImportTable(IPEDelayImportTable **ppDelayImportTable) { return E_NOTIMPL; }
-    virtual HRESULT LIBPE_CALLTYPE GetCLRHeader(IPECLRHeader **ppCLRHeader) { return E_NOTIMPL; }
+    virtual HRESULT LIBPE_CALLTYPE GetDelayImportTable(IPEDelayImportTable **ppDelayImportTable);
+    virtual HRESULT LIBPE_CALLTYPE GetCLRHeader(IPECLRHeader **ppCLRHeader);
 
     virtual HRESULT LIBPE_CALLTYPE RemoveExportTable() { return E_NOTIMPL; };
     virtual HRESULT LIBPE_CALLTYPE RemoveImportTable() { return E_NOTIMPL; };
@@ -99,6 +99,20 @@ public:
     // Rebuild
     virtual HRESULT LIBPE_CALLTYPE Rebuild(const file_char_t *pFilePath) { return S_OK; }
 
+protected:
+    template <class ITable, class ParseFunc>
+    static HRESULT ParsePETable(PEParserT<T> *pParser, ParseFunc pParseFunc, LibPEPtr<ITable> &pTable, ITable **ppRetTable)
+    {
+        if(NULL == pTable) {
+            LIBPE_CHK(NULL != pParser, E_FAIL);
+            if(FAILED((pParser->*pParseFunc)(&pTable)) || NULL == pTable) {
+                return E_FAIL;
+            }
+        }
+
+        return pTable.CopyTo(ppRetTable);
+    }
+
 private:
     LibPEPtr<PEParserT<T>>                  m_pParser;
     LibPEPtr<IPEDosHeader>                  m_pDosHeader;
@@ -114,9 +128,10 @@ private:
     LibPEPtr<IPECertificateTable>           m_pCertificateTable;
     LibPEPtr<IPERelocationTable>            m_pRelocationTable;
     LibPEPtr<IPEDebugInfoTable>             m_pDebugInfoTable;
-    LibPEPtr<IPEGlobalPointerTable>             m_pGlobalPointerTable;
+    LibPEPtr<IPEGlobalPointerTable>         m_pGlobalPointerTable;
     LibPEPtr<IPETlsTable>                   m_pTlsTable;
     LibPEPtr<IPELoadConfigTable>            m_pLoadConfigTable;
+    LibPEPtr<IPEBoundImportTable>           m_pBoundImportTable;
     LibPEPtr<IPEImportAddressTable>         m_pImportAddressTable;
 };
 

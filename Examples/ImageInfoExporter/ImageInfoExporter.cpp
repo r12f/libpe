@@ -355,6 +355,53 @@ void ExportLoadConfigTable(IPEFile *pFile)
     printf("\n");
 }
 
+void ExportBoundImportTable(IPEFile *pFile)
+{
+    LibPEPtr<IPEBoundImportTable> pBoundImportTable;
+    pFile->GetBoundImportTable(&pBoundImportTable);
+
+    printf("Bound import table: ");
+    if (NULL == pBoundImportTable) {
+        printf("NULL\n\n");
+        return;
+    }
+
+    printf("\n");
+
+    UINT32 nImportModuleCount = pBoundImportTable->GetBoundImportModuleCount();
+    for (UINT32 nImportModuleIndex = 0; nImportModuleIndex < nImportModuleCount; ++nImportModuleIndex) {
+        printf("Import Module #%lu: ", nImportModuleIndex);
+
+        LibPEPtr<IPEBoundImportModule> pBoundImportModule;
+        if (FAILED(pBoundImportTable->GetBoundImportModuleByIndex(nImportModuleIndex, &pBoundImportModule))) {
+            printf("NULL\n");
+            continue;
+        }
+
+        UINT32 nForwarderCount = pBoundImportModule->GetBoundForwarderCount();
+
+        printf("TimeStamp = %lu, ForwarderCount = %lu\n",
+            pBoundImportModule->GetFieldTimeDateStamp(),
+            nForwarderCount);
+
+        for (UINT32 nForwarderIndex = 0; nForwarderIndex < nForwarderCount; ++nForwarderIndex) {
+            printf("    Import Forwarder #%lu:", nForwarderIndex);
+
+            LibPEPtr<IPEBoundForwarder> pForwarder;
+            if (FAILED(pBoundImportModule->GetBoundForwarderByIndex(nForwarderIndex, &pForwarder))) {
+                printf("NULL\n");
+                continue;
+            }
+
+            printf("TimeStamp = %lu\n",
+                pBoundImportModule->GetFieldTimeDateStamp());
+        }
+    }
+
+
+    printf("\n");
+}
+
 void ExportCertificateTable(IPEFile *pFile)
 {
     LibPEPtr<IPECertificateTable> pCertificateTable;
@@ -380,7 +427,8 @@ void ExportCertificateTable(IPEFile *pFile)
             continue;
         }
 
-        printf("Revision = %u, Type = %u, Length = %lu\n",
+        printf("RVA = 0x%016I64x, Revision = %u, Type = %u, Length = %lu\n",
+            pCertificate->GetRVA(),
             pCertificate->GetFieldRevision(),
             pCertificate->GetFieldCertificateType(),
             pCertificate->GetFieldLength());
@@ -391,23 +439,25 @@ void ExportCertificateTable(IPEFile *pFile)
 
 int wmain(int /*argc*/, wchar_t* /*argv*/[])
 {
-    LibPEPtr<IPEFile> pFile;
+    LibPEPtr<IPEFile> pFile; 
+
     ParsePEFromDiskFile(L"C:\\Windows\\system32\\kernel32.dll", &pFile);
 
     printf("AddRef: %d\n", pFile->AddRef());
     printf("Release: %d\n", pFile->Release());
 
-    ExportBasicInfo(pFile);
-    ExportSection(pFile);
+    //ExportBasicInfo(pFile);
+    //ExportSection(pFile);
     //ExportExportTable(pFile);
     //ExportImportTable(pFile);
     //ExportResourceTable(pFile);
     //ExportExceptionTable(pFile);
     //ExportRelocationTable(pFile);
     //ExportDebugInfoTable(pFile);
-    ExportGlobalPointerTable(pFile);
+    //ExportGlobalPointerTable(pFile);
     //ExportTlsTable(pFile);
     //ExportLoadConfigTable(pFile);
+    ExportBoundImportTable(pFile);
     //ExportCertificateTable(pFile);
     //ExportImportAddressTable(pFile);
 

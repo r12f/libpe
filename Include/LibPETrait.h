@@ -24,6 +24,8 @@ struct PETraitBase {
     typedef IMAGE_RUNTIME_FUNCTION_ENTRY        RawRuntimeFunctionEntry;
     typedef WIN_CERTIFICATE                     RawWinCertificate;
     typedef IMAGE_DEBUG_DIRECTORY               RawDebugDirectory;
+    typedef IMAGE_BOUND_IMPORT_DESCRIPTOR       RawBoundImportDescriptor;
+    typedef IMAGE_BOUND_FORWARDER_REF           RawBoundForwarderRef;
 };
 
 template <class T> struct PETrait {};
@@ -72,6 +74,8 @@ struct PETrait<PE64> : PETraitBase {
 #define LibPERawRuntimeFunctionEntry(T)         typename PETrait<T>::RawRuntimeFunctionEntry
 #define LibPERawTlsDirectory(T)                 typename PETrait<T>::RawTlsDirectory
 #define LibPERawLoadConfigDirectory(T)          typename PETrait<T>::RawLoadConfigDirectory
+#define LibPERawBoundImportDescriptor(T)        typename PETrait<T>::RawBoundImportDescriptor
+#define LibPERawBoundForwarderRef(T)            typename PETrait<T>::RawBoundForwarderRef
 #define LibPERawWinCertificate(T)               typename PETrait<T>::RawWinCertificate
 #define LibPERawDebugDirectory(T)               typename PETrait<T>::RawDebugDirectory
 
@@ -93,6 +97,8 @@ typedef PETraitBase::RawResourceDataEntry       PERawResourceDataEntry;
 typedef PETraitBase::RawResourceString          PERawResourceString;
 typedef PETraitBase::RawResourceStringU         PERawResourceStringU;
 typedef PETraitBase::RawRuntimeFunctionEntry    PERawRuntimeFunctionEntry;
+typedef PETraitBase::RawBoundImportDescriptor   PERawBoundImportDescriptor;
+typedef PETraitBase::RawBoundForwarderRef       PERawBoundForwarderRef;
 typedef PETraitBase::RawWinCertificate          PERawWinCertificate;
 typedef PETraitBase::RawDebugDirectory          PERawDebugDirectory;
 

@@ -94,6 +94,7 @@ public:
 
     // Bound import table related functions
     HRESULT ParseBoundImportTable(IPEBoundImportTable **ppBoundImportTable);
+    HRESULT ParseBoundImportModules(IPEBoundImportTable *pBoundImportTable);
 
     // Import Address table related functions
     HRESULT ParseImportAddressTable(IPEImportAddressTable **ppImportAddressTable);

@@ -67,6 +67,9 @@
     <ClCompile Include="PE\PEGlobalPointerTable.cpp">
       <Filter>PE</Filter>
     </ClCompile>
+    <ClCompile Include="PE\PEBoundImportTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parser\DataLoader.h">
@@ -128,6 +131,9 @@
       <Filter>PE</Filter>
     </ClInclude>
     <ClInclude Include="PE\PEGlobalPointerTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PEBoundImportTable.h">
       <Filter>PE</Filter>
     </ClInclude>
   </ItemGroup>

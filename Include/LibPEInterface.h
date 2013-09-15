@@ -96,6 +96,8 @@ class IPELoadConfigTable;
 
 // DD11: Bound import table
 class IPEBoundImportTable;
+class IPEBoundImportModule;
+class IPEBoundForwarder;
 
 // DD12: IAT
 class IPEImportAddressTable;
@@ -583,7 +585,31 @@ public:
     LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, GuardFlags);
 };
 
-class IPEBoundImportTable : public IPEElement {};
+class IPEBoundImportTable : public IPEElement
+{
+public:
+    virtual UINT32 LIBPE_CALLTYPE GetBoundImportModuleCount() = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetBoundImportModuleByIndex(UINT32 nIndex, IPEBoundImportModule **ppBoundImportModule) = 0;
+};
+
+class IPEBoundImportModule : public IPEElement
+{
+public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, TimeDateStamp);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, OffsetModuleName);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, NumberOfModuleForwarderRefs);
+    
+    virtual UINT32 LIBPE_CALLTYPE GetBoundForwarderCount() = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetBoundForwarderByIndex(UINT32 nIndex, IPEBoundForwarder **ppBoundForwarder) = 0;
+};
+
+class IPEBoundForwarder : public IPEElement
+{
+public:
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, TimeDateStamp);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, OffsetModuleName);
+    LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, Reserved);
+};
 
 class IPEImportAddressTable : public IPEElement
 {

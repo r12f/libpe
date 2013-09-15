@@ -14,6 +14,7 @@
 #include "PE/PEGlobalPointerTable.h"
 #include "PE/PETlsTable.h"
 #include "PE/PELoadConfigTable.h"
+#include "PE/PEBoundImportTable.h"
 #include "PE/PEImportAddressTable.h"
 
 LIBPE_NAMESPACE_BEGIN
@@ -1088,35 +1089,70 @@ template <class T>
 HRESULT
 PEParserT<T>::ParseLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable)
 {
-    LIBPE_CHK(NULL != ppLoadConfigTable, E_POINTER);
-    LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
-
-    *ppLoadConfigTable = NULL;
-
-    PEAddress nLoadConfigTableRVA = LIBPE_INVALID_ADDRESS, nLoadConfigTableFOA = LIBPE_INVALID_ADDRESS, nLoadConfigTableSize = LIBPE_INVALID_SIZE;
-    if(FAILED(GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG, nLoadConfigTableRVA, nLoadConfigTableFOA, nLoadConfigTableSize))) {
-        return E_FAIL;
-    }
-
-    LibPEPtr<PELoadConfigTableT<T>> pLoadConfigTable = new PELoadConfigTableT<T>();
-    if (NULL == pLoadConfigTable) {
-        return E_OUTOFMEMORY;
-    }
-
-    pLoadConfigTable->InnerSetBase(m_pFile, this);
-    pLoadConfigTable->InnerSetMemoryInfo(nLoadConfigTableRVA, LIBPE_INVALID_ADDRESS, nLoadConfigTableSize);
-    pLoadConfigTable->InnerSetFileInfo(nLoadConfigTableFOA, nLoadConfigTableSize);
-
-    *ppLoadConfigTable = pLoadConfigTable.Detach();
-
-    return S_OK;
+    return ParseSimpleDataDirectoryToInterface<IPELoadConfigTable, PELoadConfigTableT<T>>(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG, ppLoadConfigTable);
 }
 
 template <class T>
 HRESULT
 PEParserT<T>::ParseBoundImportTable(IPEBoundImportTable **ppBoundImportTable)
 {
-    return E_NOTIMPL;
+    return ParseSimpleDataDirectoryToInterface<IPEBoundImportTable, PEBoundImportTableT<T>>(IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT, ppBoundImportTable);
+}
+
+template <class T>
+HRESULT
+PEParserT<T>::ParseBoundImportModules(IPEBoundImportTable *pBoundImportTable)
+{
+    LIBPE_CHK(NULL != pBoundImportTable, E_INVALIDARG);
+    LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
+
+    PEBoundImportTableT<T> *pInnerBoundImportTable = (PEBoundImportTableT<T> *)pBoundImportTable;
+
+    PEAddress nImportModuleRVA = pInnerBoundImportTable->GetRVA();
+    PEAddress nImportModuleFOA = pInnerBoundImportTable->GetFOA();
+    PEAddress nImportTableEndFOA = nImportModuleFOA + pInnerBoundImportTable->GetSizeInFile();
+    LIBPE_CHK(LIBPE_INVALID_ADDRESS != nImportModuleRVA || LIBPE_INVALID_ADDRESS != nImportModuleFOA, E_UNEXPECTED);
+
+    HRESULT hr = S_OK;
+    LIBPE_HR_TRY_BEGIN(hr)
+    {
+        // Parse bound modules
+        while (nImportModuleFOA < nImportTableEndFOA) {
+            LibPEPtr<PEBoundImportModuleT<T>> pImportModule = new PEBoundImportModuleT<T>();
+
+            pImportModule->InnerSetBase(m_pFile, this);
+            pImportModule->InnerSetMemoryInfo(nImportModuleRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawBoundImportDescriptor(T)));
+            pImportModule->InnerSetFileInfo(nImportModuleFOA, sizeof(LibPERawBoundImportDescriptor(T)));
+
+            pInnerBoundImportTable->InnerAddBoundImportModule(pImportModule);
+
+            // Parse bound forwarders
+            LibPERawBoundImportDescriptor(T) *pRawBoundImportDescriptor = pInnerBoundImportTable->GetRawStruct();
+            LIBPE_CHK(NULL != pRawBoundImportDescriptor, E_OUTOFMEMORY);
+
+            UINT16 nForwarderCount = pRawBoundImportDescriptor->NumberOfModuleForwarderRefs;
+
+            PEAddress nForwarderRVA = nImportModuleRVA + sizeof(LibPERawBoundImportDescriptor(T));
+            PEAddress nForwarderFOA = nImportModuleFOA + sizeof(LibPERawBoundImportDescriptor(T));
+            for (UINT16 nForwarderIndex = 0; nForwarderIndex < nForwarderCount; ++nForwarderIndex) {
+                LibPEPtr<PEBoundForwarderT<T>> pForwarder = new PEBoundForwarderT<T>();
+
+                pForwarder->InnerSetBase(m_pFile, this);
+                pForwarder->InnerSetMemoryInfo(nForwarderRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawBoundForwarderRef(T)));
+                pForwarder->InnerSetFileInfo(nForwarderFOA, sizeof(LibPERawBoundForwarderRef(T)));
+
+                pImportModule->InnerAddBoundForwarder(pForwarder);
+
+                nForwarderRVA += sizeof(LibPERawBoundForwarderRef(T));
+                nForwarderFOA += sizeof(LibPERawBoundForwarderRef(T));
+            }
+
+            nImportModuleRVA += sizeof(LibPERawBoundImportDescriptor(T)) + nForwarderCount * sizeof(LibPERawBoundForwarderRef(T));
+            nImportModuleFOA += sizeof(LibPERawBoundImportDescriptor(T)) + nForwarderCount * sizeof(LibPERawBoundForwarderRef(T));
+        }
+    } LIBPE_HR_TRY_END();
+
+    return hr;
 }
 
 template <class T>

@@ -179,6 +179,7 @@
     <ClCompile Include="Parser\DataLoader.cpp" />
     <ClCompile Include="Parser\PEParser.cpp" />
     <ClCompile Include="Parser\PEParserImpl.cpp" />
+    <ClCompile Include="PE\PEBoundImportTable.cpp" />
     <ClCompile Include="PE\PECertificateTable.cpp" />
     <ClCompile Include="PE\PEDebugInfoTable.cpp" />
     <ClCompile Include="PE\PEElement.cpp" />
@@ -209,6 +210,7 @@
     <ClInclude Include="Parser\PEParser.h" />
     <ClInclude Include="Parser\PEParserCommon.h" />
     <ClInclude Include="Parser\PEParserImpl.h" />
+    <ClInclude Include="PE\PEBoundImportTable.h" />
     <ClInclude Include="PE\PECertificateTable.h" />
     <ClInclude Include="PE\PEDebugInfoTable.h" />
     <ClInclude Include="PE\PEElement.h" />

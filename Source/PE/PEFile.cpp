@@ -311,99 +311,49 @@ template <class T>
 HRESULT
 PEFileT<T>::GetExportTable(IPEExportTable **ppExportTable)
 {
-    if(NULL == m_pExportTable) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
-        if(FAILED(m_pParser->ParseExportTable(&m_pExportTable)) || NULL == m_pExportTable) {
-            return E_FAIL;
-        }
-    }
-
-    return m_pExportTable.CopyTo(ppExportTable);
+    return ParsePETable(m_pParser, &PEParserT<T>::ParseExportTable, m_pExportTable, ppExportTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetImportTable(IPEImportTable **ppImportTable)
 {
-    if(NULL == m_pImportTable) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
-        if(FAILED(m_pParser->ParseImportTable(&m_pImportTable)) || NULL == m_pImportTable) {
-            return E_FAIL;
-        }
-    }
-
-    return m_pImportTable.CopyTo(ppImportTable);
+    return ParsePETable(m_pParser, &PEParserT<T>::ParseImportTable, m_pImportTable, ppImportTable);
 }
-
 
 template <class T>
 HRESULT
 PEFileT<T>::GetResourceTable(IPEResourceTable **ppResourceTable)
 {
-    if(NULL == m_pResourceTable) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
-        if(FAILED(m_pParser->ParseResourceTable(&m_pResourceTable)) || NULL == m_pResourceTable) {
-            return E_FAIL;
-        }
-    }
-
-    return m_pResourceTable.CopyTo(ppResourceTable);
+    return ParsePETable(m_pParser, &PEParserT<T>::ParseResourceTable, m_pResourceTable, ppResourceTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetExceptionTable(IPEExceptionTable **ppExceptionTable)
 {
-    if(NULL == m_pExceptionTable) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
-        if(FAILED(m_pParser->ParseExceptionTable(&m_pExceptionTable)) || NULL == m_pExceptionTable) {
-            return E_FAIL;
-        }
-    }
-
-    return m_pExceptionTable.CopyTo(ppExceptionTable);
+    return ParsePETable(m_pParser, &PEParserT<T>::ParseExceptionTable, m_pExceptionTable, ppExceptionTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetCertificateTable(IPECertificateTable **ppCertificateTable)
 {
-    if(NULL == m_pCertificateTable) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
-        if(FAILED(m_pParser->ParseCertificateTable(&m_pCertificateTable)) || NULL == m_pCertificateTable) {
-            return E_FAIL;
-        }
-    }
-
-    return m_pCertificateTable.CopyTo(ppCertificateTable);
+    return ParsePETable(m_pParser, &PEParserT<T>::ParseCertificateTable, m_pCertificateTable, ppCertificateTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetRelocationTable(IPERelocationTable **ppRelocationTable)
 {
-    if(NULL == m_pRelocationTable) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
-        if(FAILED(m_pParser->ParseRelocationTable(&m_pRelocationTable)) || NULL == m_pRelocationTable) {
-            return E_FAIL;
-        }
-    }
-
-    return m_pRelocationTable.CopyTo(ppRelocationTable);
+    return ParsePETable(m_pParser, &PEParserT<T>::ParseRelocationTable, m_pRelocationTable, ppRelocationTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable)
 {
-    if(NULL == m_pDebugInfoTable) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
-        if(FAILED(m_pParser->ParseDebugInfoTable(&m_pDebugInfoTable)) || NULL == m_pDebugInfoTable) {
-            return E_FAIL;
-        }
-    }
-
-    return m_pDebugInfoTable.CopyTo(ppDebugInfoTable);
+    return ParsePETable(m_pParser, &PEParserT<T>::ParseDebugInfoTable, m_pDebugInfoTable, ppDebugInfoTable);
 }
 
 template <class T>
@@ -424,57 +374,50 @@ template <class T>
 HRESULT 
 PEFileT<T>::GetGlobalPointerTable(IPEGlobalPointerTable **ppGlobalPointerTable)
 {
-    if(NULL == m_pGlobalPointerTable) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
-        if(FAILED(m_pParser->ParseGlobalPointerTable(&m_pGlobalPointerTable)) || NULL == m_pGlobalPointerTable) {
-            return E_FAIL;
-        }
-    }
-
-    return m_pGlobalPointerTable.CopyTo(ppGlobalPointerTable);
+    return ParsePETable(m_pParser, &PEParserT<T>::ParseGlobalPointerTable, m_pGlobalPointerTable, ppGlobalPointerTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetTlsTable(IPETlsTable **ppTlsTable)
 {
-    if(NULL == m_pTlsTable) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
-        if(FAILED(m_pParser->ParseTlsTable(&m_pTlsTable)) || NULL == m_pTlsTable) {
-            return E_FAIL;
-        }
-    }
-
-    return m_pTlsTable.CopyTo(ppTlsTable);
+    return ParsePETable(m_pParser, &PEParserT<T>::ParseTlsTable, m_pTlsTable, ppTlsTable);
 }
-
 
 template <class T>
 HRESULT
 PEFileT<T>::GetLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable)
 {
-    if(NULL == m_pLoadConfigTable) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
-        if(FAILED(m_pParser->ParseLoadConfigTable(&m_pLoadConfigTable)) || NULL == m_pLoadConfigTable) {
-            return E_FAIL;
-        }
-    }
+    return ParsePETable(m_pParser, &PEParserT<T>::ParseLoadConfigTable, m_pLoadConfigTable, ppLoadConfigTable);
+}
 
-    return m_pLoadConfigTable.CopyTo(ppLoadConfigTable);
+template <class T>
+HRESULT
+PEFileT<T>::GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable)
+{
+    //return ParsePETable(m_pParser, m_pBoundImportTable, ppBoundImportTable);
+    return E_NOTIMPL;
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetImportAddressTable(IPEImportAddressTable **ppImportAddressTable)
 {
-    if(NULL == m_pImportAddressTable) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
-        if(FAILED(m_pParser->ParseImportAddressTable(&m_pImportAddressTable)) || NULL == m_pImportAddressTable) {
-            return E_FAIL;
-        }
-    }
+    return ParsePETable(m_pParser, &PEParserT<T>::ParseImportAddressTable, m_pImportAddressTable, ppImportAddressTable);
+}
 
-    return m_pImportAddressTable.CopyTo(ppImportAddressTable);
+template <class T>
+HRESULT
+PEFileT<T>::GetDelayImportTable(IPEDelayImportTable **ppDelayImportTable)
+{
+    return E_NOTIMPL;
+}
+
+template <class T>
+HRESULT
+PEFileT<T>::GetCLRHeader(IPECLRHeader **ppCLRHeader)
+{
+    return E_NOTIMPL;
 }
 
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEFileT);
