@@ -106,7 +106,7 @@ public:
     HRESULT ParseDelayImportTable(IPEDelayImportTable **ppDelayImportTable);
 
     // CLR info table related functions
-    HRESULT ParseCLRHeader(IPECLRHeader **ppCLRHeader);
+    HRESULT ParseCLRTable(IPECLRTable **ppCLRTable);
 
 protected:
     virtual PEAddress GetRawOffsetFromAddressField(PEAddress nAddress) = 0;
@@ -121,7 +121,7 @@ protected:
     HRESULT GetDataDirectoryEntry(INT32 nDataDirectoryEntryIndex, PEAddress &nRVA, PEAddress &nFOA, PEAddress &nSize);
     
     template <class TableClass>
-    HRESULT ParseSimpleDataDirectory(INT32 nDataDirectoryEntryIndex, TableClass **ppTable)
+    HRESULT ParseDataDirectory(INT32 nDataDirectoryEntryIndex, TableClass **ppTable)
     {
         LIBPE_CHK(NULL != ppTable, E_POINTER);
         LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
@@ -129,38 +129,56 @@ protected:
         *ppTable = NULL;
 
         PEAddress nTableRVA = LIBPE_INVALID_ADDRESS, nTableFOA = LIBPE_INVALID_ADDRESS, nTableSize = LIBPE_INVALID_SIZE;
-        if(FAILED(GetDataDirectoryEntry(nDataDirectoryEntryIndex, nTableRVA, nTableFOA, nTableSize))) {
-            return E_FAIL;
-        }
+        LIBPE_CHK_HR(GetDataDirectoryEntry(nDataDirectoryEntryIndex, nTableRVA, nTableFOA, nTableSize));
+
+        LibPEPtr<TableClass> pTable = CreatePEElement<TableClass>(nTableRVA, nTableFOA, nTableSize);
+        LIBPE_CHK(NULL != pTable, E_OUTOFMEMORY);
+
+        *ppTable = pTable.Detach();
+
+        return S_OK;
+    }
+
+    template <class ITable, class TableClass>
+    HRESULT ParseDataDirectoryToInterface(INT32 nDataDirectoryEntryIndex, ITable **ppTable)
+    {
+        LIBPE_CHK(NULL != ppTable, E_POINTER);
+
+        LibPEPtr<TableClass> pTable;
+        LIBPE_CHK_HR(ParseDataDirectory<TableClass>(nDataDirectoryEntryIndex, &pTable));
+
+        *ppTable = pTable.Detach();
+
+        return S_OK;
+    }
+
+    template <class PEElementType>
+    LibPEPtr<PEElementType> CreatePEElementEx(PEAddress nRVA, PEAddress nMemSize, PEAddress nFOA, PEAddress nFileSize)
+    {
+        LibPEPtr<PEElementType> pElement = NULL;
 
         HRESULT hr = S_OK;
 
         LIBPE_HR_TRY_BEGIN(hr)
         {
-            LibPEPtr<TableClass> pTable = new TableClass();
-
-            pTable->InnerSetBase(m_pFile, this);
-            pTable->InnerSetMemoryInfo(nTableRVA, LIBPE_INVALID_ADDRESS, nTableSize);
-            pTable->InnerSetFileInfo(nTableFOA, nTableSize);
-
-            *ppTable = pTable.Detach();
+            pElement = new PEElementType();
+            pElement->InnerSetBase(m_pFile, this);
+            pElement->InnerSetMemoryInfo(nRVA, LIBPE_INVALID_ADDRESS, nMemSize);
+            pElement->InnerSetFileInfo(nFOA, nFileSize);
         }
         LIBPE_HR_TRY_END();
 
-        return hr;
+        if (FAILED(hr)) {
+            pElement = NULL;
+        }
+
+        return pElement;
     }
 
-    template <class ITable, class TableClass>
-    HRESULT ParseSimpleDataDirectoryToInterface(INT32 nDataDirectoryEntryIndex, ITable **ppTable)
+    template <class PEElementType>
+    LibPEPtr<PEElementType> CreatePEElement(PEAddress nRVA, PEAddress nFOA, PEAddress nSize)
     {
-        LIBPE_CHK(NULL != ppTable, E_POINTER);
-
-        LibPEPtr<TableClass> pTable;
-        LIBPE_CHK_HR(ParseSimpleDataDirectory<TableClass>(nDataDirectoryEntryIndex, &pTable));
-
-        *ppTable = pTable.Detach();
-
-        return S_OK;
+        return CreatePEElementEx<PEElementType>(nRVA, nSize, nFOA, nSize);
     }
 
 protected:

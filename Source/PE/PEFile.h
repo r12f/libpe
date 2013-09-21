@@ -77,7 +77,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable);
     virtual HRESULT LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTable **ppImportAddressTable);
     virtual HRESULT LIBPE_CALLTYPE GetDelayImportTable(IPEDelayImportTable **ppDelayImportTable);
-    virtual HRESULT LIBPE_CALLTYPE GetCLRHeader(IPECLRHeader **ppCLRHeader);
+    virtual HRESULT LIBPE_CALLTYPE GetCLRTable(IPECLRTable **ppCLRTable);
 
     virtual HRESULT LIBPE_CALLTYPE RemoveExportTable() { return E_NOTIMPL; };
     virtual HRESULT LIBPE_CALLTYPE RemoveImportTable() { return E_NOTIMPL; };
@@ -91,7 +91,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE RemoveBoundImportTable() { return E_NOTIMPL; };
     virtual HRESULT LIBPE_CALLTYPE RemoveImportAddressTable() { return E_NOTIMPL; };
     virtual HRESULT LIBPE_CALLTYPE RemoveDelayImportTable() { return E_NOTIMPL; };
-    virtual HRESULT LIBPE_CALLTYPE RemoveCLRHeader() { return E_NOTIMPL; };
+    virtual HRESULT LIBPE_CALLTYPE RemoveCLRTable() { return E_NOTIMPL; };
 
     // PE Verification
     virtual BOOL LIBPE_CALLTYPE ValidatePEHeader() { return true; }

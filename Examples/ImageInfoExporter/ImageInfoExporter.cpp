@@ -446,20 +446,20 @@ int wmain(int /*argc*/, wchar_t* /*argv*/[])
     printf("AddRef: %d\n", pFile->AddRef());
     printf("Release: %d\n", pFile->Release());
 
-    //ExportBasicInfo(pFile);
-    //ExportSection(pFile);
-    //ExportExportTable(pFile);
-    //ExportImportTable(pFile);
-    //ExportResourceTable(pFile);
-    //ExportExceptionTable(pFile);
-    //ExportRelocationTable(pFile);
-    //ExportDebugInfoTable(pFile);
-    //ExportGlobalPointerTable(pFile);
-    //ExportTlsTable(pFile);
-    //ExportLoadConfigTable(pFile);
+    ExportBasicInfo(pFile);
+    ExportSection(pFile);
+    ExportExportTable(pFile);
+    ExportImportTable(pFile);
+    ExportResourceTable(pFile);
+    ExportExceptionTable(pFile);
+    ExportRelocationTable(pFile);
+    ExportDebugInfoTable(pFile);
+    ExportGlobalPointerTable(pFile);
+    ExportTlsTable(pFile);
+    ExportLoadConfigTable(pFile);
     ExportBoundImportTable(pFile);
-    //ExportCertificateTable(pFile);
-    //ExportImportAddressTable(pFile);
+    ExportCertificateTable(pFile);
+    ExportImportAddressTable(pFile);
 
     return 0;
 }

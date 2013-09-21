@@ -294,14 +294,17 @@ PEParserT<T>::ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESection
     LIBPE_CHK(NULL != ppSection, E_POINTER);
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
-    LibPEPtr<PESectionT<T>> pRawSection = new PESectionT<T>();
+    LibPEPtr<PESectionT<T>> pRawSection = CreatePEElementEx<PESectionT<T>>(
+        pSectionHeader->VirtualAddress,
+        pSectionHeader->SizeOfRawData,
+        pSectionHeader->PointerToRawData,
+        pSectionHeader->SizeOfRawData
+        );
+
     if(NULL == pRawSection) {
         return E_OUTOFMEMORY;
     }
 
-    pRawSection->InnerSetBase(m_pFile, this);
-    pRawSection->InnerSetMemoryInfo(pSectionHeader->VirtualAddress, LIBPE_INVALID_ADDRESS, pSectionHeader->SizeOfRawData);
-    pRawSection->InnerSetFileInfo(pSectionHeader->PointerToRawData, pSectionHeader->SizeOfRawData);
     pRawSection->InnerSetSectionHeader(pSectionHeader);
 
     *ppSection = pRawSection.Detach();
@@ -318,19 +321,8 @@ PEParserT<T>::ParseExportTable(IPEExportTable **ppExportTable)
 
     *ppExportTable = NULL;
 
-    PEAddress nExportTableRVA = LIBPE_INVALID_ADDRESS, nExportTableFOA = LIBPE_INVALID_ADDRESS, nExportTableSize = LIBPE_INVALID_SIZE;
-    if(FAILED(GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_EXPORT, nExportTableRVA, nExportTableFOA, nExportTableSize))) {
-        return E_FAIL;
-    }
-
-    LibPEPtr<PEExportTableT<T>> pExportTable = new PEExportTableT<T>();
-    if(NULL == pExportTable) {
-        return E_OUTOFMEMORY;
-    }
-
-    pExportTable->InnerSetBase(m_pFile, this);
-    pExportTable->InnerSetMemoryInfo(nExportTableRVA, LIBPE_INVALID_ADDRESS, nExportTableSize);
-    pExportTable->InnerSetFileInfo(nExportTableFOA, nExportTableSize);
+    LibPEPtr<PEExportTableT<T>> pExportTable;
+    LIBPE_CHK_HR(ParseDataDirectory(IMAGE_DIRECTORY_ENTRY_EXPORT, &pExportTable));
 
     LibPERawExportDirectory(T) *pExportDirectory = pExportTable->GetRawStruct();
     if(NULL == pExportDirectory) {
@@ -379,14 +371,11 @@ PEParserT<T>::ParseExportFunction(IPEExportTable *pExportTable, UINT32 nIndex, I
     PEAddress nNameRVA = (nIndex < pRawExportTable->GetFunctionCount()) ? pNameList[nIndex] : LIBPE_INVALID_ADDRESS;
     UINT16 nNameOrdinal = pNameOrdinalList[nIndex];
 
-    LibPEPtr<PEExportFunctionT<T>> pFunction = new PEExportFunctionT<T>();
+    LibPEPtr<PEExportFunctionT<T>> pFunction = CreatePEElementEx<PEExportFunctionT<T>>(nFunctionRVA, 0, 0, 0);
     if(NULL == pFunction) {
         return E_OUTOFMEMORY;
     }
 
-    pFunction->InnerSetBase(m_pFile, this);
-    pFunction->InnerSetMemoryInfo(nFunctionRVA, LIBPE_INVALID_ADDRESS, 0);
-    pFunction->InnerSetFileInfo(0, 0);
     pFunction->InnerSetOrdinal(nNameOrdinal);
 
     if(nNameRVA != LIBPE_INVALID_ADDRESS) {
@@ -410,26 +399,15 @@ PEParserT<T>::ParseImportTable(IPEImportTable **ppImportTable)
 
     *ppImportTable = NULL;
 
-    PEAddress nImportTableRVA = LIBPE_INVALID_ADDRESS, nImportTableFOA = LIBPE_INVALID_ADDRESS, nImportTableSize = LIBPE_INVALID_SIZE;
-    if(FAILED(GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_IMPORT, nImportTableRVA, nImportTableFOA, nImportTableSize))) {
-        return E_FAIL;
-    }
-
-    LibPEPtr<PEImportTableT<T>> pImportTable = new PEImportTableT<T>();
-    if(NULL == pImportTable) {
-        return E_OUTOFMEMORY;
-    }
-
-    pImportTable->InnerSetBase(m_pFile, this);
-    pImportTable->InnerSetMemoryInfo(nImportTableRVA, LIBPE_INVALID_ADDRESS, nImportTableSize);
-    pImportTable->InnerSetFileInfo(nImportTableFOA, nImportTableSize);
+    LibPEPtr<PEImportTableT<T>> pImportTable;
+    LIBPE_CHK_HR(ParseDataDirectory(IMAGE_DIRECTORY_ENTRY_IMPORT, &pImportTable));
 
     LibPERawImportDescriptor(T) *pImportDesc = pImportTable->GetRawStruct();
     if(NULL == pImportDesc) {
         return E_OUTOFMEMORY;
     }
 
-    PEAddress nImportDescRVA = nImportTableRVA, nImportDescFOA = nImportTableFOA;
+    PEAddress nImportDescRVA = pImportTable->GetRVA(), nImportDescFOA = pImportTable->GetFOA();
     while(0 != pImportDesc->Characteristics && 0 != pImportDesc->Name) {
         pImportTable->InnerAddImportDescriptor(nImportDescRVA, nImportDescFOA, pImportDesc);
         ++pImportDesc;
@@ -571,28 +549,17 @@ PEParserT<T>::ParseResourceTable(IPEResourceTable **ppResourceTable)
 
     *ppResourceTable = NULL;
 
-    PEAddress nResourceTableRVA = LIBPE_INVALID_ADDRESS, nResourceTableFOA = LIBPE_INVALID_ADDRESS, nResourceTableSize = LIBPE_INVALID_SIZE;
-    if(FAILED(GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_RESOURCE, nResourceTableRVA, nResourceTableFOA, nResourceTableSize))) {
-        return E_FAIL;
-    }
-
-    LibPEPtr<PEResourceTableT<T>> pInnerTable = new PEResourceTableT<T>();
-    if(NULL == pInnerTable) {
-        return E_OUTOFMEMORY;
-    }
-
-    pInnerTable->InnerSetBase(m_pFile, this);
-    pInnerTable->InnerSetMemoryInfo(nResourceTableRVA, LIBPE_INVALID_ADDRESS, nResourceTableSize);
-    pInnerTable->InnerSetFileInfo(nResourceTableFOA, nResourceTableSize);
+    LibPEPtr<PEResourceTableT<T>> pResourceTable;
+    LIBPE_CHK_HR(ParseDataDirectory(IMAGE_DIRECTORY_ENTRY_RESOURCE, &pResourceTable));
 
     LibPEPtr<IPEResourceDirectory> pRootDirectory;
-    if(FAILED(ParseResourceDirectory(nResourceTableRVA, nResourceTableFOA, &pRootDirectory)) || NULL == pRootDirectory) {
+    if(FAILED(ParseResourceDirectory(pResourceTable->GetRVA(), pResourceTable->GetFOA(), &pRootDirectory)) || NULL == pRootDirectory) {
         return E_OUTOFMEMORY;
     }
 
-    pInnerTable->InnerSetRootDirectory(pRootDirectory.p);
+    pResourceTable->InnerSetRootDirectory(pRootDirectory.p);
 
-    *ppResourceTable = pInnerTable.Detach();
+    *ppResourceTable = pResourceTable.Detach();
 
     return S_OK;
 }
@@ -756,12 +723,12 @@ HRESULT
 PEParserT<T>::ParseExceptionTable(IPEExceptionTable **ppExceptionTable)
 {
     LIBPE_CHK(NULL != ppExceptionTable, E_POINTER);
+    LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
     *ppExceptionTable = NULL;
 
     LibPEPtr<PEExceptionTableT<T>> pExceptionTable;
-    LIBPE_CHK_HR(ParseSimpleDataDirectory<PEExceptionTableT<T>>(IMAGE_DIRECTORY_ENTRY_EXCEPTION, &pExceptionTable));
-    LIBPE_CHK(NULL != pExceptionTable, E_OUTOFMEMORY);
+    LIBPE_CHK_HR(ParseDataDirectory(IMAGE_DIRECTORY_ENTRY_EXCEPTION, &pExceptionTable));
 
     pExceptionTable->InnerSetExceptionHandlerCount((UINT32)(pExceptionTable->GetSizeInFile() / sizeof(LibPERawRuntimeFunctionEntry(T))));
 
@@ -832,28 +799,7 @@ template <class T>
 HRESULT
 PEParserT<T>::ParseCertificateTable(IPECertificateTable **ppCertificateTable)
 {
-    LIBPE_CHK(NULL != ppCertificateTable, E_POINTER);
-    LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
-
-    *ppCertificateTable = NULL;
-
-    PEAddress nCertificateTableRVA = LIBPE_INVALID_ADDRESS, nCertificateTableFOA = LIBPE_INVALID_ADDRESS, nCertificateTableSize = LIBPE_INVALID_SIZE;
-    if(FAILED(GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_SECURITY, nCertificateTableRVA, nCertificateTableFOA, nCertificateTableSize))) {
-        return E_FAIL;
-    }
-
-    LibPEPtr<PECertificateTableT<T>> pCertificateTable = new PECertificateTableT<T>();
-    if (NULL == pCertificateTable) {
-        return E_OUTOFMEMORY;
-    }
-
-    pCertificateTable->InnerSetBase(m_pFile, this);
-    pCertificateTable->InnerSetMemoryInfo(nCertificateTableRVA, LIBPE_INVALID_ADDRESS, nCertificateTableSize);
-    pCertificateTable->InnerSetFileInfo(nCertificateTableFOA, nCertificateTableSize);
-
-    *ppCertificateTable = pCertificateTable.Detach();
-
-    return S_OK;
+    return ParseDataDirectoryToInterface<IPECertificateTable, PECertificateTableT<T>>(IMAGE_DIRECTORY_ENTRY_SECURITY, ppCertificateTable);
 }
 
 template <class T>
@@ -909,27 +855,16 @@ PEParserT<T>::ParseRelocationTable(IPERelocationTable **ppRelocationTable)
 
     *ppRelocationTable = NULL;
 
-    PEAddress nRelocationTableRVA = LIBPE_INVALID_ADDRESS, nRelocationTableFOA = LIBPE_INVALID_ADDRESS, nRelocationTableSize = LIBPE_INVALID_SIZE;
-    if(FAILED(GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_BASERELOC, nRelocationTableRVA, nRelocationTableFOA, nRelocationTableSize))) {
-        return E_FAIL;
-    }
-
-    LibPEPtr<PERelocationTableT<T>> pRelocationTable = new PERelocationTableT<T>();
-    if(NULL == pRelocationTable) {
-        return E_OUTOFMEMORY;
-    }
-
-    pRelocationTable->InnerSetBase(m_pFile, this);
-    pRelocationTable->InnerSetMemoryInfo(nRelocationTableRVA, LIBPE_INVALID_ADDRESS, nRelocationTableSize);
-    pRelocationTable->InnerSetFileInfo(nRelocationTableFOA, nRelocationTableSize);
+    LibPEPtr<PERelocationTableT<T>> pRelocationTable;
+    LIBPE_CHK_HR(ParseDataDirectory(IMAGE_DIRECTORY_ENTRY_BASERELOC, &pRelocationTable));
 
     LibPERawBaseRelocation(T) *pRawRelocationPage = (LibPERawBaseRelocation(T) *)pRelocationTable->GetRawStruct();
     if(NULL == pRawRelocationPage) {
         return E_OUTOFMEMORY;
     }
 
-    PEAddress nRelocationPageRVA = nRelocationTableRVA;
-    PEAddress nRelocationPageFOA = nRelocationTableFOA;
+    PEAddress nRelocationPageRVA = pRelocationTable->GetRVA();
+    PEAddress nRelocationPageFOA = pRelocationTable->GetFOA();
     while(0 != pRawRelocationPage->VirtualAddress) {
         UINT16 *pRawItemList = (UINT16 *)(&pRawRelocationPage[1]);
         UINT32 nItemIndex = 0;
@@ -982,7 +917,7 @@ template <class T>
 HRESULT
 PEParserT<T>::ParseDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable)
 {
-    return ParseSimpleDataDirectoryToInterface<IPEDebugInfoTable, PEDebugInfoTableT<T>>(IMAGE_DIRECTORY_ENTRY_DEBUG, ppDebugInfoTable);
+    return ParseDataDirectoryToInterface<IPEDebugInfoTable, PEDebugInfoTableT<T>>(IMAGE_DIRECTORY_ENTRY_DEBUG, ppDebugInfoTable);
 }
 
 template <class T>
@@ -1021,28 +956,7 @@ template <class T>
 HRESULT
 PEParserT<T>::ParseTlsTable(IPETlsTable **ppTlsTable)
 {
-    LIBPE_CHK(NULL != ppTlsTable, E_POINTER);
-    LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
-
-    *ppTlsTable = NULL;
-
-    PEAddress nTlsTableRVA = LIBPE_INVALID_ADDRESS, nTlsTableFOA = LIBPE_INVALID_ADDRESS, nTlsTableSize = LIBPE_INVALID_SIZE;
-    if(FAILED(GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_TLS, nTlsTableRVA, nTlsTableFOA, nTlsTableSize))) {
-        return E_FAIL;
-    }
-
-    LibPEPtr<PETlsTableT<T>> pTlsTable = new PETlsTableT<T>();
-    if (NULL == pTlsTable) {
-        return E_OUTOFMEMORY;
-    }
-
-    pTlsTable->InnerSetBase(m_pFile, this);
-    pTlsTable->InnerSetMemoryInfo(nTlsTableRVA, LIBPE_INVALID_ADDRESS, nTlsTableSize);
-    pTlsTable->InnerSetFileInfo(nTlsTableFOA, nTlsTableSize);
-
-    *ppTlsTable = pTlsTable.Detach();
-
-    return S_OK;
+    return ParseDataDirectoryToInterface<IPETlsTable, PETlsTableT<T>>(IMAGE_DIRECTORY_ENTRY_TLS, ppTlsTable);
 }
 
 template <class T>
@@ -1089,14 +1003,14 @@ template <class T>
 HRESULT
 PEParserT<T>::ParseLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable)
 {
-    return ParseSimpleDataDirectoryToInterface<IPELoadConfigTable, PELoadConfigTableT<T>>(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG, ppLoadConfigTable);
+    return ParseDataDirectoryToInterface<IPELoadConfigTable, PELoadConfigTableT<T>>(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG, ppLoadConfigTable);
 }
 
 template <class T>
 HRESULT
 PEParserT<T>::ParseBoundImportTable(IPEBoundImportTable **ppBoundImportTable)
 {
-    return ParseSimpleDataDirectoryToInterface<IPEBoundImportTable, PEBoundImportTableT<T>>(IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT, ppBoundImportTable);
+    return ParseDataDirectoryToInterface<IPEBoundImportTable, PEBoundImportTableT<T>>(IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT, ppBoundImportTable);
 }
 
 template <class T>
@@ -1164,19 +1078,8 @@ PEParserT<T>::ParseImportAddressTable(IPEImportAddressTable **ppImportAddressTab
 
     *ppImportAddressTable = NULL;
 
-    PEAddress nImportAddressTableRVA = LIBPE_INVALID_ADDRESS, nImportAddressTableFOA = LIBPE_INVALID_ADDRESS, nImportAddressTableSize = LIBPE_INVALID_SIZE;
-    if(FAILED(GetDataDirectoryEntry(IMAGE_DIRECTORY_ENTRY_IAT, nImportAddressTableRVA, nImportAddressTableFOA, nImportAddressTableSize))) {
-        return E_FAIL;
-    }
-
-    LibPEPtr<PEImportAddressTableT<T>> pImportAddressTable = new PEImportAddressTableT<T>();
-    if(NULL == pImportAddressTable) {
-        return E_OUTOFMEMORY;
-    }
-
-    pImportAddressTable->InnerSetBase(m_pFile, this);
-    pImportAddressTable->InnerSetMemoryInfo(nImportAddressTableRVA, LIBPE_INVALID_ADDRESS, nImportAddressTableSize);
-    pImportAddressTable->InnerSetFileInfo(nImportAddressTableFOA, nImportAddressTableSize);
+    LibPEPtr<PEImportAddressTableT<T>> pImportAddressTable;
+    LIBPE_CHK_HR(ParseDataDirectory(IMAGE_DIRECTORY_ENTRY_IAT, &pImportAddressTable));
 
     if(FAILED(ParseImportAddressTableContent(pImportAddressTable))) {
         return E_FAIL;
@@ -1315,7 +1218,7 @@ PEParserT<T>::ParseDelayImportTable(IPEDelayImportTable **ppDelayImportTable)
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseCLRHeader(IPECLRHeader **ppCLRHeader)
+PEParserT<T>::ParseCLRTable(IPECLRTable **ppCLRTable)
 {
     return E_NOTIMPL;
 }
@@ -1334,6 +1237,10 @@ PEParserT<T>::GetDataDirectoryEntry(INT32 nDataDirectoryEntryIndex, PEAddress &n
 {
     LIBPE_CHK(NULL != m_pFile, E_FAIL);
 
+    nRVA = LIBPE_INVALID_ADDRESS;
+    nFOA = LIBPE_INVALID_ADDRESS;
+    nSize = LIBPE_INVALID_SIZE;
+
     LibPERawOptionalHeaderT(T) *pOptionalHeader = (LibPERawOptionalHeaderT(T) *)m_pFile->GetRawOptionalHeader();
     if(NULL == pOptionalHeader) {
         return E_FAIL;
@@ -1341,7 +1248,7 @@ PEParserT<T>::GetDataDirectoryEntry(INT32 nDataDirectoryEntryIndex, PEAddress &n
 
     LibPERawDataDirectoryT(T) *pDataDirectory = &(pOptionalHeader->DataDirectory[nDataDirectoryEntryIndex]);
     if(NULL == pDataDirectory || 0 == pDataDirectory->VirtualAddress || 0 == pDataDirectory->Size) {
-        return E_FAIL;
+        return S_OK;
     }
 
     switch (nDataDirectoryEntryIndex) {

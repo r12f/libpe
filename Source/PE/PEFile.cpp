@@ -415,7 +415,7 @@ PEFileT<T>::GetDelayImportTable(IPEDelayImportTable **ppDelayImportTable)
 
 template <class T>
 HRESULT
-PEFileT<T>::GetCLRHeader(IPECLRHeader **ppCLRHeader)
+PEFileT<T>::GetCLRTable(IPECLRTable **ppCLRTable)
 {
     return E_NOTIMPL;
 }
