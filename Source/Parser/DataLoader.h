@@ -9,6 +9,7 @@ class DataLoader :
 {
 public:
     LIBPE_SINGLE_THREAD_OBJECT();
+    virtual ~DataLoader() {}
     virtual PEParserType GetType() = 0;
     virtual UINT64 GetSize() = 0;
     virtual void * GetBuffer(UINT64 nOffset, UINT64 nSize) = 0;
