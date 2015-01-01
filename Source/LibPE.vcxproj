@@ -18,14 +18,11 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="LibPEAPIs.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{68CD7CF2-C433-48B0-8965-C42E5AC4B450}</ProjectGuid>
+    <ProjectGuid>{28692735-9677-476B-91F3-684977E5823A}</ProjectGuid>
     <RootNamespace>LibPE</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>LibPELib</ProjectName>
+    <ProjectName>LibPE</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -93,21 +90,12 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
     <Lib />
-    <ProjectReference>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-    </ProjectReference>
-    <Lib>
-      <AdditionalDependencies>LibPE.lib</AdditionalDependencies>
-    </Lib>
-    <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)Output\$(Configuration)\$(PlatformTarget)\Bin\</AdditionalLibraryDirectories>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
@@ -120,21 +108,12 @@
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Lib />
-    <ProjectReference>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-    </ProjectReference>
-    <Lib>
-      <AdditionalDependencies>LibPE.lib</AdditionalDependencies>
-    </Lib>
-    <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)Output\$(Configuration)\$(PlatformTarget)\Bin\</AdditionalLibraryDirectories>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -144,21 +123,12 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Lib />
-    <ProjectReference>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-    </ProjectReference>
-    <Lib>
-      <AdditionalDependencies>LibPE.lib</AdditionalDependencies>
-    </Lib>
-    <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)Output\$(Configuration)\$(PlatformTarget)\Bin\</AdditionalLibraryDirectories>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -171,22 +141,67 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <TreatWarningAsError>true</TreatWarningAsError>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Lib />
-    <ProjectReference>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-    </ProjectReference>
-    <Lib>
-      <AdditionalDependencies>LibPE.lib</AdditionalDependencies>
-    </Lib>
-    <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)Output\$(Configuration)\$(PlatformTarget)\Bin\</AdditionalLibraryDirectories>
-    </Lib>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Parser\DataLoader.cpp" />
+    <ClCompile Include="Parser\PEParser.cpp" />
+    <ClCompile Include="Parser\PEParserImpl.cpp" />
+    <ClCompile Include="LibPEConfig.cpp" />
+    <ClCompile Include="PE\PEBoundImportTable.cpp" />
+    <ClCompile Include="PE\PECertificateTable.cpp" />
+    <ClCompile Include="PE\PEDebugInfoTable.cpp" />
+    <ClCompile Include="PE\PEElement.cpp" />
+    <ClCompile Include="PE\PEExceptionTable.cpp" />
+    <ClCompile Include="PE\PEExportTable.cpp" />
+    <ClCompile Include="PE\PEFile.cpp" />
+    <ClCompile Include="PE\PEGlobalPointerTable.cpp" />
+    <ClCompile Include="PE\PEHeader.cpp" />
+    <ClCompile Include="PE\PEImportAddressTable.cpp" />
+    <ClCompile Include="PE\PEImportTable.cpp" />
+    <ClCompile Include="PE\PELoadConfigTable.cpp" />
+    <ClCompile Include="PE\PERelocationTable.cpp" />
+    <ClCompile Include="PE\PEResourceTable.cpp" />
+    <ClCompile Include="PE\PESection.cpp" />
+    <ClCompile Include="PE\PETlsTable.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Parser\DataLoader.h" />
+    <ClInclude Include="Parser\PEParser.h" />
+    <ClInclude Include="Parser\PEParserCommon.h" />
+    <ClInclude Include="Parser\PEParserImpl.h" />
+    <ClInclude Include="LibPEConfig.h" />
+    <ClInclude Include="LibPEInternal.h" />
+    <ClInclude Include="LibPEObject.h" />
+    <ClInclude Include="PE\PEBoundImportTable.h" />
+    <ClInclude Include="PE\PECertificateTable.h" />
+    <ClInclude Include="PE\PEDebugInfoTable.h" />
+    <ClInclude Include="PE\PEElement.h" />
+    <ClInclude Include="PE\PEExceptionTable.h" />
+    <ClInclude Include="PE\PEExportTable.h" />
+    <ClInclude Include="PE\PEFile.h" />
+    <ClInclude Include="PE\PEGlobalPointerTable.h" />
+    <ClInclude Include="PE\PEHeader.h" />
+    <ClInclude Include="PE\PEImportAddressTable.h" />
+    <ClInclude Include="PE\PEImportTable.h" />
+    <ClInclude Include="PE\PELoadConfigTable.h" />
+    <ClInclude Include="PE\PERelocationTable.h" />
+    <ClInclude Include="PE\PEResourceTable.h" />
+    <ClInclude Include="PE\PESection.h" />
+    <ClInclude Include="PE\PETlsTable.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

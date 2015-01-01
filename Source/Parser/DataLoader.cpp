@@ -30,7 +30,7 @@ DataLoaderDiskFile::LoadFile(const file_t &strPath)
     LONG nFileSizeHigh = 0;
     DWORD nFileSizeLow = ::SetFilePointer(m_hFile, 0, &nFileSizeHigh, FILE_END);
     m_nFileSize = ((UINT64)nFileSizeHigh) << 32 | nFileSizeLow;
-    m_nBlockSize = GetPreferredPELoaderIOBlockSize(m_nFileSize);
+    m_nBlockSize = Config::GetPreferredPELoaderIOBlockSize(m_nFileSize);
 
     m_pFileBuffer = new INT8[(INT32)m_nFileSize];
     LIBPE_CHK(0 != m_nBlockSize, false);

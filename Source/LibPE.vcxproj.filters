@@ -18,13 +18,21 @@
     <ClCompile Include="Parser\PEParserImpl.cpp">
       <Filter>Parser</Filter>
     </ClCompile>
-    <ClCompile Include="LibPE.cpp" />
     <ClCompile Include="LibPEConfig.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="PE\PEElement.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PEExceptionTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
     <ClCompile Include="PE\PEExportTable.cpp">
       <Filter>PE</Filter>
     </ClCompile>
     <ClCompile Include="PE\PEFile.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
+    <ClCompile Include="PE\PEGlobalPointerTable.cpp">
       <Filter>PE</Filter>
     </ClCompile>
     <ClCompile Include="PE\PEHeader.cpp">
@@ -51,16 +59,13 @@
     <ClCompile Include="PE\PETlsTable.cpp">
       <Filter>PE</Filter>
     </ClCompile>
+    <ClCompile Include="PE\PEBoundImportTable.cpp">
+      <Filter>PE</Filter>
+    </ClCompile>
     <ClCompile Include="PE\PECertificateTable.cpp">
       <Filter>PE</Filter>
     </ClCompile>
     <ClCompile Include="PE\PEDebugInfoTable.cpp">
-      <Filter>PE</Filter>
-    </ClCompile>
-    <ClCompile Include="PE\PEElement.cpp">
-      <Filter>PE</Filter>
-    </ClCompile>
-    <ClCompile Include="PE\PEExceptionTable.cpp">
       <Filter>PE</Filter>
     </ClCompile>
   </ItemGroup>
@@ -81,6 +86,12 @@
     <ClInclude Include="LibPEInternal.h" />
     <ClInclude Include="LibPEObject.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="PE\PEDebugInfoTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PEElement.h">
+      <Filter>PE</Filter>
+    </ClInclude>
     <ClInclude Include="PE\PEExceptionTable.h">
       <Filter>PE</Filter>
     </ClInclude>
@@ -88,6 +99,9 @@
       <Filter>PE</Filter>
     </ClInclude>
     <ClInclude Include="PE\PEFile.h">
+      <Filter>PE</Filter>
+    </ClInclude>
+    <ClInclude Include="PE\PEGlobalPointerTable.h">
       <Filter>PE</Filter>
     </ClInclude>
     <ClInclude Include="PE\PEHeader.h">
@@ -114,13 +128,10 @@
     <ClInclude Include="PE\PETlsTable.h">
       <Filter>PE</Filter>
     </ClInclude>
+    <ClInclude Include="PE\PEBoundImportTable.h">
+      <Filter>PE</Filter>
+    </ClInclude>
     <ClInclude Include="PE\PECertificateTable.h">
-      <Filter>PE</Filter>
-    </ClInclude>
-    <ClInclude Include="PE\PEDebugInfoTable.h">
-      <Filter>PE</Filter>
-    </ClInclude>
-    <ClInclude Include="PE\PEElement.h">
       <Filter>PE</Filter>
     </ClInclude>
   </ItemGroup>

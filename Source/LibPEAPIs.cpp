@@ -20,7 +20,6 @@ ParsePEFromDataLoader(DataLoader *pDataLoader, IPEFile **ppFile)
     return E_FAIL;
 }
 
-
 HRESULT LIBPE_API
 ParsePEFromDiskFile(const file_char_t *pFilePath, IPEFile **ppFile)
 {

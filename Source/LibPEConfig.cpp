@@ -11,15 +11,15 @@ enum {
 UINT64 s_nPELoaderMinBlockSize = 0;
 UINT64 s_nPELoaderMaxBlockSize = 0;
 
-void LIBPE_API
-SetPELoaderIOBlockSize(UINT64 nMinBlockSize, UINT64 nMaxBlockSize)
+void
+Config::SetPELoaderIOBlockSize(UINT64 nMinBlockSize, UINT64 nMaxBlockSize)
 {
     s_nPELoaderMinBlockSize = nMinBlockSize;
     s_nPELoaderMaxBlockSize = nMaxBlockSize;
 }
 
 UINT64
-GetPreferredPELoaderIOBlockSize(UINT64 nFileSize)
+Config::GetPreferredPELoaderIOBlockSize(UINT64 nFileSize)
 {
     UINT64 nMinBlockSize = (s_nPELoaderMaxBlockSize == 0) ? DEFAULT_IO_MIN_BLOCK_SIZE : s_nPELoaderMinBlockSize;
     UINT64 nMaxBlockSize = (s_nPELoaderMaxBlockSize == 0) ? DEFAULT_IO_MAX_BLOCK_SIZE : s_nPELoaderMaxBlockSize;
