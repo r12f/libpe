@@ -1,0 +1,4 @@
+[submodule "ThirdParty/gtest"]
+	path = ThirdParty/gtest
+	url = ../LibPE.git
+	branch = gtest-git
