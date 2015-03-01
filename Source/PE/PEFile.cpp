@@ -395,8 +395,7 @@ template <class T>
 HRESULT
 PEFileT<T>::GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable)
 {
-    //return ParsePETable(m_pParser, m_pBoundImportTable, ppBoundImportTable);
-    return E_NOTIMPL;
+    return ParsePETable(m_pParser, &PEParserT<T>::ParseBoundImportTable, m_pBoundImportTable, ppBoundImportTable);
 }
 
 template <class T>

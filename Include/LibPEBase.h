@@ -24,6 +24,7 @@
 #include <basetsd.h>
 typedef wchar_t             file_char_t;
 typedef std::wstring        file_t;
+#define LIBPE_T(v)          L ## v
 #else
 typedef bool                BOOL;
 typedef char                INT8;
@@ -36,6 +37,7 @@ typedef __int64             INT64;
 typedef unsigned __int64    UINT64;
 typedef char                file_char_t;
 typedef std::string         file_t;
+#define LIBPE_T(v)          v
 #endif
 
 #define LIBPE_UNUSED_PARAM(x)       (x)
