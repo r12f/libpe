@@ -2,3 +2,6 @@
 	path = ThirdParty/gtest
 	url = ../LibPE.git
 	branch = gtest-git
+[submodule "ThirdParty/tinyxml2"]
+	path = ThirdParty/tinyxml2
+	url = https://github.com/leethomason/tinyxml2.git
