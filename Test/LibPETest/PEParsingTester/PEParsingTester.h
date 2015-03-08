@@ -2,11 +2,11 @@
 
 #include "PEElementTester.h"
 
-class LibPETester
+class PEParsingTester
 {
 public:
-    LibPETester();
-    ~LibPETester();
+    PEParsingTester();
+    ~PEParsingTester();
     
     void RunTest(const file_char_t *peFilePath, const file_char_t *expectedResultFilePath);
 

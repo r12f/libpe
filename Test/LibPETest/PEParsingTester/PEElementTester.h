@@ -6,12 +6,20 @@ public:
     PEElementTester(const char *elementName);
     virtual ~PEElementTester();
 
-    void Run(IPEFile *peFile, tinyxml2::XMLElement *expectedParentElement);
+    PEElementTester & SetPEFile(IPEFile *peFile);
+
+    PEElementTester & SetExpectedResult(
+        tinyxml2::XMLElement *parentExpectedResult,
+        tinyxml2::XMLElement *lastExpectedResult = nullptr,
+        tinyxml2::XMLElement **currentExpectedResult = nullptr);
+
+    bool IsLastExpectedResult(tinyxml2::XMLElement *expectedResult);
+
+    void Run();
 
 protected:
-    bool BeginTest(IPEFile *peFile, tinyxml2::XMLElement *expectedParentElement, tinyxml2::XMLElement *expectedElement = nullptr);
+    bool BeginTest();
     virtual void DoTest() = 0;
-    void EndTest();
 
     void RunTestLoop(std::function<void ()> callback);
     void BeginTestSingleAPI(tinyxml2::XMLElement *expectedAPIResult);
@@ -27,6 +35,17 @@ protected:
         Data v;
         ASSERT_EQ(tinyxml2::XML_SUCCESS, GetExpectedAPIResultOfCurrentTest()->QueryAttribute("value", &v));
         EXPECT_EQ(v, (element->*func)());
+    }
+
+    template <class Element>
+    void TestAPIResultStringT(Element *element, const char * (LIBPE_CALLTYPE Element::*func)(), const char *apiName)
+    {
+        if (strcmp(apiName, GetAPINameOfCurrentTest()) != 0) {
+            return;
+        }
+
+        const char *v = GetExpectedAPIResultOfCurrentTest()->Attribute("value");
+        EXPECT_STRCASEEQ(v, (element->*func)());
     }
 
     template <class Element, class Data>
@@ -64,8 +83,8 @@ protected:
     // These fields below can only be used in RunTest function, because they are fetched
     // from parameters of this function, and we saved them so that they could be used easier.
     IPEFile * GetPEFile() { return _peFile; }
-    tinyxml2::XMLElement * GetExpectedParentElement() { return _expectedParentElement; }
-    tinyxml2::XMLElement * GetExpectedElement() { return _expectedElement; }
+    tinyxml2::XMLElement * GetParentExpectedResult() { return _parentExpectedResult; }
+    tinyxml2::XMLElement * GetExpectedResult() { return _expectedResult; }
     tinyxml2::XMLElement * GetExpectedAPIResults() { return _expectedAPIResults; }
 
     tinyxml2::XMLElement * GetExpectedAPIResultOfCurrentTest() { return _expectedAPIResultOfCurrentTest; }
@@ -77,8 +96,8 @@ private:
     // These fields below can only be used in RunTest function, because they are fetched
     // from parameters of this function, and we saved them so that they could be used easier.
     IPEFile *_peFile;
-    tinyxml2::XMLElement *_expectedParentElement;
-    tinyxml2::XMLElement *_expectedElement;
+    tinyxml2::XMLElement *_parentExpectedResult;
+    tinyxml2::XMLElement *_expectedResult;
     tinyxml2::XMLElement *_expectedAPIResults;
 
     tinyxml2::XMLElement *_expectedAPIResultOfCurrentTest;
@@ -97,6 +116,10 @@ private:
         TestAPIResultSimpleT((peElementType *)__peElement, &peElementType::apiName, #apiName);  \
     } while (0);
 
+#define TEST_API_RESULT_STRING(peElementType, apiName)                                          \
+    do {                                                                                        \
+        TestAPIResultStringT((peElementType *)__peElement, &peElementType::apiName, #apiName);  \
+    } while (0);
 
 #define TEST_RAW_FIELD_SIMPLE(peElementType, fieldName)                                         \
      TEST_API_RESULT_SIMPLE(peElementType, GetField ## fieldName)

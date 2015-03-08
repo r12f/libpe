@@ -3,6 +3,7 @@
 
 void PEDosHeaderTester::DoTest()
 {
+    // DosHeader is a mandatory structure for PE files.
     LibPEPtr<IPEDosHeader> dosHeader;
     ASSERT_HRESULT_SUCCEEDED(GetPEFile()->GetDosHeader(&dosHeader));
     ASSERT_NE(dosHeader, nullptr);

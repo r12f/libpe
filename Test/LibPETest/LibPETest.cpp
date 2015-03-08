@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "LibPETest.h"
-#include "LibPETester/LibPETester.h"
+#include "PEParsingTester/PEParsingTester.h"
 
 #ifdef LIBPE_WINOS
 #include <Shlwapi.h>
@@ -28,5 +28,5 @@ TEST_F(LibPETest, X86DllFileTest)
     file_t peFilePath = _testDataDir + LIBPE_T("/x86Dll/Test.dll");
     file_t expectedResultFilePath = _testDataDir + LIBPE_T("/x86Dll/FileParsingResult.xml");
 
-    LibPETester().RunTest(peFilePath.c_str(), expectedResultFilePath.c_str());
+    PEParsingTester().RunTest(peFilePath.c_str(), expectedResultFilePath.c_str());
 }

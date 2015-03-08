@@ -8,3 +8,5 @@ ipch
 Output
 *.sdf
 *.opensdf
+.DS_Store
+._.DS_Store

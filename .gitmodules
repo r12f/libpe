@@ -4,4 +4,4 @@
 	branch = gtest-git
 [submodule "ThirdParty/tinyxml2"]
 	path = ThirdParty/tinyxml2
-	url = https://github.com/leethomason/tinyxml2.git
+	url = https://github.com/r12f/tinyxml2.git

@@ -9,6 +9,5 @@ void PEArchitectureDataTableDumper::DoDump()
     }
 
     // According to PE and COFF specification 8.3, the architecture data table is reserved and must be 0,
-    // so here we do nothing to dump it.
-    // But still we need to dump a empty node into result files for triggering parsing test in LibPETest.
+    // so here we dump nothing.
 }
