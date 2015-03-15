@@ -6462,9 +6462,6 @@
             </RelocationItem>
         </RelocationPage>
     </RelocationTable>
-    <ArchitectureDataTable>
-        <APIResults/>
-    </ArchitectureDataTable>
     <LoadConfigTable>
         <APIResults>
             <Result name="GetRVA" value="29320"/>

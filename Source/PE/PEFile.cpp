@@ -367,7 +367,7 @@ PEFileT<T>::GetArchitectureDataTable(IPEArchitectureDataTable **ppArchitectureDa
     // Link: http://msdn.microsoft.com/en-us/library/windows/hardware/gg463119.aspx
     *ppArchitectureDataTable = NULL;
 
-    return S_OK;
+    return E_NOT_SET;
 }
 
 template <class T>
