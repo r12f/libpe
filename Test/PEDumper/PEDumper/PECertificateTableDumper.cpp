@@ -3,24 +3,19 @@
 
 void PECertificateTableDumper::DoDump()
 {
-    LibPEPtr<IPECertificateTable> certificateTable;
-    if (FAILED(GetPEFile()->GetCertificateTable(&certificateTable))) {
-        return;
-    }
+    DumpBasicInformation(_certificateTable);
 
-    DumpBasicInformation(certificateTable);
-
-    UINT32 certificateCount = certificateTable->GetCertificateCount();
+    UINT32 certificateCount = _certificateTable->GetCertificateCount();
     GetOutputElement()->SetAttribute("certificate-count", certificateCount);
 
     for (UINT32 certificateIndex = 0; certificateIndex < certificateCount; ++certificateIndex) {
         LibPEPtr<IPECertificate> certificate;
-        if (FAILED(certificateTable->GetCertificateByIndex(certificateIndex, &certificate))) {
+        if (FAILED(_certificateTable->GetCertificateByIndex(certificateIndex, &certificate))) {
             continue;
         }
 
         PECertificateDumper()
-            .SetCertificate(certificate)
+            .SetDumpElement(certificate)
             .SetPEFile(GetPEFile())
             .SetParentElement(GetOutputElement())
             .Run();

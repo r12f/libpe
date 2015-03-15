@@ -8,8 +8,16 @@ class PEExceptionTableDumper :
 public:
     PEExceptionTableDumper() : PEElementDumper("ExceptionTable") {}
 
+    PEExceptionTableDumper & SetDumpElement(IPEExceptionTable *exceptionTable) {
+        _exceptionTable = exceptionTable;
+        return *this;
+    }
+
 protected:
     void DoDump() override;
+
+private:
+    LibPEPtr<IPEExceptionTable> _exceptionTable;
 };
 
 class PEExceptionHandlerEntryDumper :
@@ -18,7 +26,7 @@ class PEExceptionHandlerEntryDumper :
 public:
     PEExceptionHandlerEntryDumper() : PEElementDumper("ExceptionHandlerEntry") {}
 
-    PEExceptionHandlerEntryDumper & SetExceptionHandlerEntry(IPEExceptionHandlerEntry *exceptionHandlerEntry) {
+    PEExceptionHandlerEntryDumper & SetDumpElement(IPEExceptionHandlerEntry *exceptionHandlerEntry) {
         _exceptionHandlerEntry = exceptionHandlerEntry;
         return *this;
     }
@@ -36,7 +44,7 @@ class PEExceptionHandlerDumper :
 public:
     PEExceptionHandlerDumper() : PEElementDumper("ExceptionHandler") {}
 
-    PEExceptionHandlerDumper & SetExceptionHandler(IPEExceptionHandler *exceptionHandler) {
+    PEExceptionHandlerDumper & SetDumpElement(IPEExceptionHandler *exceptionHandler) {
         _exceptionHandler = exceptionHandler; 
         return *this;
     }

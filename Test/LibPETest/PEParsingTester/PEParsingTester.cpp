@@ -16,6 +16,7 @@
 #include "PELoadConfigTableTester.h"
 #include "PEBoundImportTableTester.h"
 #include "PEImportAddressTableTester.h"
+#include "PEClrTableTester.h"
 
 PEParsingTester::PEParsingTester()
 {
@@ -35,6 +36,7 @@ PEParsingTester::PEParsingTester()
     _testers.push_back(new PELoadConfigTableTester());
     _testers.push_back(new PEBoundImportTableTester());
     _testers.push_back(new PEImportAddressTableTester());
+    _testers.push_back(new PETlsTableTester());
 }
 
 PEParsingTester::~PEParsingTester()

@@ -61,6 +61,9 @@
     <ClCompile Include="PEParsingTester\PEBoundImportTableTester.cpp">
       <Filter>PEParsingTester</Filter>
     </ClCompile>
+    <ClCompile Include="PEParsingTester\PEClrTableTester.cpp">
+      <Filter>PEParsingTester</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -121,6 +124,9 @@
       <Filter>PEParsingTester</Filter>
     </ClInclude>
     <ClInclude Include="PEParsingTester\PEBoundImportTableTester.h">
+      <Filter>PEParsingTester</Filter>
+    </ClInclude>
+    <ClInclude Include="PEParsingTester\PEClrTableTester.h">
       <Filter>PEParsingTester</Filter>
     </ClInclude>
   </ItemGroup>

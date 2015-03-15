@@ -1,0 +1,8 @@
+#include "stdafx.h"
+#include "PE/PEClrTable.h"
+
+LIBPE_NAMESPACE_BEGIN
+
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEClrTableT);
+
+LIBPE_NAMESPACE_END

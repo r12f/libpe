@@ -3,14 +3,9 @@
 
 void PELoadConfigTableDumper::DoDump()
 {
-    LibPEPtr<IPELoadConfigTable> loadConfigTable;
-    if (FAILED(GetPEFile()->GetLoadConfigTable(&loadConfigTable))) {
-        return;
-    }
+    DumpBasicInformation(_loadConfigTable);
 
-    DumpBasicInformation(loadConfigTable);
-
-    BEGIN_DUMP_PE_ELEMENT(loadConfigTable)
+    BEGIN_DUMP_PE_ELEMENT(_loadConfigTable)
         DUMP_RAW_FIELD_SIMPLE(Size)
         DUMP_RAW_FIELD_SIMPLE(TimeDateStamp)
         DUMP_RAW_FIELD_SIMPLE(MajorVersion)

@@ -3,14 +3,9 @@
 
 void PEGlobalPointerTableDumper::DoDump()
 {
-    LibPEPtr<IPEGlobalPointerTable> globalPointerTable;
-    if (FAILED(GetPEFile()->GetGlobalPointerTable(&globalPointerTable))) {
-        return;
-    }
+    DumpBasicInformation(_globalPointerTable);
 
-    DumpBasicInformation(globalPointerTable);
-
-    BEGIN_DUMP_PE_ELEMENT(globalPointerTable)
+    BEGIN_DUMP_PE_ELEMENT(_globalPointerTable)
         DUMP_RAW_FIELD_SIMPLE(GlobalPointerRVA)
     END_DUMP_PE_ELEMENT()
 }

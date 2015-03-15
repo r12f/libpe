@@ -167,6 +167,7 @@
     <ClInclude Include="PEParsingTester\PEArchitectureDataTableTester.h" />
     <ClInclude Include="PEParsingTester\PEBoundImportTableTester.h" />
     <ClInclude Include="PEParsingTester\PECertificateTableTester.h" />
+    <ClInclude Include="PEParsingTester\PEClrTableTester.h" />
     <ClInclude Include="PEParsingTester\PEDebugInfoTableTester.h" />
     <ClInclude Include="PEParsingTester\PEDosHeaderTester.h" />
     <ClInclude Include="PEParsingTester\PEElementTester.h" />
@@ -191,6 +192,7 @@
     <ClCompile Include="PEParsingTester\PEArchitectureDataTableTester.cpp" />
     <ClCompile Include="PEParsingTester\PEBoundImportTableTester.cpp" />
     <ClCompile Include="PEParsingTester\PECertificateTableTester.cpp" />
+    <ClCompile Include="PEParsingTester\PEClrTableTester.cpp" />
     <ClCompile Include="PEParsingTester\PEDebugInfoTableTester.cpp" />
     <ClCompile Include="PEParsingTester\PEDosHeaderTester.cpp" />
     <ClCompile Include="PEParsingTester\PEElementTester.cpp" />

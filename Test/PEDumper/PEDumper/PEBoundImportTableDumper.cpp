@@ -3,24 +3,19 @@
 
 void PEBoundImportTableDumper::DoDump()
 {
-    LibPEPtr<IPEBoundImportTable> boundImportTable;
-    if (FAILED(GetPEFile()->GetBoundImportTable(&boundImportTable))) {
-        return;
-    }
+    DumpBasicInformation(_boundImportTable);
 
-    DumpBasicInformation(boundImportTable);
-
-    UINT32 boundImportModuleCount = boundImportTable->GetBoundImportModuleCount();
+    UINT32 boundImportModuleCount = _boundImportTable->GetBoundImportModuleCount();
     GetOutputElement()->SetAttribute("bound-import-module-count", boundImportModuleCount);
 
     for (UINT32 boundImportModuleIndex = 0; boundImportModuleIndex < boundImportModuleCount; ++boundImportModuleIndex) {
         LibPEPtr<IPEBoundImportModule> boundImportModule;
-        if (FAILED(boundImportTable->GetBoundImportModuleByIndex(boundImportModuleIndex, &boundImportModule))) {
+        if (FAILED(_boundImportTable->GetBoundImportModuleByIndex(boundImportModuleIndex, &boundImportModule))) {
             continue;
         }
 
         PEBoundImportModuleDumper()
-            .SetBoundImportModule(boundImportModule)
+            .SetDumpeElement(boundImportModule)
             .SetPEFile(GetPEFile())
             .SetParentElement(GetOutputElement())
             .Run();
@@ -47,7 +42,7 @@ void PEBoundImportModuleDumper::DoDump()
         }
 
         PEBoundForwarderDumper()
-            .SetBoundForwarder(boundForwarder)
+            .SetDumpElement(boundForwarder)
             .SetPEFile(GetPEFile())
             .SetParentElement(GetOutputElement())
             .Run();

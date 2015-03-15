@@ -96,8 +96,8 @@ class IPEImportAddressItem;
 // DD13: Delay import table
 class IPEDelayImportTable;
 
-// DD14: CLR table
-class IPECLRTable;
+// DD14: Clr table
+class IPEClrTable;
 
 #define LIBPE_DEFINE_FIELD_ACCESSOR(FieldType, FuncName)                                    \
     virtual FieldType LIBPE_CALLTYPE GetField ## FuncName() = 0
@@ -164,7 +164,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTable **ppImportAddressTable) = 0;
     virtual HRESULT LIBPE_CALLTYPE GetDelayImportTable(IPEDelayImportTable **ppDelayImportTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetCLRTable(IPECLRTable **ppCLRTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetClrTable(IPEClrTable **ppClrTable) = 0;
 
     virtual HRESULT LIBPE_CALLTYPE RemoveExportTable() = 0;
     virtual HRESULT LIBPE_CALLTYPE RemoveImportTable() = 0;
@@ -178,7 +178,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE RemoveBoundImportTable() = 0;
     virtual HRESULT LIBPE_CALLTYPE RemoveImportAddressTable() = 0;
     virtual HRESULT LIBPE_CALLTYPE RemoveDelayImportTable() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveCLRTable() = 0;
+    virtual HRESULT LIBPE_CALLTYPE RemoveClrTable() = 0;
 
     // PE Verification
     virtual BOOL LIBPE_CALLTYPE ValidatePEHeader() = 0;
@@ -628,6 +628,6 @@ public:
 
 class IPEDelayImportTable : public IPEElement {};
 
-class IPECLRTable : public IPEElement {};
+class IPEClrTable : public IPEElement {};
 
 LIBPE_NAMESPACE_END

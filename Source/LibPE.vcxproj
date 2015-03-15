@@ -155,6 +155,7 @@
     <ClCompile Include="LibPEConfig.cpp" />
     <ClCompile Include="PE\PEBoundImportTable.cpp" />
     <ClCompile Include="PE\PECertificateTable.cpp" />
+    <ClCompile Include="PE\PEClrTable.cpp" />
     <ClCompile Include="PE\PEDebugInfoTable.cpp" />
     <ClCompile Include="PE\PEElement.cpp" />
     <ClCompile Include="PE\PEExceptionTable.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="LibPEObject.h" />
     <ClInclude Include="PE\PEBoundImportTable.h" />
     <ClInclude Include="PE\PECertificateTable.h" />
+    <ClInclude Include="PE\PEClrTable.h" />
     <ClInclude Include="PE\PEDebugInfoTable.h" />
     <ClInclude Include="PE\PEElement.h" />
     <ClInclude Include="PE\PEExceptionTable.h" />

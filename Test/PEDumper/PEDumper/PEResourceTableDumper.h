@@ -8,8 +8,16 @@ class PEResourceTableDumper :
 public:
     PEResourceTableDumper() : PEElementDumper("ResourceTable") {}
 
+    PEResourceTableDumper & SetDumpElement(IPEResourceTable *resourceTable) {
+        _resourceTable = resourceTable;
+        return *this;
+    }
+
 protected:
     void DoDump() override;
+
+private:
+    LibPEPtr<IPEResourceTable> _resourceTable;
 };
 
 class PEResourceDirectoryDumper :

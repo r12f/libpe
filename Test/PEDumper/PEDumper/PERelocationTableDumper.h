@@ -8,8 +8,16 @@ class PERelocationTableDumper :
 public:
     PERelocationTableDumper() : PEElementDumper("RelocationTable") {}
 
+    PERelocationTableDumper & SetDumpElement(IPERelocationTable *relocationTable) {
+        _relocationTable = relocationTable;
+        return *this;
+    }
+
 protected:
     void DoDump() override;
+
+private:
+    LibPEPtr<IPERelocationTable> _relocationTable;
 };
 
 class PERelocationPageDumper :
@@ -18,7 +26,7 @@ class PERelocationPageDumper :
 public:
     PERelocationPageDumper() : PEElementDumper("RelocationPage") {}
 
-    PERelocationPageDumper & SetRelocationPage(IPERelocationPage *relocationPage) {
+    PERelocationPageDumper & SetDumpElement(IPERelocationPage *relocationPage) {
         _relocationPage = relocationPage;
         return *this;
     }
@@ -36,7 +44,7 @@ class PERelocationItemDumper :
 public:
     PERelocationItemDumper() : PEElementDumper("RelocationItem") {}
 
-    PERelocationItemDumper & SetRelocationItem(IPERelocationItem *relocationItem) {
+    PERelocationItemDumper & SetDumpElement(IPERelocationItem *relocationItem) {
         _relocationItem = relocationItem; 
         return *this;
     }

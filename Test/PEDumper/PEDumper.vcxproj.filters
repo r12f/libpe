@@ -60,6 +60,9 @@
     <ClCompile Include="PEDumper\PEImportAddressTableDumper.cpp">
       <Filter>PEDumper</Filter>
     </ClCompile>
+    <ClCompile Include="PEDumper\PEClrTableDumper.cpp">
+      <Filter>PEDumper</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -119,6 +122,9 @@
       <Filter>PEDumper</Filter>
     </ClInclude>
     <ClInclude Include="PEDumper\PEImportAddressTableDumper.h">
+      <Filter>PEDumper</Filter>
+    </ClInclude>
+    <ClInclude Include="PEDumper\PEClrTableDumper.h">
       <Filter>PEDumper</Filter>
     </ClInclude>
   </ItemGroup>

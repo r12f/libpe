@@ -1,16 +1,15 @@
 #pragma once
 
-#include "PEElementDumper.h"
-
 class PEDumper
 {
+    typedef void (*PEElementDumpFunc)(IPEFile *, tinyxml2::XMLElement *);
+
 public:
     PEDumper();
-    ~PEDumper();
 
     void Dump(const file_char_t *peFile, const file_char_t *resultFile);
 
 private:
-    std::vector<PEElementDumper *> _dumpers;
+    std::vector<PEElementDumpFunc> _dumpers;
     tinyxml2::XMLDocument _xmlDoc;
 };

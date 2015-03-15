@@ -3,24 +3,19 @@
 
 void PEImportAddressTableDumper::DoDump()
 {
-    LibPEPtr<IPEImportAddressTable> importAddressTable;
-    if (FAILED(GetPEFile()->GetImportAddressTable(&importAddressTable))) {
-        return;
-    }
+    DumpBasicInformation(_importAddressTable);
 
-    DumpBasicInformation(importAddressTable);
-
-    UINT32 importAddressBlockCount = importAddressTable->GetBlockCount();
+    UINT32 importAddressBlockCount = _importAddressTable->GetBlockCount();
     GetOutputElement()->SetAttribute("import-address-block-count", importAddressBlockCount);
 
     for (UINT32 importAddressBlockIndex = 0; importAddressBlockIndex < importAddressBlockCount; ++importAddressBlockIndex) {
         LibPEPtr<IPEImportAddressBlock> importAddressBlock;
-        if (FAILED(importAddressTable->GetBlockByIndex(importAddressBlockIndex, &importAddressBlock))) {
+        if (FAILED(_importAddressTable->GetBlockByIndex(importAddressBlockIndex, &importAddressBlock))) {
             continue;
         }
 
         PEImportAddressBlockDumper()
-            .SetImportAddressBlock(importAddressBlock)
+            .SetDumpElement(importAddressBlock)
             .SetPEFile(GetPEFile())
             .SetParentElement(GetOutputElement())
             .Run();
@@ -41,7 +36,7 @@ void PEImportAddressBlockDumper::DoDump()
         }
 
         PEImportAddressItemDumper()
-            .SetImportAddressItem(importAddressItem)
+            .SetDumpElement(importAddressItem)
             .SetPEFile(GetPEFile())
             .SetParentElement(GetOutputElement())
             .Run();

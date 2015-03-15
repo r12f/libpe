@@ -16,6 +16,7 @@
 #include "PE/PELoadConfigTable.h"
 #include "PE/PEBoundImportTable.h"
 #include "PE/PEImportAddressTable.h"
+#include "PE/PEClrTable.h"
 
 LIBPE_NAMESPACE_BEGIN
 
@@ -1218,9 +1219,20 @@ PEParserT<T>::ParseDelayImportTable(IPEDelayImportTable **ppDelayImportTable)
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseCLRTable(IPECLRTable **ppCLRTable)
+PEParserT<T>::ParseClrTable(IPEClrTable **ppClrTable)
 {
-    return E_NOTIMPL;
+    LIBPE_CHK(NULL != ppClrTable, E_POINTER);
+    LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
+
+    *ppClrTable = NULL;
+
+    // We don't parse the Clr table for now.
+    LibPEPtr<PEClrTableT<T>> pClrTable;
+    LIBPE_CHK_HR(ParseDataDirectory(IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR, &pClrTable));
+
+    *ppClrTable = pClrTable.Detach();
+
+    return S_OK;
 }
 
 template <class T>
@@ -1248,7 +1260,7 @@ PEParserT<T>::GetDataDirectoryEntry(INT32 nDataDirectoryEntryIndex, PEAddress &n
 
     LibPERawDataDirectoryT(T) *pDataDirectory = &(pOptionalHeader->DataDirectory[nDataDirectoryEntryIndex]);
     if(NULL == pDataDirectory || 0 == pDataDirectory->VirtualAddress || 0 == pDataDirectory->Size) {
-        return S_OK;
+        return E_NOT_SET;
     }
 
     switch (nDataDirectoryEntryIndex) {

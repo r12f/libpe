@@ -3,14 +3,9 @@
 
 void PETlsTableDumper::DoDump()
 {
-    LibPEPtr<IPETlsTable> tlsTable;
-    if (FAILED(GetPEFile()->GetTlsTable(&tlsTable))) {
-        return;
-    }
+    DumpBasicInformation(_tlsTable);
 
-    DumpBasicInformation(tlsTable);
-
-    BEGIN_DUMP_PE_ELEMENT(tlsTable)
+    BEGIN_DUMP_PE_ELEMENT(_tlsTable)
         DUMP_RAW_FIELD_SIMPLE(StartAddressOfRawData)
         DUMP_RAW_FIELD_SIMPLE(EndAddressOfRawData)
         DUMP_RAW_FIELD_SIMPLE(AddressOfIndex)

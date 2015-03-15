@@ -8,8 +8,16 @@ class PEExportTableDumper :
 public:
     PEExportTableDumper() : PEElementDumper("ExportTable") {}
 
+    PEExportTableDumper & SetDumpElement(IPEExportTable *exportTable) {
+        _exportTable = exportTable;
+        return *this;
+    }
+
 protected:
     void DoDump() override;
+
+private:
+    LibPEPtr<IPEExportTable> _exportTable;
 };
 
 class PEExportFunctionDumper :
@@ -18,7 +26,7 @@ class PEExportFunctionDumper :
 public:
     PEExportFunctionDumper() : PEElementDumper("ExportFunction") {}
 
-    PEExportFunctionDumper & SetExportFunction(LibPEPtr<IPEExportFunction> exportFunction) {
+    PEExportFunctionDumper & SetDumpElement(LibPEPtr<IPEExportFunction> exportFunction) {
         _exportFunction = exportFunction;
         return *this;
     }

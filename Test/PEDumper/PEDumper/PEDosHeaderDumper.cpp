@@ -3,14 +3,9 @@
 
 void PEDosHeaderDumper::DoDump()
 {
-    LibPEPtr<IPEDosHeader> dosHeader;
-    if (FAILED(GetPEFile()->GetDosHeader(&dosHeader))) {
-        return;
-    }
+    DumpBasicInformation(_dosHeader);
 
-    DumpBasicInformation(dosHeader);
-
-    BEGIN_DUMP_PE_ELEMENT(dosHeader)
+    BEGIN_DUMP_PE_ELEMENT(_dosHeader)
         DUMP_RAW_FIELD_SIMPLE(Magic)
         DUMP_RAW_FIELD_SIMPLE(Cblp)
         DUMP_RAW_FIELD_SIMPLE(Cp)

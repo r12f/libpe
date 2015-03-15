@@ -8,8 +8,16 @@ class PEImportTableDumper :
 public:
     PEImportTableDumper() : PEElementDumper("ImportTable") {}
 
+    PEImportTableDumper & SetDumpElement(IPEImportTable *importTable) {
+        _importTable = importTable;
+        return *this;
+    }
+
 protected:
     void DoDump() override;
+
+private:
+    LibPEPtr<IPEImportTable> _importTable;
 };
 
 class PEImportModuleDumper :
@@ -18,7 +26,7 @@ class PEImportModuleDumper :
 public:
     PEImportModuleDumper() : PEElementDumper("ImportModule") {}
 
-    PEImportModuleDumper & SetImportModule(IPEImportModule *importModule) {
+    PEImportModuleDumper & SetDumpElement(IPEImportModule *importModule) {
         _importModule = importModule;
         return *this;
     }
@@ -36,7 +44,7 @@ class PEImportFunctionDumper :
 public:
     PEImportFunctionDumper() : PEElementDumper("ImportFunction") {}
 
-    PEImportFunctionDumper & SetImportFunction(IPEImportFunction *importFunction) {
+    PEImportFunctionDumper & SetDumpElement(IPEImportFunction *importFunction) {
         _importFunction = importFunction; 
         return *this;
     }

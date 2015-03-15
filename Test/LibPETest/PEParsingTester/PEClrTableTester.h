@@ -2,11 +2,11 @@
 
 #include "PEElementTester.h"
 
-class PEArchitectureDataTableTester :
+class PEClrTableTester :
     public PEElementTester
 {
 public:
-    PEArchitectureDataTableTester() : PEElementTester("ArchitectureDataTable") {}
+    PEClrTableTester() : PEElementTester("ClrTable") {}
 
 protected:
     void DoTest() override;

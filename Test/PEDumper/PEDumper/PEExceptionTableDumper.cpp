@@ -3,24 +3,19 @@
 
 void PEExceptionTableDumper::DoDump()
 {
-    LibPEPtr<IPEExceptionTable> exceptionTable;
-    if (FAILED(GetPEFile()->GetExceptionTable(&exceptionTable))) {
-        return;
-    }
+    DumpBasicInformation(_exceptionTable);
 
-    DumpBasicInformation(exceptionTable);
-
-    UINT32 exceptionHandlerEntryCount = exceptionTable->GetExceptionHandlerCount();
+    UINT32 exceptionHandlerEntryCount = _exceptionTable->GetExceptionHandlerCount();
     GetOutputElement()->SetAttribute("exception-handler-entry-count", exceptionHandlerEntryCount);
 
     for (UINT32 exceptionHandlerEntryIndex = 0; exceptionHandlerEntryIndex < exceptionHandlerEntryCount; ++exceptionHandlerEntryIndex) {
         LibPEPtr<IPEExceptionHandlerEntry> exceptionHandlerEntry;
-        if (FAILED(exceptionTable->GetExceptionHandlerEntryByIndex(exceptionHandlerEntryIndex, &exceptionHandlerEntry))) {
+        if (FAILED(_exceptionTable->GetExceptionHandlerEntryByIndex(exceptionHandlerEntryIndex, &exceptionHandlerEntry))) {
             continue;
         }
 
         PEExceptionHandlerEntryDumper()
-            .SetExceptionHandlerEntry(exceptionHandlerEntry)
+            .SetDumpElement(exceptionHandlerEntry)
             .SetPEFile(GetPEFile())
             .SetParentElement(GetOutputElement())
             .Run();
@@ -37,7 +32,7 @@ void PEExceptionHandlerEntryDumper::DoDump()
     }
 
     PEExceptionHandlerDumper()
-        .SetExceptionHandler(exceptionHandler)
+        .SetDumpElement(exceptionHandler)
         .SetPEFile(GetPEFile())
         .SetParentElement(GetOutputElement())
         .Run();

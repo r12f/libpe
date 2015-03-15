@@ -3,15 +3,10 @@
 
 void PEResourceTableDumper::DoDump()
 {
-    LibPEPtr<IPEResourceTable> resourceTable;
-    if (FAILED(GetPEFile()->GetResourceTable(&resourceTable))) {
-        return;
-    }
-
-    DumpBasicInformation(resourceTable);
+    DumpBasicInformation(_resourceTable);
 
     LibPEPtr<IPEResourceDirectory> resourceDirectory;
-    if (FAILED(resourceTable->GetRootDirectory(&resourceDirectory))) {
+    if (FAILED(_resourceTable->GetRootDirectory(&resourceDirectory))) {
         return;
     }
 

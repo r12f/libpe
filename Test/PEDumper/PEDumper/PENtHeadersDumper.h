@@ -8,8 +8,16 @@ class PENtHeadersDumper :
 public:
     PENtHeadersDumper() : PEElementDumper("NtHeaders") {}
 
+    PENtHeadersDumper & SetDumpElement(IPENtHeaders *ntHeaders) {
+        _ntHeaders = ntHeaders;
+        return *this;
+    }
+
 protected:
     void DoDump() override;
+
+private:
+    LibPEPtr<IPENtHeaders> _ntHeaders;
 };
 
 class PEFileHeaderDumper :
@@ -18,8 +26,16 @@ class PEFileHeaderDumper :
 public:
     PEFileHeaderDumper() : PEElementDumper("FileHeader") {}
 
+    PEFileHeaderDumper & SetDumpElement(IPEFileHeader *fileHeader) {
+        _fileHeader = fileHeader;
+        return *this;
+    }
+
 protected:
     void DoDump() override;
+
+private:
+    LibPEPtr<IPEFileHeader> _fileHeader;
 };
 
 class PEOptionalHeaderDumper :
@@ -28,7 +44,14 @@ class PEOptionalHeaderDumper :
 public:
     PEOptionalHeaderDumper() : PEElementDumper("OptionalHeader") {}
 
+    PEOptionalHeaderDumper & SetDumpElement(IPEOptionalHeader *optionalHeader) {
+        _optionalHeader = optionalHeader;
+        return *this;
+    }
+
 protected:
     void DoDump() override;
-};
 
+private:
+    LibPEPtr<IPEOptionalHeader> _optionalHeader;
+};

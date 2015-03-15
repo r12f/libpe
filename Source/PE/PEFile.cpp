@@ -311,49 +311,49 @@ template <class T>
 HRESULT
 PEFileT<T>::GetExportTable(IPEExportTable **ppExportTable)
 {
-    return ParsePETable(m_pParser, &PEParserT<T>::ParseExportTable, m_pExportTable, ppExportTable);
+    return ParsePETable(&PEParserT<T>::ParseExportTable, TPF_IsExportTableParsed, m_pExportTable, ppExportTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetImportTable(IPEImportTable **ppImportTable)
 {
-    return ParsePETable(m_pParser, &PEParserT<T>::ParseImportTable, m_pImportTable, ppImportTable);
+    return ParsePETable(&PEParserT<T>::ParseImportTable, TPF_IsImportTableParsed, m_pImportTable, ppImportTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetResourceTable(IPEResourceTable **ppResourceTable)
 {
-    return ParsePETable(m_pParser, &PEParserT<T>::ParseResourceTable, m_pResourceTable, ppResourceTable);
+    return ParsePETable(&PEParserT<T>::ParseResourceTable, TPF_IsResourceTableParsed, m_pResourceTable, ppResourceTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetExceptionTable(IPEExceptionTable **ppExceptionTable)
 {
-    return ParsePETable(m_pParser, &PEParserT<T>::ParseExceptionTable, m_pExceptionTable, ppExceptionTable);
+    return ParsePETable(&PEParserT<T>::ParseExceptionTable, TPF_IsExceptionTableParsed, m_pExceptionTable, ppExceptionTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetCertificateTable(IPECertificateTable **ppCertificateTable)
 {
-    return ParsePETable(m_pParser, &PEParserT<T>::ParseCertificateTable, m_pCertificateTable, ppCertificateTable);
+    return ParsePETable(&PEParserT<T>::ParseCertificateTable, TPF_IsCertificateTableParsed, m_pCertificateTable, ppCertificateTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetRelocationTable(IPERelocationTable **ppRelocationTable)
 {
-    return ParsePETable(m_pParser, &PEParserT<T>::ParseRelocationTable, m_pRelocationTable, ppRelocationTable);
+    return ParsePETable(&PEParserT<T>::ParseRelocationTable, TPF_IsRelocationTableParsed, m_pRelocationTable, ppRelocationTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable)
 {
-    return ParsePETable(m_pParser, &PEParserT<T>::ParseDebugInfoTable, m_pDebugInfoTable, ppDebugInfoTable);
+    return ParsePETable(&PEParserT<T>::ParseDebugInfoTable, TPF_IsDebugInfoTableParsed, m_pDebugInfoTable, ppDebugInfoTable);
 }
 
 template <class T>
@@ -374,35 +374,35 @@ template <class T>
 HRESULT 
 PEFileT<T>::GetGlobalPointerTable(IPEGlobalPointerTable **ppGlobalPointerTable)
 {
-    return ParsePETable(m_pParser, &PEParserT<T>::ParseGlobalPointerTable, m_pGlobalPointerTable, ppGlobalPointerTable);
+    return ParsePETable(&PEParserT<T>::ParseGlobalPointerTable, TPF_IsGlobalPointerTableParsed, m_pGlobalPointerTable, ppGlobalPointerTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetTlsTable(IPETlsTable **ppTlsTable)
 {
-    return ParsePETable(m_pParser, &PEParserT<T>::ParseTlsTable, m_pTlsTable, ppTlsTable);
+    return ParsePETable(&PEParserT<T>::ParseTlsTable, TPF_IsTlsTableParsed, m_pTlsTable, ppTlsTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable)
 {
-    return ParsePETable(m_pParser, &PEParserT<T>::ParseLoadConfigTable, m_pLoadConfigTable, ppLoadConfigTable);
+    return ParsePETable(&PEParserT<T>::ParseLoadConfigTable, TPF_IsLoadConfigTableParsed, m_pLoadConfigTable, ppLoadConfigTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable)
 {
-    return ParsePETable(m_pParser, &PEParserT<T>::ParseBoundImportTable, m_pBoundImportTable, ppBoundImportTable);
+    return ParsePETable(&PEParserT<T>::ParseBoundImportTable, TPF_IsBoundImportTableParsed, m_pBoundImportTable, ppBoundImportTable);
 }
 
 template <class T>
 HRESULT
 PEFileT<T>::GetImportAddressTable(IPEImportAddressTable **ppImportAddressTable)
 {
-    return ParsePETable(m_pParser, &PEParserT<T>::ParseImportAddressTable, m_pImportAddressTable, ppImportAddressTable);
+    return ParsePETable(&PEParserT<T>::ParseImportAddressTable, TPF_IsImportAddressTableParsed, m_pImportAddressTable, ppImportAddressTable);
 }
 
 template <class T>
@@ -414,9 +414,9 @@ PEFileT<T>::GetDelayImportTable(IPEDelayImportTable **ppDelayImportTable)
 
 template <class T>
 HRESULT
-PEFileT<T>::GetCLRTable(IPECLRTable **ppCLRTable)
+PEFileT<T>::GetClrTable(IPEClrTable **ppClrTable)
 {
-    return E_NOTIMPL;
+    return ParsePETable(&PEParserT<T>::ParseClrTable, TPF_IsClrTableParsed, m_pClrTable, ppClrTable);
 }
 
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEFileT);

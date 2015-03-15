@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="PEDumper\PEArchitectureDataTableDumper.h" />
     <ClInclude Include="PEDumper\PEBoundImportTableDumper.h" />
+    <ClInclude Include="PEDumper\PEClrTableDumper.h" />
     <ClInclude Include="PEDumper\PEDebugInfoTableDumper.h" />
     <ClInclude Include="PEDumper\PECertificateTableDumper.h" />
     <ClInclude Include="PEDumper\PEDosHeaderDumper.h" />
@@ -188,6 +189,7 @@
   <ItemGroup>
     <ClCompile Include="PEDumper\PEArchitectureDataTableDumper.cpp" />
     <ClCompile Include="PEDumper\PEBoundImportTableDumper.cpp" />
+    <ClCompile Include="PEDumper\PEClrTableDumper.cpp" />
     <ClCompile Include="PEDumper\PEDebugInfoTableDumper.cpp" />
     <ClCompile Include="PEDumper\PECertificateTableDumper.cpp" />
     <ClCompile Include="PEDumper\PEDosHeaderDumper.cpp" />

@@ -8,6 +8,23 @@ template <class T>
 class PEFileT :
     public IPEFile
 {
+    // Table parsed flags
+    enum {
+        TPF_IsExportTableParsed             = (1 << 0),
+        TPF_IsImportTableParsed             = (1 << 1),
+        TPF_IsResourceTableParsed           = (1 << 2),
+        TPF_IsExceptionTableParsed          = (1 << 3),
+        TPF_IsCertificateTableParsed        = (1 << 4),
+        TPF_IsRelocationTableParsed         = (1 << 5),
+        TPF_IsDebugInfoTableParsed          = (1 << 6),
+        TPF_IsGlobalPointerTableParsed      = (1 << 7),
+        TPF_IsTlsTableParsed                = (1 << 8),
+        TPF_IsLoadConfigTableParsed         = (1 << 9),
+        TPF_IsBoundImportTableParsed        = (1 << 10),
+        TPF_IsImportAddressTableParsed      = (1 << 11),
+        TPF_IsClrTableParsed                = (1 << 12),
+    };
+
     typedef std::vector<LibPEPtr<IPESectionHeader>> SectionHeaderList;
 
 public:
@@ -77,7 +94,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable);
     virtual HRESULT LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTable **ppImportAddressTable);
     virtual HRESULT LIBPE_CALLTYPE GetDelayImportTable(IPEDelayImportTable **ppDelayImportTable);
-    virtual HRESULT LIBPE_CALLTYPE GetCLRTable(IPECLRTable **ppCLRTable);
+    virtual HRESULT LIBPE_CALLTYPE GetClrTable(IPEClrTable **ppClrTable);
 
     virtual HRESULT LIBPE_CALLTYPE RemoveExportTable() { return E_NOTIMPL; };
     virtual HRESULT LIBPE_CALLTYPE RemoveImportTable() { return E_NOTIMPL; };
@@ -91,7 +108,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE RemoveBoundImportTable() { return E_NOTIMPL; };
     virtual HRESULT LIBPE_CALLTYPE RemoveImportAddressTable() { return E_NOTIMPL; };
     virtual HRESULT LIBPE_CALLTYPE RemoveDelayImportTable() { return E_NOTIMPL; };
-    virtual HRESULT LIBPE_CALLTYPE RemoveCLRTable() { return E_NOTIMPL; };
+    virtual HRESULT LIBPE_CALLTYPE RemoveClrTable() { return E_NOTIMPL; };
 
     // PE Verification
     virtual BOOL LIBPE_CALLTYPE ValidatePEHeader() { return true; }
@@ -101,26 +118,42 @@ public:
 
 protected:
     template <class ITable, class ParseFunc>
-    static HRESULT ParsePETable(PEParserT<T> *pParser, ParseFunc pParseFunc, LibPEPtr<ITable> &pTable, ITable **ppRetTable)
+    HRESULT ParsePETable(ParseFunc pParseFunc, UINT32 nTableParsedFlag, LibPEPtr<ITable> &pParsedTable, ITable **ppRetTable)
     {
-        if(NULL == pTable) {
-            LIBPE_CHK(NULL != pParser, E_FAIL);
-            if(FAILED((pParser->*pParseFunc)(&pTable)) || NULL == pTable) {
-                return E_FAIL;
+        HRESULT hr = S_OK;
+
+        *ppRetTable = nullptr;
+
+        if ((m_nTableParsedFlags & nTableParsedFlag) == 0) {
+            LIBPE_CHK(NULL != m_pParser, E_FAIL);
+            hr = (m_pParser->*pParseFunc)(&pParsedTable);
+        } else {
+            if(NULL == pParsedTable) {
+                hr = E_NOT_SET;
             }
         }
 
-        return pTable.CopyTo(ppRetTable);
+        if (FAILED(hr)) {
+            return hr;
+        }
+
+        return pParsedTable.CopyTo(ppRetTable);
     }
 
 private:
+    // Parser
     LibPEPtr<PEParserT<T>>                  m_pParser;
+
+    // The following structures will always be parsed, otherwise even the most basic functions cannot work,
+    // such as RVAToFOA.
     LibPEPtr<IPEDosHeader>                  m_pDosHeader;
     LibPEPtr<IPENtHeaders>                  m_pNtHeaders;
     LibPEPtr<IPEFileHeader>                 m_pFileHeader;
     LibPEPtr<IPEOptionalHeader>             m_pOptionalHeader;
     SectionHeaderList                       m_vSectionHeaders;
     LibPEPtr<IPEOverlay>                    m_pOverlay;
+
+    // The following structures will be parsed on demand.
     LibPEPtr<IPEExportTable>                m_pExportTable;
     LibPEPtr<IPEImportTable>                m_pImportTable;
     LibPEPtr<IPEResourceTable>              m_pResourceTable;
@@ -133,6 +166,10 @@ private:
     LibPEPtr<IPELoadConfigTable>            m_pLoadConfigTable;
     LibPEPtr<IPEBoundImportTable>           m_pBoundImportTable;
     LibPEPtr<IPEImportAddressTable>         m_pImportAddressTable;
+    LibPEPtr<IPEClrTable>                   m_pClrTable;
+
+    // Table parsed flags
+    UINT32                                  m_nTableParsedFlags;
 };
 
 typedef PEFileT<PE32> PEFile32;

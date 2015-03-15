@@ -105,8 +105,8 @@ public:
     // Delay import table related functions
     HRESULT ParseDelayImportTable(IPEDelayImportTable **ppDelayImportTable);
 
-    // CLR info table related functions
-    HRESULT ParseCLRTable(IPECLRTable **ppCLRTable);
+    // Clr info table related functions
+    HRESULT ParseClrTable(IPEClrTable **ppClrTable);
 
 protected:
     virtual PEAddress GetRawOffsetFromAddressField(PEAddress nAddress) = 0;

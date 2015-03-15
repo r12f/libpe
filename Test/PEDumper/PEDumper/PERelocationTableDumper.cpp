@@ -3,24 +3,19 @@
 
 void PERelocationTableDumper::DoDump()
 {
-    LibPEPtr<IPERelocationTable> relocationTable;
-    if (FAILED(GetPEFile()->GetRelocationTable(&relocationTable))) {
-        return;
-    }
+    DumpBasicInformation(_relocationTable);
 
-    DumpBasicInformation(relocationTable);
-
-    UINT32 relocationPageCount = relocationTable->GetPageCount();
+    UINT32 relocationPageCount = _relocationTable->GetPageCount();
     GetOutputElement()->SetAttribute("relocation-page-count", relocationPageCount);
 
     for (UINT32 relocationPageIndex = 0; relocationPageIndex < relocationPageCount; ++relocationPageIndex) {
         LibPEPtr<IPERelocationPage> relocationPage;
-        if (FAILED(relocationTable->GetPageByIndex(relocationPageIndex, &relocationPage))) {
+        if (FAILED(_relocationTable->GetPageByIndex(relocationPageIndex, &relocationPage))) {
             continue;
         }
 
         PERelocationPageDumper()
-            .SetRelocationPage(relocationPage)
+            .SetDumpElement(relocationPage)
             .SetPEFile(GetPEFile())
             .SetParentElement(GetOutputElement())
             .Run();
@@ -46,7 +41,7 @@ void PERelocationPageDumper::DoDump()
         }
 
         PERelocationItemDumper()
-            .SetRelocationItem(relocationItem)
+            .SetDumpElement(relocationItem)
             .SetPEFile(GetPEFile())
             .SetParentElement(GetOutputElement())
             .Run();

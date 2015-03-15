@@ -3,38 +3,37 @@
 
 void PENtHeadersDumper::DoDump()
 {
-    LibPEPtr<IPENtHeaders> ntHeaders;
-    if (FAILED(GetPEFile()->GetNtHeaders(&ntHeaders))) {
-        return;
-    }
+    DumpBasicInformation(_ntHeaders);
 
-    DumpBasicInformation(ntHeaders);
-
-    BEGIN_DUMP_PE_ELEMENT(ntHeaders)
+    BEGIN_DUMP_PE_ELEMENT(_ntHeaders)
         DUMP_RAW_FIELD_SIMPLE(Signature)
     END_DUMP_PE_ELEMENT()
 
-    PEFileHeaderDumper()
-        .SetPEFile(GetPEFile())
-        .SetParentElement(GetOutputElement())
-        .Run();
+    LibPEPtr<IPEFileHeader> fileHeader;
+    if (SUCCEEDED(GetPEFile()->GetFileHeader(&fileHeader))) {
+        PEFileHeaderDumper()
+            .SetDumpElement(fileHeader)
+            .SetPEFile(GetPEFile())
+            .SetParentElement(GetOutputElement())
+            .Run();
+    }
 
-    PEOptionalHeaderDumper()
-        .SetPEFile(GetPEFile())
-        .SetParentElement(GetOutputElement())
-        .Run();
+
+    LibPEPtr<IPEOptionalHeader> optionalHeader;
+    if (SUCCEEDED(GetPEFile()->GetOptionalHeader(&optionalHeader))) {
+        PEOptionalHeaderDumper()
+            .SetDumpElement(optionalHeader)
+            .SetPEFile(GetPEFile())
+            .SetParentElement(GetOutputElement())
+            .Run();
+    }
 }
 
 void PEFileHeaderDumper::DoDump()
 {
-    LibPEPtr<IPEFileHeader> fileHeader;
-    if (FAILED(GetPEFile()->GetFileHeader(&fileHeader))) {
-        return;
-    }
+    DumpBasicInformation(_fileHeader);
 
-    DumpBasicInformation(fileHeader);
-
-    BEGIN_DUMP_PE_ELEMENT(fileHeader)
+    BEGIN_DUMP_PE_ELEMENT(_fileHeader)
         DUMP_RAW_FIELD_SIMPLE(Machine)
         DUMP_RAW_FIELD_SIMPLE(NumberOfSections)
         DUMP_RAW_FIELD_SIMPLE(TimeDateStamp)
@@ -47,14 +46,9 @@ void PEFileHeaderDumper::DoDump()
 
 void PEOptionalHeaderDumper::DoDump()
 {
-    LibPEPtr<IPEOptionalHeader> optionalHeader;
-    if (FAILED(GetPEFile()->GetOptionalHeader(&optionalHeader))) {
-        return;
-    }
+    DumpBasicInformation(_optionalHeader);
 
-    DumpBasicInformation(optionalHeader);
-
-    BEGIN_DUMP_PE_ELEMENT(optionalHeader)
+    BEGIN_DUMP_PE_ELEMENT(_optionalHeader)
         DUMP_RAW_FIELD_SIMPLE(Magic)
         DUMP_RAW_FIELD_SIMPLE(MajorLinkerVersion)
         DUMP_RAW_FIELD_SIMPLE(MinorLinkerVersion)

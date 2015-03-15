@@ -8,6 +8,14 @@ class PETlsTableDumper :
 public:
     PETlsTableDumper() : PEElementDumper("TlsTable") {}
 
+    PETlsTableDumper & SetDumpElement(IPETlsTable *tlsTable) {
+        _tlsTable = tlsTable;
+        return *this;
+    }
+
 protected:
     void DoDump() override;
+
+private:
+    LibPEPtr<IPETlsTable> _tlsTable;
 };

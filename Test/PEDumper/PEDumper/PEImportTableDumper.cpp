@@ -3,24 +3,19 @@
 
 void PEImportTableDumper::DoDump()
 {
-    LibPEPtr<IPEImportTable> importTable;
-    if (FAILED(GetPEFile()->GetImportTable(&importTable))) {
-        return;
-    }
+    DumpBasicInformation(_importTable);
 
-    DumpBasicInformation(importTable);
-
-    UINT32 importModuleCount = importTable->GetModuleCount();
+    UINT32 importModuleCount = _importTable->GetModuleCount();
     GetOutputElement()->SetAttribute("import-module-count", importModuleCount);
 
     for (UINT32 importModuleIndex = 0; importModuleIndex < importModuleCount; ++importModuleIndex) {
         LibPEPtr<IPEImportModule> importModule;
-        if (FAILED(importTable->GetModuleByIndex(importModuleIndex, &importModule))) {
+        if (FAILED(_importTable->GetModuleByIndex(importModuleIndex, &importModule))) {
             continue;
         }
 
         PEImportModuleDumper()
-            .SetImportModule(importModule)
+            .SetDumpElement(importModule)
             .SetPEFile(GetPEFile())
             .SetParentElement(GetOutputElement())
             .Run();
@@ -54,7 +49,7 @@ void PEImportModuleDumper::DoDump()
         }
 
         PEImportFunctionDumper()
-            .SetImportFunction(importFunction)
+            .SetDumpElement(importFunction)
             .SetPEFile(GetPEFile())
             .SetParentElement(GetOutputElement())
             .Run();

@@ -3,14 +3,9 @@
 
 void PEDebugInfoTableDumper::DoDump()
 {
-    LibPEPtr<IPEDebugInfoTable> debugInfoTable;
-    if (FAILED(GetPEFile()->GetDebugInfoTable(&debugInfoTable))) {
-        return;
-    }
+    DumpBasicInformation(_debugInfoTable);
 
-    DumpBasicInformation(debugInfoTable);
-
-    BEGIN_DUMP_PE_ELEMENT(debugInfoTable)
+    BEGIN_DUMP_PE_ELEMENT(_debugInfoTable)
         DUMP_RAW_FIELD_SIMPLE(Characteristics)
         DUMP_RAW_FIELD_SIMPLE(TimeDateStamp)
         DUMP_RAW_FIELD_SIMPLE(MajorVersion)

@@ -8,8 +8,16 @@ class PECertificateTableDumper :
 public:
     PECertificateTableDumper() : PEElementDumper("CertificateTable") {}
 
+    PECertificateTableDumper & SetDumpElement(IPECertificateTable *certificateTable) {
+        _certificateTable = certificateTable;
+        return *this;
+    }
+
 protected:
     void DoDump() override;
+
+private:
+    LibPEPtr<IPECertificateTable> _certificateTable;
 };
 
 class PECertificateDumper :
@@ -18,7 +26,7 @@ class PECertificateDumper :
 public:
     PECertificateDumper() : PEElementDumper("Certificate") {}
 
-    PECertificateDumper & SetCertificate(LibPEPtr<IPECertificate> certificate) {
+    PECertificateDumper & SetDumpElement(LibPEPtr<IPECertificate> certificate) {
         _certificate = certificate;
         return *this;
     }

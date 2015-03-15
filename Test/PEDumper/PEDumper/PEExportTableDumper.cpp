@@ -3,14 +3,9 @@
 
 void PEExportTableDumper::DoDump()
 {
-    LibPEPtr<IPEExportTable> exportTable;
-    if (FAILED(GetPEFile()->GetExportTable(&exportTable))) {
-        return;
-    }
+    DumpBasicInformation(_exportTable);
 
-    DumpBasicInformation(exportTable);
-
-    BEGIN_DUMP_PE_ELEMENT(exportTable)
+    BEGIN_DUMP_PE_ELEMENT(_exportTable)
         DUMP_RAW_FIELD_SIMPLE(Characteristics)
         DUMP_RAW_FIELD_SIMPLE(TimeDateStamp)
         DUMP_RAW_FIELD_SIMPLE(MajorVersion)
@@ -24,17 +19,17 @@ void PEExportTableDumper::DoDump()
         DUMP_RAW_FIELD_SIMPLE(AddressOfNameOrdinals)
     END_DUMP_PE_ELEMENT()
 
-    UINT32 exportFunctionCount = exportTable->GetFunctionCount();
+    UINT32 exportFunctionCount = _exportTable->GetFunctionCount();
     GetOutputElement()->SetAttribute("export-function-count", exportFunctionCount);
 
     for (UINT32 exportFunctionIndex = 0; exportFunctionIndex < exportFunctionCount; ++exportFunctionIndex) {
         LibPEPtr<IPEExportFunction> exportFunction;
-        if (FAILED(exportTable->GetFunctionByIndex(exportFunctionIndex, &exportFunction))) {
+        if (FAILED(_exportTable->GetFunctionByIndex(exportFunctionIndex, &exportFunction))) {
             continue;
         }
 
         PEExportFunctionDumper()
-            .SetExportFunction(exportFunction)
+            .SetDumpElement(exportFunction)
             .SetPEFile(GetPEFile())
             .SetParentElement(GetOutputElement())
             .Run();
