@@ -13,3 +13,5 @@
 using namespace LibPE;
 
 #include "tinyxml2.h"
+
+#pragma warning(disable:4127)
