@@ -22,7 +22,8 @@ class PEFileT :
         TPF_IsLoadConfigTableParsed         = (1 << 9),
         TPF_IsBoundImportTableParsed        = (1 << 10),
         TPF_IsImportAddressTableParsed      = (1 << 11),
-        TPF_IsClrTableParsed                = (1 << 12),
+        TPF_IsDelayImportTableParsed        = (1 << 12),
+        TPF_IsClrTableParsed                = (1 << 13),
     };
 
     typedef std::vector<LibPEPtr<IPESectionHeader>> SectionHeaderList;
@@ -166,6 +167,7 @@ private:
     LibPEPtr<IPELoadConfigTable>            m_pLoadConfigTable;
     LibPEPtr<IPEBoundImportTable>           m_pBoundImportTable;
     LibPEPtr<IPEImportAddressTable>         m_pImportAddressTable;
+    LibPEPtr<IPEDelayImportTable>           m_pDelayImportTable;
     LibPEPtr<IPEClrTable>                   m_pClrTable;
 
     // Table parsed flags

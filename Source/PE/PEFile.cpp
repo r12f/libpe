@@ -409,7 +409,7 @@ template <class T>
 HRESULT
 PEFileT<T>::GetDelayImportTable(IPEDelayImportTable **ppDelayImportTable)
 {
-    return E_NOTIMPL;
+    return ParsePETable(&PEParserT<T>::ParseDelayImportTable, TPF_IsDelayImportTableParsed, m_pDelayImportTable, ppDelayImportTable);
 }
 
 template <class T>

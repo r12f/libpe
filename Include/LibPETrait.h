@@ -26,6 +26,7 @@ struct PETraitBase {
     typedef IMAGE_DEBUG_DIRECTORY               RawDebugDirectory;
     typedef IMAGE_BOUND_IMPORT_DESCRIPTOR       RawBoundImportDescriptor;
     typedef IMAGE_BOUND_FORWARDER_REF           RawBoundForwarderRef;
+    typedef IMAGE_DELAYLOAD_DESCRIPTOR          RawDelayLoadDescriptor;
     typedef BYTE                                RawClrDirectory;
 };
 
