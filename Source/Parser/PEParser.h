@@ -6,12 +6,29 @@
 LIBPE_NAMESPACE_BEGIN
 
 template <class T> class PEFileT;
+template <class T> class PEElementT;
 
 template <class T>
 class PEParserT :
     public ILibPEInterface
 {
-public:
+    template <class T>
+    class PEElementParsingScopeT
+    {
+    public:
+        PEElementParsingScopeT(PEElementT<T> *pElement)
+            : m_pElement(pElement)
+        {}
+
+        ~PEElementParsingScopeT()
+        {
+            m_pElement->OnParsingFinished();
+        }
+
+    private:
+        PEElementT<T> *m_pElement;
+    };
+
     typedef std::vector<LibPEPtr<IPESectionHeader>> SectionHeaderList;
 
 public:
@@ -54,8 +71,9 @@ public:
 
     // Import table related functions
     HRESULT ParseImportTable(IPEImportTable **ppImportTable);
+    HRESULT ParseAllImportModules(IPEImportTable *pImportTable);
     HRESULT ParseImportModule(PEAddress nImportDescRVA, PEAddress nImportDescFOA, LibPERawImportDescriptor(T) *pImportDescriptor, IPEImportModule **ppImportModule);
-    HRESULT ParseImportFunctionsInModule(IPEImportModule *pImportModule);
+    HRESULT ParseAllImportFunctions(IPEImportModule *pImportModule);
     HRESULT ParseImportFunction(IPEImportFunction *pFunction);
 
     // Resource table related functions
@@ -118,23 +136,21 @@ protected:
     virtual PEAddress GetFOAFromRawOffset(PEAddress nRawOffset) = 0;
 
     PEAddress GetRawOffset(PEAddress nRVA, PEAddress nFOA);
+
+    void InitPEElement(PEElementT<T> *pElement, PEAddress nRVA, PEAddress nFOA, PEAddress nSize);
+    void InitPEElement(PEElementT<T> *pElement, PEAddress nRVA, PEAddress nMemSize, PEAddress nFOA, PEAddress nFileSize);
+
     HRESULT GetDataDirectoryEntry(INT32 nDataDirectoryEntryIndex, PEAddress &nRVA, PEAddress &nFOA, PEAddress &nSize);
     
     template <class TableClass>
-    HRESULT ParseDataDirectory(INT32 nDataDirectoryEntryIndex, TableClass **ppTable)
+    HRESULT ParseDataDirectory(TableClass *pTable, INT32 nDataDirectoryEntryIndex)
     {
-        LIBPE_CHK(NULL != ppTable, E_POINTER);
         LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
-
-        *ppTable = NULL;
 
         PEAddress nTableRVA = LIBPE_INVALID_ADDRESS, nTableFOA = LIBPE_INVALID_ADDRESS, nTableSize = LIBPE_INVALID_SIZE;
         LIBPE_CHK_HR(GetDataDirectoryEntry(nDataDirectoryEntryIndex, nTableRVA, nTableFOA, nTableSize));
 
-        LibPEPtr<TableClass> pTable = CreatePEElement<TableClass>(nTableRVA, nTableFOA, nTableSize);
-        LIBPE_CHK(NULL != pTable, E_OUTOFMEMORY);
-
-        *ppTable = pTable.Detach();
+        InitPEElement(pTable, nTableRVA, nTableFOA, nTableSize);
 
         return S_OK;
     }
@@ -143,42 +159,17 @@ protected:
     HRESULT ParseDataDirectoryToInterface(INT32 nDataDirectoryEntryIndex, ITable **ppTable)
     {
         LIBPE_CHK(NULL != ppTable, E_POINTER);
+        LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
-        LibPEPtr<TableClass> pTable;
-        LIBPE_CHK_HR(ParseDataDirectory<TableClass>(nDataDirectoryEntryIndex, &pTable));
+        *ppTable = NULL;
+
+        LibPEPtr<TableClass> pTable = new TableClass();
+        PEElementParsingScopeT<T> oTableParsingScope(pTable);
+        LIBPE_CHK_HR(ParseDataDirectory<TableClass>(pTable, nDataDirectoryEntryIndex));
 
         *ppTable = pTable.Detach();
 
         return S_OK;
-    }
-
-    template <class PEElementType>
-    LibPEPtr<PEElementType> CreatePEElementEx(PEAddress nRVA, PEAddress nMemSize, PEAddress nFOA, PEAddress nFileSize)
-    {
-        LibPEPtr<PEElementType> pElement = NULL;
-
-        HRESULT hr = S_OK;
-
-        LIBPE_HR_TRY_BEGIN(hr)
-        {
-            pElement = new PEElementType();
-            pElement->InnerSetBase(m_pFile, this);
-            pElement->InnerSetMemoryInfo(nRVA, LIBPE_INVALID_ADDRESS, nMemSize);
-            pElement->InnerSetFileInfo(nFOA, nFileSize);
-        }
-        LIBPE_HR_TRY_END();
-
-        if (FAILED(hr)) {
-            pElement = NULL;
-        }
-
-        return pElement;
-    }
-
-    template <class PEElementType>
-    LibPEPtr<PEElementType> CreatePEElement(PEAddress nRVA, PEAddress nFOA, PEAddress nSize)
-    {
-        return CreatePEElementEx<PEElementType>(nRVA, nSize, nFOA, nSize);
     }
 
 protected:

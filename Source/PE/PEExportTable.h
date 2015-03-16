@@ -25,7 +25,7 @@ public:
     UINT32 * GetRawNameList() { return m_pNameList; }
     UINT16 * GetRawNameOrdinalList() { return m_pNameOrdinalList; }
 
-    BOOL PrepareForUsing() {
+    bool PrepareForUsing() {
         LibPERawExportDirectory(T) *pExportDirectory = GetRawStruct();
         LIBPE_CHK(NULL != pExportDirectory, false);
         m_vExportFunctions.resize(pExportDirectory->NumberOfFunctions, NULL);

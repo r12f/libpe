@@ -64,7 +64,18 @@ PEElementT<T>::GetFOA()
     return m_nFOA;
 }
 
-LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEElementT);
+template <class T>
+HRESULT 
+PEElementT<T>::EnsureDataReady()
+{
+    if (!m_bIsDelayedDataLoaded) {
+        m_bIsDelayedDataLoaded = true;
+        m_nLoadDelayedDataResult = LoadDelayedData();
+    }
 
+    return m_nLoadDelayedDataResult;
+}
+
+LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEElementT);
 
 LIBPE_NAMESPACE_END

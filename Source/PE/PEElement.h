@@ -19,6 +19,8 @@ public:
         , m_nSizeInMemory(LIBPE_INVALID_SIZE)
         , m_nFOA(LIBPE_INVALID_ADDRESS)
         , m_nSizeInFile(LIBPE_INVALID_SIZE)
+        , m_bIsDelayedDataLoaded(false)
+        , m_nLoadDelayedDataResult(E_NOT_VALID_STATE)
     {}
 
     virtual ~PEElementT() {}
@@ -55,6 +57,11 @@ public:
     virtual PEAddress LIBPE_CALLTYPE GetFOA();
     virtual PEAddress LIBPE_CALLTYPE GetSizeInFile() { return m_nSizeInFile; }
 
+    // Parsing and delay data loading support
+    HRESULT EnsureDataReady();
+    virtual HRESULT OnParsingFinished() { return S_OK; }
+    virtual HRESULT LoadDelayedData() { return S_OK; }
+
 protected:
     LibPEPtr<PEParserT<T>>  m_pParser;
     PEFileT<T>              *m_pFile;
@@ -64,6 +71,8 @@ protected:
     PEAddress               m_nSizeInMemory;
     PEAddress               m_nFOA;
     PEAddress               m_nSizeInFile;
+    bool                    m_bIsDelayedDataLoaded;
+    HRESULT                 m_nLoadDelayedDataResult;
 };
 
 typedef PEElementT<PE32> PEElement32;

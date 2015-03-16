@@ -192,46 +192,53 @@ PEParserT<T>::ParseBasicInfo(IPEDosHeader **ppDosHeader, IPENtHeaders **ppNtHead
 
     // Parse dos header
     LibPEPtr<PEDosHeaderT<T>> pInnerDosHeader = new PEDosHeaderT<T>();
-    LIBPE_CHK(NULL != pInnerDosHeader, E_OUTOFMEMORY);
-    pInnerDosHeader->InnerSetBase(m_pFile, this);
-    pInnerDosHeader->InnerSetMemoryInfo(0, LIBPE_INVALID_ADDRESS, sizeof(LibPERawDosHeaderT(T)));
-    pInnerDosHeader->InnerSetFileInfo(0, sizeof(LibPERawDosHeaderT(T)));
+    {
+        PEElementParsingScopeT<T> oDosHeaderParsingScope(pInnerDosHeader);
+        pInnerDosHeader->InnerSetBase(m_pFile, this);
+        pInnerDosHeader->InnerSetMemoryInfo(0, LIBPE_INVALID_ADDRESS, sizeof(LibPERawDosHeaderT(T)));
+        pInnerDosHeader->InnerSetFileInfo(0, sizeof(LibPERawDosHeaderT(T)));
+    }
 
     LibPERawDosHeaderT(T) *pRawDosHeader = pInnerDosHeader->GetRawStruct();
-    LIBPE_CHK(NULL != pRawDosHeader, E_OUTOFMEMORY);
-    LIBPE_CHK(IMAGE_DOS_SIGNATURE == pRawDosHeader->e_magic, E_FAIL);
+    LIBPE_CHK(NULL != pRawDosHeader, E_BOUNDS);
+    LIBPE_CHK(IMAGE_DOS_SIGNATURE == pRawDosHeader->e_magic, E_INVALID_PROTOCOL_FORMAT);
 
     // Parse nt headers
     LibPEPtr<PENtHeadersT<T>> pInnerNtHeaders = new PENtHeadersT<T>();
-    LIBPE_CHK(NULL != pInnerNtHeaders, E_OUTOFMEMORY);
-    pInnerNtHeaders->InnerSetBase(m_pFile, this);
-    pInnerNtHeaders->InnerSetMemoryInfo(pRawDosHeader->e_lfanew, LIBPE_INVALID_ADDRESS, sizeof(LibPERawNtHeadersT(T)));
-    pInnerNtHeaders->InnerSetFileInfo(pRawDosHeader->e_lfanew, sizeof(LibPERawNtHeadersT(T)));
+    {
+        PEElementParsingScopeT<T> oNtHeadersParsingScope(pInnerNtHeaders);
+        pInnerNtHeaders->InnerSetBase(m_pFile, this);
+        pInnerNtHeaders->InnerSetMemoryInfo(pRawDosHeader->e_lfanew, LIBPE_INVALID_ADDRESS, sizeof(LibPERawNtHeadersT(T)));
+        pInnerNtHeaders->InnerSetFileInfo(pRawDosHeader->e_lfanew, sizeof(LibPERawNtHeadersT(T)));
+    }
 
     LibPERawNtHeadersT(T) *pRawNtHeaders = pInnerNtHeaders->GetRawStruct();
-    LIBPE_CHK(NULL != pRawNtHeaders, E_OUTOFMEMORY);
-    LIBPE_CHK(IMAGE_NT_SIGNATURE == pRawNtHeaders->Signature, E_FAIL);
+    LIBPE_CHK(IMAGE_NT_SIGNATURE == pRawNtHeaders->Signature, E_UNEXPECTED);
 
     if(PETrait<T>::PointerSize == 4) {
         if(pRawNtHeaders->FileHeader.SizeOfOptionalHeader != sizeof(PERawOptionalHeader32)) {
-            return E_FAIL;
+            return E_UNEXPECTED;
         }
     }
 
     // Parse file header
     LibPEPtr<PEFileHeaderT<T>> pInnerFileHeader = new PEFileHeaderT<T>();
-    LIBPE_CHK(NULL != pInnerFileHeader, E_OUTOFMEMORY);
-    pInnerFileHeader->InnerSetBase(m_pFile, this);
-    pInnerFileHeader->InnerSetMemoryInfo(pRawDosHeader->e_lfanew + sizeof(UINT32), LIBPE_INVALID_ADDRESS, sizeof(LibPERawFileHeaderT(T)));
-    pInnerFileHeader->InnerSetFileInfo(pRawDosHeader->e_lfanew + sizeof(UINT32), sizeof(LibPERawFileHeaderT(T)));
-    pInnerNtHeaders->InnerSetFileHeader(pInnerFileHeader.p);
+    {
+        PEElementParsingScopeT<T> oFileHeaderParsingScope(pInnerFileHeader);
+        pInnerFileHeader->InnerSetBase(m_pFile, this);
+        pInnerFileHeader->InnerSetMemoryInfo(pRawDosHeader->e_lfanew + sizeof(UINT32), LIBPE_INVALID_ADDRESS, sizeof(LibPERawFileHeaderT(T)));
+        pInnerFileHeader->InnerSetFileInfo(pRawDosHeader->e_lfanew + sizeof(UINT32), sizeof(LibPERawFileHeaderT(T)));
+        pInnerNtHeaders->InnerSetFileHeader(pInnerFileHeader.p);
+    }
 
     LibPEPtr<PEOptionalHeaderT<T>> pInnerOptionalHeader = new PEOptionalHeaderT<T>();
-    LIBPE_CHK(NULL != pInnerOptionalHeader, E_OUTOFMEMORY);
-    pInnerOptionalHeader->InnerSetBase(m_pFile, this);
-    pInnerOptionalHeader->InnerSetMemoryInfo(pRawDosHeader->e_lfanew + sizeof(UINT32) + sizeof(LibPERawFileHeaderT(T)), LIBPE_INVALID_ADDRESS, sizeof(LibPERawOptionalHeaderT(T)));
-    pInnerOptionalHeader->InnerSetFileInfo(pRawDosHeader->e_lfanew + sizeof(UINT32) + sizeof(LibPERawFileHeaderT(T)), sizeof(LibPERawOptionalHeaderT(T)));
-    pInnerNtHeaders->InnerSetOptionalHeader(pInnerOptionalHeader.p);
+    {
+        PEElementParsingScopeT<T> oOptionalHeaderParsingScope(pInnerOptionalHeader);
+        pInnerOptionalHeader->InnerSetBase(m_pFile, this);
+        pInnerOptionalHeader->InnerSetMemoryInfo(pRawDosHeader->e_lfanew + sizeof(UINT32) + sizeof(LibPERawFileHeaderT(T)), LIBPE_INVALID_ADDRESS, sizeof(LibPERawOptionalHeaderT(T)));
+        pInnerOptionalHeader->InnerSetFileInfo(pRawDosHeader->e_lfanew + sizeof(UINT32) + sizeof(LibPERawFileHeaderT(T)), sizeof(LibPERawOptionalHeaderT(T)));
+        pInnerNtHeaders->InnerSetOptionalHeader(pInnerOptionalHeader.p);
+    }
 
     *ppDosHeader = pInnerDosHeader.Detach();
     *ppNtHeaders = pInnerNtHeaders.Detach();
@@ -239,18 +246,16 @@ PEParserT<T>::ParseBasicInfo(IPEDosHeader **ppDosHeader, IPENtHeaders **ppNtHead
     // Parse section headers
     UINT32 nStartSectionHeaderOffset = pRawDosHeader->e_lfanew + sizeof(DWORD) + sizeof(LibPERawFileHeaderT(T)) + pRawNtHeaders->FileHeader.SizeOfOptionalHeader;
     UINT32 nSectionHeaderOffset = nStartSectionHeaderOffset;
-    LibPEPtr<PESectionHeaderT<T>> pSectionHeader;
     for(UINT16 nSectionId = 0; nSectionId < pRawNtHeaders->FileHeader.NumberOfSections; ++nSectionId) {
         nSectionHeaderOffset = nStartSectionHeaderOffset + nSectionId * sizeof(LibPERawSectionHeaderT(T));
 
-        pSectionHeader = new PESectionHeaderT<T>();
-        if(NULL == pSectionHeader) {
-            return E_OUTOFMEMORY;
+        LibPEPtr<PESectionHeaderT<T>> pSectionHeader = new PESectionHeaderT<T>();
+        {
+            PEElementParsingScopeT<T> oSectionHeaderParsingScope(pSectionHeader);
+            pSectionHeader->InnerSetBase(m_pFile, this);
+            pSectionHeader->InnerSetMemoryInfo(nSectionHeaderOffset, LIBPE_INVALID_ADDRESS, sizeof(LibPERawOptionalHeaderT(T)));
+            pSectionHeader->InnerSetFileInfo(nSectionHeaderOffset, sizeof(LibPERawOptionalHeaderT(T)));
         }
-
-        pSectionHeader->InnerSetBase(m_pFile, this);
-        pSectionHeader->InnerSetMemoryInfo(nSectionHeaderOffset, LIBPE_INVALID_ADDRESS, sizeof(LibPERawOptionalHeaderT(T)));
-        pSectionHeader->InnerSetFileInfo(nSectionHeaderOffset, sizeof(LibPERawOptionalHeaderT(T)));
 
         pSectionHeaders->push_back(pSectionHeader.p);
     }
@@ -258,9 +263,9 @@ PEParserT<T>::ParseBasicInfo(IPEDosHeader **ppDosHeader, IPENtHeaders **ppNtHead
     // Parse extra data
     PEAddress nOverlayBeginFOA = nStartSectionHeaderOffset;
     PEAddress nOverlayBeginRVA = nStartSectionHeaderOffset;
-    if(NULL != pSectionHeader) {
+    if (pSectionHeaders->size() > 0) {
         LibPEPtr<IPESection> pSection;
-        if(FAILED(pSectionHeader->GetSection(&pSection)) || NULL == pSection) {
+        if(FAILED(pSectionHeaders->back()->GetSection(&pSection)) || NULL == pSection) {
             return E_FAIL;
         }
 
@@ -273,10 +278,8 @@ PEParserT<T>::ParseBasicInfo(IPEDosHeader **ppDosHeader, IPENtHeaders **ppNtHead
         PEAddress nOverlaySize = nFileSize - nOverlayBeginFOA;
 
         LibPEPtr<PEOverlayT<T>> pOverlay = new PEOverlayT<T>();
-        if(NULL == pOverlay) {
-            return E_OUTOFMEMORY;
-        }
         
+        PEElementParsingScopeT<T> oOverlayParsingScope(pOverlay);
         pOverlay->InnerSetBase(m_pFile, this);
         pOverlay->InnerSetMemoryInfo(nOverlayBeginRVA, LIBPE_INVALID_ADDRESS, nOverlaySize);
         pOverlay->InnerSetFileInfo(nOverlayBeginFOA, nOverlaySize);
@@ -295,20 +298,20 @@ PEParserT<T>::ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESection
     LIBPE_CHK(NULL != ppSection, E_POINTER);
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
-    LibPEPtr<PESectionT<T>> pRawSection = CreatePEElementEx<PESectionT<T>>(
+    LibPEPtr<PESectionT<T>> pInnerSection = new PESectionT<T>();
+    PEElementParsingScopeT<T> oSectionParsingScope(pInnerSection);
+
+    InitPEElement(
+        pInnerSection, 
         pSectionHeader->VirtualAddress,
         pSectionHeader->SizeOfRawData,
         pSectionHeader->PointerToRawData,
         pSectionHeader->SizeOfRawData
         );
 
-    if(NULL == pRawSection) {
-        return E_OUTOFMEMORY;
-    }
+    pInnerSection->InnerSetSectionHeader(pSectionHeader);
 
-    pRawSection->InnerSetSectionHeader(pSectionHeader);
-
-    *ppSection = pRawSection.Detach();
+    *ppSection = pInnerSection.Detach();
 
     return S_OK;
 }
@@ -322,13 +325,12 @@ PEParserT<T>::ParseExportTable(IPEExportTable **ppExportTable)
 
     *ppExportTable = NULL;
 
-    LibPEPtr<PEExportTableT<T>> pExportTable;
-    LIBPE_CHK_HR(ParseDataDirectory(IMAGE_DIRECTORY_ENTRY_EXPORT, &pExportTable));
+    LibPEPtr<PEExportTableT<T>> pExportTable = new PEExportTableT<T>();
+    PEElementParsingScopeT<T> oExportTableParsingScope(pExportTable);
+    LIBPE_CHK_HR(ParseDataDirectory(pExportTable.p, IMAGE_DIRECTORY_ENTRY_EXPORT));
 
     LibPERawExportDirectory(T) *pExportDirectory = pExportTable->GetRawStruct();
-    if(NULL == pExportDirectory) {
-        return E_OUTOFMEMORY;
-    }
+    LIBPE_CHK(NULL != pExportDirectory, E_BOUNDS);
 
     PEAddress nFunctionListOffset = GetRawOffsetFromAddressField(pExportDirectory->AddressOfFunctions);
     PEAddress nNameListOffset = GetRawOffsetFromAddressField(pExportDirectory->AddressOfNames);
@@ -338,15 +340,13 @@ PEParserT<T>::ParseExportTable(IPEExportTable **ppExportTable)
     UINT32 *pNameList = (UINT32 *)m_pLoader->GetBuffer(nNameListOffset, pExportDirectory->NumberOfNames * sizeof(PEAddress));
     UINT16 *pNameOrdinalList = (UINT16 *)m_pLoader->GetBuffer(nNameOrdinalListOffset, pExportDirectory->NumberOfFunctions * sizeof(UINT16));
 
-    LIBPE_CHK(NULL != pFunctionList && NULL != pNameList && NULL != pNameOrdinalList, E_OUTOFMEMORY);
+    LIBPE_CHK(NULL != pFunctionList && NULL != pNameList && NULL != pNameOrdinalList, E_BOUNDS);
 
     pExportTable->InnerSetFunctionList(pFunctionList);
     pExportTable->InnerSetNameList(pNameList);
     pExportTable->InnerSetNameOrdinalList(pNameOrdinalList);
     
-    if(!pExportTable->PrepareForUsing()) {
-        return E_FAIL;
-    }
+    LIBPE_CHK_HR(pExportTable->PrepareForUsing());
 
     *ppExportTable = pExportTable.Detach();
 
@@ -366,27 +366,26 @@ PEParserT<T>::ParseExportFunction(IPEExportTable *pExportTable, UINT32 nIndex, I
     UINT32 *pNameList = pRawExportTable->GetRawNameList();
     UINT16 *pNameOrdinalList = pRawExportTable->GetRawNameOrdinalList();
 
-    LIBPE_CHK(NULL != pFunctionList && NULL != pNameList && NULL != pNameOrdinalList, E_FAIL);
+    LIBPE_CHK(NULL != pFunctionList && NULL != pNameList && NULL != pNameOrdinalList, E_BOUNDS);
 
     PEAddress nFunctionRVA = pFunctionList[nIndex];
     PEAddress nNameRVA = (nIndex < pRawExportTable->GetFunctionCount()) ? pNameList[nIndex] : LIBPE_INVALID_ADDRESS;
     UINT16 nNameOrdinal = pNameOrdinalList[nIndex];
 
-    LibPEPtr<PEExportFunctionT<T>> pFunction = CreatePEElementEx<PEExportFunctionT<T>>(nFunctionRVA, 0, 0, 0);
-    if(NULL == pFunction) {
-        return E_OUTOFMEMORY;
-    }
+    LibPEPtr<PEExportFunctionT<T>> pExportFunction = new PEExportFunctionT<T>();
+    PEElementParsingScopeT<T> oExportFunctionParsingScope(pExportFunction);
+    InitPEElement(pExportFunction, nFunctionRVA, 0, 0, 0);
 
-    pFunction->InnerSetOrdinal(nNameOrdinal);
+    pExportFunction->InnerSetOrdinal(nNameOrdinal);
 
     if(nNameRVA != LIBPE_INVALID_ADDRESS) {
         PEAddress nNameFOA = GetFOAFromRVA(nNameRVA);
         UINT64 nNameBufferSize = 0;
         const char *pName = m_pLoader->GetAnsiString(nNameFOA, nNameBufferSize);
-        pFunction->InnerSetName(pName);
+        pExportFunction->InnerSetName(pName);
     }
 
-    *ppFunction = pFunction.Detach();
+    *ppFunction = pExportFunction.Detach();
 
     return S_OK;
 }
@@ -395,28 +394,28 @@ template <class T>
 HRESULT
 PEParserT<T>::ParseImportTable(IPEImportTable **ppImportTable)
 {
-    LIBPE_CHK(NULL != ppImportTable, E_POINTER);
-    LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
+    return ParseDataDirectoryToInterface<IPEImportTable, PEImportTableT<T>>(IMAGE_DIRECTORY_ENTRY_IMPORT, ppImportTable);
+}
 
-    *ppImportTable = NULL;
+template <class T>
+HRESULT
+PEParserT<T>::ParseAllImportModules(IPEImportTable *pImportTable)
+{
+    PEImportTableT<T> *pRawImportTable = static_cast<PEImportTableT<T> *>(pImportTable);
+    LibPERawImportDescriptor(T) *pImportDesc = pRawImportTable->GetRawStruct();
+    LIBPE_CHK(pImportDesc != NULL, E_BOUNDS);
 
-    LibPEPtr<PEImportTableT<T>> pImportTable;
-    LIBPE_CHK_HR(ParseDataDirectory(IMAGE_DIRECTORY_ENTRY_IMPORT, &pImportTable));
-
-    LibPERawImportDescriptor(T) *pImportDesc = pImportTable->GetRawStruct();
-    if(NULL == pImportDesc) {
-        return E_OUTOFMEMORY;
-    }
-
-    PEAddress nImportDescRVA = pImportTable->GetRVA(), nImportDescFOA = pImportTable->GetFOA();
+    PEAddress nImportDescRVA = pRawImportTable->GetRVA(), nImportDescFOA = pRawImportTable->GetFOA();
     while(0 != pImportDesc->Characteristics && 0 != pImportDesc->Name) {
-        pImportTable->InnerAddImportDescriptor(nImportDescRVA, nImportDescFOA, pImportDesc);
+        LibPEPtr<IPEImportModule> pImportModule;
+        if (SUCCEEDED(ParseImportModule(nImportDescRVA, nImportDescFOA, pImportDesc, &pImportModule))) {
+            pRawImportTable->InnerAddImportModule(pImportModule);
+        }
+
         ++pImportDesc;
         nImportDescRVA += sizeof(LibPERawImportDescriptor(T));
         nImportDescFOA += sizeof(LibPERawImportDescriptor(T));
     }
-
-    *ppImportTable = pImportTable.Detach();
 
     return S_OK;
 }
@@ -439,7 +438,7 @@ PEParserT<T>::ParseImportModule(PEAddress nImportDescRVA, PEAddress nImportDescF
     const char *pImportName = m_pLoader->GetAnsiString(nImportNameFOA, nNameBufferSize);
 
     LibPEPtr<PEImportModuleT<T>> pImportModule = new PEImportModuleT<T>();
-    LIBPE_CHK(NULL != pImportModule, E_OUTOFMEMORY);
+    PEElementParsingScopeT<T> oImportModuleParsingScope(pImportModule);
 
     pImportModule->InnerSetBase(m_pFile, this);
     pImportModule->InnerSetMemoryInfo(nImportDescRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawImportByName(T)));
@@ -453,14 +452,14 @@ PEParserT<T>::ParseImportModule(PEAddress nImportDescRVA, PEAddress nImportDescF
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseImportFunctionsInModule(IPEImportModule *pImportModule)
+PEParserT<T>::ParseAllImportFunctions(IPEImportModule *pImportModule)
 {
     LIBPE_CHK(NULL != pImportModule, E_UNEXPECTED);
 
     PEImportModuleT<T> *pInnerImportModule = (PEImportModuleT<T> *)pImportModule;
 
     LibPERawImportDescriptor(T) *pImportDescriptor = pInnerImportModule->GetRawStruct();
-    LIBPE_CHK(NULL != pImportDescriptor, E_FAIL);
+    LIBPE_CHK(NULL != pImportDescriptor, E_BOUNDS);
 
     // By default, we use the first bridge to IMAGE_IMPORT_BY_NAME. But in some cases, the first bridge is NULL.
     // Compilers use the second bridge only. So we should fix the thunk entry at that time.
@@ -475,20 +474,20 @@ PEParserT<T>::ParseImportFunctionsInModule(IPEImportModule *pImportModule)
 
     for(;;) {
         LibPERawThunkData(T) *pThunkData = (LibPERawThunkData(T) *)m_pLoader->GetBuffer(nThunkDataFOA, sizeof(LibPERawThunkData(T)));
-        if(NULL == pThunkData || 0 == pThunkData->u1.AddressOfData) {
+        LIBPE_CHK(NULL != pThunkData, E_BOUNDS);
+
+        if (0 == pThunkData->u1.AddressOfData) {
             break;
         }
 
-        LibPEPtr<PEImportFunctionT<T>> pFunction = new PEImportFunctionT<T>();
-        if(NULL == pFunction) {
-            return E_OUTOFMEMORY;
-        }
+        LibPEPtr<PEImportFunctionT<T>> pImportFunction = new PEImportFunctionT<T>();
+        PEElementParsingScopeT<T> oImportFunctionParsingScope(pImportFunction);
 
-        pFunction->InnerSetBase(m_pFile, this);
-        pFunction->InnerSetMemoryInfo(nThunkDataRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawThunkData(T)));
-        pFunction->InnerSetFileInfo(nThunkDataFOA, sizeof(LibPERawThunkData(T)));
+        pImportFunction->InnerSetBase(m_pFile, this);
+        pImportFunction->InnerSetMemoryInfo(nThunkDataRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawThunkData(T)));
+        pImportFunction->InnerSetFileInfo(nThunkDataFOA, sizeof(LibPERawThunkData(T)));
 
-        pInnerImportModule->InnerAddImportFunction(pFunction);
+        pInnerImportModule->InnerAddImportFunction(pImportFunction);
 
         nThunkDataRVA += sizeof(LibPERawThunkData(T));
         nThunkDataFOA += sizeof(LibPERawThunkData(T));
@@ -506,7 +505,7 @@ PEParserT<T>::ParseImportFunction(IPEImportFunction *pFunction)
     PEImportFunctionT<T> *pInnerFunction = (PEImportFunctionT<T> *)pFunction;
 
     LibPERawThunkData(T) *pThunkData = (LibPERawThunkData(T) *)pFunction->GetRawMemory();
-    LIBPE_CHK(NULL != pThunkData, E_FAIL);
+    LIBPE_CHK(NULL != pThunkData, E_BOUNDS);
 
     // No IMAGE_IMPORT_BY_NAME structure if the function is imported by ordinal
     if (0 != (pThunkData->u1.Ordinal & PETrait<T>::ImageOrdinalFlag)) {
@@ -526,12 +525,12 @@ PEParserT<T>::ParseImportFunction(IPEImportFunction *pFunction)
 
     LibPERawImportByName(T) *pImportByName = (LibPERawImportByName(T) *)m_pLoader->GetBuffer(nRawImportByNameFOA, sizeof(LibPERawImportByName(T)));
     if (NULL == pImportByName) {
-        return E_OUTOFMEMORY;
+        return E_BOUNDS;
     }
     
     UINT64 nNameBufferSize = 0; 
     if(NULL == m_pLoader->GetAnsiString(nRawImportByNameFOA + sizeof(UINT16), nNameBufferSize)) {
-        return E_OUTOFMEMORY;
+        return E_BOUNDS;
     }
 
     PEAddress nRawImportByNameSize = (PEAddress)(sizeof(UINT16) + nNameBufferSize);
@@ -550,8 +549,9 @@ PEParserT<T>::ParseResourceTable(IPEResourceTable **ppResourceTable)
 
     *ppResourceTable = NULL;
 
-    LibPEPtr<PEResourceTableT<T>> pResourceTable;
-    LIBPE_CHK_HR(ParseDataDirectory(IMAGE_DIRECTORY_ENTRY_RESOURCE, &pResourceTable));
+    LibPEPtr<PEResourceTableT<T>> pResourceTable = new PEResourceTableT<T>();
+    PEElementParsingScopeT<T> oResourceTableParsingScope(pResourceTable);
+    LIBPE_CHK_HR(ParseDataDirectory(pResourceTable.p, IMAGE_DIRECTORY_ENTRY_RESOURCE));
 
     LibPEPtr<IPEResourceDirectory> pRootDirectory;
     if(FAILED(ParseResourceDirectory(pResourceTable->GetRVA(), pResourceTable->GetFOA(), &pRootDirectory)) || NULL == pRootDirectory) {
@@ -575,23 +575,19 @@ PEParserT<T>::ParseResourceDirectory(PEAddress nRVA, PEAddress nFOA, IPEResource
 
     *ppDirectory = NULL;
 
-    LibPEPtr<PEResourceDirectoryT<T>> pInnerDirectory = new PEResourceDirectoryT<T>();
-    if(NULL == pInnerDirectory) {
-        return E_OUTOFMEMORY;
-    }
+    LibPEPtr<PEResourceDirectoryT<T>> pResourceDirectory = new PEResourceDirectoryT<T>();
+    PEElementParsingScopeT<T> oResourceDirectoryParsingScope(pResourceDirectory);
 
-    pInnerDirectory->InnerSetBase(m_pFile, this);
-    pInnerDirectory->InnerSetMemoryInfo(nRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawResourceDirectory(T)));
-    pInnerDirectory->InnerSetFileInfo(nFOA, sizeof(LibPERawResourceDirectory(T)));
+    pResourceDirectory->InnerSetBase(m_pFile, this);
+    pResourceDirectory->InnerSetMemoryInfo(nRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawResourceDirectory(T)));
+    pResourceDirectory->InnerSetFileInfo(nFOA, sizeof(LibPERawResourceDirectory(T)));
 
-    LibPERawResourceDirectory(T) *pRawDirectory = pInnerDirectory->GetRawStruct();
-    if(NULL == pRawDirectory) {
-        return E_OUTOFMEMORY;
-    }
+    LibPERawResourceDirectory(T) *pRawDirectory = pResourceDirectory->GetRawStruct();
+    LIBPE_CHK(NULL != pRawDirectory, E_BOUNDS);
 
-    pInnerDirectory->InnerReserveEntry(pRawDirectory->NumberOfNamedEntries + pRawDirectory->NumberOfIdEntries);
+    pResourceDirectory->InnerReserveEntry(pRawDirectory->NumberOfNamedEntries + pRawDirectory->NumberOfIdEntries);
 
-    *ppDirectory = pInnerDirectory.Detach();
+    *ppDirectory = pResourceDirectory.Detach();
 
     return S_OK;
 }
@@ -612,16 +608,14 @@ PEParserT<T>::ParseResourceDirectoryEntry(IPEResourceDirectory *pDirectory, UINT
     PEAddress nEntryRVA = nFirstEntryRVA + nEntryIndex * sizeof(LibPERawResourceDirectoryEntry(T));
     PEAddress nEntryFOA = nFirstEntryFOA + nEntryIndex * sizeof(LibPERawResourceDirectoryEntry(T));
 
-    LibPEPtr<PEResourceDirectoryEntryT<T>> pInnerEntry = new PEResourceDirectoryEntryT<T>();
-    if(NULL == pInnerEntry) {
-        return E_OUTOFMEMORY;
-    }
+    LibPEPtr<PEResourceDirectoryEntryT<T>> pResourceDirectoryEntry = new PEResourceDirectoryEntryT<T>();
+    PEElementParsingScopeT<T> oResourceDirectoryEntryParsingScope(pResourceDirectoryEntry);
 
-    pInnerEntry->InnerSetBase(m_pFile, this);
-    pInnerEntry->InnerSetMemoryInfo(nEntryRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawResourceDirectoryEntry(T)));
-    pInnerEntry->InnerSetFileInfo(nEntryFOA, sizeof(LibPERawResourceDirectoryEntry(T)));
+    pResourceDirectoryEntry->InnerSetBase(m_pFile, this);
+    pResourceDirectoryEntry->InnerSetMemoryInfo(nEntryRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawResourceDirectoryEntry(T)));
+    pResourceDirectoryEntry->InnerSetFileInfo(nEntryFOA, sizeof(LibPERawResourceDirectoryEntry(T)));
 
-    *ppEntry = pInnerEntry.Detach();
+    *ppEntry = pResourceDirectoryEntry.Detach();
 
     return S_OK;
 }
@@ -637,9 +631,7 @@ PEParserT<T>::ParseResourceDataEntry(PEAddress nRVA, PEAddress nFOA, IPEResource
     *ppDataEntry = NULL;
 
     LibPEPtr<PEResourceDataEntryT<T>> pInnerDataEntry = new PEResourceDataEntryT<T>();
-    if(NULL == pInnerDataEntry) {
-        return E_OUTOFMEMORY;
-    }
+    PEElementParsingScopeT<T> oDataEntryParsingScope(pInnerDataEntry);
 
     pInnerDataEntry->InnerSetBase(m_pFile, this);
     pInnerDataEntry->InnerSetMemoryInfo(nRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawResourceDataEntry(T)));
@@ -661,12 +653,10 @@ PEParserT<T>::ParseResource(IPEResourceDataEntry *pDataEntry, IPEResource **ppRe
     *ppResource = NULL;
 
     LibPERawResourceDataEntry(T) *pRawDataEntry = (LibPERawResourceDataEntry(T) *)pDataEntry->GetRawMemory();
-    LIBPE_CHK(NULL != pRawDataEntry, E_FAIL);
+    LIBPE_CHK(NULL != pRawDataEntry, E_BOUNDS);
 
     LibPEPtr<PEResourceT<T>> pInnerResource = new PEResourceT<T>();
-    if(NULL == pInnerResource) {
-        return E_OUTOFMEMORY;
-    }
+    PEElementParsingScopeT<T> oResourceParsingScope(pInnerResource);
 
     pInnerResource->InnerSetBase(m_pFile, this);
     pInnerResource->InnerSetMemoryInfo(pRawDataEntry->OffsetToData, LIBPE_INVALID_ADDRESS, pRawDataEntry->Size);
@@ -728,8 +718,10 @@ PEParserT<T>::ParseExceptionTable(IPEExceptionTable **ppExceptionTable)
 
     *ppExceptionTable = NULL;
 
-    LibPEPtr<PEExceptionTableT<T>> pExceptionTable;
-    LIBPE_CHK_HR(ParseDataDirectory(IMAGE_DIRECTORY_ENTRY_EXCEPTION, &pExceptionTable));
+    LibPEPtr<PEExceptionTableT<T>> pExceptionTable = new PEExceptionTableT<T>();
+    PEElementParsingScopeT<T> oExceptionTableParsingScope(pExceptionTable);
+
+    LIBPE_CHK_HR(ParseDataDirectory(pExceptionTable.p, IMAGE_DIRECTORY_ENTRY_EXCEPTION));
 
     pExceptionTable->InnerSetExceptionHandlerCount((UINT32)(pExceptionTable->GetSizeInFile() / sizeof(LibPERawRuntimeFunctionEntry(T))));
 
@@ -750,19 +742,14 @@ PEParserT<T>::ParseExceptionHandlerEntry(IPEExceptionTable *pExceptionTable, UIN
     PEAddress nExceptionHandlerEntryRVA = pExceptionTable->GetRVA() + sizeof(LibPERawRuntimeFunctionEntry(T)) * nHandlerIndex;
     PEAddress nExceptionHandlerEntryFOA = pExceptionTable->GetFOA() + sizeof(LibPERawRuntimeFunctionEntry(T)) * nHandlerIndex;
 
-    HRESULT hr = S_OK;
+    LibPEPtr<PEExceptionHandlerEntryT<T>> pExceptionHandlerEntry = new PEExceptionHandlerEntryT<T>();
+    PEElementParsingScopeT<T> oExceptionHandlerEntryParsingScope(pExceptionHandlerEntry);
 
-    LIBPE_HR_TRY_BEGIN(hr)
-    {
-        LibPEPtr<PEExceptionHandlerEntryT<T>> pExceptionHandlerEntry = new PEExceptionHandlerEntryT<T>();
+    pExceptionHandlerEntry->InnerSetBase(m_pFile, this);
+    pExceptionHandlerEntry->InnerSetMemoryInfo(nExceptionHandlerEntryRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawRuntimeFunctionEntry(T)));
+    pExceptionHandlerEntry->InnerSetFileInfo(nExceptionHandlerEntryFOA, sizeof(LibPERawRuntimeFunctionEntry(T)));
 
-        pExceptionHandlerEntry->InnerSetBase(m_pFile, this);
-        pExceptionHandlerEntry->InnerSetMemoryInfo(nExceptionHandlerEntryRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawRuntimeFunctionEntry(T)));
-        pExceptionHandlerEntry->InnerSetFileInfo(nExceptionHandlerEntryFOA, sizeof(LibPERawRuntimeFunctionEntry(T)));
-
-        *ppExceptionHandlerEntry = pExceptionHandlerEntry.Detach();
-    }
-    LIBPE_HR_TRY_END();
+    *ppExceptionHandlerEntry = pExceptionHandlerEntry.Detach();
 
     return S_OK;
 }
@@ -774,24 +761,20 @@ PEParserT<T>::ParseExceptionHandler(IPEExceptionHandlerEntry *pExceptionHandlerE
     LIBPE_CHK(NULL != pExceptionHandlerEntry, E_UNEXPECTED);
     LIBPE_CHK(NULL != ppExceptionHandler, E_POINTER);
 
-    HRESULT hr = S_OK;
-    LIBPE_HR_TRY_BEGIN(hr)
-    {
-        PEExceptionHandlerEntryT<T> *pInnerExceptionHandlerEntry = (PEExceptionHandlerEntryT<T> *)pExceptionHandlerEntry;
+    PEExceptionHandlerEntryT<T> *pInnerExceptionHandlerEntry = (PEExceptionHandlerEntryT<T> *)pExceptionHandlerEntry;
 
-        LibPERawRuntimeFunctionEntry(T) *pRawRuntimeFunctionEntry = pInnerExceptionHandlerEntry->GetRawStruct();
-        PEAddress nExceptionHandlerRVA = pRawRuntimeFunctionEntry->BeginAddress;
-        PEAddress nExceptionHandlerSize = pRawRuntimeFunctionEntry->EndAddress - pRawRuntimeFunctionEntry->BeginAddress;
+    LibPERawRuntimeFunctionEntry(T) *pRawRuntimeFunctionEntry = pInnerExceptionHandlerEntry->GetRawStruct();
+    PEAddress nExceptionHandlerRVA = pRawRuntimeFunctionEntry->BeginAddress;
+    PEAddress nExceptionHandlerSize = pRawRuntimeFunctionEntry->EndAddress - pRawRuntimeFunctionEntry->BeginAddress;
 
-        LibPEPtr<PEExceptionHandlerT<T>> pExceptionHandler = new PEExceptionHandlerT<T>();
+    LibPEPtr<PEExceptionHandlerT<T>> pExceptionHandler = new PEExceptionHandlerT<T>();
+    PEElementParsingScopeT<T> oExceptionHandlerParsingScope(pExceptionHandler);
 
-        pExceptionHandler->InnerSetBase(m_pFile, this);
-        pExceptionHandler->InnerSetMemoryInfo(nExceptionHandlerRVA, LIBPE_INVALID_ADDRESS, nExceptionHandlerSize);
-        pExceptionHandler->InnerSetFileInfo(LIBPE_INVALID_ADDRESS, nExceptionHandlerSize);
+    pExceptionHandler->InnerSetBase(m_pFile, this);
+    pExceptionHandler->InnerSetMemoryInfo(nExceptionHandlerRVA, LIBPE_INVALID_ADDRESS, nExceptionHandlerSize);
+    pExceptionHandler->InnerSetFileInfo(LIBPE_INVALID_ADDRESS, nExceptionHandlerSize);
 
-        *ppExceptionHandler = pExceptionHandler.Detach();
-    }
-    LIBPE_HR_TRY_END();
+    *ppExceptionHandler = pExceptionHandler.Detach();
 
     return S_OK;
 }
@@ -811,38 +794,35 @@ PEParserT<T>::ParseCertificates(IPECertificateTable *pCertificateTable)
 
     PECertificateTableT<T> *pInnerCertificateTable = (PECertificateTableT<T> *)pCertificateTable;
 
-    HRESULT hr = S_OK;
-    LIBPE_HR_TRY_BEGIN(hr)
-    {
-        LibPERawWinCertificate(T) *pRawWinCertificate = pInnerCertificateTable->GetRawStruct();
-        LIBPE_CHK(NULL != pRawWinCertificate, E_OUTOFMEMORY);
+    LibPERawWinCertificate(T) *pRawWinCertificate = pInnerCertificateTable->GetRawStruct();
+    LIBPE_CHK(NULL != pRawWinCertificate, E_BOUNDS);
 
-        PEAddress nCertificateRVA = pInnerCertificateTable->GetRVA();
-        PEAddress nCertificateFOA = pInnerCertificateTable->GetFOA();
-        PEAddress nCertificateListEndFOA = nCertificateFOA + pInnerCertificateTable->GetSizeInFile();
+    PEAddress nCertificateRVA = pInnerCertificateTable->GetRVA();
+    PEAddress nCertificateFOA = pInnerCertificateTable->GetFOA();
+    PEAddress nCertificateListEndFOA = nCertificateFOA + pInnerCertificateTable->GetSizeInFile();
 
-        UINT32 nCertificateSize = 0;
-        while (nCertificateFOA < nCertificateListEndFOA) {
-            // Round certificate size to 8 types, according to the PECoff v83 standard
-            nCertificateSize = pRawWinCertificate->dwLength;
-            if ((nCertificateSize & 0xFF) != 0) {
-                nCertificateSize |= 0xFF;
-                ++nCertificateSize;
-            }
-
-            LibPEPtr<PECertificateT<T>> pCertificate = new PECertificateT<T>();
-            pCertificate->InnerSetBase(m_pFile, this);
-            pCertificate->InnerSetMemoryInfo(nCertificateRVA, LIBPE_INVALID_ADDRESS, pRawWinCertificate->dwLength);
-            pCertificate->InnerSetFileInfo(nCertificateFOA, pRawWinCertificate->dwLength);
-
-            pInnerCertificateTable->InnerAddCertificate(pCertificate);
-
-            nCertificateRVA += nCertificateSize;
-            nCertificateFOA += nCertificateSize;
-            pRawWinCertificate = (LibPERawWinCertificate(T) *)(((UINT8 *)pRawWinCertificate) + nCertificateSize);
+    UINT32 nCertificateSize = 0;
+    while (nCertificateFOA < nCertificateListEndFOA) {
+        // Round certificate size to 8 types, according to the PECoff v83 standard
+        nCertificateSize = pRawWinCertificate->dwLength;
+        if ((nCertificateSize & 0xFF) != 0) {
+            nCertificateSize |= 0xFF;
+            ++nCertificateSize;
         }
+
+        LibPEPtr<PECertificateT<T>> pCertificate = new PECertificateT<T>();
+        PEElementParsingScopeT<T> oCertificateParsingScope(pCertificate);
+
+        pCertificate->InnerSetBase(m_pFile, this);
+        pCertificate->InnerSetMemoryInfo(nCertificateRVA, LIBPE_INVALID_ADDRESS, pRawWinCertificate->dwLength);
+        pCertificate->InnerSetFileInfo(nCertificateFOA, pRawWinCertificate->dwLength);
+
+        pInnerCertificateTable->InnerAddCertificate(pCertificate);
+
+        nCertificateRVA += nCertificateSize;
+        nCertificateFOA += nCertificateSize;
+        pRawWinCertificate = (LibPERawWinCertificate(T) *)(((UINT8 *)pRawWinCertificate) + nCertificateSize);
     }
-    LIBPE_HR_TRY_END_RET();
 
     return S_OK;
 }
@@ -856,13 +836,13 @@ PEParserT<T>::ParseRelocationTable(IPERelocationTable **ppRelocationTable)
 
     *ppRelocationTable = NULL;
 
-    LibPEPtr<PERelocationTableT<T>> pRelocationTable;
-    LIBPE_CHK_HR(ParseDataDirectory(IMAGE_DIRECTORY_ENTRY_BASERELOC, &pRelocationTable));
+    LibPEPtr<PERelocationTableT<T>> pRelocationTable = new PERelocationTableT<T>();
+    PEElementParsingScopeT<T> oRelocationTableParsingScope(pRelocationTable);
+
+    LIBPE_CHK_HR(ParseDataDirectory(pRelocationTable.p, IMAGE_DIRECTORY_ENTRY_BASERELOC));
 
     LibPERawBaseRelocation(T) *pRawRelocationPage = (LibPERawBaseRelocation(T) *)pRelocationTable->GetRawStruct();
-    if(NULL == pRawRelocationPage) {
-        return E_OUTOFMEMORY;
-    }
+    LIBPE_CHK(NULL != pRawRelocationPage, E_BOUNDS);
 
     PEAddress nRelocationPageRVA = pRelocationTable->GetRVA();
     PEAddress nRelocationPageFOA = pRelocationTable->GetFOA();
@@ -872,9 +852,7 @@ PEParserT<T>::ParseRelocationTable(IPERelocationTable **ppRelocationTable)
         UINT32 nItemCount = (pRawRelocationPage->SizeOfBlock - sizeof(LibPERawBaseRelocation(T))) / sizeof(UINT16);
 
         LibPEPtr<PERelocationPageT<T>> pRelocationPage = new PERelocationPageT<T>;
-        if(NULL == pRelocationPage) {
-            return E_OUTOFMEMORY;
-        }
+        PEElementParsingScopeT<T> oRelocationPageParsingScope(pRelocationPage);
 
         PEAddress nPageSize = sizeof(LibPERawBaseRelocation(T)) + nItemCount * sizeof(UINT16);
 
@@ -888,9 +866,7 @@ PEParserT<T>::ParseRelocationTable(IPERelocationTable **ppRelocationTable)
         PEAddress nRelocationItemFOA = nRelocationPageFOA + sizeof(LibPERawBaseRelocation(T));
         while(nItemIndex < nItemCount) {
             LibPEPtr<PERelocationItemT<T>> pRelocationItem = new PERelocationItemT<T>();
-            if(NULL == pRelocationItem) {
-                return E_OUTOFMEMORY;
-            }
+            PEElementParsingScopeT<T> oRelocationItemParsingScope(pRelocationItem);
 
             pRelocationItem->InnerSetBase(m_pFile, this);
             pRelocationItem->InnerSetMemoryInfo(nRelocationItemRVA, LIBPE_INVALID_ADDRESS, sizeof(UINT16));
@@ -936,19 +912,14 @@ PEParserT<T>::ParseGlobalPointerTable(IPEGlobalPointerTable **ppGlobalPointerTab
     PEAddress nGlobalPointerTableDataDirectoryRVA = pOptionHeader->GetRVA() + FIELD_OFFSET(LibPERawOptionalHeaderT(T), DataDirectory[IMAGE_DIRECTORY_ENTRY_GLOBALPTR]);
     PEAddress nGlobalPointerTableDataDirectoryFOA = pOptionHeader->GetFOA() + FIELD_OFFSET(LibPERawOptionalHeaderT(T), DataDirectory[IMAGE_DIRECTORY_ENTRY_GLOBALPTR]);
 
-    HRESULT hr = S_OK;
+    LibPEPtr<PEGlobalPointerTableT<T>> pGlobalPointerTable = new PEGlobalPointerTableT<T>();
+    PEElementParsingScopeT<T> oGlobalPointerTableParsingScope(pGlobalPointerTable);
 
-    LIBPE_HR_TRY_BEGIN(hr)
-    {
-        LibPEPtr<PEGlobalPointerTableT<T>> pGlobalPointerTable = new PEGlobalPointerTableT<T>();
+    pGlobalPointerTable->InnerSetBase(m_pFile, this);
+    pGlobalPointerTable->InnerSetMemoryInfo(nGlobalPointerTableDataDirectoryRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawDataDirectoryT(T)));
+    pGlobalPointerTable->InnerSetFileInfo(nGlobalPointerTableDataDirectoryFOA, sizeof(LibPERawDataDirectoryT(T)));
 
-        pGlobalPointerTable->InnerSetBase(m_pFile, this);
-        pGlobalPointerTable->InnerSetMemoryInfo(nGlobalPointerTableDataDirectoryRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawDataDirectoryT(T)));
-        pGlobalPointerTable->InnerSetFileInfo(nGlobalPointerTableDataDirectoryFOA, sizeof(LibPERawDataDirectoryT(T)));
-
-        *ppGlobalPointerTable = pGlobalPointerTable.Detach();
-    }
-    LIBPE_HR_TRY_END();
+    *ppGlobalPointerTable = pGlobalPointerTable.Detach();
 
     return S_OK;
 }
@@ -970,7 +941,7 @@ PEParserT<T>::ParseTlsCallbacks(IPETlsTable *pTlsTable)
     PETlsTableT<T> *pInnerTlsTable = (PETlsTableT<T> *)pTlsTable;
 
     LibPERawTlsDirectory(T) *pRawTlsDirectory = pInnerTlsTable->GetRawStruct();
-    LIBPE_CHK(NULL != pRawTlsDirectory, E_OUTOFMEMORY);
+    LIBPE_CHK(NULL != pRawTlsDirectory, E_BOUNDS);
     LIBPE_CHK(NULL != pRawTlsDirectory->AddressOfCallBacks && pRawTlsDirectory->AddressOfCallBacks >= m_pFile->GetImageBase(), E_UNEXPECTED);
 
     PEAddress nCallbackEntryRVA = pRawTlsDirectory->AddressOfCallBacks - m_pFile->GetImageBase();
@@ -980,7 +951,7 @@ PEParserT<T>::ParseTlsCallbacks(IPETlsTable *pTlsTable)
     PEAddress nCallbackAddress = 0, nCallbackRVA = 0;
     for (;;) {
         void *pPointerToCallback = m_pLoader->GetBuffer(nCallbackEntryFOA, PETrait<T>::PointerSize);
-        LIBPE_CHK(NULL != pPointerToCallback, E_OUTOFMEMORY);
+        LIBPE_CHK(NULL != pPointerToCallback, E_BOUNDS);
 
         nCallbackAddress = 0;
         memcpy_s(&nCallbackAddress, sizeof(PEAddress), pPointerToCallback, PETrait<T>::PointerSize);
@@ -1022,52 +993,51 @@ PEParserT<T>::ParseBoundImportModules(IPEBoundImportTable *pBoundImportTable)
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
     PEBoundImportTableT<T> *pInnerBoundImportTable = (PEBoundImportTableT<T> *)pBoundImportTable;
+    PEElementParsingScopeT<T> oBoundImportTableParsingScope(pInnerBoundImportTable);
 
     PEAddress nImportModuleRVA = pInnerBoundImportTable->GetRVA();
     PEAddress nImportModuleFOA = pInnerBoundImportTable->GetFOA();
     PEAddress nImportTableEndFOA = nImportModuleFOA + pInnerBoundImportTable->GetSizeInFile();
     LIBPE_CHK(LIBPE_INVALID_ADDRESS != nImportModuleRVA || LIBPE_INVALID_ADDRESS != nImportModuleFOA, E_UNEXPECTED);
 
-    HRESULT hr = S_OK;
-    LIBPE_HR_TRY_BEGIN(hr)
-    {
-        // Parse bound modules
-        while (nImportModuleFOA < nImportTableEndFOA) {
-            LibPEPtr<PEBoundImportModuleT<T>> pImportModule = new PEBoundImportModuleT<T>();
+    // Parse bound modules
+    while (nImportModuleFOA < nImportTableEndFOA) {
+        LibPEPtr<PEBoundImportModuleT<T>> pImportModule = new PEBoundImportModuleT<T>();
+        PEElementParsingScopeT<T> oImportModuleParsingScope(pImportModule);
 
-            pImportModule->InnerSetBase(m_pFile, this);
-            pImportModule->InnerSetMemoryInfo(nImportModuleRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawBoundImportDescriptor(T)));
-            pImportModule->InnerSetFileInfo(nImportModuleFOA, sizeof(LibPERawBoundImportDescriptor(T)));
+        pImportModule->InnerSetBase(m_pFile, this);
+        pImportModule->InnerSetMemoryInfo(nImportModuleRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawBoundImportDescriptor(T)));
+        pImportModule->InnerSetFileInfo(nImportModuleFOA, sizeof(LibPERawBoundImportDescriptor(T)));
 
-            pInnerBoundImportTable->InnerAddBoundImportModule(pImportModule);
+        pInnerBoundImportTable->InnerAddBoundImportModule(pImportModule);
 
-            // Parse bound forwarders
-            LibPERawBoundImportDescriptor(T) *pRawBoundImportDescriptor = pInnerBoundImportTable->GetRawStruct();
-            LIBPE_CHK(NULL != pRawBoundImportDescriptor, E_OUTOFMEMORY);
+        // Parse bound forwarders
+        LibPERawBoundImportDescriptor(T) *pRawBoundImportDescriptor = pInnerBoundImportTable->GetRawStruct();
+        LIBPE_CHK(NULL != pRawBoundImportDescriptor, E_BOUNDS);
 
-            UINT16 nForwarderCount = pRawBoundImportDescriptor->NumberOfModuleForwarderRefs;
+        UINT16 nForwarderCount = pRawBoundImportDescriptor->NumberOfModuleForwarderRefs;
 
-            PEAddress nForwarderRVA = nImportModuleRVA + sizeof(LibPERawBoundImportDescriptor(T));
-            PEAddress nForwarderFOA = nImportModuleFOA + sizeof(LibPERawBoundImportDescriptor(T));
-            for (UINT16 nForwarderIndex = 0; nForwarderIndex < nForwarderCount; ++nForwarderIndex) {
-                LibPEPtr<PEBoundForwarderT<T>> pForwarder = new PEBoundForwarderT<T>();
+        PEAddress nForwarderRVA = nImportModuleRVA + sizeof(LibPERawBoundImportDescriptor(T));
+        PEAddress nForwarderFOA = nImportModuleFOA + sizeof(LibPERawBoundImportDescriptor(T));
+        for (UINT16 nForwarderIndex = 0; nForwarderIndex < nForwarderCount; ++nForwarderIndex) {
+            LibPEPtr<PEBoundForwarderT<T>> pForwarder = new PEBoundForwarderT<T>();
+            PEElementParsingScopeT<T> oForwarderParsingScope(pForwarder);
 
-                pForwarder->InnerSetBase(m_pFile, this);
-                pForwarder->InnerSetMemoryInfo(nForwarderRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawBoundForwarderRef(T)));
-                pForwarder->InnerSetFileInfo(nForwarderFOA, sizeof(LibPERawBoundForwarderRef(T)));
+            pForwarder->InnerSetBase(m_pFile, this);
+            pForwarder->InnerSetMemoryInfo(nForwarderRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawBoundForwarderRef(T)));
+            pForwarder->InnerSetFileInfo(nForwarderFOA, sizeof(LibPERawBoundForwarderRef(T)));
 
-                pImportModule->InnerAddBoundForwarder(pForwarder);
+            pImportModule->InnerAddBoundForwarder(pForwarder);
 
-                nForwarderRVA += sizeof(LibPERawBoundForwarderRef(T));
-                nForwarderFOA += sizeof(LibPERawBoundForwarderRef(T));
-            }
-
-            nImportModuleRVA += sizeof(LibPERawBoundImportDescriptor(T)) + nForwarderCount * sizeof(LibPERawBoundForwarderRef(T));
-            nImportModuleFOA += sizeof(LibPERawBoundImportDescriptor(T)) + nForwarderCount * sizeof(LibPERawBoundForwarderRef(T));
+            nForwarderRVA += sizeof(LibPERawBoundForwarderRef(T));
+            nForwarderFOA += sizeof(LibPERawBoundForwarderRef(T));
         }
-    } LIBPE_HR_TRY_END();
 
-    return hr;
+        nImportModuleRVA += sizeof(LibPERawBoundImportDescriptor(T)) + nForwarderCount * sizeof(LibPERawBoundForwarderRef(T));
+        nImportModuleFOA += sizeof(LibPERawBoundImportDescriptor(T)) + nForwarderCount * sizeof(LibPERawBoundForwarderRef(T));
+    }
+
+    return S_OK;
 }
 
 template <class T>
@@ -1079,8 +1049,10 @@ PEParserT<T>::ParseImportAddressTable(IPEImportAddressTable **ppImportAddressTab
 
     *ppImportAddressTable = NULL;
 
-    LibPEPtr<PEImportAddressTableT<T>> pImportAddressTable;
-    LIBPE_CHK_HR(ParseDataDirectory(IMAGE_DIRECTORY_ENTRY_IAT, &pImportAddressTable));
+    LibPEPtr<PEImportAddressTableT<T>> pImportAddressTable = new PEImportAddressTableT<T>();
+    PEElementParsingScopeT<T> oImportAddressTableParsingScope(pImportAddressTable);
+
+    LIBPE_CHK_HR(ParseDataDirectory(pImportAddressTable.p, IMAGE_DIRECTORY_ENTRY_IAT));
 
     if(FAILED(ParseImportAddressTableContent(pImportAddressTable))) {
         return E_FAIL;
@@ -1098,6 +1070,8 @@ PEParserT<T>::ParseImportAddressTableContent(IPEImportAddressTable *pImportAddre
     LIBPE_CHK(NULL != pImportAddressTable, E_POINTER);
 
     LibPERawThunkData(T) *pRawTable = (LibPERawThunkData(T) *)pImportAddressTable->GetRawMemory();
+    LIBPE_CHK(NULL != pRawTable, E_BOUNDS);
+
     PEImportAddressTableT<T> *pInnerImportAddressTable = static_cast<PEImportAddressTableT<T> *>(pImportAddressTable);
     PEAddress nTableRVA = pImportAddressTable->GetRVA();
     PEAddress nTableFOA = pImportAddressTable->GetFOA();
@@ -1129,9 +1103,7 @@ PEParserT<T>::ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, PEAddress
     *ppBlock = NULL;
 
     LibPEPtr<PEImportAddressBlockT<T>> pBlock = new PEImportAddressBlockT<T>();
-    if(NULL == pBlock) {
-        return E_OUTOFMEMORY;
-    }
+    PEElementParsingScopeT<T> oBlockParsingScope(pBlock);
 
     pBlock->InnerSetBase(m_pFile, this);
     pBlock->InnerSetRawMemory(pRawBlock);
@@ -1149,7 +1121,7 @@ PEParserT<T>::ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, PEAddress
     if(NULL == pRawBlock) {
         LIBPE_CHK(NULL != m_pLoader, E_FAIL);
         pRawItem = (LibPERawThunkData(T) *)m_pLoader->GetBuffer(nBlockFOA, sizeof(LibPERawThunkData(T)));
-        LIBPE_CHK(NULL != pRawItem, E_OUTOFMEMORY);
+        LIBPE_CHK(NULL != pRawItem, E_BOUNDS);
         bNeedLoadMemory = true;
     } else {
         pRawItem = pRawBlock;
@@ -1168,7 +1140,7 @@ PEParserT<T>::ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, PEAddress
 
         if(bNeedLoadMemory) {
             pRawItem = (LibPERawThunkData(T) *)m_pLoader->GetBuffer(nBlockFOA + nBlockSize, sizeof(LibPERawThunkData(T)));
-            LIBPE_CHK(NULL != pRawItem, E_OUTOFMEMORY);
+            LIBPE_CHK(NULL != pRawItem, E_BOUNDS);
         } else {
             ++pRawItem;
         }
@@ -1196,9 +1168,7 @@ PEParserT<T>::ParseImportAddressItem(LibPERawThunkData(T) *pRawItem, PEAddress n
     *ppItem = NULL;
 
     LibPEPtr<PEImportAddressItemT<T>> pItem = new PEImportAddressItemT<T>();
-    if(NULL == pItem) {
-        return E_OUTOFMEMORY;
-    }
+    PEElementParsingScopeT<T> oItemParsingScope(pItem);
 
     pItem->InnerSetBase(m_pFile, this);
     pItem->InnerSetRawMemory(pRawItem);
@@ -1221,18 +1191,8 @@ template <class T>
 HRESULT
 PEParserT<T>::ParseClrTable(IPEClrTable **ppClrTable)
 {
-    LIBPE_CHK(NULL != ppClrTable, E_POINTER);
-    LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
-
-    *ppClrTable = NULL;
-
-    // We don't parse the Clr table for now.
-    LibPEPtr<PEClrTableT<T>> pClrTable;
-    LIBPE_CHK_HR(ParseDataDirectory(IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR, &pClrTable));
-
-    *ppClrTable = pClrTable.Detach();
-
-    return S_OK;
+    // We don't parse the internal data strucure of CLR table for now.
+    return ParseDataDirectoryToInterface<IPEClrTable, PEClrTableT<T>>(IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR, ppClrTable);
 }
 
 template <class T>
@@ -1284,6 +1244,21 @@ PEParserT<T>::GetDataDirectoryEntry(INT32 nDataDirectoryEntryIndex, PEAddress &n
     return S_OK;
 }
 
+template <class T>
+void
+PEParserT<T>::InitPEElement(PEElementT<T> *pElement, PEAddress nRVA, PEAddress nFOA, PEAddress nSize)
+{
+    InitPEElement(pElement, nRVA, nSize, nFOA, nSize);
+}
+
+template <class T>
+void
+PEParserT<T>::InitPEElement(PEElementT<T> *pElement, PEAddress nRVA, PEAddress nMemSize, PEAddress nFOA, PEAddress nFileSize)
+{
+    pElement->InnerSetBase(m_pFile, this);
+    pElement->InnerSetMemoryInfo(nRVA, LIBPE_INVALID_ADDRESS, nMemSize);
+    pElement->InnerSetFileInfo(nFOA, nFileSize);
+}
 
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PEParserT);
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS_FUNCTION(PEParserT, Create);

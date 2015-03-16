@@ -9,13 +9,7 @@ class PEImportTableT :
     public IPEImportTable,
     public PEElementT<T>
 {
-    struct ModuleInfo {
-        PEAddress                       m_nImportDescRVA;
-        PEAddress                       m_nImportDescFOA;
-        LibPERawImportDescriptor(T)     *m_pImportDesc;
-        LibPEPtr<IPEImportModule>       m_pImportModule;
-    };
-    typedef std::vector<ModuleInfo> ModuleList;
+    typedef std::vector<LibPEPtr<IPEImportModule>> ModuleList;
 
 public:
     PEImportTableT() {}
@@ -23,13 +17,9 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawImportDescriptor(T))
 
-    void InnerAddImportDescriptor(PEAddress nImportDescRVA, PEAddress nImportDescFOA, LibPERawImportDescriptor(T) *pImportDesc) {
-        LIBPE_CHK_RET_VOID(LIBPE_INVALID_ADDRESS != nImportDescRVA && LIBPE_INVALID_ADDRESS != nImportDescFOA && NULL != pImportDesc);
-        ModuleInfo oInfo;
-        oInfo.m_nImportDescRVA = nImportDescRVA;
-        oInfo.m_nImportDescFOA = nImportDescFOA;
-        oInfo.m_pImportDesc = pImportDesc;
-        m_vModules.push_back(oInfo);
+    void InnerAddImportModule(IPEImportModule *pImportModule) {
+        LIBPE_CHK_RET_VOID(pImportModule != NULL);
+        m_vModules.push_back(pImportModule);
         return;
     }
 
@@ -37,6 +27,9 @@ public:
     virtual HRESULT LIBPE_CALLTYPE GetModuleByIndex(UINT32 nModuleId, IPEImportModule **ppImportModule);
     virtual HRESULT LIBPE_CALLTYPE GetModuleByName(const char *pModuleName, IPEImportModule **ppImportModule);
     virtual HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunction **ppImportFunction);
+
+protected:
+    HRESULT LoadDelayedData() override;
 
 private:
     ModuleList m_vModules;
@@ -86,7 +79,7 @@ protected:
         m_bIsFunctionParsed = true;
 
         LIBPE_CHK(NULL != m_pParser && NULL != m_pFile, E_FAIL);
-        LIBPE_CHK_HR(m_pParser->ParseImportFunctionsInModule(this));
+        LIBPE_CHK_HR(m_pParser->ParseAllImportFunctions(this));
 
         return S_OK;
     }

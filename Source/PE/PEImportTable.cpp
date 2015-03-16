@@ -7,6 +7,7 @@ template <class T>
 UINT32
 PEImportTableT<T>::GetModuleCount()
 {
+    LIBPE_CHK_HR(EnsureDataReady());
     return (UINT32)m_vModules.size();
 }
 
@@ -15,25 +16,19 @@ HRESULT
 PEImportTableT<T>::GetModuleByIndex(UINT32 nModuleId, IPEImportModule **ppImportModule)
 {
     LIBPE_CHK(NULL != ppImportModule, E_POINTER);
+    LIBPE_CHK_HR(EnsureDataReady());
 
-    UINT32 nModuleCount = GetModuleCount();
+    UINT32 nModuleCount = (UINT32) m_vModules.size();
     LIBPE_CHK(nModuleId < nModuleCount, E_INVALIDARG);
 
-    ModuleInfo &oInfo = m_vModules[nModuleId];
-    if(NULL == oInfo.m_pImportModule) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
-        if(FAILED(m_pParser->ParseImportModule(oInfo.m_nImportDescRVA, oInfo.m_nImportDescFOA, oInfo.m_pImportDesc, &oInfo.m_pImportModule)) || NULL == oInfo.m_pImportModule) {
-            return E_FAIL;
-        }
-    }
-
-    return oInfo.m_pImportModule.CopyTo(ppImportModule);
+    return m_vModules[nModuleId].CopyTo(ppImportModule);
 }
 
 template <class T>
 HRESULT
 PEImportTableT<T>::GetModuleByName(const char *pModuleName, IPEImportModule **ppImportModule)
 {
+    LIBPE_CHK_HR(EnsureDataReady());
     return E_NOTIMPL;
 }
 
@@ -41,7 +36,18 @@ template <class T>
 HRESULT
 PEImportTableT<T>::GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunction **ppImportFunction)
 {
+    LIBPE_CHK_HR(EnsureDataReady());
     return E_NOTIMPL;
+}
+
+template <class T>
+HRESULT
+PEImportTableT<T>::LoadDelayedData()
+{
+    LIBPE_CHK(NULL != m_pParser && NULL != m_pFile, E_FAIL);
+    LIBPE_CHK_HR(m_pParser->ParseAllImportModules(this));
+
+    return __super::LoadDelayedData();
 }
 
 template <class T>
