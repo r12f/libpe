@@ -80,6 +80,7 @@ struct PETrait<PE64> : PETraitBase {
 #define LibPERawBoundForwarderRef(T)            typename PETrait<T>::RawBoundForwarderRef
 #define LibPERawWinCertificate(T)               typename PETrait<T>::RawWinCertificate
 #define LibPERawDebugDirectory(T)               typename PETrait<T>::RawDebugDirectory
+#define LibPERawDelayLoadDescriptor(T)          typename PETrait<T>::RawDelayLoadDescriptor
 #define LibPERawClrDirectory(T)                 typename PETrait<T>::RawClrDirectory
 
 typedef UINT64                                  PEAddress;
@@ -105,6 +106,7 @@ typedef PETraitBase::RawBoundImportDescriptor   PERawBoundImportDescriptor;
 typedef PETraitBase::RawBoundForwarderRef       PERawBoundForwarderRef;
 typedef PETraitBase::RawWinCertificate          PERawWinCertificate;
 typedef PETraitBase::RawDebugDirectory          PERawDebugDirectory;
+typedef PETraitBase::RawDelayLoadDescriptor     PERawDelayLoadDescriptor;
 typedef PETraitBase::RawDebugDirectory          PERawClrDirectory;
 
 typedef PETrait<PE32>::RawNtHeaders             PERawNtHeaders32;

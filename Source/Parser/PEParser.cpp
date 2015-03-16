@@ -442,8 +442,8 @@ PEParserT<T>::ParseImportModule(PEAddress nImportDescRVA, PEAddress nImportDescF
     LIBPE_CHK(NULL != pImportModule, E_OUTOFMEMORY);
 
     pImportModule->InnerSetBase(m_pFile, this);
-    pImportModule->InnerSetMemoryInfo(nImportDescRVA, LIBPE_INVALID_ADDRESS, sizeof(IMAGE_IMPORT_BY_NAME));
-    pImportModule->InnerSetFileInfo(nImportDescFOA, sizeof(IMAGE_IMPORT_BY_NAME));
+    pImportModule->InnerSetMemoryInfo(nImportDescRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawImportByName(T)));
+    pImportModule->InnerSetFileInfo(nImportDescFOA, sizeof(LibPERawImportByName(T)));
     pImportModule->InnerSetName(pImportName);
 
     *ppImportModule = pImportModule.Detach();
