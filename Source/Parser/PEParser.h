@@ -74,6 +74,7 @@ public:
     HRESULT ParseAllImportModules(IPEImportTable *pImportTable);
     HRESULT ParseImportModule(PEAddress nImportDescRVA, PEAddress nImportDescFOA, LibPERawImportDescriptor(T) *pImportDescriptor, IPEImportModule **ppImportModule);
     HRESULT ParseAllImportFunctions(IPEImportModule *pImportModule);
+    HRESULT ParseImportFunction(PEAddress nThunkDataRVA, PEAddress nThunkDataFOA, IPEImportFunction **ppImportFunction);
     HRESULT ParseImportFunction(IPEImportFunction *pFunction);
 
     // Resource table related functions
@@ -179,5 +180,6 @@ protected:
 
 typedef PEParserT<PE32> PEParser32;
 typedef PEParserT<PE64> PEParser64;
+
 
 LIBPE_NAMESPACE_END

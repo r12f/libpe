@@ -373,11 +373,11 @@
             <APIResults>
                 <Result name="GetRVA" value="9392"/>
                 <Result name="GetVA" value="5368718512"/>
-                <Result name="GetSizeInMemory" value="4"/>
+                <Result name="GetSizeInMemory" value="20"/>
                 <Result name="GetFOA" value="5296"/>
-                <Result name="GetSizeInFile" value="4"/>
+                <Result name="GetSizeInFile" value="20"/>
                 <Result name="GetRawOffset" value="5296"/>
-                <Result name="GetRawSize" value="4"/>
+                <Result name="GetRawSize" value="20"/>
                 <Result name="GetFieldCharacteristics" value="9800"/>
                 <Result name="GetFieldOriginalFirstThunk" value="9800"/>
                 <Result name="GetFieldTimeDateStamp" value="0"/>
@@ -443,11 +443,11 @@
             <APIResults>
                 <Result name="GetRVA" value="9412"/>
                 <Result name="GetVA" value="5368718532"/>
-                <Result name="GetSizeInMemory" value="4"/>
+                <Result name="GetSizeInMemory" value="20"/>
                 <Result name="GetFOA" value="5316"/>
-                <Result name="GetSizeInFile" value="4"/>
+                <Result name="GetSizeInFile" value="20"/>
                 <Result name="GetRawOffset" value="5316"/>
-                <Result name="GetRawSize" value="4"/>
+                <Result name="GetRawSize" value="20"/>
                 <Result name="GetFieldCharacteristics" value="9584"/>
                 <Result name="GetFieldOriginalFirstThunk" value="9584"/>
                 <Result name="GetFieldTimeDateStamp" value="0"/>
@@ -904,11 +904,11 @@
             <APIResults>
                 <Result name="GetRVA" value="9432"/>
                 <Result name="GetVA" value="5368718552"/>
-                <Result name="GetSizeInMemory" value="4"/>
+                <Result name="GetSizeInMemory" value="20"/>
                 <Result name="GetFOA" value="5336"/>
-                <Result name="GetSizeInFile" value="4"/>
+                <Result name="GetSizeInFile" value="20"/>
                 <Result name="GetRawOffset" value="5336"/>
-                <Result name="GetRawSize" value="4"/>
+                <Result name="GetRawSize" value="20"/>
                 <Result name="GetFieldCharacteristics" value="9472"/>
                 <Result name="GetFieldOriginalFirstThunk" value="9472"/>
                 <Result name="GetFieldTimeDateStamp" value="0"/>

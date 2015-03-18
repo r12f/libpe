@@ -441,8 +441,8 @@ PEParserT<T>::ParseImportModule(PEAddress nImportDescRVA, PEAddress nImportDescF
     PEElementParsingScopeT<T> oImportModuleParsingScope(pImportModule);
 
     pImportModule->InnerSetBase(m_pFile, this);
-    pImportModule->InnerSetMemoryInfo(nImportDescRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawImportByName(T)));
-    pImportModule->InnerSetFileInfo(nImportDescFOA, sizeof(LibPERawImportByName(T)));
+    pImportModule->InnerSetMemoryInfo(nImportDescRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawImportDescriptor(T)));
+    pImportModule->InnerSetFileInfo(nImportDescFOA, sizeof(LibPERawImportDescriptor(T)));
     pImportModule->InnerSetName(pImportName);
 
     *ppImportModule = pImportModule.Detach();
@@ -480,12 +480,8 @@ PEParserT<T>::ParseAllImportFunctions(IPEImportModule *pImportModule)
             break;
         }
 
-        LibPEPtr<PEImportFunctionT<T>> pImportFunction = new PEImportFunctionT<T>();
-        PEElementParsingScopeT<T> oImportFunctionParsingScope(pImportFunction);
-
-        pImportFunction->InnerSetBase(m_pFile, this);
-        pImportFunction->InnerSetMemoryInfo(nThunkDataRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawThunkData(T)));
-        pImportFunction->InnerSetFileInfo(nThunkDataFOA, sizeof(LibPERawThunkData(T)));
+        LibPEPtr<IPEImportFunction> pImportFunction;
+        LIBPE_CHK_HR(ParseImportFunction(nThunkDataRVA, nThunkDataFOA, &pImportFunction));
 
         pInnerImportModule->InnerAddImportFunction(pImportFunction);
 
@@ -498,13 +494,27 @@ PEParserT<T>::ParseAllImportFunctions(IPEImportModule *pImportModule)
 
 template <class T>
 HRESULT
+PEParserT<T>::ParseImportFunction(PEAddress nThunkDataRVA, PEAddress nThunkDataFOA, IPEImportFunction **ppImportFunction)
+{
+    LibPEPtr<PEImportFunctionT<T>> pImportFunction = new PEImportFunctionT<T>();
+    PEElementParsingScopeT<T> oImportFunctionParsingScope(pImportFunction);
+
+    pImportFunction->InnerSetBase(m_pFile, this);
+    pImportFunction->InnerSetMemoryInfo(nThunkDataRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawThunkData(T)));
+    pImportFunction->InnerSetFileInfo(nThunkDataFOA, sizeof(LibPERawThunkData(T)));
+
+    *ppImportFunction = pImportFunction.Detach();
+
+    return S_OK;
+}
+
+template <class T>
+HRESULT
 PEParserT<T>::ParseImportFunction(IPEImportFunction *pFunction)
 {
-    LIBPE_CHK(NULL != pFunction, E_UNEXPECTED);
-
     PEImportFunctionT<T> *pInnerFunction = (PEImportFunctionT<T> *)pFunction;
 
-    LibPERawThunkData(T) *pThunkData = (LibPERawThunkData(T) *)pFunction->GetRawMemory();
+    LibPERawThunkData(T) *pThunkData = pInnerFunction->GetRawStruct();
     LIBPE_CHK(NULL != pThunkData, E_BOUNDS);
 
     // No IMAGE_IMPORT_BY_NAME structure if the function is imported by ordinal
