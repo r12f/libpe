@@ -44,5 +44,9 @@ typedef std::string         file_t;
 
 #ifdef LIBPE_WINOS
 #include <windows.h>
+// EngExtCpp
+#pragma warning(push)
+#pragma warning(disable:4091)
 #include <ImageHlp.h>
+#pragma warning(pop) 
 #endif
