@@ -1,6 +1,6 @@
 #pragma once
 
-class LibPETest : public testing::Test
+class LibPETestBase : public testing::Test
 {
 protected:
     // Set up code for each test

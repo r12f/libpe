@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Program.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="LibPETest.cpp" />
     <ClCompile Include="PEParsingTester\PESectionTester.cpp">
       <Filter>PEParsingTester</Filter>
     </ClCompile>
@@ -64,11 +62,12 @@
     <ClCompile Include="PEParsingTester\PEClrTableTester.cpp">
       <Filter>PEParsingTester</Filter>
     </ClCompile>
+    <ClCompile Include="LibPETestBase.cpp" />
+    <ClCompile Include="LibPETest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="LibPETest.h" />
     <ClInclude Include="PEParsingTester\PESectionTester.h">
       <Filter>PEParsingTester</Filter>
     </ClInclude>
@@ -129,6 +128,7 @@
     <ClInclude Include="PEParsingTester\PEClrTableTester.h">
       <Filter>PEParsingTester</Filter>
     </ClInclude>
+    <ClInclude Include="LibPETestBase.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PEParsingTester">
