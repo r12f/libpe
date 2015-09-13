@@ -325,6 +325,67 @@
             </APIResults>
         </Section>
     </Sections>
+    <ExportTable export-function-count="3">
+        <APIResults>
+            <Result name="GetRVA" value="8912"/>
+            <Result name="GetVA" value="268444368"/>
+            <Result name="GetSizeInMemory" value="159"/>
+            <Result name="GetFOA" value="4816"/>
+            <Result name="GetSizeInFile" value="159"/>
+            <Result name="GetRawOffset" value="4816"/>
+            <Result name="GetRawSize" value="159"/>
+            <Result name="GetFieldCharacteristics" value="0"/>
+            <Result name="GetFieldTimeDateStamp" value="1426463982"/>
+            <Result name="GetFieldMajorVersion" value="0"/>
+            <Result name="GetFieldMinorVersion" value="0"/>
+            <Result name="GetFieldName" value="8982"/>
+            <Result name="GetFieldBase" value="1"/>
+            <Result name="GetFieldNumberOfFunctions" value="3"/>
+            <Result name="GetFieldNumberOfNames" value="3"/>
+            <Result name="GetFieldAddressOfFunctions" value="8952"/>
+            <Result name="GetFieldAddressOfNames" value="8964"/>
+            <Result name="GetFieldAddressOfNameOrdinals" value="8976"/>
+        </APIResults>
+        <ExportFunction name="?SampleFunction1@@YAHH@Z">
+            <APIResults>
+                <Result name="GetRVA" value="4112"/>
+                <Result name="GetVA" value="268439568"/>
+                <Result name="GetSizeInMemory" value="18446744073709551615"/>
+                <Result name="GetFOA" value="1040"/>
+                <Result name="GetSizeInFile" value="18446744073709551615"/>
+                <Result name="GetRawOffset" value="1040"/>
+                <Result name="GetRawSize" value="18446744073709551615"/>
+                <Result name="GetName" value="?SampleFunction1@@YAHH@Z"/>
+                <Result name="GetOrdinal" value="0"/>
+            </APIResults>
+        </ExportFunction>
+        <ExportFunction name="?SampleFunction2@@YAHH@Z">
+            <APIResults>
+                <Result name="GetRVA" value="4144"/>
+                <Result name="GetVA" value="268439600"/>
+                <Result name="GetSizeInMemory" value="18446744073709551615"/>
+                <Result name="GetFOA" value="1072"/>
+                <Result name="GetSizeInFile" value="18446744073709551615"/>
+                <Result name="GetRawOffset" value="1072"/>
+                <Result name="GetRawSize" value="18446744073709551615"/>
+                <Result name="GetName" value="?SampleFunction2@@YAHH@Z"/>
+                <Result name="GetOrdinal" value="1"/>
+            </APIResults>
+        </ExportFunction>
+        <ExportFunction name="?SampleFunction3@@YAXH@Z">
+            <APIResults>
+                <Result name="GetRVA" value="4160"/>
+                <Result name="GetVA" value="268439616"/>
+                <Result name="GetSizeInMemory" value="18446744073709551615"/>
+                <Result name="GetFOA" value="1088"/>
+                <Result name="GetSizeInFile" value="18446744073709551615"/>
+                <Result name="GetRawOffset" value="1088"/>
+                <Result name="GetRawSize" value="18446744073709551615"/>
+                <Result name="GetName" value="?SampleFunction3@@YAXH@Z"/>
+                <Result name="GetOrdinal" value="2"/>
+            </APIResults>
+        </ExportFunction>
+    </ExportTable>
     <ImportTable import-module-count="2">
         <APIResults>
             <Result name="GetRVA" value="9072"/>
@@ -867,6 +928,163 @@
             </ImportFunction>
         </ImportModule>
     </ImportTable>
+    <ResourceTable>
+        <APIResults>
+            <Result name="GetRVA" value="20480"/>
+            <Result name="GetVA" value="268455936"/>
+            <Result name="GetSizeInMemory" value="480"/>
+            <Result name="GetFOA" value="7168"/>
+            <Result name="GetSizeInFile" value="480"/>
+            <Result name="GetRawOffset" value="7168"/>
+            <Result name="GetRawSize" value="480"/>
+        </APIResults>
+        <ResourceDirectory resource-directory-entry-count="1">
+            <APIResults>
+                <Result name="GetRVA" value="20480"/>
+                <Result name="GetVA" value="268455936"/>
+                <Result name="GetSizeInMemory" value="16"/>
+                <Result name="GetFOA" value="7168"/>
+                <Result name="GetSizeInFile" value="16"/>
+                <Result name="GetRawOffset" value="7168"/>
+                <Result name="GetRawSize" value="16"/>
+                <Result name="GetFieldCharacteristics" value="0"/>
+                <Result name="GetFieldTimeDateStamp" value="0"/>
+                <Result name="GetFieldMajorVersion" value="0"/>
+                <Result name="GetFieldMinorVersion" value="0"/>
+                <Result name="GetFieldNumberOfNamedEntries" value="0"/>
+                <Result name="GetFieldNumberOfIdEntries" value="1"/>
+            </APIResults>
+            <ResourceDirectoryEntry>
+                <APIResults>
+                    <Result name="GetRVA" value="20496"/>
+                    <Result name="GetVA" value="268455952"/>
+                    <Result name="GetSizeInMemory" value="8"/>
+                    <Result name="GetFOA" value="7184"/>
+                    <Result name="GetSizeInFile" value="8"/>
+                    <Result name="GetRawOffset" value="7184"/>
+                    <Result name="GetRawSize" value="8"/>
+                    <Result name="GetFieldNameOffset" value="24"/>
+                    <Result name="GetFieldNameIsString" value="0"/>
+                    <Result name="GetFieldName" value="24"/>
+                    <Result name="GetFieldId" value="24"/>
+                    <Result name="GetFieldOffsetToData" value="2147483672"/>
+                    <Result name="GetFieldOffsetToDirectory" value="24"/>
+                    <Result name="GetFieldDataIsDirectory" value="1"/>
+                    <Result name="IsNameId" value="1"/>
+                    <Result name="GetId" value="24"/>
+                    <Result name="IsNameString" value="0"/>
+                    <Result name="IsEntryDirectory" value="1"/>
+                    <Result name="IsEntryDataEntry" value="0"/>
+                </APIResults>
+                <ResourceDirectory resource-directory-entry-count="1">
+                    <APIResults>
+                        <Result name="GetRVA" value="0"/>
+                        <Result name="GetVA" value="268435456"/>
+                        <Result name="GetSizeInMemory" value="16"/>
+                        <Result name="GetFOA" value="7192"/>
+                        <Result name="GetSizeInFile" value="16"/>
+                        <Result name="GetRawOffset" value="7192"/>
+                        <Result name="GetRawSize" value="16"/>
+                        <Result name="GetFieldCharacteristics" value="0"/>
+                        <Result name="GetFieldTimeDateStamp" value="0"/>
+                        <Result name="GetFieldMajorVersion" value="0"/>
+                        <Result name="GetFieldMinorVersion" value="0"/>
+                        <Result name="GetFieldNumberOfNamedEntries" value="0"/>
+                        <Result name="GetFieldNumberOfIdEntries" value="1"/>
+                    </APIResults>
+                    <ResourceDirectoryEntry>
+                        <APIResults>
+                            <Result name="GetRVA" value="16"/>
+                            <Result name="GetVA" value="268435472"/>
+                            <Result name="GetSizeInMemory" value="8"/>
+                            <Result name="GetFOA" value="7208"/>
+                            <Result name="GetSizeInFile" value="8"/>
+                            <Result name="GetRawOffset" value="7208"/>
+                            <Result name="GetRawSize" value="8"/>
+                            <Result name="GetFieldNameOffset" value="2"/>
+                            <Result name="GetFieldNameIsString" value="0"/>
+                            <Result name="GetFieldName" value="2"/>
+                            <Result name="GetFieldId" value="2"/>
+                            <Result name="GetFieldOffsetToData" value="2147483696"/>
+                            <Result name="GetFieldOffsetToDirectory" value="48"/>
+                            <Result name="GetFieldDataIsDirectory" value="1"/>
+                            <Result name="IsNameId" value="1"/>
+                            <Result name="GetId" value="2"/>
+                            <Result name="IsNameString" value="0"/>
+                            <Result name="IsEntryDirectory" value="1"/>
+                            <Result name="IsEntryDataEntry" value="0"/>
+                        </APIResults>
+                        <ResourceDirectory resource-directory-entry-count="1">
+                            <APIResults>
+                                <Result name="GetRVA" value="0"/>
+                                <Result name="GetVA" value="268435456"/>
+                                <Result name="GetSizeInMemory" value="16"/>
+                                <Result name="GetFOA" value="7216"/>
+                                <Result name="GetSizeInFile" value="16"/>
+                                <Result name="GetRawOffset" value="7216"/>
+                                <Result name="GetRawSize" value="16"/>
+                                <Result name="GetFieldCharacteristics" value="0"/>
+                                <Result name="GetFieldTimeDateStamp" value="0"/>
+                                <Result name="GetFieldMajorVersion" value="0"/>
+                                <Result name="GetFieldMinorVersion" value="0"/>
+                                <Result name="GetFieldNumberOfNamedEntries" value="0"/>
+                                <Result name="GetFieldNumberOfIdEntries" value="1"/>
+                            </APIResults>
+                            <ResourceDirectoryEntry>
+                                <APIResults>
+                                    <Result name="GetRVA" value="16"/>
+                                    <Result name="GetVA" value="268435472"/>
+                                    <Result name="GetSizeInMemory" value="8"/>
+                                    <Result name="GetFOA" value="7232"/>
+                                    <Result name="GetSizeInFile" value="8"/>
+                                    <Result name="GetRawOffset" value="7232"/>
+                                    <Result name="GetRawSize" value="8"/>
+                                    <Result name="GetFieldNameOffset" value="1033"/>
+                                    <Result name="GetFieldNameIsString" value="0"/>
+                                    <Result name="GetFieldName" value="1033"/>
+                                    <Result name="GetFieldId" value="1033"/>
+                                    <Result name="GetFieldOffsetToData" value="72"/>
+                                    <Result name="GetFieldOffsetToDirectory" value="72"/>
+                                    <Result name="GetFieldDataIsDirectory" value="0"/>
+                                    <Result name="IsNameId" value="1"/>
+                                    <Result name="GetId" value="1033"/>
+                                    <Result name="IsNameString" value="0"/>
+                                    <Result name="IsEntryDirectory" value="0"/>
+                                    <Result name="IsEntryDataEntry" value="1"/>
+                                </APIResults>
+                                <ResourceDataEntry>
+                                    <APIResults>
+                                        <Result name="GetRVA" value="0"/>
+                                        <Result name="GetVA" value="268435456"/>
+                                        <Result name="GetSizeInMemory" value="16"/>
+                                        <Result name="GetFOA" value="7240"/>
+                                        <Result name="GetSizeInFile" value="16"/>
+                                        <Result name="GetRawOffset" value="7240"/>
+                                        <Result name="GetRawSize" value="16"/>
+                                        <Result name="GetFieldOffsetToData" value="20576"/>
+                                        <Result name="GetFieldSize" value="381"/>
+                                        <Result name="GetFieldCodePage" value="0"/>
+                                        <Result name="GetFieldReserved" value="0"/>
+                                    </APIResults>
+                                    <Resource>
+                                        <APIResults>
+                                            <Result name="GetRVA" value="20576"/>
+                                            <Result name="GetVA" value="268456032"/>
+                                            <Result name="GetSizeInMemory" value="381"/>
+                                            <Result name="GetFOA" value="0"/>
+                                            <Result name="GetSizeInFile" value="381"/>
+                                            <Result name="GetRawOffset" value="0"/>
+                                            <Result name="GetRawSize" value="381"/>
+                                        </APIResults>
+                                    </Resource>
+                                </ResourceDataEntry>
+                            </ResourceDirectoryEntry>
+                        </ResourceDirectory>
+                    </ResourceDirectoryEntry>
+                </ResourceDirectory>
+            </ResourceDirectoryEntry>
+        </ResourceDirectory>
+    </ResourceTable>
     <RelocationTable relocation-page-count="3">
         <APIResults>
             <Result name="GetRVA" value="24576"/>
@@ -3049,6 +3267,58 @@
             </RelocationItem>
         </RelocationPage>
     </RelocationTable>
+    <DebugInfoTable>
+        <APIResults>
+            <Result name="GetRVA" value="8352"/>
+            <Result name="GetVA" value="268443808"/>
+            <Result name="GetSizeInMemory" value="56"/>
+            <Result name="GetFOA" value="4256"/>
+            <Result name="GetSizeInFile" value="56"/>
+            <Result name="GetRawOffset" value="4256"/>
+            <Result name="GetRawSize" value="56"/>
+            <Result name="GetFieldCharacteristics" value="0"/>
+            <Result name="GetFieldTimeDateStamp" value="1426463982"/>
+            <Result name="GetFieldMajorVersion" value="0"/>
+            <Result name="GetFieldMinorVersion" value="0"/>
+            <Result name="GetFieldType" value="2"/>
+            <Result name="GetFieldSizeOfData" value="101"/>
+            <Result name="GetFieldAddressOfRawData" value="8544"/>
+            <Result name="GetFieldPointerToRawData" value="4448"/>
+        </APIResults>
+    </DebugInfoTable>
+    <GlobalPointerTable>
+        <APIResults>
+            <Result name="GetRVA" value="432"/>
+            <Result name="GetVA" value="268435888"/>
+            <Result name="GetSizeInMemory" value="8"/>
+            <Result name="GetFOA" value="432"/>
+            <Result name="GetSizeInFile" value="8"/>
+            <Result name="GetRawOffset" value="432"/>
+            <Result name="GetRawSize" value="8"/>
+            <Result name="GetFieldGlobalPointerRVA" value="0"/>
+        </APIResults>
+    </GlobalPointerTable>
+    <TlsTable>
+        <APIResults>
+            <Result name="GetRVA" value="8520"/>
+            <Result name="GetVA" value="268443976"/>
+            <Result name="GetSizeInMemory" value="24"/>
+            <Result name="GetFOA" value="4424"/>
+            <Result name="GetSizeInFile" value="24"/>
+            <Result name="GetRawOffset" value="4424"/>
+            <Result name="GetRawSize" value="24"/>
+            <Result name="GetFieldStartAddressOfRawData" value="268451840"/>
+            <Result name="GetFieldEndAddressOfRawData" value="268451848"/>
+            <Result name="GetFieldAddressOfIndex" value="268448612"/>
+            <Result name="GetFieldAddressOfCallBacks" value="268443800"/>
+            <Result name="GetFieldSizeOfZeroFill" value="0"/>
+            <Result name="GetFieldCharacteristics" value="3145728"/>
+            <Result name="GetFieldReserved0" value="0"/>
+            <Result name="GetFieldAlignment" value="3"/>
+            <Result name="GetFieldReserved1" value="0"/>
+            <Result name="GetCallbackCount" value="0"/>
+        </APIResults>
+    </TlsTable>
     <LoadConfigTable>
         <APIResults>
             <Result name="GetRVA" value="8448"/>
@@ -3085,4 +3355,472 @@
             <Result name="GetFieldGuardFlags" value="0"/>
         </APIResults>
     </LoadConfigTable>
+    <ImportAddressTable import-address-block-count="2">
+        <APIResults>
+            <Result name="GetRVA" value="8192"/>
+            <Result name="GetVA" value="268443648"/>
+            <Result name="GetSizeInMemory" value="124"/>
+            <Result name="GetFOA" value="4096"/>
+            <Result name="GetSizeInFile" value="124"/>
+            <Result name="GetRawOffset" value="4096"/>
+            <Result name="GetRawSize" value="124"/>
+        </APIResults>
+        <ImportAddressBlock import-address-item-count="13">
+            <APIResults>
+                <Result name="GetRVA" value="8192"/>
+                <Result name="GetVA" value="268443648"/>
+                <Result name="GetSizeInMemory" value="56"/>
+                <Result name="GetFOA" value="4096"/>
+                <Result name="GetSizeInFile" value="56"/>
+                <Result name="GetRawOffset" value="4096"/>
+                <Result name="GetRawSize" value="56"/>
+            </APIResults>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8192"/>
+                    <Result name="GetVA" value="268443648"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4096"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4096"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9752"/>
+                    <Result name="GetFieldFunction" value="9752"/>
+                    <Result name="GetFieldOrdinal" value="9752"/>
+                    <Result name="GetFieldAddressOfData" value="9752"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8196"/>
+                    <Result name="GetVA" value="268443652"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4100"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4100"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9730"/>
+                    <Result name="GetFieldFunction" value="9730"/>
+                    <Result name="GetFieldOrdinal" value="9730"/>
+                    <Result name="GetFieldAddressOfData" value="9730"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8200"/>
+                    <Result name="GetVA" value="268443656"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4104"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4104"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9704"/>
+                    <Result name="GetFieldFunction" value="9704"/>
+                    <Result name="GetFieldOrdinal" value="9704"/>
+                    <Result name="GetFieldAddressOfData" value="9704"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8204"/>
+                    <Result name="GetVA" value="268443660"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4108"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4108"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9676"/>
+                    <Result name="GetFieldFunction" value="9676"/>
+                    <Result name="GetFieldOrdinal" value="9676"/>
+                    <Result name="GetFieldAddressOfData" value="9676"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8208"/>
+                    <Result name="GetVA" value="268443664"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4112"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4112"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9656"/>
+                    <Result name="GetFieldFunction" value="9656"/>
+                    <Result name="GetFieldOrdinal" value="9656"/>
+                    <Result name="GetFieldAddressOfData" value="9656"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8212"/>
+                    <Result name="GetVA" value="268443668"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4116"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4116"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9640"/>
+                    <Result name="GetFieldFunction" value="9640"/>
+                    <Result name="GetFieldOrdinal" value="9640"/>
+                    <Result name="GetFieldAddressOfData" value="9640"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8216"/>
+                    <Result name="GetVA" value="268443672"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4120"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4120"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9624"/>
+                    <Result name="GetFieldFunction" value="9624"/>
+                    <Result name="GetFieldOrdinal" value="9624"/>
+                    <Result name="GetFieldAddressOfData" value="9624"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8220"/>
+                    <Result name="GetVA" value="268443676"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4124"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4124"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9606"/>
+                    <Result name="GetFieldFunction" value="9606"/>
+                    <Result name="GetFieldOrdinal" value="9606"/>
+                    <Result name="GetFieldAddressOfData" value="9606"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8224"/>
+                    <Result name="GetVA" value="268443680"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4128"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4128"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9588"/>
+                    <Result name="GetFieldFunction" value="9588"/>
+                    <Result name="GetFieldOrdinal" value="9588"/>
+                    <Result name="GetFieldAddressOfData" value="9588"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8228"/>
+                    <Result name="GetVA" value="268443684"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4132"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4132"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9574"/>
+                    <Result name="GetFieldFunction" value="9574"/>
+                    <Result name="GetFieldOrdinal" value="9574"/>
+                    <Result name="GetFieldAddressOfData" value="9574"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8232"/>
+                    <Result name="GetVA" value="268443688"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4136"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4136"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9558"/>
+                    <Result name="GetFieldFunction" value="9558"/>
+                    <Result name="GetFieldOrdinal" value="9558"/>
+                    <Result name="GetFieldAddressOfData" value="9558"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8236"/>
+                    <Result name="GetVA" value="268443692"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4140"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4140"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9540"/>
+                    <Result name="GetFieldFunction" value="9540"/>
+                    <Result name="GetFieldOrdinal" value="9540"/>
+                    <Result name="GetFieldAddressOfData" value="9540"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8240"/>
+                    <Result name="GetVA" value="268443696"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4144"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4144"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9774"/>
+                    <Result name="GetFieldFunction" value="9774"/>
+                    <Result name="GetFieldOrdinal" value="9774"/>
+                    <Result name="GetFieldAddressOfData" value="9774"/>
+                </APIResults>
+            </ImportAddressItem>
+        </ImportAddressBlock>
+        <ImportAddressBlock import-address-item-count="16">
+            <APIResults>
+                <Result name="GetRVA" value="8248"/>
+                <Result name="GetVA" value="268443704"/>
+                <Result name="GetSizeInMemory" value="68"/>
+                <Result name="GetFOA" value="4152"/>
+                <Result name="GetSizeInFile" value="68"/>
+                <Result name="GetRawOffset" value="4152"/>
+                <Result name="GetRawSize" value="68"/>
+            </APIResults>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8248"/>
+                    <Result name="GetVA" value="268443704"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4152"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4152"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9478"/>
+                    <Result name="GetFieldFunction" value="9478"/>
+                    <Result name="GetFieldOrdinal" value="9478"/>
+                    <Result name="GetFieldAddressOfData" value="9478"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8252"/>
+                    <Result name="GetVA" value="268443708"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4156"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4156"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9468"/>
+                    <Result name="GetFieldFunction" value="9468"/>
+                    <Result name="GetFieldOrdinal" value="9468"/>
+                    <Result name="GetFieldAddressOfData" value="9468"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8256"/>
+                    <Result name="GetVA" value="268443712"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4160"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4160"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9454"/>
+                    <Result name="GetFieldFunction" value="9454"/>
+                    <Result name="GetFieldOrdinal" value="9454"/>
+                    <Result name="GetFieldAddressOfData" value="9454"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8260"/>
+                    <Result name="GetVA" value="268443716"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4164"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4164"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9440"/>
+                    <Result name="GetFieldFunction" value="9440"/>
+                    <Result name="GetFieldOrdinal" value="9440"/>
+                    <Result name="GetFieldAddressOfData" value="9440"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8264"/>
+                    <Result name="GetVA" value="268443720"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4168"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4168"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9430"/>
+                    <Result name="GetFieldFunction" value="9430"/>
+                    <Result name="GetFieldOrdinal" value="9430"/>
+                    <Result name="GetFieldAddressOfData" value="9430"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8268"/>
+                    <Result name="GetVA" value="268443724"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4172"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4172"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9422"/>
+                    <Result name="GetFieldFunction" value="9422"/>
+                    <Result name="GetFieldOrdinal" value="9422"/>
+                    <Result name="GetFieldAddressOfData" value="9422"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8272"/>
+                    <Result name="GetVA" value="268443728"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4176"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4176"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9384"/>
+                    <Result name="GetFieldFunction" value="9384"/>
+                    <Result name="GetFieldOrdinal" value="9384"/>
+                    <Result name="GetFieldAddressOfData" value="9384"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8276"/>
+                    <Result name="GetVA" value="268443732"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4180"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4180"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9358"/>
+                    <Result name="GetFieldFunction" value="9358"/>
+                    <Result name="GetFieldOrdinal" value="9358"/>
+                    <Result name="GetFieldAddressOfData" value="9358"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8280"/>
+                    <Result name="GetVA" value="268443736"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4184"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4184"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9336"/>
+                    <Result name="GetFieldFunction" value="9336"/>
+                    <Result name="GetFieldOrdinal" value="9336"/>
+                    <Result name="GetFieldAddressOfData" value="9336"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8284"/>
+                    <Result name="GetVA" value="268443740"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4188"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4188"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9322"/>
+                    <Result name="GetFieldFunction" value="9322"/>
+                    <Result name="GetFieldOrdinal" value="9322"/>
+                    <Result name="GetFieldAddressOfData" value="9322"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8288"/>
+                    <Result name="GetVA" value="268443744"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4192"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4192"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9310"/>
+                    <Result name="GetFieldFunction" value="9310"/>
+                    <Result name="GetFieldOrdinal" value="9310"/>
+                    <Result name="GetFieldAddressOfData" value="9310"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8292"/>
+                    <Result name="GetVA" value="268443748"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4196"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4196"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9296"/>
+                    <Result name="GetFieldFunction" value="9296"/>
+                    <Result name="GetFieldOrdinal" value="9296"/>
+                    <Result name="GetFieldAddressOfData" value="9296"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8296"/>
+                    <Result name="GetVA" value="268443752"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4200"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4200"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9288"/>
+                    <Result name="GetFieldFunction" value="9288"/>
+                    <Result name="GetFieldOrdinal" value="9288"/>
+                    <Result name="GetFieldAddressOfData" value="9288"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8300"/>
+                    <Result name="GetVA" value="268443756"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4204"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4204"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9274"/>
+                    <Result name="GetFieldFunction" value="9274"/>
+                    <Result name="GetFieldOrdinal" value="9274"/>
+                    <Result name="GetFieldAddressOfData" value="9274"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8304"/>
+                    <Result name="GetVA" value="268443760"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4208"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4208"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9514"/>
+                    <Result name="GetFieldFunction" value="9514"/>
+                    <Result name="GetFieldOrdinal" value="9514"/>
+                    <Result name="GetFieldAddressOfData" value="9514"/>
+                </APIResults>
+            </ImportAddressItem>
+            <ImportAddressItem>
+                <APIResults>
+                    <Result name="GetRVA" value="8308"/>
+                    <Result name="GetVA" value="268443764"/>
+                    <Result name="GetSizeInMemory" value="4"/>
+                    <Result name="GetFOA" value="4212"/>
+                    <Result name="GetSizeInFile" value="4"/>
+                    <Result name="GetRawOffset" value="4212"/>
+                    <Result name="GetRawSize" value="4"/>
+                    <Result name="GetFieldForwarderString" value="9256"/>
+                    <Result name="GetFieldFunction" value="9256"/>
+                    <Result name="GetFieldOrdinal" value="9256"/>
+                    <Result name="GetFieldAddressOfData" value="9256"/>
+                </APIResults>
+            </ImportAddressItem>
+        </ImportAddressBlock>
+    </ImportAddressTable>
 </PE>

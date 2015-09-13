@@ -26,7 +26,7 @@ class PEExportFunctionDumper :
 public:
     PEExportFunctionDumper() : PEElementDumper("ExportFunction") {}
 
-    PEExportFunctionDumper & SetDumpElement(LibPEPtr<IPEExportFunction> exportFunction) {
+    PEExportFunctionDumper & SetDumpElement(_In_ IPEExportFunction *exportFunction) {
         _exportFunction = exportFunction;
         return *this;
     }

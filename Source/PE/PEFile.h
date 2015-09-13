@@ -32,7 +32,7 @@ public:
     static HRESULT Create(_In_ DataLoader *pLoader, _Outptr_ IPEFile **ppFile);
 
 public:
-    PEFileT() {}
+    PEFileT() : m_nTableParsedFlags(0) {}
     virtual ~PEFileT() {}
 
     LIBPE_SINGLE_THREAD_OBJECT();

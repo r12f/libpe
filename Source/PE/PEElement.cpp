@@ -39,9 +39,16 @@ template <class T>
 void *
 PEElementT<T>::GetRawMemory()
 {
+    return GetRawMemoryWithSpecifiedSize(GetRawSize());
+}
+
+template <class T>
+void *
+PEElementT<T>::GetRawMemoryWithSpecifiedSize(PEAddress nSize)
+{
     if(NULL == m_pRawBuffer) {
         LIBPE_STRICTCHK(NULL != m_pParser);
-        m_pRawBuffer = m_pParser->GetRawMemory(GetRawOffset(), GetRawSize());
+        m_pRawBuffer = m_pParser->GetRawMemory(GetRawOffset(), nSize);
     }
 
     return m_pRawBuffer;

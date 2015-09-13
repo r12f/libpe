@@ -156,6 +156,7 @@ void *
 PEParserT<T>::GetRawMemory(_In_ UINT64 nOffset, _In_ UINT64 nSize)
 {
     LIBPE_STRICTCHK(NULL != m_pLoader);
+    LIBPE_STRICTCHK(LIBPE_INVALID_SIZE != nSize);
     return m_pLoader->GetBuffer(nOffset, nSize);
 }
 
@@ -374,7 +375,7 @@ PEParserT<T>::ParseExportFunction(_In_ IPEExportTable *pExportTable, UINT32 nInd
 
     LibPEPtr<PEExportFunctionT<T>> pExportFunction = new PEExportFunctionT<T>();
     PEElementParsingScopeT<T> oExportFunctionParsingScope(pExportFunction);
-    InitPEElement(pExportFunction, nFunctionRVA, 0, 0, 0);
+    InitPEElement(pExportFunction, nFunctionRVA, LIBPE_INVALID_ADDRESS, LIBPE_INVALID_SIZE);     // We don't know the exact length of the function, so we always return invalid size.
 
     pExportFunction->InnerSetOrdinal(nNameOrdinal);
 

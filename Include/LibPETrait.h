@@ -85,7 +85,7 @@ struct PETrait<PE64> : PETraitBase {
 
 typedef UINT64                                  PEAddress;
 #define LIBPE_INVALID_ADDRESS                   ((UINT64)(-1))
-#define LIBPE_INVALID_SIZE                      0
+#define LIBPE_INVALID_SIZE                      ((UINT64)(-1))
 #define LIBPE_INVALID_INDEX                     ((UINT32)(-1))
 
 typedef PETraitBase::RawDosHeader               PERawDosHeader;

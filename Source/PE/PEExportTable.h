@@ -64,7 +64,7 @@ public:
     PEExportFunctionT() : m_pName(NULL), m_nOrdinal(0) {}
     ~PEExportFunctionT() override {}
 
-    DECLARE_PE_ELEMENT(void)
+    DECLARE_PE_ELEMENT_NO_SIZE(void)
 
     void InnerSetName(_In_ const char *pName) { m_pName = pName; }
     void InnerSetOrdinal(_In_ UINT16 nOrdinal) { m_nOrdinal = nOrdinal; }

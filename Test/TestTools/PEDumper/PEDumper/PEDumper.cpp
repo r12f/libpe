@@ -47,7 +47,7 @@ PEDumper::PEDumper()
 {
 #define DEFINE_PE_DUMPER_SIMPLE(dumper, getElementFunc, peElement)                                        \
     _dumpers.push_back(                                                                                   \
-        [](_In_ IPEFile *peFile, tinyxml2::XMLElement *parentXMLElement) {                                     \
+        [](_In_ IPEFile *peFile, tinyxml2::XMLElement *parentXMLElement) {                                \
             DumpPEElementSimple<dumper, peElement>(peFile, &IPEFile::getElementFunc, parentXMLElement);   \
     })
 

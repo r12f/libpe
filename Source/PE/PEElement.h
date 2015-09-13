@@ -49,6 +49,8 @@ public:
     virtual HRESULT LoadDelayedData() { return S_OK; }
 
 protected:
+    void * GetRawMemoryWithSpecifiedSize(PEAddress nSize);
+
     LibPEPtr<PEParserT<T>>  m_pParser;
     PEFileT<T>              *m_pFile;
     void                    *m_pRawBuffer;
@@ -77,6 +79,20 @@ typedef PEElementT<PE64> PEElement64;
     PEAddress LIBPE_CALLTYPE GetSizeInFile() override{ return PEElementT<T>::GetSizeInFile(); }         \
                                                                                                         \
     struct_type * GetRawStruct() { return (struct_type *)PEElementT<T>::GetRawMemory(); }
+
+#define DECLARE_PE_ELEMENT_NO_SIZE(struct_type)                                                                 \
+    LIBPE_SINGLE_THREAD_OBJECT()                                                                                \
+                                                                                                                \
+    void * LIBPE_CALLTYPE GetRawMemory() override { return PEElementT<T>::GetRawMemoryWithSpecifiedSize(0); }   \
+    PEAddress LIBPE_CALLTYPE GetRawOffset() override { return PEElementT<T>::GetRawOffset(); }                  \
+    PEAddress LIBPE_CALLTYPE GetRawSize() override { return PEElementT<T>::GetRawSize(); }                      \
+    PEAddress LIBPE_CALLTYPE GetRVA() override { return PEElementT<T>::GetRVA(); }                              \
+    PEAddress LIBPE_CALLTYPE GetVA() override { return PEElementT<T>::GetVA(); }                                \
+    PEAddress LIBPE_CALLTYPE GetSizeInMemory() override { return PEElementT<T>::GetSizeInMemory(); }            \
+    PEAddress LIBPE_CALLTYPE GetFOA() override { return PEElementT<T>::GetFOA(); }                              \
+    PEAddress LIBPE_CALLTYPE GetSizeInFile() override{ return PEElementT<T>::GetSizeInFile(); }                 \
+                                                                                                                \
+    struct_type * GetRawStruct() { return PEElementT<T>::GetRawMemory(); }
 
 
 #define LIBPE_FIELD_ACCESSOR_EX(FieldType, FuncName, FieldName)     \
