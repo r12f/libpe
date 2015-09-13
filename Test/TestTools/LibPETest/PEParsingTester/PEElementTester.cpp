@@ -10,7 +10,7 @@ PEElementTester::~PEElementTester()
 {
 }
 
-PEElementTester & PEElementTester::SetPEFile(IPEFile *peFile)
+PEElementTester & PEElementTester::SetPEFile(_In_ IPEFile *peFile)
 {
     _peFile = peFile;
     return *this;
@@ -91,7 +91,7 @@ void PEElementTester::EndTestSingleAPI()
     _expectedAPIResultOfCurrentTest = nullptr;
 }
 
-void PEElementTester::TestBasicInformation(IPEElement *peElement)
+void PEElementTester::TestBasicInformation(_In_ IPEElement *peElement)
 {
     BEGIN_TEST_PE_ELEMENT(peElement)
         TEST_API_RESULT_SIMPLE(IPEElement, GetRVA)

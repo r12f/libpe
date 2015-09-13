@@ -18,7 +18,7 @@ class PEImportAddressBlockTester :
 public:
     PEImportAddressBlockTester() : PEElementTester("ImportAddressBlock") {}
 
-    PEImportAddressBlockTester & SetImportAddressBlock(IPEImportAddressBlock *importAddressBlock) {
+    PEImportAddressBlockTester & SetImportAddressBlock(_In_ IPEImportAddressBlock *importAddressBlock) {
         _importAddressBlock = importAddressBlock;
         return *this;
     }
@@ -36,14 +36,14 @@ class PEImportAddressItemTester :
 public:
     PEImportAddressItemTester() : PEElementTester("ImportAddressItem") {}
 
-    PEImportAddressItemTester & SetImportAddressItem(IPEImportAddressItem *importAddressItem) {
+    PEImportAddressItemTester & SetImportAddressItem(_In_ IPEImportAddressItem *importAddressItem) {
         _importAddressItem = importAddressItem;
         return *this;
     }
 
 protected:
     void DoTest() override;
-    void TestImportAddressItem(IPEImportAddressItem *importAddressItem);
+    void TestImportAddressItem(_In_ IPEImportAddressItem *importAddressItem);
 
 private:
     LibPEPtr<IPEImportAddressItem> _importAddressItem;

@@ -10,5 +10,5 @@ public:
 
 protected:
     void DoTest() override;
-    void TestTlsTable(IPETlsTable *tlsTable);
+    void TestTlsTable(_In_ IPETlsTable *tlsTable);
 };

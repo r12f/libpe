@@ -8,7 +8,7 @@ class PEResourceTableDumper :
 public:
     PEResourceTableDumper() : PEElementDumper("ResourceTable") {}
 
-    PEResourceTableDumper & SetDumpElement(IPEResourceTable *resourceTable) {
+    PEResourceTableDumper & SetDumpElement(_In_ IPEResourceTable *resourceTable) {
         _resourceTable = resourceTable;
         return *this;
     }
@@ -26,7 +26,7 @@ class PEResourceDirectoryDumper :
 public:
     PEResourceDirectoryDumper() : PEElementDumper("ResourceDirectory") {}
 
-    PEResourceDirectoryDumper & SetResourceDirectory(IPEResourceDirectory *resourceDirectory) {
+    PEResourceDirectoryDumper & SetResourceDirectory(_In_ IPEResourceDirectory *resourceDirectory) {
         _resourceDirectory = resourceDirectory;
         return *this;
     }
@@ -44,7 +44,7 @@ class PEResourceDirectoryEntryDumper :
 public:
     PEResourceDirectoryEntryDumper() : PEElementDumper("ResourceDirectoryEntry") {}
 
-    PEResourceDirectoryEntryDumper & SetResourceDirectoryEntry(IPEResourceDirectoryEntry *resourceDirectoryEntry) {
+    PEResourceDirectoryEntryDumper & SetResourceDirectoryEntry(_In_ IPEResourceDirectoryEntry *resourceDirectoryEntry) {
         _resourceDirectoryEntry = resourceDirectoryEntry;
         return *this;
     }
@@ -62,7 +62,7 @@ class PEResourceDataEntryDumper :
 public:
     PEResourceDataEntryDumper() : PEElementDumper("ResourceDataEntry") {}
 
-    PEResourceDataEntryDumper & SetResourceDataEntry(IPEResourceDataEntry *resourceDataEntry) {
+    PEResourceDataEntryDumper & SetResourceDataEntry(_In_ IPEResourceDataEntry *resourceDataEntry) {
         _resourceDataEntry = resourceDataEntry;
         return *this;
     }
@@ -79,7 +79,7 @@ class PEResourceDumper :
 {
 public:
     PEResourceDumper() : PEElementDumper("Resource") {}
-    PEResourceDumper & SetResource(IPEResource *resource) { _resource = resource; return *this; }
+    PEResourceDumper & SetResource(_In_ IPEResource *resource) { _resource = resource; return *this; }
 
 protected:
     void DoDump() override;

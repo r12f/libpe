@@ -15,12 +15,9 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawResourceDirectory(T))
 
-    void InnerSetRootDirectory(IPEResourceDirectory *pRootDirectory) {
-        LIBPE_CHK_RET_VOID(NULL != pRootDirectory);
-        m_pRootDirectory = pRootDirectory;
-    }
+    void InnerSetRootDirectory(_In_ IPEResourceDirectory *pRootDirectory) { m_pRootDirectory = pRootDirectory; }
 
-    HRESULT LIBPE_CALLTYPE GetRootDirectory(IPEResourceDirectory **ppDirectory) override;
+    HRESULT LIBPE_CALLTYPE GetRootDirectory(_Outptr_ IPEResourceDirectory **ppDirectory) override;
 
 private:
     LibPEPtr<IPEResourceDirectory>  m_pRootDirectory;
@@ -39,10 +36,7 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawResourceDirectory(T))
 
-    void InnerReserveEntry(UINT32 nCount)
-    {
-        m_vEntries.resize(nCount);
-    }
+    void InnerReserveEntry(_In_ UINT32 nCount) { m_vEntries.resize(nCount); }
 
     LIBPE_FIELD_ACCESSOR(UINT32, Characteristics)
     LIBPE_FIELD_ACCESSOR(UINT32, TimeDateStamp)
@@ -52,7 +46,7 @@ public:
     LIBPE_FIELD_ACCESSOR(UINT16, NumberOfIdEntries)
 
     UINT32 LIBPE_CALLTYPE GetEntryCount() override;
-    HRESULT LIBPE_CALLTYPE GetEntryByIndex(UINT32 nIndex, IPEResourceDirectoryEntry **ppEntry) override;
+    HRESULT LIBPE_CALLTYPE GetEntryByIndex(_In_ UINT32 nIndex, _Outptr_ IPEResourceDirectoryEntry **ppEntry) override;
 
 private:
     EntryList   m_vEntries;
@@ -84,10 +78,10 @@ public:
     const wchar_t * LIBPE_CALLTYPE GetName() override;
     
     BOOL LIBPE_CALLTYPE IsEntryDirectory() override;
-    HRESULT LIBPE_CALLTYPE GetDirectory(IPEResourceDirectory **ppDirectory) override;
+    HRESULT LIBPE_CALLTYPE GetDirectory(_Outptr_ IPEResourceDirectory **ppDirectory) override;
 
     BOOL LIBPE_CALLTYPE IsEntryDataEntry() override;
-    HRESULT LIBPE_CALLTYPE GetDataEntry(IPEResourceDataEntry **ppDataEntry) override;
+    HRESULT LIBPE_CALLTYPE GetDataEntry(_Outptr_ IPEResourceDataEntry **ppDataEntry) override;
 };
 
 template <class T>
@@ -106,7 +100,7 @@ public:
     LIBPE_FIELD_ACCESSOR(UINT32, CodePage)
     LIBPE_FIELD_ACCESSOR(UINT32, Reserved)
 
-    HRESULT LIBPE_CALLTYPE GetResource(IPEResource **ppResource) override;
+    HRESULT LIBPE_CALLTYPE GetResource(_Outptr_ IPEResource **ppResource) override;
 
 private:
     LibPEPtr<IPEResource> m_pResource;

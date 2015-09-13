@@ -8,7 +8,7 @@ class PEDebugInfoTableDumper :
 public:
     PEDebugInfoTableDumper() : PEElementDumper("DebugInfoTable") {}
 
-    PEDebugInfoTableDumper & SetDumpElement(IPEDebugInfoTable *debugInfoTable) {
+    PEDebugInfoTableDumper & SetDumpElement(_In_ IPEDebugInfoTable *debugInfoTable) {
         _debugInfoTable = debugInfoTable;
         return *this;
     }

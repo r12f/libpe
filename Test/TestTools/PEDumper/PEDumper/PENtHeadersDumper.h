@@ -8,7 +8,7 @@ class PENtHeadersDumper :
 public:
     PENtHeadersDumper() : PEElementDumper("NtHeaders") {}
 
-    PENtHeadersDumper & SetDumpElement(IPENtHeaders *ntHeaders) {
+    PENtHeadersDumper & SetDumpElement(_In_ IPENtHeaders *ntHeaders) {
         _ntHeaders = ntHeaders;
         return *this;
     }
@@ -26,7 +26,7 @@ class PEFileHeaderDumper :
 public:
     PEFileHeaderDumper() : PEElementDumper("FileHeader") {}
 
-    PEFileHeaderDumper & SetDumpElement(IPEFileHeader *fileHeader) {
+    PEFileHeaderDumper & SetDumpElement(_In_ IPEFileHeader *fileHeader) {
         _fileHeader = fileHeader;
         return *this;
     }
@@ -44,7 +44,7 @@ class PEOptionalHeaderDumper :
 public:
     PEOptionalHeaderDumper() : PEElementDumper("OptionalHeader") {}
 
-    PEOptionalHeaderDumper & SetDumpElement(IPEOptionalHeader *optionalHeader) {
+    PEOptionalHeaderDumper & SetDumpElement(_In_ IPEOptionalHeader *optionalHeader) {
         _optionalHeader = optionalHeader;
         return *this;
     }

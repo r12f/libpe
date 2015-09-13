@@ -29,7 +29,7 @@ class PEFileT :
     typedef std::vector<LibPEPtr<IPESectionHeader>> SectionHeaderList;
 
 public:
-    static HRESULT Create(DataLoader *pLoader, IPEFile **ppFile);
+    static HRESULT Create(_In_ DataLoader *pLoader, _Outptr_ IPEFile **ppFile);
 
 public:
     PEFileT() {}
@@ -37,7 +37,7 @@ public:
 
     LIBPE_SINGLE_THREAD_OBJECT();
 
-    HRESULT Init(PEParserT<T> *pParser);
+    HRESULT Init(_In_ PEParserT<T> *pParser);
 
     // Override IPEFile
     // Raw PE Header
@@ -51,10 +51,10 @@ public:
     PERawOptionalHeader64 * LIBPE_CALLTYPE GetRawOptionalHeader64() override;
 
     // PE Header
-    HRESULT LIBPE_CALLTYPE GetDosHeader(IPEDosHeader **ppDosHeader) override;
-    HRESULT LIBPE_CALLTYPE GetNtHeaders(IPENtHeaders **ppNtHeaders) override;
-    HRESULT LIBPE_CALLTYPE GetFileHeader(IPEFileHeader **ppFileHeader) override;
-    HRESULT LIBPE_CALLTYPE GetOptionalHeader(IPEOptionalHeader **ppOptionalHeader) override;
+    HRESULT LIBPE_CALLTYPE GetDosHeader(_Outptr_ IPEDosHeader **ppDosHeader) override;
+    HRESULT LIBPE_CALLTYPE GetNtHeaders(_Outptr_ IPENtHeaders **ppNtHeaders) override;
+    HRESULT LIBPE_CALLTYPE GetFileHeader(_Outptr_ IPEFileHeader **ppFileHeader) override;
+    HRESULT LIBPE_CALLTYPE GetOptionalHeader(_Outptr_ IPEOptionalHeader **ppOptionalHeader) override;
 
     // PE Header utilities
     BOOL LIBPE_CALLTYPE IsDosFile() override;
@@ -65,61 +65,41 @@ public:
 
     // Section
     UINT32 LIBPE_CALLTYPE GetSectionCount() override;
-    HRESULT LIBPE_CALLTYPE GetSectionHeader(UINT32 nIndex, IPESectionHeader **ppSectionHeader) override;
-    HRESULT LIBPE_CALLTYPE GetSection(UINT32 nIndex, IPESection **ppSection) override;
-    HRESULT LIBPE_CALLTYPE GetSectionByRVA(PEAddress nRVA, IPESection **ppSection) override;
-    HRESULT LIBPE_CALLTYPE GetSectionByVA(PEAddress nVA, IPESection **ppSection) override;
-    HRESULT LIBPE_CALLTYPE GetSectionByFOA(PEAddress nFOA, IPESection **ppSection) override;
-    HRESULT LIBPE_CALLTYPE GetOverlay(IPEOverlay **ppOverlay) override;
+    HRESULT LIBPE_CALLTYPE GetSectionHeader(_In_ UINT32 nIndex, _Outptr_ IPESectionHeader **ppSectionHeader) override;
+    HRESULT LIBPE_CALLTYPE GetSection(_In_ UINT32 nIndex, _Outptr_ IPESection **ppSection) override;
+    HRESULT LIBPE_CALLTYPE GetSectionByRVA(_In_ PEAddress nRVA, _Outptr_ IPESection **ppSection) override;
+    HRESULT LIBPE_CALLTYPE GetSectionByVA(_In_ PEAddress nVA, _Outptr_ IPESection **ppSection) override;
+    HRESULT LIBPE_CALLTYPE GetSectionByFOA(_In_ PEAddress nFOA, _Outptr_ IPESection **ppSection) override;
+    HRESULT LIBPE_CALLTYPE GetOverlay(_Outptr_ IPEOverlay **ppOverlay) override;
 
     // PEAddress convert tools
-    PEAddress LIBPE_CALLTYPE GetRVAFromVA(PEAddress nVA) override;
-    PEAddress LIBPE_CALLTYPE GetVAFromRVA(PEAddress nRVA) override;
-    PEAddress LIBPE_CALLTYPE GetRVAFromFOA(PEAddress nFOA) override;
-    PEAddress LIBPE_CALLTYPE GetFOAFromRVA(PEAddress nRVA) override;
-    PEAddress LIBPE_CALLTYPE GetVAFromFOA(PEAddress nFOA) override;
-    PEAddress LIBPE_CALLTYPE GetFOAFromVA(PEAddress nVA) override;
+    PEAddress LIBPE_CALLTYPE GetRVAFromVA(_In_ PEAddress nVA) override;
+    PEAddress LIBPE_CALLTYPE GetVAFromRVA(_In_ PEAddress nRVA) override;
+    PEAddress LIBPE_CALLTYPE GetRVAFromFOA(_In_ PEAddress nFOA) override;
+    PEAddress LIBPE_CALLTYPE GetFOAFromRVA(_In_ PEAddress nRVA) override;
+    PEAddress LIBPE_CALLTYPE GetVAFromFOA(_In_ PEAddress nFOA) override;
+    PEAddress LIBPE_CALLTYPE GetFOAFromVA(_In_ PEAddress nVA) override;
 
     // Data directory entries operations
-    HRESULT LIBPE_CALLTYPE GetExportTable(IPEExportTable **ppExportTable) override;
-    HRESULT LIBPE_CALLTYPE GetImportTable(IPEImportTable **ppImportTable) override;
-    HRESULT LIBPE_CALLTYPE GetResourceTable(IPEResourceTable **ppResourceTable) override;
-    HRESULT LIBPE_CALLTYPE GetExceptionTable(IPEExceptionTable **ppExceptionTable) override;
-    HRESULT LIBPE_CALLTYPE GetCertificateTable(IPECertificateTable **ppCertificateTable) override;
-    HRESULT LIBPE_CALLTYPE GetRelocationTable(IPERelocationTable **ppRelocationTable) override;
-    HRESULT LIBPE_CALLTYPE GetDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable) override;
-    HRESULT LIBPE_CALLTYPE GetArchitectureDataTable(IPEArchitectureDataTable **ppArchitectureDataTable) override;
-    HRESULT LIBPE_CALLTYPE GetGlobalPointerTable(IPEGlobalPointerTable **ppGlobalPointerTable) override;
-    HRESULT LIBPE_CALLTYPE GetTlsTable(IPETlsTable **ppTlsTable) override;
-    HRESULT LIBPE_CALLTYPE GetLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable) override;
-    HRESULT LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable) override;
-    HRESULT LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTable **ppImportAddressTable) override;
-    HRESULT LIBPE_CALLTYPE GetDelayImportTable(IPEDelayImportTable **ppDelayImportTable) override;
-    HRESULT LIBPE_CALLTYPE GetClrTable(IPEClrTable **ppClrTable) override;
-
-    HRESULT LIBPE_CALLTYPE RemoveExportTable() override { return E_NOTIMPL; };
-    HRESULT LIBPE_CALLTYPE RemoveImportTable() override { return E_NOTIMPL; };
-    HRESULT LIBPE_CALLTYPE RemoveResourceTable() override { return E_NOTIMPL; };
-    HRESULT LIBPE_CALLTYPE RemoveExceptionTable() override { return E_NOTIMPL; };
-    HRESULT LIBPE_CALLTYPE RemoveCertificateTable() override { return E_NOTIMPL; };
-    HRESULT LIBPE_CALLTYPE RemoveRelocationTable() override { return E_NOTIMPL; };
-    HRESULT LIBPE_CALLTYPE RemoveDebugInfoTable() override { return E_NOTIMPL; };
-    HRESULT LIBPE_CALLTYPE RemoveGlobalPointerTable() override { return E_NOTIMPL; };
-    HRESULT LIBPE_CALLTYPE RemoveTlsTable() override { return E_NOTIMPL; };
-    HRESULT LIBPE_CALLTYPE RemoveBoundImportTable() override { return E_NOTIMPL; };
-    HRESULT LIBPE_CALLTYPE RemoveImportAddressTable() override { return E_NOTIMPL; };
-    HRESULT LIBPE_CALLTYPE RemoveDelayImportTable() override { return E_NOTIMPL; };
-    HRESULT LIBPE_CALLTYPE RemoveClrTable() override { return E_NOTIMPL; };
-
-    // PE Verification
-    BOOL LIBPE_CALLTYPE ValidatePEHeader() override { return true; }
-
-    // Rebuild
-    HRESULT LIBPE_CALLTYPE Rebuild(const file_char_t *pFilePath) override { return S_OK; }
+    HRESULT LIBPE_CALLTYPE GetExportTable(_Outptr_ IPEExportTable **ppExportTable) override;
+    HRESULT LIBPE_CALLTYPE GetImportTable(_Outptr_ IPEImportTable **ppImportTable) override;
+    HRESULT LIBPE_CALLTYPE GetResourceTable(_Outptr_ IPEResourceTable **ppResourceTable) override;
+    HRESULT LIBPE_CALLTYPE GetExceptionTable(_Outptr_ IPEExceptionTable **ppExceptionTable) override;
+    HRESULT LIBPE_CALLTYPE GetCertificateTable(_Outptr_ IPECertificateTable **ppCertificateTable) override;
+    HRESULT LIBPE_CALLTYPE GetRelocationTable(_Outptr_ IPERelocationTable **ppRelocationTable) override;
+    HRESULT LIBPE_CALLTYPE GetDebugInfoTable(_Outptr_ IPEDebugInfoTable **ppDebugInfoTable) override;
+    HRESULT LIBPE_CALLTYPE GetArchitectureDataTable(_Outptr_ IPEArchitectureDataTable **ppArchitectureDataTable) override;
+    HRESULT LIBPE_CALLTYPE GetGlobalPointerTable(_Outptr_ IPEGlobalPointerTable **ppGlobalPointerTable) override;
+    HRESULT LIBPE_CALLTYPE GetTlsTable(_Outptr_ IPETlsTable **ppTlsTable) override;
+    HRESULT LIBPE_CALLTYPE GetLoadConfigTable(_Outptr_ IPELoadConfigTable **ppLoadConfigTable) override;
+    HRESULT LIBPE_CALLTYPE GetBoundImportTable(_Outptr_ IPEBoundImportTable **ppBoundImportTable) override;
+    HRESULT LIBPE_CALLTYPE GetImportAddressTable(_Outptr_ IPEImportAddressTable **ppImportAddressTable) override;
+    HRESULT LIBPE_CALLTYPE GetDelayImportTable(_Outptr_ IPEDelayImportTable **ppDelayImportTable) override;
+    HRESULT LIBPE_CALLTYPE GetClrTable(_Outptr_ IPEClrTable **ppClrTable) override;
 
 protected:
     template <class ITable, class ParseFunc>
-    HRESULT ParsePETable(ParseFunc pParseFunc, UINT32 nTableParsedFlag, LibPEPtr<ITable> &pParsedTable, ITable **ppRetTable)
+    HRESULT ParsePETable(_In_ ParseFunc pParseFunc, _In_ UINT32 nTableParsedFlag, _Out_ LibPEPtr<ITable> &pParsedTable, _Outptr_ ITable **ppRetTable)
     {
         HRESULT hr = S_OK;
 

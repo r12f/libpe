@@ -12,7 +12,7 @@ PEExceptionTableT<T>::GetExceptionHandlerCount()
 
 template <class T>
 HRESULT
-PEExceptionTableT<T>::GetExceptionHandlerEntryByIndex(UINT32 nIndex, IPEExceptionHandlerEntry **ppExceptionHandlerEntry)
+PEExceptionTableT<T>::GetExceptionHandlerEntryByIndex(_In_ UINT32 nIndex, _Outptr_ IPEExceptionHandlerEntry **ppExceptionHandlerEntry)
 {
     UINT32 nExceptionHandlerCount = GetExceptionHandlerCount();
     LIBPE_CHK(nIndex < nExceptionHandlerCount, E_BOUNDS);
@@ -27,7 +27,7 @@ PEExceptionTableT<T>::GetExceptionHandlerEntryByIndex(UINT32 nIndex, IPEExceptio
 
 template <class T>
 HRESULT
-PEExceptionTableT<T>::GetExceptionHandlerByIndex(UINT32 nIndex, IPEExceptionHandler **ppExceptionHandler)
+PEExceptionTableT<T>::GetExceptionHandlerByIndex(_In_ UINT32 nIndex, _Outptr_ IPEExceptionHandler **ppExceptionHandler)
 {
     LibPEPtr<IPEExceptionHandlerEntry> pExceptionHandlerEntry;
     LIBPE_CHK_HR(GetExceptionHandlerEntryByIndex(nIndex, &pExceptionHandlerEntry));
@@ -38,7 +38,7 @@ PEExceptionTableT<T>::GetExceptionHandlerByIndex(UINT32 nIndex, IPEExceptionHand
 
 template <class T>
 HRESULT
-PEExceptionHandlerEntryT<T>::GetExceptionHandler(IPEExceptionHandler **ppExceptionHandler)
+PEExceptionHandlerEntryT<T>::GetExceptionHandler(_Outptr_ IPEExceptionHandler **ppExceptionHandler)
 {
     LIBPE_CHK(NULL != ppExceptionHandler, E_POINTER);
 

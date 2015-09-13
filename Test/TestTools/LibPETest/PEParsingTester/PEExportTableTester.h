@@ -10,7 +10,7 @@ public:
 
 protected:
     void DoTest() override;
-    void TestExportTable(IPEExportTable *exportTable);
+    void TestExportTable(_In_ IPEExportTable *exportTable);
 };
 
 class PEExportFunctionTester :
@@ -19,14 +19,14 @@ class PEExportFunctionTester :
 public:
     PEExportFunctionTester() : PEElementTester("ExportFunction") {}
 
-    PEExportFunctionTester & SetExportFunction(IPEExportFunction *exportFunction) {
+    PEExportFunctionTester & SetExportFunction(_In_ IPEExportFunction *exportFunction) {
         _exportFunction = exportFunction;
         return *this;
     }
 
 protected:
     void DoTest() override;
-    void TestExportFunction(IPEExportFunction *exportFunction);
+    void TestExportFunction(_In_ IPEExportFunction *exportFunction);
 
 private:
     LibPEPtr<IPEExportFunction> _exportFunction;

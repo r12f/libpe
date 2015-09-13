@@ -12,7 +12,7 @@ PEImportAddressTableT<T>::GetBlockCount()
 
 template <class T>
 HRESULT
-PEImportAddressTableT<T>::GetBlockByIndex(UINT32 nIndex, IPEImportAddressBlock **ppBlock)
+PEImportAddressTableT<T>::GetBlockByIndex(_In_ UINT32 nIndex, _Outptr_ IPEImportAddressBlock **ppBlock)
 {
     LIBPE_CHK(NULL != ppBlock, E_POINTER);
     
@@ -24,7 +24,7 @@ PEImportAddressTableT<T>::GetBlockByIndex(UINT32 nIndex, IPEImportAddressBlock *
 
 template <class T>
 BOOL
-PEImportAddressTableT<T>::IsBlockExists(IPEImportAddressBlock *pBlock)
+PEImportAddressTableT<T>::IsBlockExists(_In_ IPEImportAddressBlock *pBlock)
 {
     LIBPE_CHK(NULL != pBlock, FALSE);
 
@@ -43,7 +43,7 @@ PEImportAddressTableT<T>::IsBlockExists(IPEImportAddressBlock *pBlock)
 
 template <class T>
 BOOL
-PEImportAddressTableT<T>::IsItemExist(IPEImportAddressItem *pItem)
+PEImportAddressTableT<T>::IsItemExist(_In_ IPEImportAddressItem *pItem)
 {
     LIBPE_CHK(NULL != pItem, FALSE);
 
@@ -66,7 +66,7 @@ PEImportAddressBlockT<T>::GetItemCount()
 
 template <class T>
 HRESULT
-PEImportAddressBlockT<T>::GetItemByIndex(UINT32 nIndex, IPEImportAddressItem **ppItem)
+PEImportAddressBlockT<T>::GetItemByIndex(_In_ UINT32 nIndex, _Outptr_ IPEImportAddressItem **ppItem)
 {
     LIBPE_CHK(NULL != ppItem, E_POINTER);
     
@@ -78,7 +78,7 @@ PEImportAddressBlockT<T>::GetItemByIndex(UINT32 nIndex, IPEImportAddressItem **p
 
 template <class T>
 BOOL
-PEImportAddressBlockT<T>::IsItemExist(IPEImportAddressItem *pItem)
+PEImportAddressBlockT<T>::IsItemExist(_In_ IPEImportAddressItem *pItem)
 {
     LIBPE_CHK(NULL != pItem, FALSE);
 

@@ -2,7 +2,7 @@
 
 class PEDumper
 {
-    typedef void (*PEElementDumpFunc)(IPEFile *, tinyxml2::XMLElement *);
+    typedef void (*PEElementDumpFunc)(_In_ IPEFile *, tinyxml2::XMLElement *);
 
 public:
     PEDumper();

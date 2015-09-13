@@ -71,7 +71,7 @@ void PEImportAddressItemTester::DoTest()
     });
 }
 
-void PEImportAddressItemTester::TestImportAddressItem(IPEImportAddressItem *importAddressItem)
+void PEImportAddressItemTester::TestImportAddressItem(_In_ IPEImportAddressItem *importAddressItem)
 {
     BEGIN_TEST_PE_ELEMENT(importAddressItem)
         TEST_RAW_FIELD_SIMPLE(IPEImportAddressItem, ForwarderString)

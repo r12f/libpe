@@ -6,7 +6,7 @@ public:
     PEElementTester(const char *elementName);
     virtual ~PEElementTester();
 
-    PEElementTester & SetPEFile(IPEFile *peFile);
+    PEElementTester & SetPEFile(_In_ IPEFile *peFile);
 
     PEElementTester & SetExpectedResult(
         tinyxml2::XMLElement *parentExpectedResult,
@@ -76,7 +76,7 @@ protected:
         }
     }
 
-    void TestBasicInformation(IPEElement *peElement);
+    void TestBasicInformation(_In_ IPEElement *peElement);
 
     const char * GetElementName() const { return _elementName.c_str(); }
 

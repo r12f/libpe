@@ -18,14 +18,14 @@ class PEBoundImportModuleTester :
 public:
     PEBoundImportModuleTester() : PEElementTester("BoundImportModule") {}
 
-    PEBoundImportModuleTester & SetBoundImportModule(IPEBoundImportModule *boundImportModule) {
+    PEBoundImportModuleTester & SetBoundImportModule(_In_ IPEBoundImportModule *boundImportModule) {
         _boundImportModule = boundImportModule;
         return *this;
     }
 
 protected:
     void DoTest() override;
-    void TestBoundImportModule(IPEBoundImportModule *boundImportModule);
+    void TestBoundImportModule(_In_ IPEBoundImportModule *boundImportModule);
 
 private:
     LibPEPtr<IPEBoundImportModule> _boundImportModule;
@@ -37,14 +37,14 @@ class PEBoundForwarderTester :
 public:
     PEBoundForwarderTester() : PEElementTester("BoundForwarder") {}
 
-    PEBoundForwarderTester & SetBoundForwarder(IPEBoundForwarder *boundForwarder) {
+    PEBoundForwarderTester & SetBoundForwarder(_In_ IPEBoundForwarder *boundForwarder) {
         _boundForwarder = boundForwarder;
         return *this;
     }
 
 protected:
     void DoTest() override;
-    void TestBoundForwarder(IPEBoundForwarder *boundForwarder);
+    void TestBoundForwarder(_In_ IPEBoundForwarder *boundForwarder);
 
 private:
     LibPEPtr<IPEBoundForwarder> _boundForwarder;

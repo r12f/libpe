@@ -32,7 +32,7 @@ void PESectionHeaderTester::DoTest()
     });
 }
 
-void PESectionHeaderTester::TestSectionHeader(IPESectionHeader *sectionHeader)
+void PESectionHeaderTester::TestSectionHeader(_In_ IPESectionHeader *sectionHeader)
 {
     BEGIN_TEST_PE_ELEMENT(sectionHeader)
         TEST_RAW_FIELD_SIMPLE(IPESectionHeader, PhysicalAddress)

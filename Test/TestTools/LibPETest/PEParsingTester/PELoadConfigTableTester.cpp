@@ -17,7 +17,7 @@ void PELoadConfigTableTester::DoTest()
     });
 }
 
-void PELoadConfigTableTester::TestLoadConfigTable(IPELoadConfigTable *loadConfigTable)
+void PELoadConfigTableTester::TestLoadConfigTable(_In_ IPELoadConfigTable *loadConfigTable)
 {
     BEGIN_TEST_PE_ELEMENT(loadConfigTable)
         TEST_RAW_FIELD_SIMPLE(IPELoadConfigTable, Size)

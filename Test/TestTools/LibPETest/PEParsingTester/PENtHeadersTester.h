@@ -10,7 +10,7 @@ public:
 
 protected:
     void DoTest() override;
-    void TestNtHeaders(IPENtHeaders *ntHeaders);
+    void TestNtHeaders(_In_ IPENtHeaders *ntHeaders);
 };
 
 class PEFileHeaderTester :
@@ -21,7 +21,7 @@ public:
 
 protected:
     void DoTest() override;
-    void TestFileHeader(IPEFileHeader *fileHeader);
+    void TestFileHeader(_In_ IPEFileHeader *fileHeader);
 };
 
 class PEOptionalHeaderTester :
@@ -32,5 +32,5 @@ public:
 
 protected:
     void DoTest() override;
-    void TestOptionalHeader(IPEOptionalHeader *optionalHeader);
+    void TestOptionalHeader(_In_ IPEOptionalHeader *optionalHeader);
 };

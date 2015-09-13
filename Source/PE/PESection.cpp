@@ -5,7 +5,7 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 HRESULT
-PESectionHeaderT<T>::GetSection(IPESection **ppSection)
+PESectionHeaderT<T>::GetSection(_Outptr_ IPESection **ppSection)
 {
     if(NULL == m_pSection) {
         LIBPE_CHK(NULL != m_pParser, E_FAIL);
@@ -49,7 +49,7 @@ PESectionT<T>::GetCharacteristics()
 
 template <class T>
 HRESULT
-PESectionT<T>::SetName(const char *pName)
+PESectionT<T>::SetName(_In_ const char *pName)
 {
     return S_OK;
 }

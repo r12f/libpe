@@ -8,7 +8,7 @@ class PEDosHeaderDumper :
 public:
     PEDosHeaderDumper() : PEElementDumper("DosHeader") {}
 
-    PEDosHeaderDumper & SetDumpElement(IPEDosHeader *dosHeader) {
+    PEDosHeaderDumper & SetDumpElement(_In_ IPEDosHeader *dosHeader) {
         _dosHeader = dosHeader;
         return *this;
     }

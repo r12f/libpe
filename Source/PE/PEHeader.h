@@ -47,12 +47,12 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawNtHeadersT(T))
 
-    void InnerSetFileHeader(IPEFileHeader *pFileHeader) { m_pFileHeader = pFileHeader; }
-    void InnerSetOptionalHeader(IPEOptionalHeader *pOptionalHeader) { m_pOptionalHeader = pOptionalHeader; }
+    void InnerSetFileHeader(_In_ IPEFileHeader *pFileHeader) { m_pFileHeader = pFileHeader; }
+    void InnerSetOptionalHeader(_In_ IPEOptionalHeader *pOptionalHeader) { m_pOptionalHeader = pOptionalHeader; }
 
     LIBPE_FIELD_ACCESSOR(UINT32, Signature)
-    HRESULT LIBPE_CALLTYPE GetFileHeader(IPEFileHeader **ppFileHeader) override { return m_pFileHeader.CopyTo(ppFileHeader); }
-    HRESULT LIBPE_CALLTYPE GetOptionalHeader(IPEOptionalHeader **ppOptionalHeader) override { return m_pOptionalHeader.CopyTo(ppOptionalHeader); }
+    HRESULT LIBPE_CALLTYPE GetFileHeader(_Outptr_ IPEFileHeader **ppFileHeader) override { return m_pFileHeader.CopyTo(ppFileHeader); }
+    HRESULT LIBPE_CALLTYPE GetOptionalHeader(_Outptr_ IPEOptionalHeader **ppOptionalHeader) override { return m_pOptionalHeader.CopyTo(ppOptionalHeader); }
     
 private:
     LibPEPtr<IPEFileHeader>     m_pFileHeader;

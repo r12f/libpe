@@ -16,13 +16,13 @@ public:
     BOOL IsRawAddressVA() override { return false; }
 
 protected:
-    PEAddress GetRawOffsetFromAddressField(PEAddress nAddress) override { return GetFOAFromRVA(nAddress); }
-    PEAddress GetRVAFromAddressField(PEAddress nAddress) override { return nAddress; }
-    PEAddress GetFOAFromAddressField(PEAddress nAddress) override { return GetFOAFromRVA(nAddress); }
-    PEAddress GetRawOffsetFromRVA(PEAddress nRVA) override { return GetFOAFromRVA(nRVA); }
-    PEAddress GetRawOffsetFromFOA(PEAddress nFOA) override { return nFOA; }
-    PEAddress GetRVAFromRawOffset(PEAddress nRawOffset) override { return GetFOAFromRVA(nRawOffset); }
-    PEAddress GetFOAFromRawOffset(PEAddress nRawOffset) override { return nRawOffset; }
+    PEAddress GetRawOffsetFromAddressField(_In_ PEAddress nAddress) override { return GetFOAFromRVA(nAddress); }
+    PEAddress GetRVAFromAddressField(_In_ PEAddress nAddress) override { return nAddress; }
+    PEAddress GetFOAFromAddressField(_In_ PEAddress nAddress) override { return GetFOAFromRVA(nAddress); }
+    PEAddress GetRawOffsetFromRVA(_In_ PEAddress nRVA) override { return GetFOAFromRVA(nRVA); }
+    PEAddress GetRawOffsetFromFOA(_In_ PEAddress nFOA) override { return nFOA; }
+    PEAddress GetRVAFromRawOffset(_In_ PEAddress nRawOffset) override { return GetFOAFromRVA(nRawOffset); }
+    PEAddress GetFOAFromRawOffset(_In_ PEAddress nRawOffset) override { return nRawOffset; }
 };
 typedef PEParserDiskFileT<PE32> PEParserDiskFile32;
 typedef PEParserDiskFileT<PE64> PEParserDiskFile64;

@@ -18,7 +18,7 @@ class PESectionDumper :
 public:
     PESectionDumper() : PEElementDumper("Section") {}
 
-    PESectionDumper & SetSection(IPESection *section) {
+    PESectionDumper & SetSection(_In_ IPESection *section) {
         _section = section;
         return *this;
     }

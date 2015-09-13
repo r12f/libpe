@@ -14,7 +14,7 @@ void PEDosHeaderTester::DoTest()
     });
 }
 
-void PEDosHeaderTester::TestDosHeader(IPEDosHeader *dosHeader)
+void PEDosHeaderTester::TestDosHeader(_In_ IPEDosHeader *dosHeader)
 {
     BEGIN_TEST_PE_ELEMENT(dosHeader)
         TEST_RAW_FIELD_SIMPLE(IPEDosHeader, Magic)

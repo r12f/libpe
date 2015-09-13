@@ -5,7 +5,7 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 HRESULT
-PEGlobalPointerTableT<T>::GetRelatedSection(IPESection **ppSection)
+PEGlobalPointerTableT<T>::GetRelatedSection(_Outptr_ IPESection **ppSection)
 {
     LIBPE_CHK(NULL != ppSection, E_POINTER);
     LIBPE_CHK(NULL != m_pFile, E_UNEXPECTED);

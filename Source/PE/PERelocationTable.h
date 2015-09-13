@@ -17,15 +17,12 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawBaseRelocation(T))
 
-    void InnerAddRelocationPage(IPERelocationPage *pPage) {
-        LIBPE_CHK_RET_VOID(NULL != pPage);
-        m_vPages.push_back(pPage);
-    }
+    void InnerAddRelocationPage(_In_ IPERelocationPage *pPage) { m_vPages.push_back(pPage); }
 
     UINT32 LIBPE_CALLTYPE GetPageCount() override;
-    HRESULT LIBPE_CALLTYPE GetPageByIndex(UINT32 nIndex, IPERelocationPage **ppRelocationPage) override;
-    BOOL LIBPE_CALLTYPE IsRVANeedRelocation(PEAddress nRVA) override;
-    HRESULT LIBPE_CALLTYPE GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem) override;
+    HRESULT LIBPE_CALLTYPE GetPageByIndex(_In_ UINT32 nIndex, _Outptr_ IPERelocationPage **ppRelocationPage) override;
+    BOOL LIBPE_CALLTYPE IsRVANeedRelocation(_In_ PEAddress nRVA) override;
+    HRESULT LIBPE_CALLTYPE GetItemByRVA(_In_ PEAddress nRVA, _Outptr_ IPERelocationItem **ppRelocationItem) override;
 
 private:
     RelocationPageList m_vPages;
@@ -44,19 +41,16 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawBaseRelocation(T))
 
-    void InnerAddRelocationItem(IPERelocationItem *pItem) {
-        LIBPE_CHK_RET_VOID(NULL != pItem);
-        m_vItems.push_back(pItem);
-    }
+    void InnerAddRelocationItem(_In_ IPERelocationItem *pItem) { m_vItems.push_back(pItem); }
 
     LIBPE_FIELD_ACCESSOR(UINT32, VirtualAddress)
     LIBPE_FIELD_ACCESSOR(UINT32, SizeOfBlock)
 
     PEAddress LIBPE_CALLTYPE GetPageRVA() override;
     UINT32 LIBPE_CALLTYPE GetItemCount() override;
-    HRESULT LIBPE_CALLTYPE GetItemByIndex(UINT32 nIndex, IPERelocationItem **ppRelocationItem) override;
-    BOOL LIBPE_CALLTYPE IsRVANeedRelocation(PEAddress nRVA) override;
-    HRESULT LIBPE_CALLTYPE GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem) override;
+    HRESULT LIBPE_CALLTYPE GetItemByIndex(_In_ UINT32 nIndex, _Outptr_ IPERelocationItem **ppRelocationItem) override;
+    BOOL LIBPE_CALLTYPE IsRVANeedRelocation(_In_ PEAddress nRVA) override;
+    HRESULT LIBPE_CALLTYPE GetItemByRVA(_In_ PEAddress nRVA, _Outptr_ IPERelocationItem **ppRelocationItem) override;
 
 private:
     RelocationItemList m_vItems;
@@ -74,7 +68,7 @@ public:
     DECLARE_PE_ELEMENT(void)
 
     void InnerSetRelocateFlag(UINT16 nRelocateFlag) { m_nRelocateFlag = nRelocateFlag; }
-    void InnerSetAddressRVA(PEAddress nRVA) { m_nAddressRVA = nRVA; }
+    void InnerSetAddressRVA(_In_ PEAddress nRVA) { m_nAddressRVA = nRVA; }
 
     UINT16 LIBPE_CALLTYPE GetFlag() override;
     PEAddress LIBPE_CALLTYPE GetAddressRVA() override;

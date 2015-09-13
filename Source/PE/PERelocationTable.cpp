@@ -12,7 +12,7 @@ PERelocationTableT<T>::GetPageCount()
 
 template <class T>
 HRESULT
-PERelocationTableT<T>::GetPageByIndex(UINT32 nIndex, IPERelocationPage **ppRelocationPage)
+PERelocationTableT<T>::GetPageByIndex(_In_ UINT32 nIndex, _Outptr_ IPERelocationPage **ppRelocationPage)
 {
     LIBPE_CHK(NULL != ppRelocationPage, E_POINTER);
 
@@ -24,7 +24,7 @@ PERelocationTableT<T>::GetPageByIndex(UINT32 nIndex, IPERelocationPage **ppReloc
 
 template <class T>
 BOOL
-PERelocationTableT<T>::IsRVANeedRelocation(PEAddress nRVA)
+PERelocationTableT<T>::IsRVANeedRelocation(_In_ PEAddress nRVA)
 {
     LibPEPtr<IPERelocationItem> pItem;
     return ((SUCCEEDED(GetItemByRVA(nRVA, &pItem))) && NULL != pItem);
@@ -32,7 +32,7 @@ PERelocationTableT<T>::IsRVANeedRelocation(PEAddress nRVA)
 
 template <class T>
 HRESULT
-PERelocationTableT<T>::GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem)
+PERelocationTableT<T>::GetItemByRVA(_In_ PEAddress nRVA, _Outptr_ IPERelocationItem **ppRelocationItem)
 {
     LIBPE_CHK(NULL != ppRelocationItem, E_POINTER);
     *ppRelocationItem = NULL;
@@ -71,7 +71,7 @@ PERelocationPageT<T>::GetItemCount()
 
 template <class T>
 HRESULT
-PERelocationPageT<T>::GetItemByIndex(UINT32 nIndex, IPERelocationItem **ppRelocationItem)
+PERelocationPageT<T>::GetItemByIndex(_In_ UINT32 nIndex, _Outptr_ IPERelocationItem **ppRelocationItem)
 {
     LIBPE_CHK(NULL != ppRelocationItem, E_POINTER);
 
@@ -83,7 +83,7 @@ PERelocationPageT<T>::GetItemByIndex(UINT32 nIndex, IPERelocationItem **ppReloca
 
 template <class T>
 BOOL
-PERelocationPageT<T>::IsRVANeedRelocation(PEAddress nRVA)
+PERelocationPageT<T>::IsRVANeedRelocation(_In_ PEAddress nRVA)
 {
     LibPEPtr<IPERelocationItem> pItem;
     return ((SUCCEEDED(GetItemByRVA(nRVA, &pItem))) && NULL != pItem);
@@ -91,7 +91,7 @@ PERelocationPageT<T>::IsRVANeedRelocation(PEAddress nRVA)
 
 template <class T>
 HRESULT
-PERelocationPageT<T>::GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem)
+PERelocationPageT<T>::GetItemByRVA(_In_ PEAddress nRVA, _Outptr_ IPERelocationItem **ppRelocationItem)
 {
     LIBPE_CHK(NULL != ppRelocationItem, E_POINTER);
     *ppRelocationItem = NULL;
@@ -143,7 +143,7 @@ PERelocationItemT<T>::GetRawAddressContent()
 {
     LIBPE_CHK(NULL != m_pParser, 0);
     PEAddress nAddressFOA = m_pParser->GetFOAFromRVA(m_nAddressRVA);
-    return (PEAddress *)m_pParser->GetRawMemory(nAddressFOA, sizeof(UINT16));
+    return (_In_ PEAddress *)m_pParser->GetRawMemory(nAddressFOA, sizeof(UINT16));
 }
 
 LIBPE_FORCE_TEMPLATE_REDUCTION_CLASS(PERelocationTableT);

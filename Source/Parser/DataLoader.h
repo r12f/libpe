@@ -12,9 +12,9 @@ public:
     virtual ~DataLoader() {}
     virtual PEParserType GetType() = 0;
     virtual UINT64 GetSize() = 0;
-    virtual void * GetBuffer(UINT64 nOffset, UINT64 nSize) = 0;
-    virtual const char * GetAnsiString(UINT64 nOffset, UINT64 &nSize) = 0;
-    virtual const wchar_t * GetUnicodeString(UINT64 nOffset, UINT64 &nSize) = 0;
+    virtual void * GetBuffer(_In_ UINT64 nOffset, _In_ UINT64 nSize) = 0;
+    virtual const char * GetAnsiString(_In_ UINT64 nOffset, _Out_ UINT64 &nSize) = 0;
+    virtual const wchar_t * GetUnicodeString(_In_ UINT64 nOffset, _Out_ UINT64 &nSize) = 0;
 };
 
 class DataLoaderDiskFile :
@@ -33,16 +33,16 @@ public:
     BOOL LoadFile(const file_t &strPath);
 
     // Override PELoader
-    virtual PEParserType GetType() { return PE_PARSER_TYPE_DISK_FILE; }
-    virtual UINT64 GetSize() { return m_nFileSize; }
-    virtual void * GetBuffer(UINT64 nOffset, UINT64 nSize);
-    virtual const char * GetAnsiString(UINT64 nOffset, UINT64 &nSize);
-    virtual const wchar_t * GetUnicodeString(UINT64 nOffset, UINT64 &nSize);
+    PEParserType GetType() override { return PE_PARSER_TYPE_DISK_FILE; }
+    UINT64 GetSize() override { return m_nFileSize; }
+    void * GetBuffer(_In_ UINT64 nOffset, _In_ UINT64 nSize) override;
+    const char * GetAnsiString(_In_ UINT64 nOffset, _Out_ UINT64 &nSize) override;
+    const wchar_t * GetUnicodeString(_In_ UINT64 nOffset, _Out_ UINT64 &nSize) override;
 
 protected:
     void Reset();
-    INT32 GetBlockId(UINT64 nOffset);
-    BOOL ReadBlock(INT32 nBlockId);
+    INT32 GetBlockId(_In_ UINT64 nOffset);
+    BOOL ReadBlock(_In_ INT32 nBlockId);
 
 private:
     FileHandle  m_hFile;

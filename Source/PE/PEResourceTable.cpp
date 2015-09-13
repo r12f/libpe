@@ -5,7 +5,7 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 HRESULT
-PEResourceTableT<T>::GetRootDirectory(IPEResourceDirectory **ppDirectory)
+PEResourceTableT<T>::GetRootDirectory(_Outptr_ IPEResourceDirectory **ppDirectory)
 {
     LIBPE_CHK(NULL != ppDirectory, E_POINTER);
     return m_pRootDirectory.CopyTo(ppDirectory);
@@ -20,7 +20,7 @@ PEResourceDirectoryT<T>::GetEntryCount()
 
 template <class T>
 HRESULT
-PEResourceDirectoryT<T>::GetEntryByIndex(UINT32 nIndex, IPEResourceDirectoryEntry **ppEntry)
+PEResourceDirectoryT<T>::GetEntryByIndex(_In_ UINT32 nIndex, _Outptr_ IPEResourceDirectoryEntry **ppEntry)
 {
     LIBPE_CHK(NULL != ppEntry, E_POINTER);
 
@@ -119,7 +119,7 @@ PEResourceDirectoryEntryT<T>::IsEntryDirectory()
 
 template <class T>
 HRESULT
-PEResourceDirectoryEntryT<T>::GetDirectory(IPEResourceDirectory **ppDirectory)
+PEResourceDirectoryEntryT<T>::GetDirectory(_Outptr_ IPEResourceDirectory **ppDirectory)
 {
     LIBPE_CHK(NULL != ppDirectory, E_POINTER);
     LIBPE_CHK(NULL != m_pParser, E_FAIL);
@@ -162,7 +162,7 @@ PEResourceDirectoryEntryT<T>::IsEntryDataEntry()
 
 template <class T>
 HRESULT
-PEResourceDirectoryEntryT<T>::GetDataEntry(IPEResourceDataEntry **ppDataEntry)
+PEResourceDirectoryEntryT<T>::GetDataEntry(_Outptr_ IPEResourceDataEntry **ppDataEntry)
 {
     LIBPE_CHK(NULL != ppDataEntry, E_POINTER);
     LIBPE_CHK(NULL != m_pParser, NULL);
@@ -191,7 +191,7 @@ PEResourceDirectoryEntryT<T>::GetDataEntry(IPEResourceDataEntry **ppDataEntry)
 
 template <class T>
 HRESULT
-PEResourceDataEntryT<T>::GetResource(IPEResource **ppResource)
+PEResourceDataEntryT<T>::GetResource(_Outptr_ IPEResource **ppResource)
 {
     LIBPE_CHK(NULL != ppResource, E_POINTER);
     LIBPE_CHK(NULL != m_pParser, E_FAIL);

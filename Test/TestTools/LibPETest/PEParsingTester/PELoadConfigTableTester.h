@@ -10,5 +10,5 @@ public:
 
 protected:
     void DoTest() override;
-    void TestLoadConfigTable(IPELoadConfigTable *loadConfigTable);
+    void TestLoadConfigTable(_In_ IPELoadConfigTable *loadConfigTable);
 };

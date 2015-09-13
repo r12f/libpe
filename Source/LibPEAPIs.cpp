@@ -5,7 +5,7 @@
 LIBPE_NAMESPACE_BEGIN
 
 static HRESULT
-ParsePEFromDataLoader(DataLoader *pDataLoader, IPEFile **ppFile)
+ParsePEFromDataLoader(DataLoader *pDataLoader, _Outptr_ IPEFile **ppFile)
 {
     LIBPE_CHK(NULL != pDataLoader && NULL != ppFile, E_POINTER);
 
@@ -21,7 +21,7 @@ ParsePEFromDataLoader(DataLoader *pDataLoader, IPEFile **ppFile)
 }
 
 HRESULT LIBPE_API
-ParsePEFromDiskFile(const file_char_t *pFilePath, IPEFile **ppFile)
+ParsePEFromDiskFile(const file_char_t *pFilePath, _Outptr_ IPEFile **ppFile)
 {
     LibPEPtr<DataLoader> pDataLoader = new DataLoaderDiskFile;
     LIBPE_CHK(NULL != pDataLoader, E_OUTOFMEMORY);
@@ -33,20 +33,20 @@ ParsePEFromDiskFile(const file_char_t *pFilePath, IPEFile **ppFile)
 }
 
 HRESULT LIBPE_API
-ParsePEFromMappedFile(void *pMemory, IPEFile **ppFile)
+ParsePEFromMappedFile(void *pMemory, _Outptr_ IPEFile **ppFile)
 {
     return E_NOTIMPL;
 }
 
 #ifdef LIBPE_WINOS
 HRESULT LIBPE_API
-ParsePEFromMappedResource(HMODULE hModule, IPEFile **ppFile)
+ParsePEFromMappedResource(HMODULE hModule, _Outptr_ IPEFile **ppFile)
 {
     return E_NOTIMPL;
 }
 
 HRESULT LIBPE_API
-ParsePEFromLoadedModule(HMODULE hModule, IPEFile **ppFile)
+ParsePEFromLoadedModule(HMODULE hModule, _Outptr_ IPEFile **ppFile)
 {
     return E_NOTIMPL;
 }

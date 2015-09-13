@@ -8,7 +8,7 @@ class PEExportTableDumper :
 public:
     PEExportTableDumper() : PEElementDumper("ExportTable") {}
 
-    PEExportTableDumper & SetDumpElement(IPEExportTable *exportTable) {
+    PEExportTableDumper & SetDumpElement(_In_ IPEExportTable *exportTable) {
         _exportTable = exportTable;
         return *this;
     }

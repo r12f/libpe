@@ -64,7 +64,7 @@ void PEImportModuleTester::DoTest()
     ASSERT_TRUE(PEImportFunctionTester().IsLastExpectedResult(importFunctionExpectedResult));
 }
 
-void PEImportModuleTester::TestImportModule(IPEImportModule *importModule)
+void PEImportModuleTester::TestImportModule(_In_ IPEImportModule *importModule)
 {
     BEGIN_TEST_PE_ELEMENT(importModule)
         TEST_RAW_FIELD_SIMPLE(IPEImportModule, Characteristics)
@@ -86,7 +86,7 @@ void PEImportFunctionTester::DoTest()
     });
 }
 
-void PEImportFunctionTester::TestImportFunction(IPEImportFunction *importFunction)
+void PEImportFunctionTester::TestImportFunction(_In_ IPEImportFunction *importFunction)
 {
     BEGIN_TEST_PE_ELEMENT(importFunction)
         TEST_RAW_FIELD_SIMPLE(IPEImportFunction, ForwarderString)

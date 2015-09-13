@@ -17,7 +17,7 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawTlsDirectory(T))
 
-    HRESULT InnerAddCallbackRVA(PEAddress nRVA);
+    HRESULT InnerAddCallbackRVA(_In_ PEAddress nRVA);
 
     LIBPE_FIELD_ACCESSOR(UINT64, StartAddressOfRawData);
     LIBPE_FIELD_ACCESSOR(UINT64, EndAddressOfRawData);
@@ -30,7 +30,7 @@ public:
     LIBPE_FIELD_ACCESSOR(UINT32, Reserved1);
 
     virtual UINT32 LIBPE_CALLTYPE GetCallbackCount();
-    virtual PEAddress LIBPE_CALLTYPE GetCallbackRVAByIndex(UINT32 nIndex);
+    virtual PEAddress LIBPE_CALLTYPE GetCallbackRVAByIndex(_In_ UINT32 nIndex);
 
 protected:
     HRESULT EnsureTlsCallbacksParsed();

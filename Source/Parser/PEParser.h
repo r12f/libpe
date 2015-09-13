@@ -16,7 +16,7 @@ class PEParserT :
     class PEElementParsingScopeT
     {
     public:
-        PEElementParsingScopeT(PEElementT<T> *pElement)
+        PEElementParsingScopeT(_In_ PEElementT<T> *pElement)
             : m_pElement(pElement)
         {}
 
@@ -47,106 +47,107 @@ public:
 
     // Address converter
     virtual BOOL IsRawAddressVA() = 0;
-    PEAddress GetRVAFromVA(PEAddress nVA);
-    PEAddress GetVAFromRVA(PEAddress nRVA);
-    PEAddress GetRVAFromFOA(PEAddress nFOA);
-    PEAddress GetFOAFromRVA(PEAddress nRVA);
-    PEAddress GetVAFromFOA(PEAddress nFOA);
-    PEAddress GetFOAFromVA(PEAddress nVA);
+    PEAddress GetRVAFromVA(_In_ PEAddress nVA);
+    PEAddress GetVAFromRVA(_In_ PEAddress nRVA);
+    PEAddress GetRVAFromFOA(_In_ PEAddress nFOA);
+    PEAddress GetFOAFromRVA(_In_ PEAddress nRVA);
+    PEAddress GetVAFromFOA(_In_ PEAddress nFOA);
+    PEAddress GetFOAFromVA(_In_ PEAddress nVA);
 
     // Raw memory getter
-    void * GetRawMemory(UINT64 nOffset, UINT64 nSize);
+    void * GetRawMemory(_In_ UINT64 nOffset, _In_ UINT64 nSize);
 
     // String parser
-    const char * ParseAnsiString(PEAddress nRVA, PEAddress nFOA, UINT64 &nSize);
-    const wchar_t * ParseUnicodeString(PEAddress nRVA, PEAddress nFOA, UINT64 &nSize);
+    const char * ParseAnsiString(_In_ PEAddress nRVA, _In_ PEAddress nFOA, UINT64 &nSize);
+    const wchar_t * ParseUnicodeString(_In_ PEAddress nRVA, _In_ PEAddress nFOA, UINT64 &nSize);
 
     // Basic info related functions
-    HRESULT ParseBasicInfo(IPEDosHeader **ppDosHeader, IPENtHeaders **ppNtHeaders, SectionHeaderList *pSectionHeaders, IPEOverlay **ppOverlay);
-    HRESULT ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESection **ppSection);
+    HRESULT ParseBasicInfo(_Outptr_ IPEDosHeader **ppDosHeader, _Outptr_ IPENtHeaders **ppNtHeaders, _Out_ SectionHeaderList *pSectionHeaders, _Outptr_ IPEOverlay **ppOverlay);
+    HRESULT ParseSection(_In_ LibPERawSectionHeaderT(T) *pSectionHeader, _Outptr_ IPESection **ppSection);
 
     // Export table related functions
-    HRESULT ParseExportTable(IPEExportTable **ppExportTable);
-    HRESULT ParseExportFunction(IPEExportTable *pExportTable, UINT32 nIndex, IPEExportFunction **ppFunction);
+    HRESULT ParseExportTable(_Outptr_ IPEExportTable **ppExportTable);
+    HRESULT ParseExportFunction(_In_ IPEExportTable *pExportTable, UINT32 nIndex, _Outptr_ IPEExportFunction **ppFunction);
 
     // Import table related functions
-    HRESULT ParseImportTable(IPEImportTable **ppImportTable);
-    HRESULT ParseAllImportModules(IPEImportTable *pImportTable);
-    HRESULT ParseImportModule(PEAddress nImportDescRVA, PEAddress nImportDescFOA, LibPERawImportDescriptor(T) *pImportDescriptor, IPEImportModule **ppImportModule);
-    HRESULT ParseAllImportFunctions(IPEImportModule *pImportModule);
-    HRESULT ParseImportFunction(PEAddress nThunkDataRVA, PEAddress nThunkDataFOA, IPEImportFunction **ppImportFunction);
-    HRESULT ParseImportFunction(IPEImportFunction *pFunction);
+    HRESULT ParseImportTable(_Outptr_ IPEImportTable **ppImportTable);
+    HRESULT ParseAllImportModules(_In_ IPEImportTable *pImportTable);
+    HRESULT ParseImportModule(_In_ PEAddress nImportDescRVA, _In_ PEAddress nImportDescFOA, LibPERawImportDescriptor(T) *pImportDescriptor, _Outptr_ IPEImportModule **ppImportModule);
+    HRESULT ParseAllImportFunctions(_In_ IPEImportModule *pImportModule);
+    HRESULT ParseImportFunction(_In_ PEAddress nThunkDataRVA, _In_ PEAddress nThunkDataFOA, _Outptr_ IPEImportFunction **ppImportFunction);
+    HRESULT ParseImportFunction(_In_ IPEImportFunction *pFunction);
 
     // Resource table related functions
-    HRESULT ParseResourceTable(IPEResourceTable **ppResourceTable);
-    HRESULT ParseResourceDirectory(PEAddress nRVA, PEAddress nFOA, IPEResourceDirectory **ppDirectory);
-    HRESULT ParseResourceDirectoryEntry(IPEResourceDirectory *pDirectory, UINT32 nEntryIndex, IPEResourceDirectoryEntry **ppEntry);
-    HRESULT ParseResourceDataEntry(PEAddress nRVA, PEAddress nFOA, IPEResourceDataEntry **ppDataEntry);
-    HRESULT ParseResource(IPEResourceDataEntry *pDataEntry, IPEResource **ppResource);
-    LibPERawResourceString(T) * ParseResourceString(PEAddress nRVA, PEAddress nFOA, UINT64 &nSize);
-    LibPERawResourceStringU(T) * ParseResourceStringU(PEAddress nRVA, PEAddress nFOA, UINT64 &nSize);
+    HRESULT ParseResourceTable(_Outptr_ IPEResourceTable **ppResourceTable);
+    HRESULT ParseResourceDirectory(_In_ PEAddress nRVA, _In_ PEAddress nFOA, _Outptr_ IPEResourceDirectory **ppDirectory);
+    HRESULT ParseResourceDirectoryEntry(_In_ IPEResourceDirectory *pDirectory, UINT32 nEntryIndex, _Outptr_ IPEResourceDirectoryEntry **ppEntry);
+    HRESULT ParseResourceDataEntry(_In_ PEAddress nRVA, _In_ PEAddress nFOA, _Outptr_ IPEResourceDataEntry **ppDataEntry);
+    HRESULT ParseResource(_In_ IPEResourceDataEntry *pDataEntry, _Outptr_ IPEResource **ppResource);
+    LibPERawResourceString(T) * ParseResourceString(_In_ PEAddress nRVA, _In_ PEAddress nFOA, UINT64 &nSize);
+    LibPERawResourceStringU(T) * ParseResourceStringU(_In_ PEAddress nRVA, _In_ PEAddress nFOA, UINT64 &nSize);
 
     // Exception table related functions
-    HRESULT ParseExceptionTable(IPEExceptionTable **ppExceptionTable);
-    HRESULT ParseExceptionHandlerEntry(IPEExceptionTable *pExceptionTable, UINT32 nHandlerIndex, IPEExceptionHandlerEntry **ppExceptionHandlerEntry);
-    HRESULT ParseExceptionHandler(IPEExceptionHandlerEntry *pExceptionHandlerEntry, IPEExceptionHandler **ppExceptionHandler);
+    HRESULT ParseExceptionTable(_Outptr_ IPEExceptionTable **ppExceptionTable);
+    HRESULT ParseExceptionHandlerEntry(_In_ IPEExceptionTable *pExceptionTable, _In_ UINT32 nHandlerIndex, _Outptr_ IPEExceptionHandlerEntry **ppExceptionHandlerEntry);
+    HRESULT ParseExceptionHandler(_In_ IPEExceptionHandlerEntry *pExceptionHandlerEntry, _Outptr_ IPEExceptionHandler **ppExceptionHandler);
 
     // Certificate table related functions
-    HRESULT ParseCertificateTable(IPECertificateTable **ppCertificateTable);
-    HRESULT ParseCertificates(IPECertificateTable *pCertificateTable);
+    HRESULT ParseCertificateTable(_Outptr_ IPECertificateTable **ppCertificateTable);
+    HRESULT ParseCertificates(_Inout_ IPECertificateTable *pCertificateTable);
 
     // Relocation table related functions
-    HRESULT ParseRelocationTable(IPERelocationTable **ppRelocationTable);
+    HRESULT ParseRelocationTable(_Outptr_ IPERelocationTable **ppRelocationTable);
 
     // Debug info table related functions
-    HRESULT ParseDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable);
+    HRESULT ParseDebugInfoTable(_Outptr_ IPEDebugInfoTable **ppDebugInfoTable);
 
     // Global register table related functions
-    HRESULT ParseGlobalPointerTable(IPEGlobalPointerTable **ppGlobalPointerTable);
+    HRESULT ParseGlobalPointerTable(_Outptr_ IPEGlobalPointerTable **ppGlobalPointerTable);
 
     // Tls table related functions
-    HRESULT ParseTlsTable(IPETlsTable **ppTlsTable);
-    HRESULT ParseTlsCallbacks(IPETlsTable *pTlsTable);
+    HRESULT ParseTlsTable(_Outptr_ IPETlsTable **ppTlsTable);
+    HRESULT ParseTlsCallbacks(_Inout_ IPETlsTable *pTlsTable);
 
     // Load config related functions
-    HRESULT ParseLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable);
+    HRESULT ParseLoadConfigTable(_Outptr_ IPELoadConfigTable **ppLoadConfigTable);
 
     // Bound import table related functions
-    HRESULT ParseBoundImportTable(IPEBoundImportTable **ppBoundImportTable);
-    HRESULT ParseBoundImportModules(IPEBoundImportTable *pBoundImportTable);
+    HRESULT ParseBoundImportTable(_Outptr_ IPEBoundImportTable **ppBoundImportTable);
+    HRESULT ParseBoundImportModules(_In_ IPEBoundImportTable *pBoundImportTable);
 
     // Import Address table related functions
-    HRESULT ParseImportAddressTable(IPEImportAddressTable **ppImportAddressTable);
-    HRESULT ParseImportAddressTableContent(IPEImportAddressTable *pImportAddressTable);
-    HRESULT ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, PEAddress nBlockRVA, PEAddress nBlockFOA, IPEImportAddressBlock **ppBlock);
-    HRESULT ParseImportAddressItem(LibPERawThunkData(T) *pRawItem, PEAddress nItemRVA, PEAddress nItemFOA, IPEImportAddressItem **ppItem);
+    HRESULT ParseImportAddressTable(_Outptr_ IPEImportAddressTable **ppImportAddressTable);
+    HRESULT ParseImportAddressTableContent(_Inout_ IPEImportAddressTable *pImportAddressTable);
+    HRESULT ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, _In_ PEAddress nBlockRVA, _In_ PEAddress nBlockFOA, _Outptr_ IPEImportAddressBlock **ppBlock);
+    HRESULT ParseImportAddressItem(LibPERawThunkData(T) *pRawItem, _In_ PEAddress nItemRVA, _In_ PEAddress nItemFOA, _Outptr_ IPEImportAddressItem **ppItem);
 
     // Delay import table related functions
-    HRESULT ParseDelayImportTable(IPEDelayImportTable **ppDelayImportTable);
+    HRESULT ParseDelayImportTable(_Outptr_ IPEDelayImportTable **ppDelayImportTable);
 
     // Clr info table related functions
-    HRESULT ParseClrTable(IPEClrTable **ppClrTable);
+    HRESULT ParseClrTable(_Outptr_ IPEClrTable **ppClrTable);
 
 protected:
-    virtual PEAddress GetRawOffsetFromAddressField(PEAddress nAddress) = 0;
-    virtual PEAddress GetRVAFromAddressField(PEAddress nRVA) = 0;
-    virtual PEAddress GetFOAFromAddressField(PEAddress nRVA) = 0;
-    virtual PEAddress GetRawOffsetFromRVA(PEAddress nRVA) = 0;
-    virtual PEAddress GetRawOffsetFromFOA(PEAddress nFOA) = 0;
-    virtual PEAddress GetRVAFromRawOffset(PEAddress nRawOffset) = 0;
-    virtual PEAddress GetFOAFromRawOffset(PEAddress nRawOffset) = 0;
+    virtual PEAddress GetRawOffsetFromAddressField(_In_ PEAddress nAddress) = 0;
+    virtual PEAddress GetRVAFromAddressField(_In_ PEAddress nRVA) = 0;
+    virtual PEAddress GetFOAFromAddressField(_In_ PEAddress nRVA) = 0;
+    virtual PEAddress GetRawOffsetFromRVA(_In_ PEAddress nRVA) = 0;
+    virtual PEAddress GetRawOffsetFromFOA(_In_ PEAddress nFOA) = 0;
+    virtual PEAddress GetRVAFromRawOffset(_In_ PEAddress nRawOffset) = 0;
+    virtual PEAddress GetFOAFromRawOffset(_In_ PEAddress nRawOffset) = 0;
 
-    PEAddress GetRawOffset(PEAddress nRVA, PEAddress nFOA);
+    PEAddress GetRawOffset(_In_ PEAddress nRVA, _In_ PEAddress nFOA);
 
-    void InitPEElement(PEElementT<T> *pElement, PEAddress nRVA, PEAddress nFOA, PEAddress nSize);
-    void InitPEElement(PEElementT<T> *pElement, PEAddress nRVA, PEAddress nMemSize, PEAddress nFOA, PEAddress nFileSize);
+    void InitPEElement(_Inout_ PEElementT<T> *pElement, _In_ PEAddress nRVA, _In_ PEAddress nFOA, _In_ PEAddress nSize);
+    void InitPEElement(_Inout_ PEElementT<T> *pElement, _In_ PEAddress nRVA, _In_ PEAddress nMemSize, _In_ PEAddress nFOA, _In_ PEAddress nFileSize);
 
-    HRESULT GetDataDirectoryEntry(INT32 nDataDirectoryEntryIndex, PEAddress &nRVA, PEAddress &nFOA, PEAddress &nSize);
+    HRESULT GetDataDirectoryEntry(_In_ INT32 nDataDirectoryEntryIndex, _In_ PEAddress &nRVA, _In_ PEAddress &nFOA, _In_ PEAddress &nSize);
     
     template <class TableClass>
-    HRESULT ParseDataDirectory(TableClass *pTable, INT32 nDataDirectoryEntryIndex)
+    HRESULT ParseDataDirectory(_Inout_ TableClass *pTable, _In_ INT32 nDataDirectoryEntryIndex)
     {
-        LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
+        LIBPE_CHK(NULL != m_pLoader, E_UNEXPECTED);
+        LIBPE_CHK(NULL != m_pFile, E_FAIL);;
 
         PEAddress nTableRVA = LIBPE_INVALID_ADDRESS, nTableFOA = LIBPE_INVALID_ADDRESS, nTableSize = LIBPE_INVALID_SIZE;
         LIBPE_CHK_HR(GetDataDirectoryEntry(nDataDirectoryEntryIndex, nTableRVA, nTableFOA, nTableSize));
@@ -157,10 +158,10 @@ protected:
     }
 
     template <class ITable, class TableClass>
-    HRESULT ParseDataDirectoryToInterface(INT32 nDataDirectoryEntryIndex, ITable **ppTable)
+    HRESULT ParseDataDirectoryToInterface(_In_ INT32 nDataDirectoryEntryIndex, _Outptr_ ITable **ppTable)
     {
-        LIBPE_CHK(NULL != ppTable, E_POINTER);
-        LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
+        LIBPE_CHK(NULL != m_pLoader, E_UNEXPECTED);
+        LIBPE_CHK(NULL != m_pFile, E_FAIL);
 
         *ppTable = NULL;
 

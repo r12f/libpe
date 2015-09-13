@@ -18,14 +18,14 @@ class PEImportModuleTester :
 public:
     PEImportModuleTester() : PEElementTester("ImportModule") {}
 
-    PEImportModuleTester & SetImportModule(IPEImportModule *importModule) {
+    PEImportModuleTester & SetImportModule(_In_ IPEImportModule *importModule) {
         _importModule = importModule;
         return *this;
     }
 
 protected:
     void DoTest() override;
-    void TestImportModule(IPEImportModule *importModule);
+    void TestImportModule(_In_ IPEImportModule *importModule);
 
 private:
     LibPEPtr<IPEImportModule> _importModule;
@@ -37,14 +37,14 @@ class PEImportFunctionTester :
 public:
     PEImportFunctionTester() : PEElementTester("ImportFunction") {}
 
-    PEImportFunctionTester & SetImportFunction(IPEImportFunction *importFunction) {
+    PEImportFunctionTester & SetImportFunction(_In_ IPEImportFunction *importFunction) {
         _importFunction = importFunction;
         return *this;
     }
 
 protected:
     void DoTest() override;
-    void TestImportFunction(IPEImportFunction *importFunction);
+    void TestImportFunction(_In_ IPEImportFunction *importFunction);
 
 private:
     LibPEPtr<IPEImportFunction> _importFunction;

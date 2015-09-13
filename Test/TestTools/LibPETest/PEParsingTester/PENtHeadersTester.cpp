@@ -28,7 +28,7 @@ void PENtHeadersTester::DoTest()
         .Run();
 }
 
-void PENtHeadersTester::TestNtHeaders(IPENtHeaders *ntHeaders)
+void PENtHeadersTester::TestNtHeaders(_In_ IPENtHeaders *ntHeaders)
 {
     BEGIN_TEST_PE_ELEMENT(ntHeaders)
         TEST_RAW_FIELD_SIMPLE(IPENtHeaders, Signature)
@@ -48,7 +48,7 @@ void PEFileHeaderTester::DoTest()
     });
 }
 
-void PEFileHeaderTester::TestFileHeader(IPEFileHeader *fileHeader)
+void PEFileHeaderTester::TestFileHeader(_In_ IPEFileHeader *fileHeader)
 {
     BEGIN_TEST_PE_ELEMENT(fileHeader)
         TEST_RAW_FIELD_SIMPLE(IPEFileHeader, Machine)
@@ -74,7 +74,7 @@ void PEOptionalHeaderTester::DoTest()
     });
 }
 
-void PEOptionalHeaderTester::TestOptionalHeader(IPEOptionalHeader *optionalHeader)
+void PEOptionalHeaderTester::TestOptionalHeader(_In_ IPEOptionalHeader *optionalHeader)
 {
     BEGIN_TEST_PE_ELEMENT(optionalHeader)
         TEST_RAW_FIELD_SIMPLE(IPEOptionalHeader, Magic)

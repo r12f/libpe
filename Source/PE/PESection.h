@@ -26,7 +26,7 @@ public:
     LIBPE_FIELD_ACCESSOR(UINT16, NumberOfLinenumbers)
     LIBPE_FIELD_ACCESSOR(UINT32, Characteristics)
 
-    HRESULT LIBPE_CALLTYPE GetSection(IPESection **ppSection) override;
+    HRESULT LIBPE_CALLTYPE GetSection(_Outptr_ IPESection **ppSection) override;
 
 private:
     LibPEPtr<IPESection>    m_pSection;
@@ -50,7 +50,7 @@ public:
     HRESULT LIBPE_CALLTYPE GetLineNumbers() override;
     UINT32 LIBPE_CALLTYPE GetCharacteristics() override;
 
-    HRESULT LIBPE_CALLTYPE SetName(const char *pName) override;
+    HRESULT LIBPE_CALLTYPE SetName(_In_ const char *pName) override;
 
 private:
     LibPERawSectionHeaderT(T) *m_pSectionHeader;

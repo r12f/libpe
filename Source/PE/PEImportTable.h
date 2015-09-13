@@ -17,16 +17,12 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawImportDescriptor(T))
 
-    void InnerAddImportModule(IPEImportModule *pImportModule) {
-        LIBPE_CHK_RET_VOID(pImportModule != NULL);
-        m_vModules.push_back(pImportModule);
-        return;
-    }
+    void InnerAddImportModule(_In_ IPEImportModule *pImportModule) { m_vModules.push_back(pImportModule); }
 
     UINT32 LIBPE_CALLTYPE GetModuleCount() override;
-    HRESULT LIBPE_CALLTYPE GetModuleByIndex(UINT32 nModuleId, IPEImportModule **ppImportModule) override;
-    HRESULT LIBPE_CALLTYPE GetModuleByName(const char *pModuleName, IPEImportModule **ppImportModule) override;
-    HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunction **ppImportFunction) override;
+    HRESULT LIBPE_CALLTYPE GetModuleByIndex(_In_ UINT32 nModuleId, _Outptr_ IPEImportModule **ppImportModule) override;
+    HRESULT LIBPE_CALLTYPE GetModuleByName(_In_ const char *pModuleName, _Outptr_ IPEImportModule **ppImportModule) override;
+    HRESULT LIBPE_CALLTYPE GetFunctionByName(_In_ const char *pModuleName, const char *pFunctionName, _Outptr_ IPEImportFunction **ppImportFunction) override;
 
 protected:
     HRESULT LoadDelayedData() override;
@@ -48,12 +44,8 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawImportDescriptor(T))
 
-    void InnerAddImportFunction(IPEImportFunction *pFunction) {
-        LIBPE_CHK_RET_VOID(NULL != pFunction);
-        m_vFunctions.push_back(pFunction);
-    }
-
-    void InnerSetName(const char *pName) { m_pName = pName; }
+    void InnerAddImportFunction(_In_ IPEImportFunction *pFunction) { m_vFunctions.push_back(pFunction); }
+    void InnerSetName(_In_ const char *pName) { m_pName = pName; }
 
     LIBPE_FIELD_ACCESSOR(UINT32, Characteristics)
     LIBPE_FIELD_ACCESSOR(UINT32, OriginalFirstThunk)
@@ -65,9 +57,9 @@ public:
     BOOL LIBPE_CALLTYPE IsBound() override;
     const char * LIBPE_CALLTYPE GetName() override { return m_pName; }
     UINT32 LIBPE_CALLTYPE GetFunctionCount() override;
-    HRESULT LIBPE_CALLTYPE GetFunctionByIndex(UINT32 nIndex, IPEImportFunction **ppFunction) override;
-    HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEImportFunction **ppFunction) override;
-    HRESULT LIBPE_CALLTYPE GetRelatedImportAddressBlock(IPEImportAddressBlock **ppBlock) override;
+    HRESULT LIBPE_CALLTYPE GetFunctionByIndex(_In_ UINT32 nIndex, _Outptr_ IPEImportFunction **ppFunction) override;
+    HRESULT LIBPE_CALLTYPE GetFunctionByName(_In_ const char *pFunctionName, _Outptr_ IPEImportFunction **ppFunction) override;
+    HRESULT LIBPE_CALLTYPE GetRelatedImportAddressBlock(_Outptr_ IPEImportAddressBlock **ppBlock) override;
 
 protected:
     HRESULT EnsureFunctionParsed() {
@@ -108,8 +100,10 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
-    void InnerSetRawImportByName(LibPERawImportByName(T) *pImportByName, PEAddress nRVA, PEAddress nFOA, PEAddress nSize) {
-        LIBPE_CHK_RET_VOID(NULL != pImportByName && LIBPE_INVALID_ADDRESS != nRVA && LIBPE_INVALID_ADDRESS != nFOA && LIBPE_INVALID_SIZE != nSize);
+    void InnerSetRawImportByName(LibPERawImportByName(T) *pImportByName, _In_ PEAddress nRVA, _In_ PEAddress nFOA, _In_ PEAddress nSize) {
+        LIBPE_CHK_RET_VOID(LIBPE_INVALID_ADDRESS != nRVA);
+        LIBPE_CHK_RET_VOID(LIBPE_INVALID_ADDRESS != nFOA);
+        LIBPE_CHK_RET_VOID(LIBPE_INVALID_SIZE != nSize);
 
         m_pImportByName = pImportByName;
         m_nImportByNameRVA = nRVA;

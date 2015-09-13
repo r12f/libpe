@@ -17,15 +17,15 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
-    void InnerAddImportAddressBlock(IPEImportAddressBlock *pBlock) {
+    void InnerAddImportAddressBlock(_In_ IPEImportAddressBlock *pBlock) {
         LIBPE_CHK_RET_VOID(NULL != pBlock);
         m_vBlocks.push_back(pBlock);
     }
 
     UINT32 LIBPE_CALLTYPE GetBlockCount() override;
-    HRESULT LIBPE_CALLTYPE GetBlockByIndex(UINT32 nIndex, IPEImportAddressBlock **ppBlock) override;
-    BOOL LIBPE_CALLTYPE IsBlockExists(IPEImportAddressBlock *pBlock) override;
-    BOOL LIBPE_CALLTYPE IsItemExist(IPEImportAddressItem *pItem) override;
+    HRESULT LIBPE_CALLTYPE GetBlockByIndex(_In_ UINT32 nIndex, _Outptr_ IPEImportAddressBlock **ppBlock) override;
+    BOOL LIBPE_CALLTYPE IsBlockExists(_In_ IPEImportAddressBlock *pBlock) override;
+    BOOL LIBPE_CALLTYPE IsItemExist(_In_ IPEImportAddressItem *pItem) override;
 
 private:
     BlockList   m_vBlocks;
@@ -44,14 +44,14 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
-    void InnerAddImportAddressItem(IPEImportAddressItem *pItem) {
+    void InnerAddImportAddressItem(_In_ IPEImportAddressItem *pItem) {
         LIBPE_CHK_RET_VOID(NULL != pItem);
         m_vItems.push_back(pItem);
     }
 
     UINT32 LIBPE_CALLTYPE GetItemCount() override;
-    HRESULT LIBPE_CALLTYPE GetItemByIndex(UINT32 nIndex, IPEImportAddressItem **ppItem) override;
-    BOOL LIBPE_CALLTYPE IsItemExist(IPEImportAddressItem *pItem) override;
+    HRESULT LIBPE_CALLTYPE GetItemByIndex(_In_ UINT32 nIndex, _Outptr_ IPEImportAddressItem **ppItem) override;
+    BOOL LIBPE_CALLTYPE IsItemExist(_In_ IPEImportAddressItem *pItem) override;
 
 private:
     ItemList    m_vItems;

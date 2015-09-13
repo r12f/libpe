@@ -10,5 +10,5 @@ public:
 
 protected:
     void DoTest() override;
-    void TestDebugInfoTable(IPEDebugInfoTable *debugInfoTable);
+    void TestDebugInfoTable(_In_ IPEDebugInfoTable *debugInfoTable);
 };

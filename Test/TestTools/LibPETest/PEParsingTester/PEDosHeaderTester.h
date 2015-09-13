@@ -12,5 +12,5 @@ protected:
     void DoTest() override;
     
 private:
-    void TestDosHeader(IPEDosHeader *dosHeader);
+    void TestDosHeader(_In_ IPEDosHeader *dosHeader);
 };

@@ -54,7 +54,7 @@ void PEResourceDirectoryTester::DoTest()
     ASSERT_TRUE(PEResourceDirectoryEntryTester().IsLastExpectedResult(resourceDirectoryEntryExpectedResult));
 }
 
-void PEResourceDirectoryTester::TestResourceDirectory(IPEResourceDirectory *resourceDirectory)
+void PEResourceDirectoryTester::TestResourceDirectory(_In_ IPEResourceDirectory *resourceDirectory)
 {
     BEGIN_TEST_PE_ELEMENT(resourceDirectory)
         TEST_RAW_FIELD_SIMPLE(IPEResourceDirectory, Characteristics)
@@ -97,7 +97,7 @@ void PEResourceDirectoryEntryTester::DoTest()
     }
 }
 
-void PEResourceDirectoryEntryTester::TestResourceDirectoryEntry(IPEResourceDirectoryEntry *resourceDirectoryEntry)
+void PEResourceDirectoryEntryTester::TestResourceDirectoryEntry(_In_ IPEResourceDirectoryEntry *resourceDirectoryEntry)
 {
     BEGIN_TEST_PE_ELEMENT(resourceDirectoryEntry)
         TEST_RAW_FIELD_SIMPLE(IPEResourceDirectoryEntry, NameOffset)
@@ -124,7 +124,7 @@ void PEResourceDataEntryTester::DoTest()
     });
 }
 
-void PEResourceDataEntryTester::TestResourceDataEntry(IPEResourceDataEntry *resourceDataEntry)
+void PEResourceDataEntryTester::TestResourceDataEntry(_In_ IPEResourceDataEntry *resourceDataEntry)
 {
     BEGIN_TEST_PE_ELEMENT(resourceDataEntry)
         TEST_RAW_FIELD_SIMPLE(IPEResourceDataEntry, OffsetToData)

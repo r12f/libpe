@@ -17,7 +17,7 @@ void PEGlobalPointerTableTester::DoTest()
     });
 }
 
-void PEGlobalPointerTableTester::TestGlobalPointerTable(IPEGlobalPointerTable *globalPointerTable)
+void PEGlobalPointerTableTester::TestGlobalPointerTable(_In_ IPEGlobalPointerTable *globalPointerTable)
 {
     BEGIN_TEST_PE_ELEMENT(globalPointerTable)
         TEST_RAW_FIELD_SIMPLE(IPEGlobalPointerTable, GlobalPointerRVA)

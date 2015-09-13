@@ -18,7 +18,7 @@ class PEExceptionHandlerEntryTester :
 public:
     PEExceptionHandlerEntryTester() : PEElementTester("ExceptionHandlerEntry") {}
 
-    PEExceptionHandlerEntryTester & SetExceptionHandlerEntry(IPEExceptionHandlerEntry *exceptionHandlerEntry) {
+    PEExceptionHandlerEntryTester & SetExceptionHandlerEntry(_In_ IPEExceptionHandlerEntry *exceptionHandlerEntry) {
         _exceptionHandlerEntry = exceptionHandlerEntry;
         return *this;
     }
@@ -36,7 +36,7 @@ class PEExceptionHandlerTester :
 public:
     PEExceptionHandlerTester() : PEElementTester("ExceptionHandler") {}
 
-    PEExceptionHandlerTester & SetExceptionHandler(IPEExceptionHandler *exceptionHandler) {
+    PEExceptionHandlerTester & SetExceptionHandler(_In_ IPEExceptionHandler *exceptionHandler) {
         _exceptionHandler = exceptionHandler;
         return *this;
     }

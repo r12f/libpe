@@ -17,7 +17,7 @@ public:
 
     LIBPE_FIELD_ACCESSOR_EX(PEAddress, GlobalPointerRVA, VirtualAddress);
 
-    HRESULT LIBPE_CALLTYPE GetRelatedSection(IPESection **ppSection) override;
+    HRESULT LIBPE_CALLTYPE GetRelatedSection(_Outptr_ IPESection **ppSection) override;
 };
 
 LIBPE_NAMESPACE_END

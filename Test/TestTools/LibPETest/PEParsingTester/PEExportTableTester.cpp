@@ -37,7 +37,7 @@ void PEExportTableTester::DoTest()
     ASSERT_TRUE(PEExportFunctionTester().IsLastExpectedResult(exportFunctionExpectedResult));
 }
 
-void PEExportTableTester::TestExportTable(IPEExportTable *exportTable)
+void PEExportTableTester::TestExportTable(_In_ IPEExportTable *exportTable)
 {
     BEGIN_TEST_PE_ELEMENT(exportTable)
         TEST_RAW_FIELD_SIMPLE(IPEExportTable, Characteristics)
@@ -62,7 +62,7 @@ void PEExportFunctionTester::DoTest()
     });
 }
 
-void PEExportFunctionTester::TestExportFunction(IPEExportFunction *exportFunction)
+void PEExportFunctionTester::TestExportFunction(_In_ IPEExportFunction *exportFunction)
 {
     BEGIN_TEST_PE_ELEMENT(exportFunction)
         TEST_API_RESULT_STRING(IPEExportFunction, GetName)

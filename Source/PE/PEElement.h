@@ -25,25 +25,11 @@ public:
 
     virtual ~PEElementT() {}
 
-    void InnerSetBase(PEFileT<T> *pFile, PEParserT<T> *pParser) {
-        m_pFile = pFile;
-        m_pParser = pParser;
-    }
-
-    void InnerSetRawMemory(void *pRawBuffer) {
-        m_pRawBuffer = pRawBuffer;
-    }
-    
-    void InnerSetMemoryInfo(PEAddress nRVA, PEAddress nVA, PEAddress nSizeInMemory) {
-        m_nRVA = nRVA;
-        m_nVA = nVA;
-        m_nSizeInMemory = nSizeInMemory;
-    }
-
-    void InnerSetFileInfo(PEAddress nFOA, PEAddress nSizeInFile) {
-        m_nFOA = nFOA;
-        m_nSizeInFile = nSizeInFile;
-    }
+    // PEElementT
+    void InnerSetBase(_In_ PEFileT<T> *pFile, _In_ PEParserT<T> *pParser);
+    void InnerSetRawMemory(_In_ void *pRawBuffer);
+    void InnerSetMemoryInfo(_In_ PEAddress nRVA, _In_ PEAddress nVA, _In_ PEAddress nSizeInMemory);
+    void InnerSetFileInfo(_In_ PEAddress nFOA, _In_ PEAddress nSizeInFile);
 
     // Override IPEElement
     void * LIBPE_CALLTYPE GetRawMemory() override;
@@ -111,7 +97,7 @@ typedef PEElementT<PE64> PEElement64;
         return FieldSize;                                                           \
     }                                                                               \
                                                                                     \
-    FieldType LIBPE_CALLTYPE GetField ## FuncName(UINT32 nIndex) override {         \
+    FieldType LIBPE_CALLTYPE GetField ## FuncName(_In_ UINT32 nIndex) override {         \
         LIBPE_CHK(NULL != GetRawStruct(), 0);                                       \
         LIBPE_CHK(nIndex < FieldSize, 0);                                    		\
         return GetRawStruct()->FieldName[nIndex];                                   \

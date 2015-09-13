@@ -18,7 +18,7 @@ class PESectionHeaderDumper :
 public:
     PESectionHeaderDumper() : PEElementDumper("SectionHeader") {}
 
-    PESectionHeaderDumper & SetSectionHeader(IPESectionHeader *sectionHeader) {
+    PESectionHeaderDumper & SetSectionHeader(_In_ IPESectionHeader *sectionHeader) {
         _sectionHeader = sectionHeader;
         return *this;
     }

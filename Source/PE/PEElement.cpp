@@ -4,6 +4,38 @@
 LIBPE_NAMESPACE_BEGIN
 
 template <class T>
+void
+PEElementT<T>::InnerSetBase(_In_ PEFileT<T> *pFile, _In_ PEParserT<T> *pParser)
+{
+    m_pFile = pFile;
+    m_pParser = pParser;
+}
+
+template <class T>
+void
+PEElementT<T>::InnerSetRawMemory(_In_ void *pRawBuffer)
+{
+    m_pRawBuffer = pRawBuffer;
+}
+
+template <class T>
+void
+PEElementT<T>::InnerSetMemoryInfo(_In_ PEAddress nRVA, _In_ PEAddress nVA, _In_ PEAddress nSizeInMemory)
+{
+    m_nRVA = nRVA;
+    m_nVA = nVA;
+    m_nSizeInMemory = nSizeInMemory;
+}
+
+template <class T>
+void
+PEElementT<T>::InnerSetFileInfo(_In_ PEAddress nFOA, _In_ PEAddress nSizeInFile)
+{
+    m_nFOA = nFOA;
+    m_nSizeInFile = nSizeInFile;
+}
+
+template <class T>
 void *
 PEElementT<T>::GetRawMemory()
 {

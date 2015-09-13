@@ -8,7 +8,7 @@ class PELoadConfigTableDumper :
 public:
     PELoadConfigTableDumper() : PEElementDumper("LoadConfigTable") {}
 
-    PELoadConfigTableDumper & SetDumpElement(IPELoadConfigTable *loadConfigTable) {
+    PELoadConfigTableDumper & SetDumpElement(_In_ IPELoadConfigTable *loadConfigTable) {
         _loadConfigTable = loadConfigTable;
         return *this;
     }

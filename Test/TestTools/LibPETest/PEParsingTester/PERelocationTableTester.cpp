@@ -64,7 +64,7 @@ void PERelocationPageTester::DoTest()
     ASSERT_TRUE(PERelocationItemTester().IsLastExpectedResult(relocationItemExpectedResult));
 }
 
-void PERelocationPageTester::TestRelocationPage(IPERelocationPage *relocationPage)
+void PERelocationPageTester::TestRelocationPage(_In_ IPERelocationPage *relocationPage)
 {
     BEGIN_TEST_PE_ELEMENT(relocationPage)
         TEST_RAW_FIELD_SIMPLE(IPERelocationPage, VirtualAddress)
@@ -81,7 +81,7 @@ void PERelocationItemTester::DoTest()
     });
 }
 
-void PERelocationItemTester::TestRelocationItem(IPERelocationItem *relocationItem)
+void PERelocationItemTester::TestRelocationItem(_In_ IPERelocationItem *relocationItem)
 {
     BEGIN_TEST_PE_ELEMENT(relocationItem)
         TEST_API_RESULT_SIMPLE(IPERelocationItem, GetAddressRVA)

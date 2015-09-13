@@ -32,7 +32,7 @@ void PESectionTester::DoTest()
     });
 }
 
-void PESectionTester::TestSection(IPESection *section)
+void PESectionTester::TestSection(_In_ IPESection *section)
 {
     BEGIN_TEST_PE_ELEMENT(section)
         TEST_API_RESULT_STRING(IPESection, GetName)

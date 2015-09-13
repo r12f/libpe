@@ -17,7 +17,7 @@ void PETlsTableTester::DoTest()
     });
 }
 
-void PETlsTableTester::TestTlsTable(IPETlsTable *tlsTable)
+void PETlsTableTester::TestTlsTable(_In_ IPETlsTable *tlsTable)
 {
     BEGIN_TEST_PE_ELEMENT(tlsTable)
         TEST_RAW_FIELD_SIMPLE(IPETlsTable, StartAddressOfRawData)

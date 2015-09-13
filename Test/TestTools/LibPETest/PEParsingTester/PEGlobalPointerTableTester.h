@@ -10,5 +10,5 @@ public:
 
 protected:
     void DoTest() override;
-    void TestGlobalPointerTable(IPEGlobalPointerTable *globalPointerTable);
+    void TestGlobalPointerTable(_In_ IPEGlobalPointerTable *globalPointerTable);
 };

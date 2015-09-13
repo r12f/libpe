@@ -64,7 +64,7 @@ void PEBoundImportModuleTester::DoTest()
     ASSERT_TRUE(PEBoundForwarderTester().IsLastExpectedResult(boundForwarderExpectedResult));
 }
 
-void PEBoundImportModuleTester::TestBoundImportModule(IPEBoundImportModule *boundImportModule)
+void PEBoundImportModuleTester::TestBoundImportModule(_In_ IPEBoundImportModule *boundImportModule)
 {
     BEGIN_TEST_PE_ELEMENT(boundImportModule)
         TEST_RAW_FIELD_SIMPLE(IPEBoundImportModule, TimeDateStamp)
@@ -81,7 +81,7 @@ void PEBoundForwarderTester::DoTest()
     });
 }
 
-void PEBoundForwarderTester::TestBoundForwarder(IPEBoundForwarder *boundForwarder)
+void PEBoundForwarderTester::TestBoundForwarder(_In_ IPEBoundForwarder *boundForwarder)
 {
     BEGIN_TEST_PE_ELEMENT(boundForwarder)
         TEST_RAW_FIELD_SIMPLE(IPEBoundForwarder, TimeDateStamp)

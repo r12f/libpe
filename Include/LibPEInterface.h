@@ -105,7 +105,7 @@ class IPEClrTable;
 #define LIBPE_DEFINE_ARRAY_FIELD_ACCESSOR(FieldType, FuncName)                              \
     virtual FieldType * LIBPE_CALLTYPE GetField ## FuncName ## Buffer()  = 0;               \
     virtual UINT32 LIBPE_CALLTYPE GetField ## FuncName ## ElementCount()  = 0;              \
-    virtual FieldType LIBPE_CALLTYPE GetField ## FuncName(UINT32 nIndex)  = 0
+    virtual FieldType LIBPE_CALLTYPE GetField ## FuncName(_In_ UINT32 nIndex)  = 0
 
 class IPEFile : public ILibPEInterface
 {
@@ -121,10 +121,10 @@ public:
     virtual PERawOptionalHeader64 * LIBPE_CALLTYPE GetRawOptionalHeader64() = 0;
 
     // PE header
-    virtual HRESULT LIBPE_CALLTYPE GetDosHeader(IPEDosHeader **ppDosHeader) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetNtHeaders(IPENtHeaders **ppNtHeaders) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetFileHeader(IPEFileHeader **ppFileHeader) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetOptionalHeader(IPEOptionalHeader **ppOptionalHeader) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetDosHeader(_Outptr_ IPEDosHeader **ppDosHeader) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetNtHeaders(_Outptr_ IPENtHeaders **ppNtHeaders) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetFileHeader(_Outptr_ IPEFileHeader **ppFileHeader) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetOptionalHeader(_Outptr_ IPEOptionalHeader **ppOptionalHeader) = 0;
 
     virtual BOOL LIBPE_CALLTYPE IsDosFile() = 0;
     virtual BOOL LIBPE_CALLTYPE Is32Bit() = 0;
@@ -134,57 +134,37 @@ public:
 
     // Section & Extra data
     virtual UINT32 LIBPE_CALLTYPE GetSectionCount() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetSectionHeader(UINT32 nIndex, IPESectionHeader **ppSectionHeader) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetSection(UINT32 nIndex, IPESection **ppSection) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetSectionByRVA(PEAddress nRVA, IPESection **ppSection) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetSectionByVA(PEAddress nVA, IPESection **ppSection) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetSectionByFOA(PEAddress nFOA, IPESection **ppSection) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetOverlay(IPEOverlay **ppOverlay) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetSectionHeader(_In_ UINT32 nIndex, _Outptr_ IPESectionHeader **ppSectionHeader) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetSection(_In_ UINT32 nIndex, _Outptr_ IPESection **ppSection) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetSectionByRVA(_In_ PEAddress nRVA, _Outptr_ IPESection **ppSection) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetSectionByVA(_In_ PEAddress nVA, _Outptr_ IPESection **ppSection) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetSectionByFOA(_In_ PEAddress nFOA, _Outptr_ IPESection **ppSection) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetOverlay(_Outptr_ IPEOverlay **ppOverlay) = 0;
 
     // PEAddress convert tools
-    virtual PEAddress LIBPE_CALLTYPE GetRVAFromVA(PEAddress nVA) = 0;
-    virtual PEAddress LIBPE_CALLTYPE GetVAFromRVA(PEAddress nRVA) = 0;
-    virtual PEAddress LIBPE_CALLTYPE GetRVAFromFOA(PEAddress nFOA) = 0;
-    virtual PEAddress LIBPE_CALLTYPE GetFOAFromRVA(PEAddress nRVA) = 0;
-    virtual PEAddress LIBPE_CALLTYPE GetVAFromFOA(PEAddress nFOA) = 0;
-    virtual PEAddress LIBPE_CALLTYPE GetFOAFromVA(PEAddress nVA) = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetRVAFromVA(_In_ PEAddress nVA) = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetVAFromRVA(_In_ PEAddress nRVA) = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetRVAFromFOA(_In_ PEAddress nFOA) = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetFOAFromRVA(_In_ PEAddress nRVA) = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetVAFromFOA(_In_ PEAddress nFOA) = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetFOAFromVA(_In_ PEAddress nVA) = 0;
 
     // Data directory entries
-    virtual HRESULT LIBPE_CALLTYPE GetExportTable(IPEExportTable **ppExportTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetImportTable(IPEImportTable **ppImportTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetResourceTable(IPEResourceTable **ppResourceTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetExceptionTable(IPEExceptionTable **ppExceptionTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetCertificateTable(IPECertificateTable **ppCertificateTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetRelocationTable(IPERelocationTable **ppRelocationTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetArchitectureDataTable(IPEArchitectureDataTable **ppArchitectureDataTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetGlobalPointerTable(IPEGlobalPointerTable **ppGlobalPointerTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetTlsTable(IPETlsTable **ppTlsTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetImportAddressTable(IPEImportAddressTable **ppImportAddressTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetDelayImportTable(IPEDelayImportTable **ppDelayImportTable) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetClrTable(IPEClrTable **ppClrTable) = 0;
-
-    virtual HRESULT LIBPE_CALLTYPE RemoveExportTable() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveImportTable() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveResourceTable() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveExceptionTable() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveCertificateTable() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveRelocationTable() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveDebugInfoTable() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveGlobalPointerTable() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveTlsTable() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveBoundImportTable() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveImportAddressTable() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveDelayImportTable() = 0;
-    virtual HRESULT LIBPE_CALLTYPE RemoveClrTable() = 0;
-
-    // PE Verification
-    virtual BOOL LIBPE_CALLTYPE ValidatePEHeader() = 0;
-
-    // Rebuild
-    virtual HRESULT LIBPE_CALLTYPE Rebuild(const file_char_t *pFilePath) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetExportTable(_Outptr_ IPEExportTable **ppExportTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetImportTable(_Outptr_ IPEImportTable **ppImportTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetResourceTable(_Outptr_ IPEResourceTable **ppResourceTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetExceptionTable(_Outptr_ IPEExceptionTable **ppExceptionTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetCertificateTable(_Outptr_ IPECertificateTable **ppCertificateTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetRelocationTable(_Outptr_ IPERelocationTable **ppRelocationTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetDebugInfoTable(_Outptr_ IPEDebugInfoTable **ppDebugInfoTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetArchitectureDataTable(_Outptr_ IPEArchitectureDataTable **ppArchitectureDataTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetGlobalPointerTable(_Outptr_ IPEGlobalPointerTable **ppGlobalPointerTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetTlsTable(_Outptr_ IPETlsTable **ppTlsTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetLoadConfigTable(_Outptr_ IPELoadConfigTable **ppLoadConfigTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetBoundImportTable(_Outptr_ IPEBoundImportTable **ppBoundImportTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetImportAddressTable(_Outptr_ IPEImportAddressTable **ppImportAddressTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetDelayImportTable(_Outptr_ IPEDelayImportTable **ppDelayImportTable) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetClrTable(_Outptr_ IPEClrTable **ppClrTable) = 0;
 };
 
 class IPEElement : public ILibPEInterface
@@ -232,8 +212,8 @@ class IPENtHeaders : public IPEElement
 {
 public:
     LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Signature);
-    virtual HRESULT LIBPE_CALLTYPE GetFileHeader(IPEFileHeader **ppFileHeader) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetOptionalHeader(IPEOptionalHeader **ppOptionalHeader) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetFileHeader(_Outptr_ IPEFileHeader **ppFileHeader) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetOptionalHeader(_Outptr_ IPEOptionalHeader **ppOptionalHeader) = 0;
 };
 
 class IPEFileHeader : public IPEElement
@@ -296,7 +276,7 @@ public:
     LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, NumberOfLinenumbers);
     LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Characteristics);
 
-    virtual HRESULT LIBPE_CALLTYPE GetSection(IPESection **ppSection) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetSection(_Outptr_ IPESection **ppSection) = 0;
 };
 
 class IPESection : public IPEElement
@@ -307,7 +287,7 @@ public:
     virtual HRESULT LIBPE_CALLTYPE GetLineNumbers() = 0;
     virtual UINT32 LIBPE_CALLTYPE GetCharacteristics() = 0;
 
-    virtual HRESULT LIBPE_CALLTYPE SetName(const char *pName) = 0;
+    virtual HRESULT LIBPE_CALLTYPE SetName(_In_ const char *pName) = 0;
 };
 
 class IPEOverlay : public IPEElement
@@ -331,8 +311,8 @@ public:
     LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, AddressOfNameOrdinals);
 
     virtual UINT32 LIBPE_CALLTYPE GetFunctionCount() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetFunctionByIndex(UINT32 nIndex, IPEExportFunction **ppFunction) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEExportFunction **ppFunction) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetFunctionByIndex(_In_ UINT32 nIndex, _Outptr_ IPEExportFunction **ppFunction) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetFunctionByName(_In_ const char *pFunctionName, _Outptr_ IPEExportFunction **ppFunction) = 0;
 };
 
 class IPEExportFunction: public IPEElement
@@ -346,9 +326,9 @@ class IPEImportTable : public IPEElement
 {
 public:
     virtual UINT32 LIBPE_CALLTYPE GetModuleCount() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetModuleByIndex(UINT32 nIndex, IPEImportModule **ppImportModule) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetModuleByName(const char *pModuleName, IPEImportModule **ppImportModule) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunction **ppImportFunction) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetModuleByIndex(_In_ UINT32 nIndex, _Outptr_ IPEImportModule **ppImportModule) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetModuleByName(_In_ const char *pModuleName, _Outptr_ IPEImportModule **ppImportModule) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetFunctionByName(_In_ const char *pModuleName, const char *pFunctionName, _Outptr_ IPEImportFunction **ppImportFunction) = 0;
 };
 
 class IPEImportModule: public IPEElement
@@ -364,9 +344,9 @@ public:
     virtual BOOL LIBPE_CALLTYPE IsBound() = 0;
     virtual const char * LIBPE_CALLTYPE GetName() = 0;
     virtual UINT32 LIBPE_CALLTYPE GetFunctionCount() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetFunctionByIndex(UINT32 nFunctionId, IPEImportFunction **ppFunction) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEImportFunction **ppFunction) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetRelatedImportAddressBlock(IPEImportAddressBlock **ppBlock) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetFunctionByIndex(_In_ UINT32 nFunctionId, _Outptr_ IPEImportFunction **ppFunction) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetFunctionByName(_In_ const char *pFunctionName, _Outptr_ IPEImportFunction **ppFunction) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetRelatedImportAddressBlock(_Outptr_ IPEImportAddressBlock **ppBlock) = 0;
 };
 
 class IPEImportFunction: public IPEElement
@@ -385,7 +365,7 @@ public:
 class IPEResourceTable : public IPEElement
 {
 public:
-    virtual HRESULT LIBPE_CALLTYPE GetRootDirectory(IPEResourceDirectory **ppDirectory) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetRootDirectory(_Outptr_ IPEResourceDirectory **ppDirectory) = 0;
 };
 
 class IPEResourceDirectory : public IPEElement
@@ -399,7 +379,7 @@ public:
     LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, NumberOfIdEntries);
 
     virtual UINT32 LIBPE_CALLTYPE GetEntryCount() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetEntryByIndex(UINT32 nIndex, IPEResourceDirectoryEntry **ppEntry) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetEntryByIndex(_In_ UINT32 nIndex, _Outptr_ IPEResourceDirectoryEntry **ppEntry) = 0;
 };
 
 class IPEResourceDirectoryEntry : public IPEElement
@@ -420,10 +400,10 @@ public:
     virtual const wchar_t * LIBPE_CALLTYPE GetName() = 0;
     
     virtual BOOL LIBPE_CALLTYPE IsEntryDirectory() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetDirectory(IPEResourceDirectory **ppDirectory) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetDirectory(_Outptr_ IPEResourceDirectory **ppDirectory) = 0;
 
     virtual BOOL LIBPE_CALLTYPE IsEntryDataEntry() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetDataEntry(IPEResourceDataEntry **ppDataEntry) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetDataEntry(_Outptr_ IPEResourceDataEntry **ppDataEntry) = 0;
 };
 
 class IPEResourceDataEntry : public IPEElement
@@ -434,7 +414,7 @@ public:
     LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, CodePage);
     LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Reserved);
 
-    virtual HRESULT LIBPE_CALLTYPE GetResource(IPEResource **ppResource) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetResource(_Outptr_ IPEResource **ppResource) = 0;
 };
 
 class IPEResource : public IPEElement
@@ -446,14 +426,14 @@ class IPEExceptionTable : public IPEElement
 {
 public:
     virtual UINT32 LIBPE_CALLTYPE GetExceptionHandlerCount() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetExceptionHandlerEntryByIndex(UINT32 nIndex, IPEExceptionHandlerEntry **ppExceptionHandlerEntry) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetExceptionHandlerByIndex(UINT32 nIndex, IPEExceptionHandler **ppExceptionHandler) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetExceptionHandlerEntryByIndex(_In_ UINT32 nIndex, _Outptr_ IPEExceptionHandlerEntry **ppExceptionHandlerEntry) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetExceptionHandlerByIndex(_In_ UINT32 nIndex, _Outptr_ IPEExceptionHandler **ppExceptionHandler) = 0;
 };
 
 class IPEExceptionHandlerEntry : public IPEElement
 {
 public:
-    virtual HRESULT LIBPE_CALLTYPE GetExceptionHandler(IPEExceptionHandler **ppExceptionHandler) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetExceptionHandler(_Outptr_ IPEExceptionHandler **ppExceptionHandler) = 0;
 };
 
 class IPEExceptionHandler : public IPEElement {};
@@ -462,7 +442,7 @@ class IPECertificateTable : public IPEElement
 {
 public:
     virtual UINT32 LIBPE_CALLTYPE GetCertificateCount() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetCertificateByIndex(UINT32 nIndex, IPECertificate **ppCertificate) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetCertificateByIndex(_In_ UINT32 nIndex, _Outptr_ IPECertificate **ppCertificate) = 0;
 };
 
 class IPECertificate : public IPEElement
@@ -478,9 +458,9 @@ class IPERelocationTable : public IPEElement
 {
 public:
     virtual UINT32 LIBPE_CALLTYPE GetPageCount() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetPageByIndex(UINT32 nIndex, IPERelocationPage **ppRelocationPage) = 0;
-    virtual BOOL LIBPE_CALLTYPE IsRVANeedRelocation(PEAddress nRVA) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetPageByIndex(_In_ UINT32 nIndex, _Outptr_ IPERelocationPage **ppRelocationPage) = 0;
+    virtual BOOL LIBPE_CALLTYPE IsRVANeedRelocation(_In_ PEAddress nRVA) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetItemByRVA(_In_ PEAddress nRVA, _Outptr_ IPERelocationItem **ppRelocationItem) = 0;
 };
 
 class IPERelocationPage : public IPEElement
@@ -491,9 +471,9 @@ public:
 
     virtual PEAddress LIBPE_CALLTYPE GetPageRVA() = 0;
     virtual UINT32 LIBPE_CALLTYPE GetItemCount() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetItemByIndex(UINT32 nIndex, IPERelocationItem **ppRelocationItem) = 0;
-    virtual BOOL LIBPE_CALLTYPE IsRVANeedRelocation(PEAddress nRVA) = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetItemByIndex(_In_ UINT32 nIndex, _Outptr_ IPERelocationItem **ppRelocationItem) = 0;
+    virtual BOOL LIBPE_CALLTYPE IsRVANeedRelocation(_In_ PEAddress nRVA) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetItemByRVA(_In_ PEAddress nRVA, _Outptr_ IPERelocationItem **ppRelocationItem) = 0;
 };
 
 class IPERelocationItem : public IPEElement
@@ -525,7 +505,7 @@ class IPEGlobalPointerTable : public IPEElement
 public:
     LIBPE_DEFINE_FIELD_ACCESSOR(PEAddress, GlobalPointerRVA);
 
-    virtual HRESULT LIBPE_CALLTYPE GetRelatedSection(IPESection **ppSection) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetRelatedSection(_Outptr_ IPESection **ppSection) = 0;
 };
 
 class IPETlsTable : public IPEElement
@@ -542,7 +522,7 @@ public:
     LIBPE_DEFINE_FIELD_ACCESSOR(UINT32, Reserved1);
 
     virtual UINT32 LIBPE_CALLTYPE GetCallbackCount() = 0;
-    virtual PEAddress LIBPE_CALLTYPE GetCallbackRVAByIndex(UINT32 nIndex) = 0;
+    virtual PEAddress LIBPE_CALLTYPE GetCallbackRVAByIndex(_In_ UINT32 nIndex) = 0;
 };
 
 class IPELoadConfigTable : public IPEElement
@@ -579,7 +559,7 @@ class IPEBoundImportTable : public IPEElement
 {
 public:
     virtual UINT32 LIBPE_CALLTYPE GetBoundImportModuleCount() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetBoundImportModuleByIndex(UINT32 nIndex, IPEBoundImportModule **ppBoundImportModule) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetBoundImportModuleByIndex(_In_ UINT32 nIndex, _Outptr_ IPEBoundImportModule **ppBoundImportModule) = 0;
 };
 
 class IPEBoundImportModule : public IPEElement
@@ -590,7 +570,7 @@ public:
     LIBPE_DEFINE_FIELD_ACCESSOR(UINT16, NumberOfModuleForwarderRefs);
     
     virtual UINT32 LIBPE_CALLTYPE GetBoundForwarderCount() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetBoundForwarderByIndex(UINT32 nIndex, IPEBoundForwarder **ppBoundForwarder) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetBoundForwarderByIndex(_In_ UINT32 nIndex, _Outptr_ IPEBoundForwarder **ppBoundForwarder) = 0;
 };
 
 class IPEBoundForwarder : public IPEElement
@@ -605,17 +585,17 @@ class IPEImportAddressTable : public IPEElement
 {
 public:
     virtual UINT32 LIBPE_CALLTYPE GetBlockCount() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetBlockByIndex(UINT32 nIndex, IPEImportAddressBlock **ppBlock) = 0;
-    virtual BOOL LIBPE_CALLTYPE IsBlockExists(IPEImportAddressBlock *pBlock) = 0;
-    virtual BOOL LIBPE_CALLTYPE IsItemExist(IPEImportAddressItem *pItem) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetBlockByIndex(_In_ UINT32 nIndex, _Outptr_ IPEImportAddressBlock **ppBlock) = 0;
+    virtual BOOL LIBPE_CALLTYPE IsBlockExists(_In_ IPEImportAddressBlock *pBlock) = 0;
+    virtual BOOL LIBPE_CALLTYPE IsItemExist(_In_ IPEImportAddressItem *pItem) = 0;
 };
 
 class IPEImportAddressBlock : public IPEElement
 {
 public:
     virtual UINT32 LIBPE_CALLTYPE GetItemCount() = 0;
-    virtual HRESULT LIBPE_CALLTYPE GetItemByIndex(UINT32 nIndex, IPEImportAddressItem **ppItem) = 0;
-    virtual BOOL LIBPE_CALLTYPE IsItemExist(IPEImportAddressItem *pItem) = 0;
+    virtual HRESULT LIBPE_CALLTYPE GetItemByIndex(_In_ UINT32 nIndex, _Outptr_ IPEImportAddressItem **ppItem) = 0;
+    virtual BOOL LIBPE_CALLTYPE IsItemExist(_In_ IPEImportAddressItem *pItem) = 0;
 };
 
 class IPEImportAddressItem : public IPEElement

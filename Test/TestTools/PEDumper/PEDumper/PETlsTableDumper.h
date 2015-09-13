@@ -8,7 +8,7 @@ class PETlsTableDumper :
 public:
     PETlsTableDumper() : PEElementDumper("TlsTable") {}
 
-    PETlsTableDumper & SetDumpElement(IPETlsTable *tlsTable) {
+    PETlsTableDumper & SetDumpElement(_In_ IPETlsTable *tlsTable) {
         _tlsTable = tlsTable;
         return *this;
     }

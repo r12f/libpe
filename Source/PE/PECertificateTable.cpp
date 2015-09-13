@@ -5,10 +5,8 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 HRESULT
-PECertificateTableT<T>::InnerAddCertificate(IPECertificate *pCertificate)
+PECertificateTableT<T>::InnerAddCertificate(_In_ IPECertificate *pCertificate)
 {
-    LIBPE_CHK(NULL != pCertificate, E_INVALIDARG);
-
     HRESULT hr = S_OK;
 
     LIBPE_HR_TRY_BEGIN(hr) {
@@ -28,7 +26,7 @@ PECertificateTableT<T>::GetCertificateCount()
 
 template <class T>
 HRESULT
-PECertificateTableT<T>::GetCertificateByIndex(UINT32 nIndex, IPECertificate **ppCertificate)
+PECertificateTableT<T>::GetCertificateByIndex(_In_ UINT32 nIndex, _Outptr_ IPECertificate **ppCertificate)
 {
     LIBPE_CHK(NULL != ppCertificate, E_POINTER);
     LIBPE_CHK_HR(EnsureCertificatesParsed());

@@ -8,7 +8,7 @@ class PEClrTableDumper :
 public:
     PEClrTableDumper() : PEElementDumper("ClrTable") {}
 
-    PEClrTableDumper & SetDumpElement(IPEClrTable *ClrTable) {
+    PEClrTableDumper & SetDumpElement(_In_ IPEClrTable *ClrTable) {
         _ClrTable = ClrTable;
         return *this;
     }

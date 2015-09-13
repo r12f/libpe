@@ -18,14 +18,14 @@ class PESectionTester :
 public:
     PESectionTester() : PEElementTester("Section") {}
 
-    PESectionTester & SetSection(IPESection *section) {
+    PESectionTester & SetSection(_In_ IPESection *section) {
         _section = section;
         return *this;
     }
 
 protected:
     void DoTest() override;
-    void TestSection(IPESection *section);
+    void TestSection(_In_ IPESection *section);
 
 private:
     LibPEPtr<IPESection> _section;

@@ -5,7 +5,7 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 HRESULT
-PETlsTableT<T>::InnerAddCallbackRVA(PEAddress nRVA)
+PETlsTableT<T>::InnerAddCallbackRVA(_In_ PEAddress nRVA)
 {
     HRESULT hr = S_OK;
 
@@ -26,7 +26,7 @@ PETlsTableT<T>::GetCallbackCount()
 
 template <class T>
 PEAddress
-PETlsTableT<T>::GetCallbackRVAByIndex(UINT32 nIndex)
+PETlsTableT<T>::GetCallbackRVAByIndex(_In_ UINT32 nIndex)
 {
     LIBPE_CHK_HR_RET(EnsureTlsCallbacksParsed(), LIBPE_INVALID_ADDRESS);
 

@@ -8,7 +8,7 @@ class PECertificateTableDumper :
 public:
     PECertificateTableDumper() : PEElementDumper("CertificateTable") {}
 
-    PECertificateTableDumper & SetDumpElement(IPECertificateTable *certificateTable) {
+    PECertificateTableDumper & SetDumpElement(_In_ IPECertificateTable *certificateTable) {
         _certificateTable = certificateTable;
         return *this;
     }

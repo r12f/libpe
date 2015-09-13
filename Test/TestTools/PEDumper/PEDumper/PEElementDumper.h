@@ -15,13 +15,13 @@ protected:
     void BeginDump();
     virtual void DoDump() = 0;
 
-    void DumpBasicInformation(IPEElement *pElement);
+    void DumpBasicInformation(_In_ IPEElement *pElement);
 
     LibPE::IPEFile * GetPEFile() { return _peFile; }
     tinyxml2::XMLElement * GetOutputElement() { return _outputElement; }
     tinyxml2::XMLElement * GetOutputAPIResults() { return _outputAPIResults; }
 
-    tinyxml2::XMLElement * CreateChildXmlElement(const char *tagName, tinyxml2::XMLElement *parentElement);
+    tinyxml2::XMLElement * CreateChildXmlElement(_In_ const char *tagName, tinyxml2::XMLElement *parentElement);
 
 private:
     std::string _elementName;

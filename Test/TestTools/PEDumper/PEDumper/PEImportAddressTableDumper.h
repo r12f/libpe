@@ -8,7 +8,7 @@ class PEImportAddressTableDumper :
 public:
     PEImportAddressTableDumper() : PEElementDumper("ImportAddressTable") {}
 
-    PEImportAddressTableDumper & SetDumpElement(IPEImportAddressTable *importAddressTable) {
+    PEImportAddressTableDumper & SetDumpElement(_In_ IPEImportAddressTable *importAddressTable) {
         _importAddressTable = importAddressTable;
         return *this;
     }
@@ -26,7 +26,7 @@ class PEImportAddressBlockDumper :
 public:
     PEImportAddressBlockDumper() : PEElementDumper("ImportAddressBlock") {}
 
-    PEImportAddressBlockDumper & SetDumpElement(IPEImportAddressBlock *importAddressBlock) {
+    PEImportAddressBlockDumper & SetDumpElement(_In_ IPEImportAddressBlock *importAddressBlock) {
         _importAddressBlock = importAddressBlock;
         return *this;
     }
@@ -44,7 +44,7 @@ class PEImportAddressItemDumper :
 public:
     PEImportAddressItemDumper() : PEElementDumper("ImportAddressItem") {}
 
-    PEImportAddressItemDumper & SetDumpElement(IPEImportAddressItem *importAddressItem) {
+    PEImportAddressItemDumper & SetDumpElement(_In_ IPEImportAddressItem *importAddressItem) {
         _importAddressItem = importAddressItem; 
         return *this;
     }

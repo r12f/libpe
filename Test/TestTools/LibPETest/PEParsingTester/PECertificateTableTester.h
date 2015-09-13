@@ -18,14 +18,14 @@ class PECertificateTester :
 public:
     PECertificateTester() : PEElementTester("Certificate") {}
 
-    PECertificateTester & SetCertificate(IPECertificate *certificate) {
+    PECertificateTester & SetCertificate(_In_ IPECertificate *certificate) {
         _certificate = certificate;
         return *this;
     }
 
 protected:
     void DoTest() override;
-    void TestCertificate(IPECertificate *certificate);
+    void TestCertificate(_In_ IPECertificate *certificate);
 
 private:
     LibPEPtr<IPECertificate> _certificate;

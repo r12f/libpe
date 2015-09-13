@@ -44,7 +44,7 @@ void PECertificateTester::DoTest()
     });
 }
 
-void PECertificateTester::TestCertificate(IPECertificate *certificate)
+void PECertificateTester::TestCertificate(_In_ IPECertificate *certificate)
 {
     BEGIN_TEST_PE_ELEMENT(certificate)
         TEST_RAW_FIELD_SIMPLE(IPECertificate, Length)

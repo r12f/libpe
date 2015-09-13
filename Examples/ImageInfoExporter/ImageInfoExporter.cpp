@@ -2,7 +2,7 @@
 
 using namespace LibPE;
 
-void ExportBasicInfo(IPEFile *pFile)
+void ExportBasicInfo(_In_ IPEFile *pFile)
 {
     printf("DosHeader: 0x%p\n", pFile->GetRawDosHeader());
     printf("NtHeaders: 0x%p\n", pFile->GetRawNtHeaders());
@@ -11,7 +11,7 @@ void ExportBasicInfo(IPEFile *pFile)
     printf("IsX86File: %s\n", pFile->Is32Bit() ? "YES" : "NO");
 }
 
-void ExportSection(IPEFile *pFile)
+void ExportSection(_In_ IPEFile *pFile)
 {
     printf("Sections:\n");
 
@@ -36,7 +36,7 @@ void ExportSection(IPEFile *pFile)
     printf("\n");
 }
 
-void ExportExportTable(IPEFile *pFile) 
+void ExportExportTable(_In_ IPEFile *pFile) 
 {
     // Export Table
     LibPEPtr<IPEExportTable> pExportTable;
@@ -53,7 +53,7 @@ void ExportExportTable(IPEFile *pFile)
     printf("\n");
 }
 
-void ExportImportTable(IPEFile *pFile) 
+void ExportImportTable(_In_ IPEFile *pFile) 
 {
     // Import Table
     LibPEPtr<IPEImportTable> pImportTable;
@@ -80,15 +80,15 @@ void ExportImportTable(IPEFile *pFile)
     }
 }
 
-void ExportResourceDataEntry(IPEResourceDataEntry *pDataEntry)
+void ExportResourceDataEntry(_In_ IPEResourceDataEntry *pDataEntry)
 {
     LibPEPtr<IPEResource> pResource;
     pDataEntry->GetResource(&pResource);
     printf("Resource: RVA = 0x%016I64x, FOA = 0x%016I64x, Size = %I64u", pResource->GetRVA(), pResource->GetFOA(), pResource->GetSizeInMemory());
 }
 
-void ExportResourceDirectory(IPEResourceDirectory *pDirectory);
-void ExportResourceDirectoryEntry(IPEResourceDirectoryEntry *pDirectoryEntry)
+void ExportResourceDirectory(_In_ IPEResourceDirectory *pDirectory);
+void ExportResourceDirectoryEntry(_In_ IPEResourceDirectoryEntry *pDirectoryEntry)
 {
     printf("Resource directory entry: ");
     if(pDirectoryEntry->IsNameId()) {
@@ -110,7 +110,7 @@ void ExportResourceDirectoryEntry(IPEResourceDirectoryEntry *pDirectoryEntry)
     }
 }
 
-void ExportResourceDirectory(IPEResourceDirectory *pDirectory)
+void ExportResourceDirectory(_In_ IPEResourceDirectory *pDirectory)
 {
     printf("Resource directory:\n");
     UINT32 nEntryCount = pDirectory->GetEntryCount();
@@ -122,7 +122,7 @@ void ExportResourceDirectory(IPEResourceDirectory *pDirectory)
     printf("\n");
 }
 
-void ExportResourceTable(IPEFile *pFile)
+void ExportResourceTable(_In_ IPEFile *pFile)
 {
     printf("Resource table:\n");
 
@@ -137,7 +137,7 @@ void ExportResourceTable(IPEFile *pFile)
     return;
 }
 
-void ExportExceptionTable(IPEFile *pFile)
+void ExportExceptionTable(_In_ IPEFile *pFile)
 {
     LibPEPtr<IPEExceptionTable> pExceptionTable;
     pFile->GetExceptionTable(&pExceptionTable);
@@ -186,7 +186,7 @@ void ExportExceptionTable(IPEFile *pFile)
     printf("\n");
 }
 
-void ExportRelocationTable(IPEFile *pFile)
+void ExportRelocationTable(_In_ IPEFile *pFile)
 {
     LibPEPtr<IPERelocationTable> pRelocationTable;
     pFile->GetRelocationTable(&pRelocationTable);
@@ -209,7 +209,7 @@ void ExportRelocationTable(IPEFile *pFile)
     }
 }
 
-void ExportDebugInfoTable(IPEFile *pFile)
+void ExportDebugInfoTable(_In_ IPEFile *pFile)
 {
     LibPEPtr<IPEDebugInfoTable> pDebugInfoTable;
     pFile->GetDebugInfoTable(&pDebugInfoTable);
@@ -234,7 +234,7 @@ void ExportDebugInfoTable(IPEFile *pFile)
     printf("\n");
 }
 
-void ExportGlobalPointerTable(IPEFile *pFile)
+void ExportGlobalPointerTable(_In_ IPEFile *pFile)
 {
     LibPEPtr<IPEGlobalPointerTable> pGlobalPointerTable;
     pFile->GetGlobalPointerTable(&pGlobalPointerTable);
@@ -259,7 +259,7 @@ void ExportGlobalPointerTable(IPEFile *pFile)
     printf("\n");
 }
 
-void ExportImportAddressTable(IPEFile *pFile)
+void ExportImportAddressTable(_In_ IPEFile *pFile)
 {
     LibPEPtr<IPEImportAddressTable> pImportAddressTable;
     pFile->GetImportAddressTable(&pImportAddressTable);
@@ -282,7 +282,7 @@ void ExportImportAddressTable(IPEFile *pFile)
     }
 }
 
-void ExportTlsTable(IPEFile *pFile)
+void ExportTlsTable(_In_ IPEFile *pFile)
 {
     LibPEPtr<IPETlsTable> pTlsTable;
     pFile->GetTlsTable(&pTlsTable);
@@ -314,7 +314,7 @@ void ExportTlsTable(IPEFile *pFile)
     printf("\n");
 }
 
-void ExportLoadConfigTable(IPEFile *pFile)
+void ExportLoadConfigTable(_In_ IPEFile *pFile)
 {
     LibPEPtr<IPELoadConfigTable> pLoadConfigTable;
     pFile->GetLoadConfigTable(&pLoadConfigTable);
@@ -355,7 +355,7 @@ void ExportLoadConfigTable(IPEFile *pFile)
     printf("\n");
 }
 
-void ExportBoundImportTable(IPEFile *pFile)
+void ExportBoundImportTable(_In_ IPEFile *pFile)
 {
     LibPEPtr<IPEBoundImportTable> pBoundImportTable;
     pFile->GetBoundImportTable(&pBoundImportTable);
@@ -402,7 +402,7 @@ void ExportBoundImportTable(IPEFile *pFile)
     printf("\n");
 }
 
-void ExportCertificateTable(IPEFile *pFile)
+void ExportCertificateTable(_In_ IPEFile *pFile)
 {
     LibPEPtr<IPECertificateTable> pCertificateTable;
     pFile->GetCertificateTable(&pCertificateTable);

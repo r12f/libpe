@@ -5,10 +5,8 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 HRESULT
-PEBoundImportTableT<T>::InnerAddBoundImportModule(IPEBoundImportModule *pBoundImportModule)
+PEBoundImportTableT<T>::InnerAddBoundImportModule(_In_ IPEBoundImportModule *pBoundImportModule)
 {
-    LIBPE_CHK(NULL != pBoundImportModule, E_INVALIDARG);
-
     HRESULT hr = S_OK;
 
     LIBPE_HR_TRY_BEGIN(hr) {
@@ -28,7 +26,7 @@ PEBoundImportTableT<T>::GetBoundImportModuleCount()
 
 template <class T>
 HRESULT
-PEBoundImportTableT<T>::GetBoundImportModuleByIndex(UINT32 nIndex, IPEBoundImportModule **ppBoundImportModule)
+PEBoundImportTableT<T>::GetBoundImportModuleByIndex(_In_ UINT32 nIndex, _Outptr_ IPEBoundImportModule **ppBoundImportModule)
 {
     LIBPE_CHK(NULL != ppBoundImportModule, E_POINTER);
     LIBPE_CHK_HR(EnsureBoundImportModulesParsed());
@@ -57,10 +55,8 @@ PEBoundImportTableT<T>::EnsureBoundImportModulesParsed()
 
 template <class T>
 HRESULT 
-PEBoundImportModuleT<T>::InnerAddBoundForwarder(IPEBoundForwarder *pBoundForwarder)
+PEBoundImportModuleT<T>::InnerAddBoundForwarder(_In_ IPEBoundForwarder *pBoundForwarder)
 {
-    LIBPE_CHK(NULL != pBoundForwarder, E_INVALIDARG);
-
     HRESULT hr = S_OK;
 
     LIBPE_HR_TRY_BEGIN(hr) {
@@ -79,7 +75,7 @@ PEBoundImportModuleT<T>::GetBoundForwarderCount()
 
 template <class T>
 HRESULT 
-PEBoundImportModuleT<T>::GetBoundForwarderByIndex(UINT32 nIndex, IPEBoundForwarder **ppBoundForwarder)
+PEBoundImportModuleT<T>::GetBoundForwarderByIndex(_In_ UINT32 nIndex, _Outptr_ IPEBoundForwarder **ppBoundForwarder)
 {
     return S_OK;
 }

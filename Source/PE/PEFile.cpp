@@ -5,10 +5,8 @@ LIBPE_NAMESPACE_BEGIN
 
 template <class T>
 HRESULT
-PEFileT<T>::Init(PEParserT<T> *pParser)
+PEFileT<T>::Init(_In_ PEParserT<T> *pParser)
 {
-    LIBPE_CHK(NULL != pParser, E_POINTER);
-
     m_pParser = pParser;
 
     HRESULT hr = pParser->ParseBasicInfo(&m_pDosHeader, &m_pNtHeaders, &m_vSectionHeaders, &m_pOverlay);
@@ -24,7 +22,7 @@ PEFileT<T>::Init(PEParserT<T> *pParser)
 
 template <class T>
 HRESULT
-PEFileT<T>::Create(DataLoader *pLoader, IPEFile **ppFile)
+PEFileT<T>::Create(_In_ DataLoader *pLoader, _Outptr_ IPEFile **ppFile)
 {
     LIBPE_CHK(NULL != pLoader && NULL != ppFile, E_POINTER);
 
@@ -109,21 +107,21 @@ PEFileT<T>::GetRawOptionalHeader64()
 
 template <class T>
 HRESULT
-PEFileT<T>::GetDosHeader(IPEDosHeader **ppDosHeader)
+PEFileT<T>::GetDosHeader(_Outptr_ IPEDosHeader **ppDosHeader)
 {
     return m_pDosHeader.CopyTo(ppDosHeader);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetNtHeaders(IPENtHeaders **ppNtHeaders)
+PEFileT<T>::GetNtHeaders(_Outptr_ IPENtHeaders **ppNtHeaders)
 {
     return m_pNtHeaders.CopyTo(ppNtHeaders);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetFileHeader(IPEFileHeader **ppFileHeader)
+PEFileT<T>::GetFileHeader(_Outptr_ IPEFileHeader **ppFileHeader)
 {
     LIBPE_CHK(NULL != m_pNtHeaders, NULL);
     return m_pNtHeaders->GetFileHeader(ppFileHeader);
@@ -131,7 +129,7 @@ PEFileT<T>::GetFileHeader(IPEFileHeader **ppFileHeader)
 
 template <class T>
 HRESULT
-PEFileT<T>::GetOptionalHeader(IPEOptionalHeader **ppOptionalHeader)
+PEFileT<T>::GetOptionalHeader(_Outptr_ IPEOptionalHeader **ppOptionalHeader)
 {
     LIBPE_CHK(NULL != m_pNtHeaders, NULL);
     return m_pNtHeaders->GetOptionalHeader(ppOptionalHeader);
@@ -185,7 +183,7 @@ PEFileT<T>::GetSectionCount()
 
 template <class T>
 HRESULT
-PEFileT<T>::GetSectionHeader(UINT32 nIndex, IPESectionHeader **ppSectionHeader)
+PEFileT<T>::GetSectionHeader(_In_ UINT32 nIndex, _Outptr_ IPESectionHeader **ppSectionHeader)
 {
     LIBPE_CHK(NULL != ppSectionHeader, E_POINTER);
     LIBPE_CHK(nIndex < GetSectionCount(), E_INVALIDARG);
@@ -194,7 +192,7 @@ PEFileT<T>::GetSectionHeader(UINT32 nIndex, IPESectionHeader **ppSectionHeader)
 
 template <class T>
 HRESULT
-PEFileT<T>::GetSection(UINT32 nIndex, IPESection **ppSection)
+PEFileT<T>::GetSection(_In_ UINT32 nIndex, _Outptr_ IPESection **ppSection)
 {
     LIBPE_CHK(NULL != ppSection, E_POINTER);
     LIBPE_CHK(nIndex < GetSectionCount(), E_INVALIDARG);
@@ -204,7 +202,7 @@ PEFileT<T>::GetSection(UINT32 nIndex, IPESection **ppSection)
 
 template <class T>
 HRESULT
-PEFileT<T>::GetSectionByRVA(PEAddress nRVA, IPESection **ppSection)
+PEFileT<T>::GetSectionByRVA(_In_ PEAddress nRVA, _Outptr_ IPESection **ppSection)
 {
     LIBPE_CHK(LIBPE_INVALID_ADDRESS != nRVA, E_INVALIDARG);
     LIBPE_CHK(NULL != ppSection, E_POINTER);
@@ -225,14 +223,14 @@ PEFileT<T>::GetSectionByRVA(PEAddress nRVA, IPESection **ppSection)
 
 template <class T>
 HRESULT
-PEFileT<T>::GetSectionByVA(PEAddress nVA, IPESection **ppSection)
+PEFileT<T>::GetSectionByVA(_In_ PEAddress nVA, _Outptr_ IPESection **ppSection)
 {
     return GetSectionByRVA(GetRVAFromVA(nVA), ppSection);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetSectionByFOA(PEAddress nFOA, IPESection **ppSection)
+PEFileT<T>::GetSectionByFOA(_In_ PEAddress nFOA, _Outptr_ IPESection **ppSection)
 {
     LIBPE_CHK(LIBPE_INVALID_ADDRESS != nFOA, E_INVALIDARG);
     LIBPE_CHK(NULL != ppSection, E_POINTER);
@@ -253,7 +251,7 @@ PEFileT<T>::GetSectionByFOA(PEAddress nFOA, IPESection **ppSection)
 
 template <class T>
 HRESULT
-PEFileT<T>::GetOverlay(IPEOverlay **ppOverlay)
+PEFileT<T>::GetOverlay(_Outptr_ IPEOverlay **ppOverlay)
 {
     LIBPE_CHK(NULL != ppOverlay, E_POINTER);
     return m_pOverlay.CopyTo(ppOverlay);
@@ -261,7 +259,7 @@ PEFileT<T>::GetOverlay(IPEOverlay **ppOverlay)
 
 template <class T>
 PEAddress
-PEFileT<T>::GetRVAFromVA(PEAddress nVA)
+PEFileT<T>::GetRVAFromVA(_In_ PEAddress nVA)
 {
     LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
     return m_pParser->GetRVAFromVA(nVA);
@@ -269,7 +267,7 @@ PEFileT<T>::GetRVAFromVA(PEAddress nVA)
 
 template <class T>
 PEAddress
-PEFileT<T>::GetVAFromRVA(PEAddress nRVA)
+PEFileT<T>::GetVAFromRVA(_In_ PEAddress nRVA)
 {
     LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
     return m_pParser->GetVAFromRVA(nRVA);
@@ -277,7 +275,7 @@ PEFileT<T>::GetVAFromRVA(PEAddress nRVA)
 
 template <class T>
 PEAddress
-PEFileT<T>::GetRVAFromFOA(PEAddress nFOA)
+PEFileT<T>::GetRVAFromFOA(_In_ PEAddress nFOA)
 {
     LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
     return m_pParser->GetRVAFromFOA(nFOA);
@@ -285,7 +283,7 @@ PEFileT<T>::GetRVAFromFOA(PEAddress nFOA)
 
 template <class T>
 PEAddress
-PEFileT<T>::GetFOAFromRVA(PEAddress nRVA)
+PEFileT<T>::GetFOAFromRVA(_In_ PEAddress nRVA)
 {
     LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
     return m_pParser->GetFOAFromRVA(nRVA);
@@ -293,7 +291,7 @@ PEFileT<T>::GetFOAFromRVA(PEAddress nRVA)
 
 template <class T>
 PEAddress
-PEFileT<T>::GetVAFromFOA(PEAddress nFOA)
+PEFileT<T>::GetVAFromFOA(_In_ PEAddress nFOA)
 {
     LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
     return m_pParser->GetVAFromFOA(nFOA);
@@ -301,7 +299,7 @@ PEFileT<T>::GetVAFromFOA(PEAddress nFOA)
 
 template <class T>
 PEAddress
-PEFileT<T>::GetFOAFromVA(PEAddress nVA)
+PEFileT<T>::GetFOAFromVA(_In_ PEAddress nVA)
 {
     LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
     return m_pParser->GetFOAFromVA(nVA);
@@ -309,56 +307,56 @@ PEFileT<T>::GetFOAFromVA(PEAddress nVA)
 
 template <class T>
 HRESULT
-PEFileT<T>::GetExportTable(IPEExportTable **ppExportTable)
+PEFileT<T>::GetExportTable(_Outptr_ IPEExportTable **ppExportTable)
 {
     return ParsePETable(&PEParserT<T>::ParseExportTable, TPF_IsExportTableParsed, m_pExportTable, ppExportTable);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetImportTable(IPEImportTable **ppImportTable)
+PEFileT<T>::GetImportTable(_Outptr_ IPEImportTable **ppImportTable)
 {
     return ParsePETable(&PEParserT<T>::ParseImportTable, TPF_IsImportTableParsed, m_pImportTable, ppImportTable);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetResourceTable(IPEResourceTable **ppResourceTable)
+PEFileT<T>::GetResourceTable(_Outptr_ IPEResourceTable **ppResourceTable)
 {
     return ParsePETable(&PEParserT<T>::ParseResourceTable, TPF_IsResourceTableParsed, m_pResourceTable, ppResourceTable);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetExceptionTable(IPEExceptionTable **ppExceptionTable)
+PEFileT<T>::GetExceptionTable(_Outptr_ IPEExceptionTable **ppExceptionTable)
 {
     return ParsePETable(&PEParserT<T>::ParseExceptionTable, TPF_IsExceptionTableParsed, m_pExceptionTable, ppExceptionTable);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetCertificateTable(IPECertificateTable **ppCertificateTable)
+PEFileT<T>::GetCertificateTable(_Outptr_ IPECertificateTable **ppCertificateTable)
 {
     return ParsePETable(&PEParserT<T>::ParseCertificateTable, TPF_IsCertificateTableParsed, m_pCertificateTable, ppCertificateTable);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetRelocationTable(IPERelocationTable **ppRelocationTable)
+PEFileT<T>::GetRelocationTable(_Outptr_ IPERelocationTable **ppRelocationTable)
 {
     return ParsePETable(&PEParserT<T>::ParseRelocationTable, TPF_IsRelocationTableParsed, m_pRelocationTable, ppRelocationTable);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable)
+PEFileT<T>::GetDebugInfoTable(_Outptr_ IPEDebugInfoTable **ppDebugInfoTable)
 {
     return ParsePETable(&PEParserT<T>::ParseDebugInfoTable, TPF_IsDebugInfoTableParsed, m_pDebugInfoTable, ppDebugInfoTable);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetArchitectureDataTable(IPEArchitectureDataTable **ppArchitectureDataTable)
+PEFileT<T>::GetArchitectureDataTable(_Outptr_ IPEArchitectureDataTable **ppArchitectureDataTable)
 {
     LIBPE_CHK(NULL != ppArchitectureDataTable, E_POINTER);
 
@@ -372,49 +370,49 @@ PEFileT<T>::GetArchitectureDataTable(IPEArchitectureDataTable **ppArchitectureDa
 
 template <class T>
 HRESULT 
-PEFileT<T>::GetGlobalPointerTable(IPEGlobalPointerTable **ppGlobalPointerTable)
+PEFileT<T>::GetGlobalPointerTable(_Outptr_ IPEGlobalPointerTable **ppGlobalPointerTable)
 {
     return ParsePETable(&PEParserT<T>::ParseGlobalPointerTable, TPF_IsGlobalPointerTableParsed, m_pGlobalPointerTable, ppGlobalPointerTable);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetTlsTable(IPETlsTable **ppTlsTable)
+PEFileT<T>::GetTlsTable(_Outptr_ IPETlsTable **ppTlsTable)
 {
     return ParsePETable(&PEParserT<T>::ParseTlsTable, TPF_IsTlsTableParsed, m_pTlsTable, ppTlsTable);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable)
+PEFileT<T>::GetLoadConfigTable(_Outptr_ IPELoadConfigTable **ppLoadConfigTable)
 {
     return ParsePETable(&PEParserT<T>::ParseLoadConfigTable, TPF_IsLoadConfigTableParsed, m_pLoadConfigTable, ppLoadConfigTable);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetBoundImportTable(IPEBoundImportTable **ppBoundImportTable)
+PEFileT<T>::GetBoundImportTable(_Outptr_ IPEBoundImportTable **ppBoundImportTable)
 {
     return ParsePETable(&PEParserT<T>::ParseBoundImportTable, TPF_IsBoundImportTableParsed, m_pBoundImportTable, ppBoundImportTable);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetImportAddressTable(IPEImportAddressTable **ppImportAddressTable)
+PEFileT<T>::GetImportAddressTable(_Outptr_ IPEImportAddressTable **ppImportAddressTable)
 {
     return ParsePETable(&PEParserT<T>::ParseImportAddressTable, TPF_IsImportAddressTableParsed, m_pImportAddressTable, ppImportAddressTable);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetDelayImportTable(IPEDelayImportTable **ppDelayImportTable)
+PEFileT<T>::GetDelayImportTable(_Outptr_ IPEDelayImportTable **ppDelayImportTable)
 {
     return ParsePETable(&PEParserT<T>::ParseDelayImportTable, TPF_IsDelayImportTableParsed, m_pDelayImportTable, ppDelayImportTable);
 }
 
 template <class T>
 HRESULT
-PEFileT<T>::GetClrTable(IPEClrTable **ppClrTable)
+PEFileT<T>::GetClrTable(_Outptr_ IPEClrTable **ppClrTable)
 {
     return ParsePETable(&PEParserT<T>::ParseClrTable, TPF_IsClrTableParsed, m_pClrTable, ppClrTable);
 }

@@ -17,9 +17,9 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawExportDirectory(T))
 
-    void InnerSetFunctionList(UINT32 *pFunctionList) { m_pFunctionList = pFunctionList; }
-    void InnerSetNameList(UINT32 *pNameList) { m_pNameList = pNameList; }
-    void InnerSetNameOrdinalList(UINT16 *pNameOrdinalList) { m_pNameOrdinalList = pNameOrdinalList; }
+    void InnerSetFunctionList(_In_ UINT32 *pFunctionList) { m_pFunctionList = pFunctionList; }
+    void InnerSetNameList(_In_ UINT32 *pNameList) { m_pNameList = pNameList; }
+    void InnerSetNameOrdinalList(_In_ UINT16 *pNameOrdinalList) { m_pNameOrdinalList = pNameOrdinalList; }
 
     UINT32 * GetRawFunctionList() { return m_pFunctionList; }
     UINT32 * GetRawNameList() { return m_pNameList; }
@@ -45,8 +45,8 @@ public:
     LIBPE_FIELD_ACCESSOR(UINT32, AddressOfNameOrdinals)
 
     UINT32 LIBPE_CALLTYPE GetFunctionCount() override;
-    HRESULT LIBPE_CALLTYPE GetFunctionByIndex(UINT32 nIndex, IPEExportFunction **ppFunction) override;
-    HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEExportFunction **ppFunction) override;
+    HRESULT LIBPE_CALLTYPE GetFunctionByIndex(_In_ UINT32 nIndex, _Outptr_ IPEExportFunction **ppFunction) override;
+    HRESULT LIBPE_CALLTYPE GetFunctionByName(_In_ const char *pFunctionName, _Outptr_ IPEExportFunction **ppFunction) override;
 
 private:
     FunctionList      m_vExportFunctions;
@@ -66,8 +66,8 @@ public:
 
     DECLARE_PE_ELEMENT(void)
 
-    void InnerSetName(const char *pName) { m_pName = pName; }
-    void InnerSetOrdinal(UINT16 nOrdinal) { m_nOrdinal = nOrdinal; }
+    void InnerSetName(_In_ const char *pName) { m_pName = pName; }
+    void InnerSetOrdinal(_In_ UINT16 nOrdinal) { m_nOrdinal = nOrdinal; }
 
     const char * LIBPE_CALLTYPE GetName() override;
     UINT16 LIBPE_CALLTYPE GetOrdinal() override;

@@ -18,14 +18,14 @@ class PESectionHeaderTester :
 public:
     PESectionHeaderTester() : PEElementTester("SectionHeader") {}
 
-    PESectionHeaderTester & SetSectionHeader(IPESectionHeader *sectionHeader) {
+    PESectionHeaderTester & SetSectionHeader(_In_ IPESectionHeader *sectionHeader) {
         _sectionHeader = sectionHeader;
         return *this;
     }
 
 protected:
     void DoTest() override;
-    void TestSectionHeader(IPESectionHeader *sectionHeader);
+    void TestSectionHeader(_In_ IPESectionHeader *sectionHeader);
 
 private:
     LibPEPtr<IPESectionHeader> _sectionHeader;

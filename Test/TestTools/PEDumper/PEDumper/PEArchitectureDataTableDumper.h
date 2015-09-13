@@ -8,7 +8,7 @@ class PEArchitectureDataTableDumper :
 public:
     PEArchitectureDataTableDumper() : PEElementDumper("ArchitectureDataTable") {}
 
-    PEArchitectureDataTableDumper & SetDumpElement(IPEArchitectureDataTable *architectureDataTable) {
+    PEArchitectureDataTableDumper & SetDumpElement(_In_ IPEArchitectureDataTable *architectureDataTable) {
         _architectureDataTable = architectureDataTable;
         return *this;
     }

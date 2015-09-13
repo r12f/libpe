@@ -13,7 +13,7 @@ PEImportTableT<T>::GetModuleCount()
 
 template <class T>
 HRESULT
-PEImportTableT<T>::GetModuleByIndex(UINT32 nModuleId, IPEImportModule **ppImportModule)
+PEImportTableT<T>::GetModuleByIndex(_In_ UINT32 nModuleId, _Outptr_ IPEImportModule **ppImportModule)
 {
     LIBPE_CHK(NULL != ppImportModule, E_POINTER);
     LIBPE_CHK_HR(EnsureDataReady());
@@ -26,7 +26,7 @@ PEImportTableT<T>::GetModuleByIndex(UINT32 nModuleId, IPEImportModule **ppImport
 
 template <class T>
 HRESULT
-PEImportTableT<T>::GetModuleByName(const char *pModuleName, IPEImportModule **ppImportModule)
+PEImportTableT<T>::GetModuleByName(_In_ const char *pModuleName, _Outptr_ IPEImportModule **ppImportModule)
 {
     LIBPE_CHK_HR(EnsureDataReady());
     return E_NOTIMPL;
@@ -34,7 +34,7 @@ PEImportTableT<T>::GetModuleByName(const char *pModuleName, IPEImportModule **pp
 
 template <class T>
 HRESULT
-PEImportTableT<T>::GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunction **ppImportFunction)
+PEImportTableT<T>::GetFunctionByName(_In_ const char *pModuleName, const char *pFunctionName, _Outptr_ IPEImportFunction **ppImportFunction)
 {
     LIBPE_CHK_HR(EnsureDataReady());
     return E_NOTIMPL;
@@ -69,7 +69,7 @@ PEImportModuleT<T>::GetFunctionCount()
 
 template <class T>
 HRESULT
-PEImportModuleT<T>::GetFunctionByIndex(UINT32 nIndex, IPEImportFunction **ppFunction)
+PEImportModuleT<T>::GetFunctionByIndex(_In_ UINT32 nIndex, _Outptr_ IPEImportFunction **ppFunction)
 {
     LIBPE_CHK(NULL != ppFunction, E_POINTER);
 
@@ -83,7 +83,7 @@ PEImportModuleT<T>::GetFunctionByIndex(UINT32 nIndex, IPEImportFunction **ppFunc
 
 template <class T>
 HRESULT
-PEImportModuleT<T>::GetFunctionByName(const char *pFunctionName, IPEImportFunction **ppFunction)
+PEImportModuleT<T>::GetFunctionByName(_In_ const char *pFunctionName, _Outptr_ IPEImportFunction **ppFunction)
 {
     LIBPE_CHK_HR(EnsureFunctionParsed());
     return E_NOTIMPL;
@@ -91,7 +91,7 @@ PEImportModuleT<T>::GetFunctionByName(const char *pFunctionName, IPEImportFuncti
 
 template <class T>
 HRESULT
-PEImportModuleT<T>::GetRelatedImportAddressBlock(IPEImportAddressBlock **ppBlock)
+PEImportModuleT<T>::GetRelatedImportAddressBlock(_Outptr_ IPEImportAddressBlock **ppBlock)
 {
     LIBPE_CHK(NULL != ppBlock, E_POINTER);
 
@@ -145,7 +145,6 @@ PEImportFunctionT<T>::GetRawImportByNameSize()
     LIBPE_CHK_HR_RET(EnsureImportByNameParsed(), LIBPE_INVALID_SIZE);
     return m_nImportByNameSize;
 }
-
 
 template <class T>
 const char *

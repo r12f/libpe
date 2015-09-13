@@ -8,7 +8,7 @@ class PEExceptionTableDumper :
 public:
     PEExceptionTableDumper() : PEElementDumper("ExceptionTable") {}
 
-    PEExceptionTableDumper & SetDumpElement(IPEExceptionTable *exceptionTable) {
+    PEExceptionTableDumper & SetDumpElement(_In_ IPEExceptionTable *exceptionTable) {
         _exceptionTable = exceptionTable;
         return *this;
     }
@@ -26,7 +26,7 @@ class PEExceptionHandlerEntryDumper :
 public:
     PEExceptionHandlerEntryDumper() : PEElementDumper("ExceptionHandlerEntry") {}
 
-    PEExceptionHandlerEntryDumper & SetDumpElement(IPEExceptionHandlerEntry *exceptionHandlerEntry) {
+    PEExceptionHandlerEntryDumper & SetDumpElement(_In_ IPEExceptionHandlerEntry *exceptionHandlerEntry) {
         _exceptionHandlerEntry = exceptionHandlerEntry;
         return *this;
     }
@@ -44,7 +44,7 @@ class PEExceptionHandlerDumper :
 public:
     PEExceptionHandlerDumper() : PEElementDumper("ExceptionHandler") {}
 
-    PEExceptionHandlerDumper & SetDumpElement(IPEExceptionHandler *exceptionHandler) {
+    PEExceptionHandlerDumper & SetDumpElement(_In_ IPEExceptionHandler *exceptionHandler) {
         _exceptionHandler = exceptionHandler; 
         return *this;
     }

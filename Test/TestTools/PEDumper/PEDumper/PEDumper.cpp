@@ -20,7 +20,7 @@
 #include "PEClrTableDumper.h"
 
 template <class Dumper, class PEElement>
-static void DumpPEElementSimple(IPEFile *peFile, HRESULT (LIBPE_CALLTYPE IPEFile::*getElementFunc)(PEElement **), tinyxml2::XMLElement *parentXmlElement)
+static void DumpPEElementSimple(_In_ IPEFile *peFile, HRESULT (LIBPE_CALLTYPE IPEFile::*getElementFunc)(PEElement **), tinyxml2::XMLElement *parentXmlElement)
 {
     LibPEPtr<PEElement> peElement;
     if (FAILED((peFile->*getElementFunc)(&peElement))) {
@@ -35,7 +35,7 @@ static void DumpPEElementSimple(IPEFile *peFile, HRESULT (LIBPE_CALLTYPE IPEFile
 }
 
 template <class Dumper>
-static void DumpPEElementCustom(IPEFile *peFile, tinyxml2::XMLElement *parentXmlElement)
+static void DumpPEElementCustom(_In_ IPEFile *peFile, tinyxml2::XMLElement *parentXmlElement)
 {
     Dumper()
         .SetPEFile(peFile)
@@ -47,7 +47,7 @@ PEDumper::PEDumper()
 {
 #define DEFINE_PE_DUMPER_SIMPLE(dumper, getElementFunc, peElement)                                        \
     _dumpers.push_back(                                                                                   \
-        [](IPEFile *peFile, tinyxml2::XMLElement *parentXMLElement) {                                     \
+        [](_In_ IPEFile *peFile, tinyxml2::XMLElement *parentXMLElement) {                                     \
             DumpPEElementSimple<dumper, peElement>(peFile, &IPEFile::getElementFunc, parentXMLElement);   \
     })
 

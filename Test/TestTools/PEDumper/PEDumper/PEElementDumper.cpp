@@ -26,7 +26,7 @@ PEElementDumper::BeginDump()
 }
 
 void 
-PEElementDumper::DumpBasicInformation(IPEElement *peElement)
+PEElementDumper::DumpBasicInformation(_In_ IPEElement *peElement)
 {
     BEGIN_DUMP_PE_ELEMENT(peElement)
         DUMP_API_RESULT_SIMPLE(GetRVA)
@@ -40,7 +40,7 @@ PEElementDumper::DumpBasicInformation(IPEElement *peElement)
 }
 
 tinyxml2::XMLElement *
-PEElementDumper::CreateChildXmlElement(const char *tagName, tinyxml2::XMLElement *parentElement)
+PEElementDumper::CreateChildXmlElement(_In_ const char *tagName, tinyxml2::XMLElement *parentElement)
 {
     auto newElement = parentElement->GetDocument()->NewElement(tagName);
     parentElement->InsertEndChild(newElement);

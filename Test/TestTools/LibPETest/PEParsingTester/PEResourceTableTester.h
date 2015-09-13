@@ -18,14 +18,14 @@ class PEResourceDirectoryTester :
 public:
     PEResourceDirectoryTester() : PEElementTester("ResourceDirectory") {}
 
-    PEResourceDirectoryTester & SetResourceDirectory(IPEResourceDirectory *resourceDirectory) {
+    PEResourceDirectoryTester & SetResourceDirectory(_In_ IPEResourceDirectory *resourceDirectory) {
         _resourceDirectory = resourceDirectory;
         return *this;
     }
 
 protected:
     void DoTest() override;
-    void TestResourceDirectory(IPEResourceDirectory *resourceDirectory);
+    void TestResourceDirectory(_In_ IPEResourceDirectory *resourceDirectory);
 
 private:
     LibPEPtr<IPEResourceDirectory> _resourceDirectory;
@@ -37,14 +37,14 @@ class PEResourceDirectoryEntryTester :
 public:
     PEResourceDirectoryEntryTester() : PEElementTester("ResourceDirectoryEntry") {}
 
-    PEResourceDirectoryEntryTester & SetResourceDirectoryEntry(IPEResourceDirectoryEntry *resourceDirectoryEntry) {
+    PEResourceDirectoryEntryTester & SetResourceDirectoryEntry(_In_ IPEResourceDirectoryEntry *resourceDirectoryEntry) {
         _resourceDirectoryEntry = resourceDirectoryEntry;
         return *this;
     }
 
 protected:
     void DoTest() override;
-    void TestResourceDirectoryEntry(IPEResourceDirectoryEntry *resourceDirectoryEntry);
+    void TestResourceDirectoryEntry(_In_ IPEResourceDirectoryEntry *resourceDirectoryEntry);
 
 private:
     LibPEPtr<IPEResourceDirectoryEntry> _resourceDirectoryEntry;
@@ -56,14 +56,14 @@ class PEResourceDataEntryTester :
 public:
     PEResourceDataEntryTester() : PEElementTester("ResourceDataEntry") {}
 
-    PEResourceDataEntryTester & SetResourceDataEntry(IPEResourceDataEntry *resourceDataEntry) {
+    PEResourceDataEntryTester & SetResourceDataEntry(_In_ IPEResourceDataEntry *resourceDataEntry) {
         _resourceDataEntry = resourceDataEntry;
         return *this;
     }
 
 protected:
     void DoTest() override;
-    void TestResourceDataEntry(IPEResourceDataEntry *resourceDataEntry);
+    void TestResourceDataEntry(_In_ IPEResourceDataEntry *resourceDataEntry);
 
 private:
     LibPEPtr<IPEResourceDataEntry> _resourceDataEntry;
@@ -75,7 +75,7 @@ class PEResourceTester :
 public:
     PEResourceTester() : PEElementTester("Resource") {}
 
-    PEResourceTester & SetResource(IPEResource *resource) {
+    PEResourceTester & SetResource(_In_ IPEResource *resource) {
         _resource = resource;
         return *this;
     }

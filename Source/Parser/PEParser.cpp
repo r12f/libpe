@@ -34,7 +34,7 @@ PEParserT<T>::Create(PEParserType nType)
 
 template <class T>
 PEAddress
-PEParserT<T>::GetRVAFromVA(PEAddress nVA)
+PEParserT<T>::GetRVAFromVA(_In_ PEAddress nVA)
 {
     LIBPE_CHK(LIBPE_INVALID_ADDRESS != nVA, LIBPE_INVALID_ADDRESS);
     LIBPE_CHK(NULL != m_pFile, LIBPE_INVALID_ADDRESS);
@@ -50,7 +50,7 @@ PEParserT<T>::GetRVAFromVA(PEAddress nVA)
 
 template <class T>
 PEAddress
-PEParserT<T>::GetVAFromRVA(PEAddress nRVA)
+PEParserT<T>::GetVAFromRVA(_In_ PEAddress nRVA)
 {
     LIBPE_CHK(LIBPE_INVALID_ADDRESS != nRVA, LIBPE_INVALID_ADDRESS);
     LIBPE_CHK(NULL != m_pFile, LIBPE_INVALID_ADDRESS);
@@ -63,7 +63,7 @@ PEParserT<T>::GetVAFromRVA(PEAddress nRVA)
 
 template <class T>
 PEAddress
-PEParserT<T>::GetRVAFromFOA(PEAddress nFOA)
+PEParserT<T>::GetRVAFromFOA(_In_ PEAddress nFOA)
 {
     LIBPE_CHK(LIBPE_INVALID_ADDRESS != nFOA, LIBPE_INVALID_ADDRESS);
     LIBPE_CHK(NULL != m_pFile, LIBPE_INVALID_ADDRESS);
@@ -100,7 +100,7 @@ PEParserT<T>::GetRVAFromFOA(PEAddress nFOA)
 
 template <class T>
 PEAddress
-PEParserT<T>::GetFOAFromRVA(PEAddress nRVA)
+PEParserT<T>::GetFOAFromRVA(_In_ PEAddress nRVA)
 {
     LIBPE_CHK(LIBPE_INVALID_ADDRESS != nRVA, LIBPE_INVALID_ADDRESS);
     LIBPE_CHK(NULL != m_pFile, LIBPE_INVALID_ADDRESS);
@@ -137,7 +137,7 @@ PEParserT<T>::GetFOAFromRVA(PEAddress nRVA)
 
 template <class T>
 PEAddress
-PEParserT<T>::GetVAFromFOA(PEAddress nFOA)
+PEParserT<T>::GetVAFromFOA(_In_ PEAddress nFOA)
 {
     LIBPE_CHK(LIBPE_INVALID_ADDRESS != nFOA, LIBPE_INVALID_ADDRESS);
     return GetVAFromRVA(GetRVAFromFOA(nFOA));
@@ -145,7 +145,7 @@ PEParserT<T>::GetVAFromFOA(PEAddress nFOA)
 
 template <class T>
 PEAddress
-PEParserT<T>::GetFOAFromVA(PEAddress nVA)
+PEParserT<T>::GetFOAFromVA(_In_ PEAddress nVA)
 {
     LIBPE_CHK(LIBPE_INVALID_ADDRESS != nVA, LIBPE_INVALID_ADDRESS);
     return GetFOAFromRVA(GetRVAFromVA(nVA));
@@ -153,7 +153,7 @@ PEParserT<T>::GetFOAFromVA(PEAddress nVA)
 
 template <class T>
 void *
-PEParserT<T>::GetRawMemory(UINT64 nOffset, UINT64 nSize)
+PEParserT<T>::GetRawMemory(_In_ UINT64 nOffset, _In_ UINT64 nSize)
 {
     LIBPE_CHK(NULL != m_pLoader, NULL);
     return m_pLoader->GetBuffer(nOffset, nSize);
@@ -161,7 +161,7 @@ PEParserT<T>::GetRawMemory(UINT64 nOffset, UINT64 nSize)
 
 template <class T>
 const char *
-PEParserT<T>::ParseAnsiString(PEAddress nRVA, PEAddress nFOA, UINT64 &nSize)
+PEParserT<T>::ParseAnsiString(_In_ PEAddress nRVA, _In_ PEAddress nFOA, UINT64 &nSize)
 {
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, NULL);
 
@@ -173,7 +173,7 @@ PEParserT<T>::ParseAnsiString(PEAddress nRVA, PEAddress nFOA, UINT64 &nSize)
 
 template <class T>
 const wchar_t *
-PEParserT<T>::ParseUnicodeString(PEAddress nRVA, PEAddress nFOA, UINT64 &nSize)
+PEParserT<T>::ParseUnicodeString(_In_ PEAddress nRVA, _In_ PEAddress nFOA, UINT64 &nSize)
 {
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, NULL);
 
@@ -185,10 +185,10 @@ PEParserT<T>::ParseUnicodeString(PEAddress nRVA, PEAddress nFOA, UINT64 &nSize)
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseBasicInfo(IPEDosHeader **ppDosHeader, IPENtHeaders **ppNtHeaders, SectionHeaderList *pSectionHeaders, IPEOverlay **ppOverlay)
+PEParserT<T>::ParseBasicInfo(_Outptr_ IPEDosHeader **ppDosHeader, _Outptr_ IPENtHeaders **ppNtHeaders, _Out_ SectionHeaderList *pSectionHeaders, _Outptr_ IPEOverlay **ppOverlay)
 {
-    LIBPE_CHK(NULL != ppDosHeader && NULL != ppNtHeaders && NULL != pSectionHeaders && NULL != ppOverlay, E_POINTER);
-    LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
+    LIBPE_CHK(NULL != m_pLoader, E_FAIL);
+    LIBPE_CHK(NULL != m_pFile, E_FAIL);
 
     // Parse dos header
     LibPEPtr<PEDosHeaderT<T>> pInnerDosHeader = new PEDosHeaderT<T>();
@@ -292,10 +292,8 @@ PEParserT<T>::ParseBasicInfo(IPEDosHeader **ppDosHeader, IPENtHeaders **ppNtHead
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESection **ppSection)
+PEParserT<T>::ParseSection(_In_ LibPERawSectionHeaderT(T) *pSectionHeader, _Outptr_ IPESection **ppSection)
 {
-    LIBPE_CHK(NULL != pSectionHeader, E_INVALIDARG);
-    LIBPE_CHK(NULL != ppSection, E_POINTER);
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
     LibPEPtr<PESectionT<T>> pInnerSection = new PESectionT<T>();
@@ -318,9 +316,8 @@ PEParserT<T>::ParseSection(LibPERawSectionHeaderT(T) *pSectionHeader, IPESection
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseExportTable(IPEExportTable **ppExportTable)
+PEParserT<T>::ParseExportTable(_Outptr_ IPEExportTable **ppExportTable)
 {
-    LIBPE_CHK(NULL != ppExportTable, E_POINTER);
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
     *ppExportTable = NULL;
@@ -355,10 +352,8 @@ PEParserT<T>::ParseExportTable(IPEExportTable **ppExportTable)
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseExportFunction(IPEExportTable *pExportTable, UINT32 nIndex, IPEExportFunction **ppFunction)
+PEParserT<T>::ParseExportFunction(_In_ IPEExportTable *pExportTable, UINT32 nIndex, _Outptr_ IPEExportFunction **ppFunction)
 {
-    LIBPE_CHK(NULL != pExportTable, E_INVALIDARG);
-    LIBPE_CHK(NULL != ppFunction, E_POINTER);
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
     PEExportTableT<T> *pRawExportTable = static_cast<PEExportTableT<T> *>(pExportTable);
@@ -392,14 +387,14 @@ PEParserT<T>::ParseExportFunction(IPEExportTable *pExportTable, UINT32 nIndex, I
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseImportTable(IPEImportTable **ppImportTable)
+PEParserT<T>::ParseImportTable(_Outptr_ IPEImportTable **ppImportTable)
 {
     return ParseDataDirectoryToInterface<IPEImportTable, PEImportTableT<T>>(IMAGE_DIRECTORY_ENTRY_IMPORT, ppImportTable);
 }
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseAllImportModules(IPEImportTable *pImportTable)
+PEParserT<T>::ParseAllImportModules(_In_ IPEImportTable *pImportTable)
 {
     PEImportTableT<T> *pRawImportTable = static_cast<PEImportTableT<T> *>(pImportTable);
     LibPERawImportDescriptor(T) *pImportDesc = pRawImportTable->GetRawStruct();
@@ -422,10 +417,9 @@ PEParserT<T>::ParseAllImportModules(IPEImportTable *pImportTable)
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseImportModule(PEAddress nImportDescRVA, PEAddress nImportDescFOA, LibPERawImportDescriptor(T) *pImportDescriptor, IPEImportModule **ppImportModule)
+PEParserT<T>::ParseImportModule(_In_ PEAddress nImportDescRVA, _In_ PEAddress nImportDescFOA, LibPERawImportDescriptor(T) *pImportDescriptor, _Outptr_ IPEImportModule **ppImportModule)
 {
     LIBPE_CHK(LIBPE_INVALID_ADDRESS != nImportDescRVA && LIBPE_INVALID_ADDRESS != nImportDescFOA && NULL != pImportDescriptor, E_INVALIDARG);
-    LIBPE_CHK(NULL != ppImportModule, E_POINTER);
 
     *ppImportModule = NULL;
 
@@ -452,10 +446,8 @@ PEParserT<T>::ParseImportModule(PEAddress nImportDescRVA, PEAddress nImportDescF
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseAllImportFunctions(IPEImportModule *pImportModule)
+PEParserT<T>::ParseAllImportFunctions(_In_ IPEImportModule *pImportModule)
 {
-    LIBPE_CHK(NULL != pImportModule, E_UNEXPECTED);
-
     PEImportModuleT<T> *pInnerImportModule = (PEImportModuleT<T> *)pImportModule;
 
     LibPERawImportDescriptor(T) *pImportDescriptor = pInnerImportModule->GetRawStruct();
@@ -494,7 +486,7 @@ PEParserT<T>::ParseAllImportFunctions(IPEImportModule *pImportModule)
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseImportFunction(PEAddress nThunkDataRVA, PEAddress nThunkDataFOA, IPEImportFunction **ppImportFunction)
+PEParserT<T>::ParseImportFunction(_In_ PEAddress nThunkDataRVA, _In_ PEAddress nThunkDataFOA, _Outptr_ IPEImportFunction **ppImportFunction)
 {
     LibPEPtr<PEImportFunctionT<T>> pImportFunction = new PEImportFunctionT<T>();
     PEElementParsingScopeT<T> oImportFunctionParsingScope(pImportFunction);
@@ -510,7 +502,7 @@ PEParserT<T>::ParseImportFunction(PEAddress nThunkDataRVA, PEAddress nThunkDataF
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseImportFunction(IPEImportFunction *pFunction)
+PEParserT<T>::ParseImportFunction(_In_ IPEImportFunction *pFunction)
 {
     PEImportFunctionT<T> *pInnerFunction = (PEImportFunctionT<T> *)pFunction;
 
@@ -552,9 +544,8 @@ PEParserT<T>::ParseImportFunction(IPEImportFunction *pFunction)
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseResourceTable(IPEResourceTable **ppResourceTable)
+PEParserT<T>::ParseResourceTable(_Outptr_ IPEResourceTable **ppResourceTable)
 {
-    LIBPE_CHK(NULL != ppResourceTable, E_POINTER);
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
     *ppResourceTable = NULL;
@@ -577,10 +568,9 @@ PEParserT<T>::ParseResourceTable(IPEResourceTable **ppResourceTable)
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseResourceDirectory(PEAddress nRVA, PEAddress nFOA, IPEResourceDirectory **ppDirectory)
+PEParserT<T>::ParseResourceDirectory(_In_ PEAddress nRVA, _In_ PEAddress nFOA, _Outptr_ IPEResourceDirectory **ppDirectory)
 {
     LIBPE_CHK(LIBPE_INVALID_ADDRESS != nRVA && LIBPE_INVALID_ADDRESS != nFOA, E_INVALIDARG);
-    LIBPE_CHK(NULL != ppDirectory, E_POINTER);
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
     *ppDirectory = NULL;
@@ -604,10 +594,8 @@ PEParserT<T>::ParseResourceDirectory(PEAddress nRVA, PEAddress nFOA, IPEResource
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseResourceDirectoryEntry(IPEResourceDirectory *pDirectory, UINT32 nEntryIndex, IPEResourceDirectoryEntry **ppEntry)
+PEParserT<T>::ParseResourceDirectoryEntry(_In_ IPEResourceDirectory *pDirectory, UINT32 nEntryIndex, _Outptr_ IPEResourceDirectoryEntry **ppEntry)
 {
-    LIBPE_CHK(NULL != pDirectory, E_INVALIDARG);
-    LIBPE_CHK(NULL != ppEntry, E_POINTER);
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
     *ppEntry = NULL;
@@ -632,10 +620,9 @@ PEParserT<T>::ParseResourceDirectoryEntry(IPEResourceDirectory *pDirectory, UINT
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseResourceDataEntry(PEAddress nRVA, PEAddress nFOA, IPEResourceDataEntry **ppDataEntry)
+PEParserT<T>::ParseResourceDataEntry(_In_ PEAddress nRVA, _In_ PEAddress nFOA, _Outptr_ IPEResourceDataEntry **ppDataEntry)
 {
     LIBPE_CHK(LIBPE_INVALID_ADDRESS != nRVA && LIBPE_INVALID_ADDRESS != nFOA, E_INVALIDARG);
-    LIBPE_CHK(NULL != ppDataEntry, E_POINTER);
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
     *ppDataEntry = NULL;
@@ -654,10 +641,8 @@ PEParserT<T>::ParseResourceDataEntry(PEAddress nRVA, PEAddress nFOA, IPEResource
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseResource(IPEResourceDataEntry *pDataEntry, IPEResource **ppResource)
+PEParserT<T>::ParseResource(_In_ IPEResourceDataEntry *pDataEntry, _Outptr_ IPEResource **ppResource)
 {
-    LIBPE_CHK(NULL != pDataEntry, E_INVALIDARG);
-    LIBPE_CHK(NULL != ppResource, E_POINTER);
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
     *ppResource = NULL;
@@ -679,7 +664,7 @@ PEParserT<T>::ParseResource(IPEResourceDataEntry *pDataEntry, IPEResource **ppRe
 
 template <class T>
 LibPERawResourceString(T) *
-PEParserT<T>::ParseResourceString(PEAddress nRVA, PEAddress nFOA, UINT64 &nSize)
+PEParserT<T>::ParseResourceString(_In_ PEAddress nRVA, _In_ PEAddress nFOA, UINT64 &nSize)
 {
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, NULL);
 
@@ -700,7 +685,7 @@ PEParserT<T>::ParseResourceString(PEAddress nRVA, PEAddress nFOA, UINT64 &nSize)
 
 template <class T>
 LibPERawResourceStringU(T) *
-PEParserT<T>::ParseResourceStringU(PEAddress nRVA, PEAddress nFOA, UINT64 &nSize)
+PEParserT<T>::ParseResourceStringU(_In_ PEAddress nRVA, _In_ PEAddress nFOA, UINT64 &nSize)
 {
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, NULL);
 
@@ -721,9 +706,8 @@ PEParserT<T>::ParseResourceStringU(PEAddress nRVA, PEAddress nFOA, UINT64 &nSize
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseExceptionTable(IPEExceptionTable **ppExceptionTable)
+PEParserT<T>::ParseExceptionTable(_Outptr_ IPEExceptionTable **ppExceptionTable)
 {
-    LIBPE_CHK(NULL != ppExceptionTable, E_POINTER);
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
     *ppExceptionTable = NULL;
@@ -742,11 +726,8 @@ PEParserT<T>::ParseExceptionTable(IPEExceptionTable **ppExceptionTable)
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseExceptionHandlerEntry(IPEExceptionTable *pExceptionTable, UINT32 nHandlerIndex, IPEExceptionHandlerEntry **ppExceptionHandlerEntry)
+PEParserT<T>::ParseExceptionHandlerEntry(_In_ IPEExceptionTable *pExceptionTable, _In_ UINT32 nHandlerIndex, _Outptr_ IPEExceptionHandlerEntry **ppExceptionHandlerEntry)
 {
-    LIBPE_CHK(NULL != pExceptionTable, E_UNEXPECTED);
-    LIBPE_CHK(NULL != ppExceptionHandlerEntry, E_POINTER);
-
     *ppExceptionHandlerEntry = NULL;
 
     PEAddress nExceptionHandlerEntryRVA = pExceptionTable->GetRVA() + sizeof(LibPERawRuntimeFunctionEntry(T)) * nHandlerIndex;
@@ -766,11 +747,8 @@ PEParserT<T>::ParseExceptionHandlerEntry(IPEExceptionTable *pExceptionTable, UIN
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseExceptionHandler(IPEExceptionHandlerEntry *pExceptionHandlerEntry, IPEExceptionHandler **ppExceptionHandler)
+PEParserT<T>::ParseExceptionHandler(_In_ IPEExceptionHandlerEntry *pExceptionHandlerEntry, _Outptr_ IPEExceptionHandler **ppExceptionHandler)
 {
-    LIBPE_CHK(NULL != pExceptionHandlerEntry, E_UNEXPECTED);
-    LIBPE_CHK(NULL != ppExceptionHandler, E_POINTER);
-
     PEExceptionHandlerEntryT<T> *pInnerExceptionHandlerEntry = (PEExceptionHandlerEntryT<T> *)pExceptionHandlerEntry;
 
     LibPERawRuntimeFunctionEntry(T) *pRawRuntimeFunctionEntry = pInnerExceptionHandlerEntry->GetRawStruct();
@@ -791,17 +769,15 @@ PEParserT<T>::ParseExceptionHandler(IPEExceptionHandlerEntry *pExceptionHandlerE
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseCertificateTable(IPECertificateTable **ppCertificateTable)
+PEParserT<T>::ParseCertificateTable(_Outptr_ IPECertificateTable **ppCertificateTable)
 {
     return ParseDataDirectoryToInterface<IPECertificateTable, PECertificateTableT<T>>(IMAGE_DIRECTORY_ENTRY_SECURITY, ppCertificateTable);
 }
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseCertificates(IPECertificateTable *pCertificateTable)
+PEParserT<T>::ParseCertificates(_Inout_ IPECertificateTable *pCertificateTable)
 {
-    LIBPE_CHK(NULL != pCertificateTable, E_UNEXPECTED);
-
     PECertificateTableT<T> *pInnerCertificateTable = (PECertificateTableT<T> *)pCertificateTable;
 
     LibPERawWinCertificate(T) *pRawWinCertificate = pInnerCertificateTable->GetRawStruct();
@@ -839,9 +815,8 @@ PEParserT<T>::ParseCertificates(IPECertificateTable *pCertificateTable)
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseRelocationTable(IPERelocationTable **ppRelocationTable)
+PEParserT<T>::ParseRelocationTable(_Outptr_ IPERelocationTable **ppRelocationTable)
 {
-    LIBPE_CHK(NULL != ppRelocationTable, E_POINTER);
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
     *ppRelocationTable = NULL;
@@ -902,14 +877,14 @@ PEParserT<T>::ParseRelocationTable(IPERelocationTable **ppRelocationTable)
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseDebugInfoTable(IPEDebugInfoTable **ppDebugInfoTable)
+PEParserT<T>::ParseDebugInfoTable(_Outptr_ IPEDebugInfoTable **ppDebugInfoTable)
 {
     return ParseDataDirectoryToInterface<IPEDebugInfoTable, PEDebugInfoTableT<T>>(IMAGE_DIRECTORY_ENTRY_DEBUG, ppDebugInfoTable);
 }
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseGlobalPointerTable(IPEGlobalPointerTable **ppGlobalPointerTable)
+PEParserT<T>::ParseGlobalPointerTable(_Outptr_ IPEGlobalPointerTable **ppGlobalPointerTable)
 {
     // The global pointer(GP) is stored in the VirtualAddress field in the data directory, so the data directory is returned,
     // according to PE and COFF specification 8.3.
@@ -936,16 +911,15 @@ PEParserT<T>::ParseGlobalPointerTable(IPEGlobalPointerTable **ppGlobalPointerTab
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseTlsTable(IPETlsTable **ppTlsTable)
+PEParserT<T>::ParseTlsTable(_Outptr_ IPETlsTable **ppTlsTable)
 {
     return ParseDataDirectoryToInterface<IPETlsTable, PETlsTableT<T>>(IMAGE_DIRECTORY_ENTRY_TLS, ppTlsTable);
 }
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseTlsCallbacks(IPETlsTable *pTlsTable)
+PEParserT<T>::ParseTlsCallbacks(_Inout_ IPETlsTable *pTlsTable)
 {
-    LIBPE_CHK(NULL != pTlsTable, E_INVALIDARG);
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
     PETlsTableT<T> *pInnerTlsTable = (PETlsTableT<T> *)pTlsTable;
@@ -983,23 +957,22 @@ PEParserT<T>::ParseTlsCallbacks(IPETlsTable *pTlsTable)
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseLoadConfigTable(IPELoadConfigTable **ppLoadConfigTable)
+PEParserT<T>::ParseLoadConfigTable(_Outptr_ IPELoadConfigTable **ppLoadConfigTable)
 {
     return ParseDataDirectoryToInterface<IPELoadConfigTable, PELoadConfigTableT<T>>(IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG, ppLoadConfigTable);
 }
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseBoundImportTable(IPEBoundImportTable **ppBoundImportTable)
+PEParserT<T>::ParseBoundImportTable(_Outptr_ IPEBoundImportTable **ppBoundImportTable)
 {
     return ParseDataDirectoryToInterface<IPEBoundImportTable, PEBoundImportTableT<T>>(IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT, ppBoundImportTable);
 }
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseBoundImportModules(IPEBoundImportTable *pBoundImportTable)
+PEParserT<T>::ParseBoundImportModules(_In_ IPEBoundImportTable *pBoundImportTable)
 {
-    LIBPE_CHK(NULL != pBoundImportTable, E_INVALIDARG);
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
     PEBoundImportTableT<T> *pInnerBoundImportTable = (PEBoundImportTableT<T> *)pBoundImportTable;
@@ -1052,9 +1025,8 @@ PEParserT<T>::ParseBoundImportModules(IPEBoundImportTable *pBoundImportTable)
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseImportAddressTable(IPEImportAddressTable **ppImportAddressTable)
+PEParserT<T>::ParseImportAddressTable(_Outptr_ IPEImportAddressTable **ppImportAddressTable)
 {
-    LIBPE_CHK(NULL != ppImportAddressTable, E_POINTER);
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, E_FAIL);
 
     *ppImportAddressTable = NULL;
@@ -1075,10 +1047,8 @@ PEParserT<T>::ParseImportAddressTable(IPEImportAddressTable **ppImportAddressTab
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseImportAddressTableContent(IPEImportAddressTable *pImportAddressTable)
+PEParserT<T>::ParseImportAddressTableContent(_Inout_ IPEImportAddressTable *pImportAddressTable)
 {
-    LIBPE_CHK(NULL != pImportAddressTable, E_POINTER);
-
     LibPERawThunkData(T) *pRawTable = (LibPERawThunkData(T) *)pImportAddressTable->GetRawMemory();
     LIBPE_CHK(NULL != pRawTable, E_BOUNDS);
 
@@ -1105,10 +1075,9 @@ PEParserT<T>::ParseImportAddressTableContent(IPEImportAddressTable *pImportAddre
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, PEAddress nBlockRVA, PEAddress nBlockFOA, IPEImportAddressBlock **ppBlock)
+PEParserT<T>::ParseImportAddressBlock(_In_ LibPERawThunkData(T) *pRawBlock, _In_ PEAddress nBlockRVA, _In_ PEAddress nBlockFOA, _Outptr_ IPEImportAddressBlock **ppBlock)
 {
     LIBPE_CHK(LIBPE_INVALID_ADDRESS != nBlockRVA, E_INVALIDARG);
-    LIBPE_CHK(NULL != ppBlock, E_POINTER);
 
     *ppBlock = NULL;
 
@@ -1168,12 +1137,11 @@ PEParserT<T>::ParseImportAddressBlock(LibPERawThunkData(T) *pRawBlock, PEAddress
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseImportAddressItem(LibPERawThunkData(T) *pRawItem, PEAddress nItemRVA, PEAddress nItemFOA, IPEImportAddressItem **ppItem)
+PEParserT<T>::ParseImportAddressItem(LibPERawThunkData(T) *pRawItem, _In_ PEAddress nItemRVA, _In_ PEAddress nItemFOA, _Outptr_ IPEImportAddressItem **ppItem)
 {
     // We can ignore the condition - (NULL != pRawItem) here.
     // Because the memory will be ready while you call GetRawStruct() at the first time.
     LIBPE_CHK(LIBPE_INVALID_ADDRESS != nItemRVA && LIBPE_INVALID_ADDRESS != nItemFOA, E_INVALIDARG);
-    LIBPE_CHK(NULL != ppItem, E_POINTER);
 
     *ppItem = NULL;
 
@@ -1192,14 +1160,14 @@ PEParserT<T>::ParseImportAddressItem(LibPERawThunkData(T) *pRawItem, PEAddress n
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseDelayImportTable(IPEDelayImportTable **ppDelayImportTable)
+PEParserT<T>::ParseDelayImportTable(_Outptr_ IPEDelayImportTable **ppDelayImportTable)
 {
     return E_NOTIMPL;
 }
 
 template <class T>
 HRESULT
-PEParserT<T>::ParseClrTable(IPEClrTable **ppClrTable)
+PEParserT<T>::ParseClrTable(_Outptr_ IPEClrTable **ppClrTable)
 {
     // We don't parse the internal data strucure of CLR table for now.
     return ParseDataDirectoryToInterface<IPEClrTable, PEClrTableT<T>>(IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR, ppClrTable);
@@ -1207,7 +1175,7 @@ PEParserT<T>::ParseClrTable(IPEClrTable **ppClrTable)
 
 template <class T>
 PEAddress
-PEParserT<T>::GetRawOffset(PEAddress nRVA, PEAddress nFOA)
+PEParserT<T>::GetRawOffset(_In_ PEAddress nRVA, _In_ PEAddress nFOA)
 {
     LIBPE_CHK(NULL != m_pLoader && NULL != m_pFile, LIBPE_INVALID_ADDRESS);
     return (LIBPE_INVALID_ADDRESS != nRVA) ? GetRawOffsetFromRVA(nRVA) : GetRawOffsetFromFOA(nFOA);
@@ -1215,7 +1183,7 @@ PEParserT<T>::GetRawOffset(PEAddress nRVA, PEAddress nFOA)
 
 template <class T>
 HRESULT
-PEParserT<T>::GetDataDirectoryEntry(INT32 nDataDirectoryEntryIndex, PEAddress &nRVA, PEAddress &nFOA, PEAddress &nSize)
+PEParserT<T>::GetDataDirectoryEntry(_In_ INT32 nDataDirectoryEntryIndex, _In_ PEAddress &nRVA, _In_ PEAddress &nFOA, _In_ PEAddress &nSize)
 {
     LIBPE_CHK(NULL != m_pFile, E_FAIL);
 
@@ -1256,14 +1224,14 @@ PEParserT<T>::GetDataDirectoryEntry(INT32 nDataDirectoryEntryIndex, PEAddress &n
 
 template <class T>
 void
-PEParserT<T>::InitPEElement(PEElementT<T> *pElement, PEAddress nRVA, PEAddress nFOA, PEAddress nSize)
+PEParserT<T>::InitPEElement(_Inout_ PEElementT<T> *pElement, _In_ PEAddress nRVA, _In_ PEAddress nFOA, _In_ PEAddress nSize)
 {
     InitPEElement(pElement, nRVA, nSize, nFOA, nSize);
 }
 
 template <class T>
 void
-PEParserT<T>::InitPEElement(PEElementT<T> *pElement, PEAddress nRVA, PEAddress nMemSize, PEAddress nFOA, PEAddress nFileSize)
+PEParserT<T>::InitPEElement(_Inout_ PEElementT<T> *pElement, _In_ PEAddress nRVA, _In_ PEAddress nMemSize, _In_ PEAddress nFOA, _In_ PEAddress nFileSize)
 {
     pElement->InnerSetBase(m_pFile, this);
     pElement->InnerSetMemoryInfo(nRVA, LIBPE_INVALID_ADDRESS, nMemSize);

@@ -17,7 +17,7 @@ void PEDebugInfoTableTester::DoTest()
     });
 }
 
-void PEDebugInfoTableTester::TestDebugInfoTable(IPEDebugInfoTable *debugInfoTable)
+void PEDebugInfoTableTester::TestDebugInfoTable(_In_ IPEDebugInfoTable *debugInfoTable)
 {
     BEGIN_TEST_PE_ELEMENT(debugInfoTable)
         TEST_RAW_FIELD_SIMPLE(IPEDebugInfoTable, Characteristics)

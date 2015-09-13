@@ -8,7 +8,7 @@ class PEBoundImportTableDumper :
 public:
     PEBoundImportTableDumper() : PEElementDumper("BoundImportTable") {}
 
-    PEBoundImportTableDumper & SetDumpElement(IPEBoundImportTable *boundImportTable) {
+    PEBoundImportTableDumper & SetDumpElement(_In_ IPEBoundImportTable *boundImportTable) {
         _boundImportTable = boundImportTable;
         return *this;
     }
@@ -26,7 +26,7 @@ class PEBoundImportModuleDumper :
 public:
     PEBoundImportModuleDumper() : PEElementDumper("BoundImportModule") {}
 
-    PEBoundImportModuleDumper & SetDumpeElement(IPEBoundImportModule *boundImportModule) {
+    PEBoundImportModuleDumper & SetDumpeElement(_In_ IPEBoundImportModule *boundImportModule) {
         _boundImportModule = boundImportModule;
         return *this;
     }
@@ -44,7 +44,7 @@ class PEBoundForwarderDumper :
 public:
     PEBoundForwarderDumper() : PEElementDumper("BoundForwarder") {}
 
-    PEBoundForwarderDumper & SetDumpElement(IPEBoundForwarder *boundForwarder) {
+    PEBoundForwarderDumper & SetDumpElement(_In_ IPEBoundForwarder *boundForwarder) {
         _boundForwarder = boundForwarder; 
         return *this;
     }
