@@ -24,8 +24,6 @@ HRESULT LIBPE_API
 ParsePEFromDiskFile(const file_char_t *pFilePath, _Outptr_ IPEFile **ppFile)
 {
     LibPEPtr<DataLoader> pDataLoader = new DataLoaderDiskFile;
-    LIBPE_CHK(NULL != pDataLoader, E_OUTOFMEMORY);
-
     DataLoaderDiskFile *pRawDataLoader = (DataLoaderDiskFile *)pDataLoader.p;
     LIBPE_CHK(pRawDataLoader->LoadFile(pFilePath), E_ACCESSDENIED);
 

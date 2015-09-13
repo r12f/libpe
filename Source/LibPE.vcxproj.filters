@@ -71,6 +71,7 @@
     <ClCompile Include="PE\PEClrTable.cpp">
       <Filter>PE</Filter>
     </ClCompile>
+    <ClCompile Include="LibPEDebugChecks.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parser\DataLoader.h">
@@ -140,5 +141,6 @@
     <ClInclude Include="PE\PEClrTable.h">
       <Filter>PE</Filter>
     </ClInclude>
+    <ClInclude Include="LibPEDebugChecks.h" />
   </ItemGroup>
 </Project>

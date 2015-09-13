@@ -106,7 +106,7 @@ protected:
         *ppRetTable = nullptr;
 
         if ((m_nTableParsedFlags & nTableParsedFlag) == 0) {
-            LIBPE_CHK(NULL != m_pParser, E_FAIL);
+            LIBPE_STRICTCHK(NULL != m_pParser);
             hr = (m_pParser->*pParseFunc)(&pParsedTable);
         } else {
             if(NULL == pParsedTable) {

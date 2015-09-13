@@ -8,7 +8,7 @@ HRESULT
 PESectionHeaderT<T>::GetSection(_Outptr_ IPESection **ppSection)
 {
     if(NULL == m_pSection) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
+        LIBPE_STRICTCHK(NULL != m_pParser);
         if(FAILED(m_pParser->ParseSection(GetRawStruct(), &m_pSection)) || NULL == m_pSection) {
             return E_FAIL;
         }

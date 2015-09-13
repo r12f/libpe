@@ -20,7 +20,7 @@ PEExportTableT<T>::GetFunctionByIndex(_In_ UINT32 nIndex, _Outptr_ IPEExportFunc
     LIBPE_CHK(nIndex < nFunctionCount, E_INVALIDARG);
 
     if(NULL == m_vExportFunctions[nIndex]) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
+        LIBPE_STRICTCHK(NULL != m_pParser);
         if(FAILED(m_pParser->ParseExportFunction(this, nIndex, &m_vExportFunctions[nIndex])) || NULL == m_vExportFunctions[nIndex]) {
             return E_FAIL;
         }

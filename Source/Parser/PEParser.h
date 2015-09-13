@@ -146,8 +146,8 @@ protected:
     template <class TableClass>
     HRESULT ParseDataDirectory(_Inout_ TableClass *pTable, _In_ INT32 nDataDirectoryEntryIndex)
     {
-        LIBPE_CHK(NULL != m_pLoader, E_UNEXPECTED);
-        LIBPE_CHK(NULL != m_pFile, E_FAIL);;
+        LIBPE_STRICTCHK(NULL != m_pLoader);
+        LIBPE_STRICTCHK(NULL != m_pFile);;
 
         PEAddress nTableRVA = LIBPE_INVALID_ADDRESS, nTableFOA = LIBPE_INVALID_ADDRESS, nTableSize = LIBPE_INVALID_SIZE;
         LIBPE_CHK_HR(GetDataDirectoryEntry(nDataDirectoryEntryIndex, nTableRVA, nTableFOA, nTableSize));
@@ -160,8 +160,8 @@ protected:
     template <class ITable, class TableClass>
     HRESULT ParseDataDirectoryToInterface(_In_ INT32 nDataDirectoryEntryIndex, _Outptr_ ITable **ppTable)
     {
-        LIBPE_CHK(NULL != m_pLoader, E_UNEXPECTED);
-        LIBPE_CHK(NULL != m_pFile, E_FAIL);
+        LIBPE_STRICTCHK(NULL != m_pLoader);
+        LIBPE_STRICTCHK(NULL != m_pFile);
 
         *ppTable = NULL;
 

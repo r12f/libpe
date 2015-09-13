@@ -18,7 +18,7 @@ PEExceptionTableT<T>::GetExceptionHandlerEntryByIndex(_In_ UINT32 nIndex, _Outpt
     LIBPE_CHK(nIndex < nExceptionHandlerCount, E_BOUNDS);
 
     if(NULL == m_vExceptionHandlerEntries[nIndex]) {
-        LIBPE_CHK(NULL != m_pParser, E_UNEXPECTED);
+        LIBPE_STRICTCHK(NULL != m_pParser);
         LIBPE_CHK_HR(m_pParser->ParseExceptionHandlerEntry(this, nIndex, &m_vExceptionHandlerEntries[nIndex]));
     }
 
@@ -43,7 +43,7 @@ PEExceptionHandlerEntryT<T>::GetExceptionHandler(_Outptr_ IPEExceptionHandler **
     LIBPE_CHK(NULL != ppExceptionHandler, E_POINTER);
 
     if(NULL == m_pExceptionHandler) {
-        LIBPE_CHK(NULL != m_pParser, E_UNEXPECTED);
+        LIBPE_STRICTCHK(NULL != m_pParser);
         LIBPE_CHK_HR(m_pParser->ParseExceptionHandler(this, &m_pExceptionHandler));
     }
 

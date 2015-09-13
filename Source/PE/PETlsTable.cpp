@@ -4,19 +4,6 @@
 LIBPE_NAMESPACE_BEGIN
 
 template <class T>
-HRESULT
-PETlsTableT<T>::InnerAddCallbackRVA(_In_ PEAddress nRVA)
-{
-    HRESULT hr = S_OK;
-
-    LIBPE_HR_TRY_BEGIN(hr) {
-        m_vCallbackRVAs.push_back(nRVA);
-    } LIBPE_HR_TRY_END_RET();
-
-    return hr;
-}
-
-template <class T>
 UINT32
 PETlsTableT<T>::GetCallbackCount()
 {
@@ -46,7 +33,7 @@ PETlsTableT<T>::EnsureTlsCallbacksParsed()
 
     m_bIsTlsCallbacksParsed = true;
 
-    LIBPE_CHK(NULL != m_pParser, E_UNEXPECTED);
+    LIBPE_STRICTCHK(NULL != m_pParser);
     LIBPE_CHK_HR(m_pParser->ParseTlsCallbacks(this));
 
     return S_OK;

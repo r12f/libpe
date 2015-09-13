@@ -28,11 +28,8 @@ PEResourceDirectoryT<T>::GetEntryByIndex(_In_ UINT32 nIndex, _Outptr_ IPEResourc
     LIBPE_CHK(nIndex < nEntryCount, E_INVALIDARG);
 
     if(NULL == m_vEntries[nIndex]) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
-        HRESULT hr = m_pParser->ParseResourceDirectoryEntry(this, nIndex, &m_vEntries[nIndex]);
-        if(FAILED(hr)) {
-            return hr;
-        }
+        LIBPE_STRICTCHK(NULL != m_pParser);
+        LIBPE_CHK_HR(m_pParser->ParseResourceDirectoryEntry(this, nIndex, &m_vEntries[nIndex]));
     }
 
     if(NULL == m_vEntries[nIndex]) {
@@ -47,10 +44,6 @@ BOOL
 PEResourceDirectoryEntryT<T>::IsNameId()
 {
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
-    if(NULL == pRawEntry) {
-        return FALSE;
-    }
-
     return (pRawEntry->NameIsString == 0);
 }
 
@@ -59,10 +52,6 @@ UINT16
 PEResourceDirectoryEntryT<T>::GetId()
 {
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
-    if(NULL == pRawEntry) {
-        return 0;
-    }
-
     return pRawEntry->Id;
 }
 
@@ -71,10 +60,6 @@ BOOL
 PEResourceDirectoryEntryT<T>::IsNameString()
 {
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
-    if(NULL == pRawEntry) {
-        return FALSE;
-    }
-
     return (pRawEntry->NameIsString != 0);
 }
 
@@ -84,17 +69,13 @@ PEResourceDirectoryEntryT<T>::GetName()
 {
     LIBPE_CHK(NULL != m_pParser && NULL != m_pFile, NULL);
 
-    LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
-    if(NULL == pRawEntry) {
-        return NULL;
-    }
-
     LibPEPtr<IPEResourceTable> pTable;
     if(FAILED(m_pFile->GetResourceTable(&pTable)) || NULL == pTable) {
         return NULL;
     }
 
     UINT64 nNameSize = 0;
+    LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
     LibPERawResourceStringU(T) *pResourceString = m_pParser->ParseResourceStringU(0, pTable->GetFOA() + pRawEntry->NameOffset, nNameSize);
     if(NULL == pResourceString) {
         return NULL;
@@ -107,13 +88,9 @@ template <class T>
 BOOL
 PEResourceDirectoryEntryT<T>::IsEntryDirectory()
 {
-    LIBPE_CHK(NULL != m_pParser, NULL);
+    LIBPE_STRICTCHK(NULL != m_pParser);
 
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
-    if(NULL == pRawEntry) {
-        return false;
-    }
-
     return !!(pRawEntry->DataIsDirectory);
 }
 
@@ -122,14 +99,9 @@ HRESULT
 PEResourceDirectoryEntryT<T>::GetDirectory(_Outptr_ IPEResourceDirectory **ppDirectory)
 {
     LIBPE_CHK(NULL != ppDirectory, E_POINTER);
-    LIBPE_CHK(NULL != m_pParser, E_FAIL);
+    LIBPE_STRICTCHK(NULL != m_pParser);
 
     *ppDirectory = NULL;
-
-    LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
-    if(NULL == pRawEntry) {
-        return E_OUTOFMEMORY;
-    }
 
     LibPEPtr<IPEResourceTable> pTable;
     if(FAILED(m_pFile->GetResourceTable(&pTable)) || NULL == pTable) {
@@ -137,6 +109,7 @@ PEResourceDirectoryEntryT<T>::GetDirectory(_Outptr_ IPEResourceDirectory **ppDir
     }
 
     LibPEPtr<IPEResourceDirectory> pDirectory;
+    LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
     if(FAILED(m_pParser->ParseResourceDirectory(0, pTable->GetFOA() + pRawEntry->OffsetToDirectory, &pDirectory)) || NULL == pDirectory) {
         return E_OUTOFMEMORY;
     }
@@ -150,13 +123,9 @@ template <class T>
 BOOL
 PEResourceDirectoryEntryT<T>::IsEntryDataEntry()
 {
-    LIBPE_CHK(NULL != m_pParser, FALSE);
+    LIBPE_STRICTCHK(NULL != m_pParser);
 
     LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
-    if(NULL == pRawEntry) {
-        return FALSE;
-    }
-
     return !(pRawEntry->DataIsDirectory);
 }
 
@@ -165,14 +134,9 @@ HRESULT
 PEResourceDirectoryEntryT<T>::GetDataEntry(_Outptr_ IPEResourceDataEntry **ppDataEntry)
 {
     LIBPE_CHK(NULL != ppDataEntry, E_POINTER);
-    LIBPE_CHK(NULL != m_pParser, NULL);
+    LIBPE_STRICTCHK(NULL != m_pParser);
 
     *ppDataEntry = NULL;
-
-    LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
-    if(NULL == pRawEntry) {
-        return E_OUTOFMEMORY;
-    }
 
     LibPEPtr<IPEResourceTable> pTable;
     if(FAILED(m_pFile->GetResourceTable(&pTable)) || NULL == pTable) {
@@ -180,6 +144,7 @@ PEResourceDirectoryEntryT<T>::GetDataEntry(_Outptr_ IPEResourceDataEntry **ppDat
     }
 
     LibPEPtr<IPEResourceDataEntry> pDataEntry;
+    LibPERawResourceDirectoryEntry(T) *pRawEntry = GetRawStruct();
     if(FAILED(m_pParser->ParseResourceDataEntry(0, pTable->GetFOA() + pRawEntry->OffsetToData, &pDataEntry)) || NULL == pDataEntry) {
         return E_OUTOFMEMORY;
     }
@@ -194,17 +159,12 @@ HRESULT
 PEResourceDataEntryT<T>::GetResource(_Outptr_ IPEResource **ppResource)
 {
     LIBPE_CHK(NULL != ppResource, E_POINTER);
-    LIBPE_CHK(NULL != m_pParser, E_FAIL);
+    LIBPE_STRICTCHK(NULL != m_pParser);
 
     *ppResource = NULL;
 
     if(NULL != m_pResource) {
         return m_pResource.CopyTo(ppResource);
-    }
-
-    LibPERawResourceDataEntry(T) *pRawEntry = GetRawStruct();
-    if(NULL == pRawEntry) {
-        return E_OUTOFMEMORY;
     }
 
     LibPEPtr<IPEResourceTable> pTable;

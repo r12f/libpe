@@ -47,8 +47,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestBinaries", "TestBinaries", "{5007BA83-EE2C-4CF9-B9B9-562713B9C717}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SampleExe", "Test\TestBinaries\SampleExe\SampleExe.vcxproj", "{5BB3BBF8-2C22-4CF4-8BA9-46658626A49D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{568B3768-5F30-4EF6-A846-690A0A74FC90} = {568B3768-5F30-4EF6-A846-690A0A74FC90}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SampleDll", "Test\TestBinaries\SampleDll\SampleDll.vcxproj", "{37BAE33F-324D-4237-A76D-549F1A573514}"
+	ProjectSection(ProjectDependencies) = postProject
+		{568B3768-5F30-4EF6-A846-690A0A74FC90} = {568B3768-5F30-4EF6-A846-690A0A74FC90}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DelayLoadDll", "Test\TestBinaries\DelayLoadDll\DelayLoadDll.vcxproj", "{568B3768-5F30-4EF6-A846-690A0A74FC90}"
 EndProject

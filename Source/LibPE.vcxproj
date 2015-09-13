@@ -149,6 +149,7 @@
     <Lib />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LibPEDebugChecks.cpp" />
     <ClCompile Include="Parser\DataLoader.cpp" />
     <ClCompile Include="Parser\PEParser.cpp" />
     <ClCompile Include="Parser\PEParserImpl.cpp" />
@@ -178,6 +179,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LibPEDebugChecks.h" />
     <ClInclude Include="Parser\DataLoader.h" />
     <ClInclude Include="Parser\PEParser.h" />
     <ClInclude Include="Parser\PEParserCommon.h" />

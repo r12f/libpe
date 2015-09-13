@@ -141,7 +141,7 @@ template <class T>
 PEAddress *
 PERelocationItemT<T>::GetRawAddressContent()
 {
-    LIBPE_CHK(NULL != m_pParser, 0);
+    LIBPE_STRICTCHK(NULL != m_pParser);
     PEAddress nAddressFOA = m_pParser->GetFOAFromRVA(m_nAddressRVA);
     return (_In_ PEAddress *)m_pParser->GetRawMemory(nAddressFOA, sizeof(UINT16));
 }

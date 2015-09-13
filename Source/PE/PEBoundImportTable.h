@@ -17,7 +17,7 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawBoundImportDescriptor(T))
 
-    HRESULT InnerAddBoundImportModule(_In_ IPEBoundImportModule *pBoundImportModule);
+    void InnerAddBoundImportModule(_In_ IPEBoundImportModule *pBoundImportModule) { m_vBoundImportModules.push_back(pBoundImportModule); }
 
     UINT32 LIBPE_CALLTYPE GetBoundImportModuleCount() override;
     HRESULT LIBPE_CALLTYPE GetBoundImportModuleByIndex(_In_ UINT32 nIndex, _Outptr_ IPEBoundImportModule **ppBoundImportModule) override;
@@ -43,7 +43,7 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawBoundImportDescriptor(T))
 
-    HRESULT InnerAddBoundForwarder(_In_ IPEBoundForwarder *pBoundForwarder);
+    void InnerAddBoundForwarder(_In_ IPEBoundForwarder *pBoundForwarder) { m_vBoundForwarders.push_back(pBoundForwarder); }
 
     LIBPE_FIELD_ACCESSOR(UINT32, TimeDateStamp);
     LIBPE_FIELD_ACCESSOR(UINT16, OffsetModuleName);

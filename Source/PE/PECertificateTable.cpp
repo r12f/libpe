@@ -4,19 +4,6 @@
 LIBPE_NAMESPACE_BEGIN
 
 template <class T>
-HRESULT
-PECertificateTableT<T>::InnerAddCertificate(_In_ IPECertificate *pCertificate)
-{
-    HRESULT hr = S_OK;
-
-    LIBPE_HR_TRY_BEGIN(hr) {
-        m_vCertificates.push_back(pCertificate);
-    } LIBPE_HR_TRY_END();
-
-    return hr;
-}
-
-template <class T>
 UINT32
 PECertificateTableT<T>::GetCertificateCount()
 {
@@ -47,7 +34,7 @@ PECertificateTableT<T>::EnsureCertificatesParsed()
 
     m_bIsCertificatesParsed = true;
 
-    LIBPE_CHK(NULL != m_pParser, E_UNEXPECTED);
+    LIBPE_STRICTCHK(NULL != m_pParser);
     LIBPE_CHK_HR(m_pParser->ParseCertificates(this));
 
     return S_OK;

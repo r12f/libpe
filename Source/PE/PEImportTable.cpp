@@ -97,7 +97,7 @@ PEImportModuleT<T>::GetRelatedImportAddressBlock(_Outptr_ IPEImportAddressBlock 
 
     // However, we should parse the related IAT block here. Very useful for bounded module.
     if(NULL == m_pRelatedIABlock) {
-        LIBPE_CHK(NULL != m_pParser, E_FAIL);
+        LIBPE_STRICTCHK(NULL != m_pParser);
 
         LibPERawImportDescriptor(T) *pImportDescriptor = GetRawStruct();
         LIBPE_CHK(NULL != pImportDescriptor, E_FAIL);

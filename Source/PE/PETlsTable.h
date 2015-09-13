@@ -17,7 +17,7 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawTlsDirectory(T))
 
-    HRESULT InnerAddCallbackRVA(_In_ PEAddress nRVA);
+    void InnerAddCallbackRVA(_In_ PEAddress nRVA) { m_vCallbackRVAs.push_back(nRVA); }
 
     LIBPE_FIELD_ACCESSOR(UINT64, StartAddressOfRawData);
     LIBPE_FIELD_ACCESSOR(UINT64, EndAddressOfRawData);

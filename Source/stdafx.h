@@ -34,5 +34,7 @@
 #include <WinNT.h>
 
 #include "LibPE.h"
+#include "LibPEConfig.h"
 #include "LibPEInternal.h"
+#include "LibPEDebugChecks.h"
 #include "LibPEObject.h"

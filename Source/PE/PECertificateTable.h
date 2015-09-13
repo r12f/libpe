@@ -17,7 +17,7 @@ public:
 
     DECLARE_PE_ELEMENT(LibPERawWinCertificate(T))
 
-    HRESULT InnerAddCertificate(_In_ IPECertificate *pCertificate);
+    void InnerAddCertificate(_In_ IPECertificate *pCertificate) { m_vCertificates.push_back(pCertificate); }
 
     UINT32 LIBPE_CALLTYPE GetCertificateCount() override;
     HRESULT LIBPE_CALLTYPE GetCertificateByIndex(_In_ UINT32 nIndex, _Outptr_ IPECertificate **ppCertificate) override;

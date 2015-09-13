@@ -8,7 +8,7 @@ HRESULT
 PEGlobalPointerTableT<T>::GetRelatedSection(_Outptr_ IPESection **ppSection)
 {
     LIBPE_CHK(NULL != ppSection, E_POINTER);
-    LIBPE_CHK(NULL != m_pFile, E_UNEXPECTED);
+    LIBPE_STRICTCHK(NULL != m_pFile);
 
     *ppSection = NULL;
 
@@ -27,8 +27,6 @@ PEGlobalPointerTableT<T>::GetRelatedSection(_Outptr_ IPESection **ppSection)
         nSectionCharacteristics = 0;
 
         LIBPE_CHK_HR(m_pFile->GetSectionHeader(nSectionIndex, &pSectionHeader));
-        LIBPE_CHK(NULL != pSectionHeader, E_OUTOFMEMORY);
-
         nSectionCharacteristics = pSectionHeader->GetFieldCharacteristics();
         
         if ((nSectionCharacteristics & IMAGE_SCN_GPREL) != 0) {

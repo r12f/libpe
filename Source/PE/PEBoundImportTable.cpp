@@ -4,19 +4,6 @@
 LIBPE_NAMESPACE_BEGIN
 
 template <class T>
-HRESULT
-PEBoundImportTableT<T>::InnerAddBoundImportModule(_In_ IPEBoundImportModule *pBoundImportModule)
-{
-    HRESULT hr = S_OK;
-
-    LIBPE_HR_TRY_BEGIN(hr) {
-        m_vBoundImportModules.push_back(pBoundImportModule);
-    } LIBPE_HR_TRY_END();
-
-    return hr;
-}
-
-template <class T>
 UINT32
 PEBoundImportTableT<T>::GetBoundImportModuleCount()
 {
@@ -47,23 +34,10 @@ PEBoundImportTableT<T>::EnsureBoundImportModulesParsed()
 
     m_bIsBoundImportModulesParsed = true;
 
-    LIBPE_CHK(NULL != m_pParser, E_UNEXPECTED);
+    LIBPE_STRICTCHK(NULL != m_pParser);
     LIBPE_CHK_HR(m_pParser->ParseBoundImportModules(this));
 
     return S_OK;
-}
-
-template <class T>
-HRESULT 
-PEBoundImportModuleT<T>::InnerAddBoundForwarder(_In_ IPEBoundForwarder *pBoundForwarder)
-{
-    HRESULT hr = S_OK;
-
-    LIBPE_HR_TRY_BEGIN(hr) {
-        m_vBoundForwarders.push_back(pBoundForwarder);
-    } LIBPE_HR_TRY_END();
-
-    return hr;
 }
 
 template <class T>

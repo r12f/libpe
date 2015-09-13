@@ -261,7 +261,7 @@ template <class T>
 PEAddress
 PEFileT<T>::GetRVAFromVA(_In_ PEAddress nVA)
 {
-    LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
+    LIBPE_STRICTCHK(NULL != m_pParser);
     return m_pParser->GetRVAFromVA(nVA);
 }
 
@@ -269,7 +269,7 @@ template <class T>
 PEAddress
 PEFileT<T>::GetVAFromRVA(_In_ PEAddress nRVA)
 {
-    LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
+    LIBPE_STRICTCHK(NULL != m_pParser);
     return m_pParser->GetVAFromRVA(nRVA);
 }
 
@@ -277,7 +277,7 @@ template <class T>
 PEAddress
 PEFileT<T>::GetRVAFromFOA(_In_ PEAddress nFOA)
 {
-    LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
+    LIBPE_STRICTCHK(NULL != m_pParser);
     return m_pParser->GetRVAFromFOA(nFOA);
 }
 
@@ -285,7 +285,7 @@ template <class T>
 PEAddress
 PEFileT<T>::GetFOAFromRVA(_In_ PEAddress nRVA)
 {
-    LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
+    LIBPE_STRICTCHK(NULL != m_pParser);
     return m_pParser->GetFOAFromRVA(nRVA);
 }
 
@@ -293,7 +293,7 @@ template <class T>
 PEAddress
 PEFileT<T>::GetVAFromFOA(_In_ PEAddress nFOA)
 {
-    LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
+    LIBPE_STRICTCHK(NULL != m_pParser);
     return m_pParser->GetVAFromFOA(nFOA);
 }
 
@@ -301,7 +301,7 @@ template <class T>
 PEAddress
 PEFileT<T>::GetFOAFromVA(_In_ PEAddress nVA)
 {
-    LIBPE_CHK(NULL != m_pParser, LIBPE_INVALID_ADDRESS);
+    LIBPE_STRICTCHK(NULL != m_pParser);
     return m_pParser->GetFOAFromVA(nVA);
 }
 
