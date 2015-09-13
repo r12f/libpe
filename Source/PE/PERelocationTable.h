@@ -13,7 +13,7 @@ class PERelocationTableT :
 
 public:
     PERelocationTableT() {}
-    virtual ~PERelocationTableT() {}
+    ~PERelocationTableT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawBaseRelocation(T))
 
@@ -22,10 +22,10 @@ public:
         m_vPages.push_back(pPage);
     }
 
-    virtual UINT32 LIBPE_CALLTYPE GetPageCount();
-    virtual HRESULT LIBPE_CALLTYPE GetPageByIndex(UINT32 nIndex, IPERelocationPage **ppRelocationPage);
-    virtual BOOL LIBPE_CALLTYPE IsRVANeedRelocation(PEAddress nRVA);
-    virtual HRESULT LIBPE_CALLTYPE GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem);
+    UINT32 LIBPE_CALLTYPE GetPageCount() override;
+    HRESULT LIBPE_CALLTYPE GetPageByIndex(UINT32 nIndex, IPERelocationPage **ppRelocationPage) override;
+    BOOL LIBPE_CALLTYPE IsRVANeedRelocation(PEAddress nRVA) override;
+    HRESULT LIBPE_CALLTYPE GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem) override;
 
 private:
     RelocationPageList m_vPages;
@@ -40,7 +40,7 @@ class PERelocationPageT :
 
 public:
     PERelocationPageT() {}
-    virtual ~PERelocationPageT() {}
+    ~PERelocationPageT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawBaseRelocation(T))
 
@@ -52,11 +52,11 @@ public:
     LIBPE_FIELD_ACCESSOR(UINT32, VirtualAddress)
     LIBPE_FIELD_ACCESSOR(UINT32, SizeOfBlock)
 
-    virtual PEAddress LIBPE_CALLTYPE GetPageRVA();
-    virtual UINT32 LIBPE_CALLTYPE GetItemCount();
-    virtual HRESULT LIBPE_CALLTYPE GetItemByIndex(UINT32 nIndex, IPERelocationItem **ppRelocationItem);
-    virtual BOOL LIBPE_CALLTYPE IsRVANeedRelocation(PEAddress nRVA);
-    virtual HRESULT LIBPE_CALLTYPE GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem);
+    PEAddress LIBPE_CALLTYPE GetPageRVA() override;
+    UINT32 LIBPE_CALLTYPE GetItemCount() override;
+    HRESULT LIBPE_CALLTYPE GetItemByIndex(UINT32 nIndex, IPERelocationItem **ppRelocationItem) override;
+    BOOL LIBPE_CALLTYPE IsRVANeedRelocation(PEAddress nRVA) override;
+    HRESULT LIBPE_CALLTYPE GetItemByRVA(PEAddress nRVA, IPERelocationItem **ppRelocationItem) override;
 
 private:
     RelocationItemList m_vItems;
@@ -69,17 +69,17 @@ class PERelocationItemT :
 {
 public:
     PERelocationItemT() : m_nAddressRVA(LIBPE_INVALID_ADDRESS) {}
-    virtual ~PERelocationItemT() {}
+    ~PERelocationItemT() override {}
 
     DECLARE_PE_ELEMENT(void)
 
     void InnerSetRelocateFlag(UINT16 nRelocateFlag) { m_nRelocateFlag = nRelocateFlag; }
     void InnerSetAddressRVA(PEAddress nRVA) { m_nAddressRVA = nRVA; }
 
-    virtual UINT16 LIBPE_CALLTYPE GetFlag();
-    virtual PEAddress LIBPE_CALLTYPE GetAddressRVA();
-    virtual PEAddress LIBPE_CALLTYPE GetAddressContent();
-    virtual PEAddress * LIBPE_CALLTYPE GetRawAddressContent();
+    UINT16 LIBPE_CALLTYPE GetFlag() override;
+    PEAddress LIBPE_CALLTYPE GetAddressRVA() override;
+    PEAddress LIBPE_CALLTYPE GetAddressContent() override;
+    PEAddress * LIBPE_CALLTYPE GetRawAddressContent() override;
 
 private:
     UINT16      m_nRelocateFlag;

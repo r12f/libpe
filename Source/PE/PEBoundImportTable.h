@@ -13,14 +13,14 @@ class PEBoundImportTableT :
 
 public:
     PEBoundImportTableT() : m_bIsBoundImportModulesParsed(false) {}
-    virtual ~PEBoundImportTableT() {}
+    ~PEBoundImportTableT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawBoundImportDescriptor(T))
 
     HRESULT InnerAddBoundImportModule(IPEBoundImportModule *pBoundImportModule);
 
-    virtual UINT32 LIBPE_CALLTYPE GetBoundImportModuleCount();
-    virtual HRESULT LIBPE_CALLTYPE GetBoundImportModuleByIndex(UINT32 nIndex, IPEBoundImportModule **ppBoundImportModule);
+    UINT32 LIBPE_CALLTYPE GetBoundImportModuleCount() override;
+    HRESULT LIBPE_CALLTYPE GetBoundImportModuleByIndex(UINT32 nIndex, IPEBoundImportModule **ppBoundImportModule) override;
 
 protected:
     HRESULT EnsureBoundImportModulesParsed();
@@ -39,7 +39,7 @@ class PEBoundImportModuleT :
 
 public:
     PEBoundImportModuleT() {}
-    virtual ~PEBoundImportModuleT() {}
+    ~PEBoundImportModuleT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawBoundImportDescriptor(T))
 
@@ -49,8 +49,8 @@ public:
     LIBPE_FIELD_ACCESSOR(UINT16, OffsetModuleName);
     LIBPE_FIELD_ACCESSOR(UINT16, NumberOfModuleForwarderRefs);
 
-    virtual UINT32 LIBPE_CALLTYPE GetBoundForwarderCount();
-    virtual HRESULT LIBPE_CALLTYPE GetBoundForwarderByIndex(UINT32 nIndex, IPEBoundForwarder **ppBoundForwarder);
+    UINT32 LIBPE_CALLTYPE GetBoundForwarderCount() override;
+    HRESULT LIBPE_CALLTYPE GetBoundForwarderByIndex(UINT32 nIndex, IPEBoundForwarder **ppBoundForwarder) override;
 
 private:
     BoundForwarderList m_vBoundForwarders;

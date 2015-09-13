@@ -11,13 +11,13 @@ class PEGlobalPointerTableT :
 {
 public:
     PEGlobalPointerTableT() {}
-    virtual ~PEGlobalPointerTableT() {}
+    ~PEGlobalPointerTableT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawDataDirectoryT(T))
 
     LIBPE_FIELD_ACCESSOR_EX(PEAddress, GlobalPointerRVA, VirtualAddress);
 
-    virtual HRESULT LIBPE_CALLTYPE GetRelatedSection(IPESection **ppSection);
+    HRESULT LIBPE_CALLTYPE GetRelatedSection(IPESection **ppSection) override;
 };
 
 LIBPE_NAMESPACE_END

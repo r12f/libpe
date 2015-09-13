@@ -1183,7 +1183,7 @@ PEParserT<T>::ParseImportAddressItem(LibPERawThunkData(T) *pRawItem, PEAddress n
     pItem->InnerSetBase(m_pFile, this);
     pItem->InnerSetRawMemory(pRawItem);
     pItem->InnerSetMemoryInfo(nItemRVA, LIBPE_INVALID_ADDRESS, sizeof(LibPERawThunkData(T)));
-    pItem->InnerSetFileInfo(nItemRVA, sizeof(LibPERawThunkData(T)));
+    pItem->InnerSetFileInfo(nItemFOA, sizeof(LibPERawThunkData(T)));
 
     *ppItem = pItem.Detach();
 

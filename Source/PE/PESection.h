@@ -11,7 +11,7 @@ class PESectionHeaderT :
 {
 public:
     PESectionHeaderT() {}
-    virtual ~PESectionHeaderT() {}
+    ~PESectionHeaderT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawSectionHeaderT(T))
 
@@ -26,7 +26,7 @@ public:
     LIBPE_FIELD_ACCESSOR(UINT16, NumberOfLinenumbers)
     LIBPE_FIELD_ACCESSOR(UINT32, Characteristics)
 
-    virtual HRESULT LIBPE_CALLTYPE GetSection(IPESection **ppSection);
+    HRESULT LIBPE_CALLTYPE GetSection(IPESection **ppSection) override;
 
 private:
     LibPEPtr<IPESection>    m_pSection;
@@ -39,18 +39,18 @@ class PESectionT :
 {
 public:
     PESectionT() : m_pSectionHeader(NULL) {}
-    virtual ~PESectionT() {}
+    ~PESectionT() override {}
 
     DECLARE_PE_ELEMENT(void)
 
     void InnerSetSectionHeader(typename PETrait<T>::RawSectionHeader *pSectionHeader) { m_pSectionHeader = pSectionHeader; }
 
-    virtual const char * LIBPE_CALLTYPE GetName();
-    virtual HRESULT LIBPE_CALLTYPE GetRelocations();
-    virtual HRESULT LIBPE_CALLTYPE GetLineNumbers();
-    virtual UINT32 LIBPE_CALLTYPE GetCharacteristics();
+    const char * LIBPE_CALLTYPE GetName() override;
+    HRESULT LIBPE_CALLTYPE GetRelocations() override;
+    HRESULT LIBPE_CALLTYPE GetLineNumbers() override;
+    UINT32 LIBPE_CALLTYPE GetCharacteristics() override;
 
-    virtual HRESULT LIBPE_CALLTYPE SetName(const char *pName);
+    HRESULT LIBPE_CALLTYPE SetName(const char *pName) override;
 
 private:
     LibPERawSectionHeaderT(T) *m_pSectionHeader;
@@ -63,7 +63,7 @@ class PEOverlayT :
 {
 public:
     PEOverlayT() {}
-    virtual ~PEOverlayT() {}
+    ~PEOverlayT() override {}
 
     DECLARE_PE_ELEMENT(void)
 };

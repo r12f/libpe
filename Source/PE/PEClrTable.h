@@ -11,7 +11,7 @@ class PEClrTableT :
 {
 public:
     PEClrTableT() {}
-    virtual ~PEClrTableT() {}
+    ~PEClrTableT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawClrDirectory(T))
 };

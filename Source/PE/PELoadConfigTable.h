@@ -11,7 +11,7 @@ class PELoadConfigTableT :
 {
 public:
     PELoadConfigTableT() {}
-    virtual ~PELoadConfigTableT() {}
+    ~PELoadConfigTableT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawLoadConfigDirectory(T))
 

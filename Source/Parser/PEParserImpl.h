@@ -12,17 +12,17 @@ public:
     PEParserDiskFileT() {}
     virtual ~PEParserDiskFileT() {}
 
-    virtual PEParserType GetType() { return PE_PARSER_TYPE_DISK_FILE; }
-    virtual BOOL IsRawAddressVA() { return false; }
+    PEParserType GetType() override { return PE_PARSER_TYPE_DISK_FILE; }
+    BOOL IsRawAddressVA() override { return false; }
 
 protected:
-    virtual PEAddress GetRawOffsetFromAddressField(PEAddress nAddress) { return GetFOAFromRVA(nAddress); }
-    virtual PEAddress GetRVAFromAddressField(PEAddress nAddress) { return nAddress; }
-    virtual PEAddress GetFOAFromAddressField(PEAddress nAddress) { return GetFOAFromRVA(nAddress); }
-    virtual PEAddress GetRawOffsetFromRVA(PEAddress nRVA) { return GetFOAFromRVA(nRVA); }
-    virtual PEAddress GetRawOffsetFromFOA(PEAddress nFOA) { return nFOA; }
-    virtual PEAddress GetRVAFromRawOffset(PEAddress nRawOffset) { return GetFOAFromRVA(nRawOffset); }
-    virtual PEAddress GetFOAFromRawOffset(PEAddress nRawOffset) { return nRawOffset; }
+    PEAddress GetRawOffsetFromAddressField(PEAddress nAddress) override { return GetFOAFromRVA(nAddress); }
+    PEAddress GetRVAFromAddressField(PEAddress nAddress) override { return nAddress; }
+    PEAddress GetFOAFromAddressField(PEAddress nAddress) override { return GetFOAFromRVA(nAddress); }
+    PEAddress GetRawOffsetFromRVA(PEAddress nRVA) override { return GetFOAFromRVA(nRVA); }
+    PEAddress GetRawOffsetFromFOA(PEAddress nFOA) override { return nFOA; }
+    PEAddress GetRVAFromRawOffset(PEAddress nRawOffset) override { return GetFOAFromRVA(nRawOffset); }
+    PEAddress GetFOAFromRawOffset(PEAddress nRawOffset) override { return nRawOffset; }
 };
 typedef PEParserDiskFileT<PE32> PEParserDiskFile32;
 typedef PEParserDiskFileT<PE64> PEParserDiskFile64;
@@ -51,6 +51,5 @@ public:
 };
 
 #endif
-
 
 LIBPE_NAMESPACE_END

@@ -13,14 +13,14 @@ class PECertificateTableT :
 
 public:
     PECertificateTableT() : m_bIsCertificatesParsed(false) {}
-    virtual ~PECertificateTableT() {}
+    ~PECertificateTableT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawWinCertificate(T))
 
     HRESULT InnerAddCertificate(IPECertificate *pCertificate);
 
-    virtual UINT32 LIBPE_CALLTYPE GetCertificateCount();
-    virtual HRESULT LIBPE_CALLTYPE GetCertificateByIndex(UINT32 nIndex, IPECertificate **ppCertificate);
+    UINT32 LIBPE_CALLTYPE GetCertificateCount() override;
+    HRESULT LIBPE_CALLTYPE GetCertificateByIndex(UINT32 nIndex, IPECertificate **ppCertificate) override;
 
 protected:
     HRESULT EnsureCertificatesParsed();
@@ -37,7 +37,7 @@ class PECertificateT :
 {
 public:
     PECertificateT() {}
-    virtual ~PECertificateT() {}
+    ~PECertificateT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawWinCertificate(T))
 

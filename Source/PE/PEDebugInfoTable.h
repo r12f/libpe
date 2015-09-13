@@ -11,7 +11,7 @@ class PEDebugInfoTableT :
 {
 public:
     PEDebugInfoTableT() {}
-    virtual ~PEDebugInfoTableT() {}
+    ~PEDebugInfoTableT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawDebugDirectory(T))
 

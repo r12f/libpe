@@ -13,15 +13,15 @@ class PEExceptionTableT :
 
 public:
     PEExceptionTableT() {}
-    virtual ~PEExceptionTableT() {}
+    ~PEExceptionTableT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawRuntimeFunctionEntry(T));
 
     void InnerSetExceptionHandlerCount(UINT32 nCount) throw() { m_vExceptionHandlerEntries.resize(nCount); }
 
-    virtual UINT32 LIBPE_CALLTYPE GetExceptionHandlerCount();
-    virtual HRESULT LIBPE_CALLTYPE GetExceptionHandlerEntryByIndex(UINT32 nIndex, IPEExceptionHandlerEntry **ppExceptionHandlerEntry);
-    virtual HRESULT LIBPE_CALLTYPE GetExceptionHandlerByIndex(UINT32 nIndex, IPEExceptionHandler **ppExceptionHandler);
+    UINT32 LIBPE_CALLTYPE GetExceptionHandlerCount() override;
+    HRESULT LIBPE_CALLTYPE GetExceptionHandlerEntryByIndex(UINT32 nIndex, IPEExceptionHandlerEntry **ppExceptionHandlerEntry) override;
+    HRESULT LIBPE_CALLTYPE GetExceptionHandlerByIndex(UINT32 nIndex, IPEExceptionHandler **ppExceptionHandler) override;
 
 private:
     ExceptionHandlerEntryList   m_vExceptionHandlerEntries;
@@ -34,11 +34,11 @@ class PEExceptionHandlerEntryT :
 {
 public:
     PEExceptionHandlerEntryT() {}
-    virtual ~PEExceptionHandlerEntryT() {}
+    ~PEExceptionHandlerEntryT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawRuntimeFunctionEntry(T));
 
-    virtual HRESULT LIBPE_CALLTYPE GetExceptionHandler(IPEExceptionHandler **ppExceptionHandler);
+    HRESULT LIBPE_CALLTYPE GetExceptionHandler(IPEExceptionHandler **ppExceptionHandler) override;
 
 private:
     LibPEPtr<IPEExceptionHandler> m_pExceptionHandler;
@@ -51,7 +51,7 @@ class PEExceptionHandlerT :
 {
 public:
     PEExceptionHandlerT() {}
-    virtual ~PEExceptionHandlerT() {}
+    ~PEExceptionHandlerT() override {}
 
     DECLARE_PE_ELEMENT(void);
 };

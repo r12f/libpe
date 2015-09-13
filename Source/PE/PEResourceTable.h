@@ -11,7 +11,7 @@ class PEResourceTableT :
 {
 public:
     PEResourceTableT() {}
-    virtual ~PEResourceTableT() {}
+    ~PEResourceTableT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawResourceDirectory(T))
 
@@ -20,7 +20,7 @@ public:
         m_pRootDirectory = pRootDirectory;
     }
 
-    virtual HRESULT LIBPE_CALLTYPE GetRootDirectory(IPEResourceDirectory **ppDirectory);
+    HRESULT LIBPE_CALLTYPE GetRootDirectory(IPEResourceDirectory **ppDirectory) override;
 
 private:
     LibPEPtr<IPEResourceDirectory>  m_pRootDirectory;
@@ -35,7 +35,7 @@ class PEResourceDirectoryT :
 
 public:
     PEResourceDirectoryT() {}
-    virtual ~PEResourceDirectoryT() {}
+    ~PEResourceDirectoryT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawResourceDirectory(T))
 
@@ -51,8 +51,8 @@ public:
     LIBPE_FIELD_ACCESSOR(UINT16, NumberOfNamedEntries)
     LIBPE_FIELD_ACCESSOR(UINT16, NumberOfIdEntries)
 
-    virtual UINT32 LIBPE_CALLTYPE GetEntryCount();
-    virtual HRESULT LIBPE_CALLTYPE GetEntryByIndex(UINT32 nIndex, IPEResourceDirectoryEntry **ppEntry);
+    UINT32 LIBPE_CALLTYPE GetEntryCount() override;
+    HRESULT LIBPE_CALLTYPE GetEntryByIndex(UINT32 nIndex, IPEResourceDirectoryEntry **ppEntry) override;
 
 private:
     EntryList   m_vEntries;
@@ -65,7 +65,7 @@ class PEResourceDirectoryEntryT :
 {
 public:
     PEResourceDirectoryEntryT() {}
-    virtual ~PEResourceDirectoryEntryT() {}
+    ~PEResourceDirectoryEntryT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawResourceDirectoryEntry(T))
 
@@ -77,17 +77,17 @@ public:
     LIBPE_FIELD_ACCESSOR(UINT32, OffsetToDirectory)
     LIBPE_FIELD_ACCESSOR(UINT32, DataIsDirectory)
 
-    virtual BOOL LIBPE_CALLTYPE IsNameId();
-    virtual UINT16 LIBPE_CALLTYPE GetId();
+    BOOL LIBPE_CALLTYPE IsNameId() override;
+    UINT16 LIBPE_CALLTYPE GetId() override;
 
-    virtual BOOL LIBPE_CALLTYPE IsNameString();
-    virtual const wchar_t * LIBPE_CALLTYPE GetName();
+    BOOL LIBPE_CALLTYPE IsNameString() override;
+    const wchar_t * LIBPE_CALLTYPE GetName() override;
     
-    virtual BOOL LIBPE_CALLTYPE IsEntryDirectory();
-    virtual HRESULT LIBPE_CALLTYPE GetDirectory(IPEResourceDirectory **ppDirectory);
+    BOOL LIBPE_CALLTYPE IsEntryDirectory() override;
+    HRESULT LIBPE_CALLTYPE GetDirectory(IPEResourceDirectory **ppDirectory) override;
 
-    virtual BOOL LIBPE_CALLTYPE IsEntryDataEntry();
-    virtual HRESULT LIBPE_CALLTYPE GetDataEntry(IPEResourceDataEntry **ppDataEntry);
+    BOOL LIBPE_CALLTYPE IsEntryDataEntry() override;
+    HRESULT LIBPE_CALLTYPE GetDataEntry(IPEResourceDataEntry **ppDataEntry) override;
 };
 
 template <class T>
@@ -97,7 +97,7 @@ class PEResourceDataEntryT :
 {
 public:
     PEResourceDataEntryT() {}
-    virtual ~PEResourceDataEntryT() {}
+    ~PEResourceDataEntryT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawResourceDataEntry(T))
 
@@ -106,7 +106,7 @@ public:
     LIBPE_FIELD_ACCESSOR(UINT32, CodePage)
     LIBPE_FIELD_ACCESSOR(UINT32, Reserved)
 
-    virtual HRESULT LIBPE_CALLTYPE GetResource(IPEResource **ppResource);
+    HRESULT LIBPE_CALLTYPE GetResource(IPEResource **ppResource) override;
 
 private:
     LibPEPtr<IPEResource> m_pResource;
@@ -119,7 +119,7 @@ class PEResourceT :
 {
 public:
     PEResourceT() {}
-    virtual ~PEResourceT() {}
+    ~PEResourceT() override {}
 
     DECLARE_PE_ELEMENT(void)
 };

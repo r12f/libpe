@@ -13,7 +13,7 @@ class PEExportTableT :
 
 public:
     PEExportTableT() : m_pFunctionList(NULL), m_pNameList(NULL), m_pNameOrdinalList(NULL) {}
-    virtual ~PEExportTableT() {}
+    ~PEExportTableT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawExportDirectory(T))
 
@@ -44,9 +44,9 @@ public:
     LIBPE_FIELD_ACCESSOR(UINT32, AddressOfNames)
     LIBPE_FIELD_ACCESSOR(UINT32, AddressOfNameOrdinals)
 
-    virtual UINT32 LIBPE_CALLTYPE GetFunctionCount();
-    virtual HRESULT LIBPE_CALLTYPE GetFunctionByIndex(UINT32 nIndex, IPEExportFunction **ppFunction);
-    virtual HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEExportFunction **ppFunction);
+    UINT32 LIBPE_CALLTYPE GetFunctionCount() override;
+    HRESULT LIBPE_CALLTYPE GetFunctionByIndex(UINT32 nIndex, IPEExportFunction **ppFunction) override;
+    HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEExportFunction **ppFunction) override;
 
 private:
     FunctionList      m_vExportFunctions;
@@ -62,15 +62,15 @@ class PEExportFunctionT :
 {
 public:
     PEExportFunctionT() : m_pName(NULL), m_nOrdinal(0) {}
-    virtual ~PEExportFunctionT() {}
+    ~PEExportFunctionT() override {}
 
     DECLARE_PE_ELEMENT(void)
 
     void InnerSetName(const char *pName) { m_pName = pName; }
     void InnerSetOrdinal(UINT16 nOrdinal) { m_nOrdinal = nOrdinal; }
 
-    virtual const char * LIBPE_CALLTYPE GetName();
-    virtual UINT16 LIBPE_CALLTYPE GetOrdinal();
+    const char * LIBPE_CALLTYPE GetName() override;
+    UINT16 LIBPE_CALLTYPE GetOrdinal() override;
 
 private:
     const char      *m_pName;

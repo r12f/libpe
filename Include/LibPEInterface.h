@@ -377,9 +377,9 @@ public:
     LIBPE_DEFINE_FIELD_ACCESSOR(PEAddress, Ordinal);
     LIBPE_DEFINE_FIELD_ACCESSOR(PEAddress, AddressOfData);
 
-    virtual PERawImportByName * GetRawImportByName() = 0;
-    virtual const char * GetName() = 0;
-    virtual UINT16 GetOrdinal() = 0;
+    virtual PERawImportByName * LIBPE_CALLTYPE GetRawImportByName() = 0;
+    virtual const char * LIBPE_CALLTYPE GetName() = 0;
+    virtual UINT16 LIBPE_CALLTYPE GetOrdinal() = 0;
 };
 
 class IPEResourceTable : public IPEElement
@@ -499,6 +499,7 @@ public:
 class IPERelocationItem : public IPEElement
 {
 public:
+    virtual UINT16 LIBPE_CALLTYPE GetFlag() = 0;
     virtual PEAddress LIBPE_CALLTYPE GetAddressRVA() = 0;
     virtual PEAddress LIBPE_CALLTYPE GetAddressContent() = 0;
     virtual PEAddress * LIBPE_CALLTYPE GetRawAddressContent() = 0;

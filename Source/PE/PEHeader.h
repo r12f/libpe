@@ -11,7 +11,7 @@ class PEDosHeaderT :
 {
 public:
     PEDosHeaderT() {}
-    virtual ~PEDosHeaderT() {}
+    ~PEDosHeaderT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawDosHeaderT(T))
 
@@ -43,7 +43,7 @@ class PENtHeadersT :
 {
 public:
     PENtHeadersT() {}
-    virtual ~PENtHeadersT() {}
+    ~PENtHeadersT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawNtHeadersT(T))
 
@@ -51,8 +51,8 @@ public:
     void InnerSetOptionalHeader(IPEOptionalHeader *pOptionalHeader) { m_pOptionalHeader = pOptionalHeader; }
 
     LIBPE_FIELD_ACCESSOR(UINT32, Signature)
-    virtual HRESULT LIBPE_CALLTYPE GetFileHeader(IPEFileHeader **ppFileHeader) { return m_pFileHeader.CopyTo(ppFileHeader); }
-    virtual HRESULT LIBPE_CALLTYPE GetOptionalHeader(IPEOptionalHeader **ppOptionalHeader) { return m_pOptionalHeader.CopyTo(ppOptionalHeader); }
+    HRESULT LIBPE_CALLTYPE GetFileHeader(IPEFileHeader **ppFileHeader) override { return m_pFileHeader.CopyTo(ppFileHeader); }
+    HRESULT LIBPE_CALLTYPE GetOptionalHeader(IPEOptionalHeader **ppOptionalHeader) override { return m_pOptionalHeader.CopyTo(ppOptionalHeader); }
     
 private:
     LibPEPtr<IPEFileHeader>     m_pFileHeader;
@@ -66,7 +66,7 @@ class PEFileHeaderT :
 {
 public:
     PEFileHeaderT() {}
-    virtual ~PEFileHeaderT() {}
+    ~PEFileHeaderT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawFileHeaderT(T))
 
@@ -86,7 +86,7 @@ class PEOptionalHeaderT :
 {
 public:
     PEOptionalHeaderT() {}
-    virtual ~PEOptionalHeaderT() {}
+    ~PEOptionalHeaderT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawOptionalHeaderT(T))
 

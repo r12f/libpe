@@ -13,7 +13,7 @@ class PEImportTableT :
 
 public:
     PEImportTableT() {}
-    virtual ~PEImportTableT() {}
+    ~PEImportTableT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawImportDescriptor(T))
 
@@ -23,10 +23,10 @@ public:
         return;
     }
 
-    virtual UINT32 LIBPE_CALLTYPE GetModuleCount();
-    virtual HRESULT LIBPE_CALLTYPE GetModuleByIndex(UINT32 nModuleId, IPEImportModule **ppImportModule);
-    virtual HRESULT LIBPE_CALLTYPE GetModuleByName(const char *pModuleName, IPEImportModule **ppImportModule);
-    virtual HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunction **ppImportFunction);
+    UINT32 LIBPE_CALLTYPE GetModuleCount() override;
+    HRESULT LIBPE_CALLTYPE GetModuleByIndex(UINT32 nModuleId, IPEImportModule **ppImportModule) override;
+    HRESULT LIBPE_CALLTYPE GetModuleByName(const char *pModuleName, IPEImportModule **ppImportModule) override;
+    HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pModuleName, const char *pFunctionName, IPEImportFunction **ppImportFunction) override;
 
 protected:
     HRESULT LoadDelayedData() override;
@@ -44,7 +44,7 @@ class PEImportModuleT :
 
 public:
     PEImportModuleT() : m_pName(NULL), m_bIsFunctionParsed(false) {}
-    virtual ~PEImportModuleT() {}
+    ~PEImportModuleT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawImportDescriptor(T))
 
@@ -62,12 +62,12 @@ public:
     LIBPE_FIELD_ACCESSOR(UINT32, Name)
     LIBPE_FIELD_ACCESSOR(UINT32, FirstThunk)
 
-    virtual BOOL LIBPE_CALLTYPE IsBound();
-    virtual const char * LIBPE_CALLTYPE GetName() { return m_pName; }
-    virtual UINT32 LIBPE_CALLTYPE GetFunctionCount();
-    virtual HRESULT LIBPE_CALLTYPE GetFunctionByIndex(UINT32 nIndex, IPEImportFunction **ppFunction);
-    virtual HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEImportFunction **ppFunction);
-    virtual HRESULT LIBPE_CALLTYPE GetRelatedImportAddressBlock(IPEImportAddressBlock **ppBlock);
+    BOOL LIBPE_CALLTYPE IsBound() override;
+    const char * LIBPE_CALLTYPE GetName() override { return m_pName; }
+    UINT32 LIBPE_CALLTYPE GetFunctionCount() override;
+    HRESULT LIBPE_CALLTYPE GetFunctionByIndex(UINT32 nIndex, IPEImportFunction **ppFunction) override;
+    HRESULT LIBPE_CALLTYPE GetFunctionByName(const char *pFunctionName, IPEImportFunction **ppFunction) override;
+    HRESULT LIBPE_CALLTYPE GetRelatedImportAddressBlock(IPEImportAddressBlock **ppBlock) override;
 
 protected:
     HRESULT EnsureFunctionParsed() {
@@ -104,7 +104,7 @@ public:
         , m_nImportByNameFOA(LIBPE_INVALID_ADDRESS)
         , m_nImportByNameSize(LIBPE_INVALID_SIZE)
     {}
-    virtual ~PEImportFunctionT() {}
+    ~PEImportFunctionT() override {}
 
     DECLARE_PE_ELEMENT(LibPERawThunkData(T))
 
@@ -122,13 +122,13 @@ public:
     LIBPE_FIELD_ACCESSOR_EX(PEAddress, Ordinal, u1.Ordinal)
     LIBPE_FIELD_ACCESSOR_EX(PEAddress, AddressOfData, u1.AddressOfData)
 
-    virtual PERawImportByName * GetRawImportByName();
-    virtual PEAddress GetRawImportByNameRVA();
-    virtual PEAddress GetRawImportByNameFOA();
-    virtual PEAddress GetRawImportByNameSize();
+    PERawImportByName * LIBPE_CALLTYPE GetRawImportByName() override;
+    PEAddress GetRawImportByNameRVA();
+    PEAddress GetRawImportByNameFOA();
+    PEAddress GetRawImportByNameSize();
 
-    virtual const char * GetName();
-    virtual UINT16 GetOrdinal();
+    const char * LIBPE_CALLTYPE GetName() override;
+    UINT16 LIBPE_CALLTYPE GetOrdinal() override;
     
 protected:
     HRESULT EnsureImportByNameParsed() {

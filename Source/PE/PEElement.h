@@ -46,16 +46,16 @@ public:
     }
 
     // Override IPEElement
-    virtual void * LIBPE_CALLTYPE GetRawMemory();
-    virtual PEAddress LIBPE_CALLTYPE GetRawOffset();
-    virtual PEAddress LIBPE_CALLTYPE GetRawSize();
+    void * LIBPE_CALLTYPE GetRawMemory() override;
+    PEAddress LIBPE_CALLTYPE GetRawOffset() override;
+    PEAddress LIBPE_CALLTYPE GetRawSize() override;
 
-    virtual PEAddress LIBPE_CALLTYPE GetRVA();
-    virtual PEAddress LIBPE_CALLTYPE GetVA();
-    virtual PEAddress LIBPE_CALLTYPE GetSizeInMemory() { return m_nSizeInMemory; }
+    PEAddress LIBPE_CALLTYPE GetRVA() override;
+    PEAddress LIBPE_CALLTYPE GetVA() override;
+    PEAddress LIBPE_CALLTYPE GetSizeInMemory() override { return m_nSizeInMemory; }
 
-    virtual PEAddress LIBPE_CALLTYPE GetFOA();
-    virtual PEAddress LIBPE_CALLTYPE GetSizeInFile() { return m_nSizeInFile; }
+    PEAddress LIBPE_CALLTYPE GetFOA() override;
+    PEAddress LIBPE_CALLTYPE GetSizeInFile() override { return m_nSizeInFile; }
 
     // Parsing and delay data loading support
     HRESULT EnsureDataReady();
@@ -81,39 +81,39 @@ typedef PEElementT<PE64> PEElement64;
 #define DECLARE_PE_ELEMENT(struct_type)                                                                 \
     LIBPE_SINGLE_THREAD_OBJECT()                                                                        \
                                                                                                         \
-    virtual void * LIBPE_CALLTYPE GetRawMemory() { return PEElementT<T>::GetRawMemory(); }              \
-    virtual PEAddress LIBPE_CALLTYPE GetRawOffset() { return PEElementT<T>::GetRawOffset(); }           \
-    virtual PEAddress LIBPE_CALLTYPE GetRawSize() { return PEElementT<T>::GetRawSize(); }               \
-    virtual PEAddress LIBPE_CALLTYPE GetRVA() { return PEElementT<T>::GetRVA(); }                       \
-    virtual PEAddress LIBPE_CALLTYPE GetVA() { return PEElementT<T>::GetVA(); }                         \
-    virtual PEAddress LIBPE_CALLTYPE GetSizeInMemory() { return PEElementT<T>::GetSizeInMemory(); }     \
-    virtual PEAddress LIBPE_CALLTYPE GetFOA() { return PEElementT<T>::GetFOA(); }                       \
-    virtual PEAddress LIBPE_CALLTYPE GetSizeInFile(){ return PEElementT<T>::GetSizeInFile(); }          \
+    void * LIBPE_CALLTYPE GetRawMemory() override { return PEElementT<T>::GetRawMemory(); }             \
+    PEAddress LIBPE_CALLTYPE GetRawOffset() override { return PEElementT<T>::GetRawOffset(); }          \
+    PEAddress LIBPE_CALLTYPE GetRawSize() override { return PEElementT<T>::GetRawSize(); }              \
+    PEAddress LIBPE_CALLTYPE GetRVA() override { return PEElementT<T>::GetRVA(); }                      \
+    PEAddress LIBPE_CALLTYPE GetVA() override { return PEElementT<T>::GetVA(); }                        \
+    PEAddress LIBPE_CALLTYPE GetSizeInMemory() override { return PEElementT<T>::GetSizeInMemory(); }    \
+    PEAddress LIBPE_CALLTYPE GetFOA() override { return PEElementT<T>::GetFOA(); }                      \
+    PEAddress LIBPE_CALLTYPE GetSizeInFile() override{ return PEElementT<T>::GetSizeInFile(); }         \
                                                                                                         \
     struct_type * GetRawStruct() { return (struct_type *)PEElementT<T>::GetRawMemory(); }
 
 
 #define LIBPE_FIELD_ACCESSOR_EX(FieldType, FuncName, FieldName)     \
-    virtual FieldType LIBPE_CALLTYPE GetField ## FuncName() {       \
-        LIBPE_CHK(NULL != GetRawStruct(), 0);                \
+    FieldType LIBPE_CALLTYPE GetField ## FuncName() override {      \
+        LIBPE_CHK(NULL != GetRawStruct(), 0);                       \
         return GetRawStruct()->FieldName;                           \
     }
 
 #define LIBPE_FIELD_ACCESSOR(FieldType, FieldName)  LIBPE_FIELD_ACCESSOR_EX(FieldType, FieldName, FieldName)
 
 #define LIBPE_ARRAY_FIELD_ACCESSOR_EX(FieldType, FuncName, FieldName, FieldSize)    \
-    virtual FieldType * LIBPE_CALLTYPE GetField ## FuncName ## Buffer() {           \
-        LIBPE_CHK(NULL != GetRawStruct(), NULL);                             \
+    FieldType * LIBPE_CALLTYPE GetField ## FuncName ## Buffer() override {          \
+        LIBPE_CHK(NULL != GetRawStruct(), NULL);                                    \
         return GetRawStruct()->FieldName;                                           \
     }                                                                               \
                                                                                     \
-    virtual UINT32 LIBPE_CALLTYPE GetField ## FuncName ## ElementCount() {          \
+    UINT32 LIBPE_CALLTYPE GetField ## FuncName ## ElementCount() override {         \
         return FieldSize;                                                           \
     }                                                                               \
                                                                                     \
-    virtual FieldType LIBPE_CALLTYPE GetField ## FuncName(UINT32 nIndex) {          \
-        LIBPE_CHK(NULL != GetRawStruct(), 0);                                \
-        LIBPE_CHK(nIndex < FieldSize, 0);                                    \
+    FieldType LIBPE_CALLTYPE GetField ## FuncName(UINT32 nIndex) override {         \
+        LIBPE_CHK(NULL != GetRawStruct(), 0);                                       \
+        LIBPE_CHK(nIndex < FieldSize, 0);                                    		\
         return GetRawStruct()->FieldName[nIndex];                                   \
     }
 
